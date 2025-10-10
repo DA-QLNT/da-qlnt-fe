@@ -1,10 +1,12 @@
-
+import { ModeToggle } from "./components/theme/mode-toggle";
+;
 
 function App() {
-
   return (
-    <><h1>Hello Team</h1></>
-  )
+    <div className="min-h-screen flex flex-col">
+      <ModeToggle />
+    </div>
+  );
 }
 
-export default App
+export default App;
