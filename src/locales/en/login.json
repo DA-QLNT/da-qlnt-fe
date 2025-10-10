@@ -1,0 +1,20 @@
+{
+    "Login":"Login",
+    "LoginTitle":"Login to your account",
+    "LoginDescription":"Enter your email below to login to your account",
+    "Password":"Password",
+    "ForgotPassword":"Forgot your password?",
+    "LoginWithGoogle":"Login with Google",
+    "DontHaveAccount":"Don&apos;t have an account?",
+    "SignUp":"Sign Up",
+
+    "SignupTitle":"Create an account",
+    "SignupDescription":"Enter your information to create your account",
+    "Fullname":"Full name",
+    "Email":"Email",
+    "ConfirmPassword":"Confirm Password",
+    "CreateAccount":"Create account",
+    "SignupWithGoogle":"Sign up with Google",
+    "AlreadyHaveAccount":"Already have an account?"
+
+}

@@ -1,0 +1,19 @@
+{
+  "Login": "Đăng nhập",
+  "LoginTitle": "Đăng nhập vào tài khoản của bạn",
+  "LoginDescription": "Nhập email của bạn để đăng nhập vào tài khoản",
+  "Password": "Mật khẩu",
+  "ForgotPassword": "Quên mật khẩu?",
+  "LoginWithGoogle": "Đăng nhập bằng Google",
+  "DontHaveAccount": "Chưa có tài khoản?",
+  "SignUp": "Đăng ký",
+
+  "SignupTitle": "Tạo tài khoản mới",
+  "SignupDescription": "Nhập thông tin của bạn để tạo tài khoản",
+  "Fullname": "Họ và tên",
+  "Email": "Email",
+  "ConfirmPassword": "Xác nhận mật khẩu",
+  "CreateAccount": "Tạo tài khoản",
+  "SignUpWithGoogle": "Đăng ký bằng Google",
+  "AlreadyHaveAccount": "Đã có tài khoản?"
+}
