@@ -15,10 +15,11 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
-export default function RegisterForm({ className, handleSwitch, ...props }) {
+export default function RegisterForm({ className, ...props }) {
   const { t, i18n } = useTranslation("login");
-
+  const navigate = useNavigate()
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -81,7 +82,7 @@ export default function RegisterForm({ className, handleSwitch, ...props }) {
                   {t('SignupWithGoogle')}
                 </Button>
                 <FieldDescription className="text-center">
-                  {t('AlreadyHaveAccount')} <span onClick={handleSwitch} className="text-primary underline font-bold cursor-pointer">{t('Login')}</span>
+                  {t('AlreadyHaveAccount')} <span onClick={()=>navigate('/auth/login')} className="text-primary underline font-bold cursor-pointer">{t('Login')}</span>
                 </FieldDescription>
               </Field>
             </FieldGroup>

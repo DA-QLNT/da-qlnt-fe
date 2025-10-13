@@ -15,9 +15,11 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
-export default function LoginForm({ className, handleSwitch, ...props }) {
+export default function LoginForm({ className, ...props }) {
   const { t, i18n } = useTranslation("login");
+  const navigate = useNavigate();
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -60,7 +62,7 @@ export default function LoginForm({ className, handleSwitch, ...props }) {
                 <FieldDescription className="text-center">
                   {t('DontHaveAccount')}{" "}
                   <span
-                    onClick={handleSwitch}
+                    onClick={()=>navigate('/auth/register')}
                     className="text-primary underline font-bold cursor-pointer"
                   >
                     {t('SignUp')}
