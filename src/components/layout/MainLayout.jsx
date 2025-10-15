@@ -1,0 +1,16 @@
+
+import { Outlet } from "react-router-dom";
+import Header from "./Header";
+import Footer from "./Footer";
+
+export default function MainLayout() {
+  return (
+    <div className="flex flex-col min-h-screen">
+      <Header />
+      <main className="flex-grow">
+        <Outlet /> {/* Đây là nơi các page con sẽ được render */}
+      </main>
+      <Footer />
+    </div>
+  );
+}

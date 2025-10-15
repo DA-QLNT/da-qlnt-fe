@@ -1,0 +1,17 @@
+{
+  "Login": "Login",
+  "LoginTitle": "Login to your account",
+  "LoginDescription": "Enter your username below to login to your account",
+  "Username": "Username",
+  "auth:RequireLogin":"Please login",
+
+  "Password": "Password",
+  "LoggingIn":"LoggingIn",
+  "validation:RequiredUsername": "Username is required",
+  "validation:RequiredPassword": "Password is required",
+  "validation:MinLengthUsername": "Username must be at least",
+  "validation:MinLengthPassword": "Password must be at least",
+  "LoginSuccess": "Login successfully",
+  "LoginFailedGeneric": "Login failded",
+  "LoginFailedNetwork": "Network error"
+}
