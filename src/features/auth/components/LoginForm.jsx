@@ -16,11 +16,51 @@ import {
 import { Input } from "@/components/ui/input";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-
+import { selectIsAuthenticated } from "../store/authSlice";
+import { useSelector } from "react-redux";
+import { useLoginMutation } from "../store/authApi";
+import { useForm } from "react-hook-form";
+import { LoginSchema } from "@/lib/validation/auth";
+import toast from "react-hot-toast";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
 export default function LoginForm({ className, ...props }) {
   const { t, i18n } = useTranslation("login");
   const navigate = useNavigate();
+  const isAuthenticated = useSelector(selectIsAuthenticated);
+  const [login, { isLoading }] = useLoginMutation();
 
+  useEffect(()=>{
+    if(isAuthenticated){
+      navigate('/', {replace:true})
+    }
+  }, [isAuthenticated, navigate])
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(LoginSchema),
+    defaultValues: {
+      username: "",
+      password: "",
+    },
+  });
+  const onSubmit = async (data) => {
+    try {
+      const result = await login(data).unwrap();
+
+      if (result.code === 1000) {
+        toast.success(t("LoginSuccess"));
+      } else {
+        toast.error(result.message || t("LoginFailedGeneric"));
+      }
+    } catch (error) {
+      const errorMessage = error.data?.message || t("LoginFailedNetwork");
+      toast.error(errorMessage);
+    }
+  };
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -31,43 +71,43 @@ export default function LoginForm({ className, ...props }) {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <FieldGroup>
               <Field>
-                <FieldLabel htmlFor="email">Email</FieldLabel>
+                <FieldLabel htmlFor="username">{t("Username")}</FieldLabel>
                 <Input
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com"
+                  id="username"
+                  type="text"
+                  placeholder="admin"
                   required
+                  {...register("username")}
                 />
+                {errors.username && (
+                  <p className="text-sm text-red-500 mt-1">
+                    {errors.username.message}
+                  </p>
+                )}
               </Field>
               <Field>
                 <div className="flex items-center">
-                  <FieldLabel htmlFor="password">{t('Password')}</FieldLabel>
-                  <a
-                    href="#"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    {t('ForgotPassword')}
-                  </a>
+                  <FieldLabel htmlFor="password">{t("Password")}</FieldLabel>
                 </div>
-                <Input id="password" type="password" required />
+                <Input
+                  id="password"
+                  type="password"
+                  required
+                  {...register("password")}
+                />
+                {errors.password && (
+                  <p className="text-sm text-red-500 mt-1">
+                    {errors.password.message}
+                  </p>
+                )}
               </Field>
               <Field>
-                <Button type="submit">{t('Login')}</Button>
-                <Button variant="outline" type="button">
-                  {t('LoginWithGoogle')}
+                <Button type="submit" disabled={isLoading}>
+                  {isLoading ? t("LoggingIn") : t("Login")}
                 </Button>
-                <FieldDescription className="text-center">
-                  {t('DontHaveAccount')}{" "}
-                  <span
-                    onClick={()=>navigate('/auth/register')}
-                    className="text-primary underline font-bold cursor-pointer"
-                  >
-                    {t('SignUp')}
-                  </span>
-                </FieldDescription>
               </Field>
             </FieldGroup>
           </form>

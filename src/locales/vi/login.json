@@ -1,19 +1,18 @@
 {
   "Login": "Đăng nhập",
   "LoginTitle": "Đăng nhập vào tài khoản của bạn",
-  "LoginDescription": "Nhập email của bạn để đăng nhập vào tài khoản",
-  "Password": "Mật khẩu",
-  "ForgotPassword": "Quên mật khẩu?",
-  "LoginWithGoogle": "Đăng nhập bằng Google",
-  "DontHaveAccount": "Chưa có tài khoản?",
-  "SignUp": "Đăng ký",
+  "LoginDescription": "Nhập tên người dùng của bạn để đăng nhập vào tài khoản",
+  "Username": "Tên người dùng",
+  "auth:RequireLogin": "Vui lòng đăng nhập",
 
-  "SignupTitle": "Tạo tài khoản mới",
-  "SignupDescription": "Nhập thông tin của bạn để tạo tài khoản",
-  "Fullname": "Họ và tên",
-  "Email": "Email",
-  "ConfirmPassword": "Xác nhận mật khẩu",
-  "CreateAccount": "Tạo tài khoản",
-  "SignUpWithGoogle": "Đăng ký bằng Google",
-  "AlreadyHaveAccount": "Đã có tài khoản?"
+  "Password": "Mật khẩu",
+
+  "LoggingIn": "Đang đăng nhập",
+  "validation:RequiredUsername": "Username là bắt buộc",
+  "validation:RequiredPassword": "Password là bắt buộc",
+  "validation:MinLengthUsername": "Username tối thiểu là",
+  "validation:MinLengthPassword": "Password tối thiểu là",
+  "LoginSuccess": "Đăng nhập thành công",
+  "LoginFailedGeneric": "Đăng nhập thất bại",
+  "LoginFailedNetwork": "Lỗi mạng"
 }
