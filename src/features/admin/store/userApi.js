@@ -16,6 +16,13 @@ export const userApi = baseApi.injectEndpoints({
       },
       providesTags: ["User"],
     }),
+    deleteUser:builder.mutation({
+      query:(userId)=>({
+        url:`/users/${userId}`,
+        method:'DELETE',
+      }),
+      invalidatesTags:['User']// sau khi xoa thanh cong thi vo hieu hoa cache de lam moi bang
+    })
   }),
 });
-export const { useGetUsersQuery } = userApi;
+export const { useGetUsersQuery, useDeleteUserMutation } = userApi;

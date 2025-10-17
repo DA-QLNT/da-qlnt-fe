@@ -51,6 +51,7 @@ import React, { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { useGetUsersQuery } from "../../store/userApi";
 import { Spinner } from "@/components/ui/spinner";
+import UserDeleteConfirm from "../../components/users/UserDeleteConfirm";
 const invoices = [
   {
     invoice: "INV001",
@@ -128,15 +129,38 @@ const UserContent = () => {
     page: page,
     size: pageSize,
   });
-
+  // get user
   const users = data?.users || [];
   const totalElements = data?.totalElements || 0;
   const totalPages = data?.totalPages || 0;
+  // delete user
+  const [deleteDialog, setDeleteDialog] = useState({
+    open: false,
+    userId: null,
+    username: "",
+  });
+
+  // function handle
+  const openDeleteDialog = (user) => {
+    setDeleteDialog({
+      open: true,
+      userId: user.id,
+      username: user.username,
+    });
+  };
 
   if (isError)
     return <div className="p-6 text-center text-red-500">Lỗi tải dữ liệu</div>;
   return (
     <div className="px-4 lg:px-6">
+      {/* Delete user confirm */}
+      <UserDeleteConfirm
+        open={deleteDialog.open}
+        onOpenChange={(open) => setDeleteDialog((prev) => ({ ...prev, open }))}
+        userId={deleteDialog.userId}
+        username={deleteDialog.username}
+      />
+
       {isLoading && (
         <div className="">
           <Spinner className="size-16 absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%]" />
@@ -188,7 +212,7 @@ const UserContent = () => {
                   </TableCell>
                   <TableCell colSpan={2} className="font-medium">
                     <div className="flex w-full items-center gap-2">
-                      <div className="p-0.5 bg-amber-200 rounded-full">
+                      <div className="p-0.5 bg-amber-400 rounded-full">
                         <img
                           src="/public/canhdiem8-16803662980981638428853.jpg"
                           alt=""
@@ -234,7 +258,9 @@ const UserContent = () => {
                               <KeyRound />
                               Permission
                             </DropdownMenuItem>
-                            <DropdownMenuItem className="">
+                            <DropdownMenuItem
+                              onClick={() => openDeleteDialog(user)}
+                            >
                               <Trash color="red" />
                               <span className="text-red-500">Delete</span>
                             </DropdownMenuItem>
