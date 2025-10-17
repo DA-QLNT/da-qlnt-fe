@@ -1,11 +1,16 @@
-import { useSelector } from "react-redux"
-import { selectCurrentUser, selectIsAuthenticated } from "../store/authSlice"
+import { useSelector } from "react-redux";
+import { selectCurrentUser, selectIsAuthenticated } from "../store/authSlice";
 
-export const useAuth = ()=>{
-    const isAuthenticated = useSelector(selectIsAuthenticated)
-    const user = useSelector(selectCurrentUser)
+export const useAuth = () => {
+  const isAuthenticated = useSelector(selectIsAuthenticated);
+  const user = useSelector(selectCurrentUser);
 
-    const isAdmin = user?.roles?.includes('ROLE_ADMIN')
-    const isOwner = user?.roles?.includes('ROLE_OWNER')
-    return {isAuthenticated, user, isAdmin, isOwner}
-}
+  // trich xuat vai tro
+  const roles = user?.roles || [];
+
+  const isAdmin = user?.roles?.includes("ROLE_ADMIN");
+  const isOwner = user?.roles?.includes("ROLE_OWNER");
+  const isTenant = user?.roles?.includes("ROLE_TENANT");
+  const isGuest = !isAuthenticated;
+  return { isAuthenticated, user, isAdmin, isOwner, isTenant, isGuest };
+};

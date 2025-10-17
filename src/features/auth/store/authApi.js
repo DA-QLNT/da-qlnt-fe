@@ -14,7 +14,7 @@ export const authApi = baseApi.injectEndpoints({
         try {
           const { data } = await queryFulfilled;
           const { token } = data.result; // {token, authenticated}
-          dispatch(setCredentials({ token, user: null }));
+          dispatch(setCredentials({ token }));
         } catch (error) {
           console.log("login failed:", error);
         }

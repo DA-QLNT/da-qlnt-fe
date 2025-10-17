@@ -24,17 +24,27 @@ import { LoginSchema } from "@/lib/validation/auth";
 import toast from "react-hot-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
+import { useAuth } from "../hooks/useAuth";
 export default function LoginForm({ className, ...props }) {
   const { t, i18n } = useTranslation("login");
   const navigate = useNavigate();
-  const isAuthenticated = useSelector(selectIsAuthenticated);
+  // const isAuthenticated = useSelector(selectIsAuthenticated);
   const [login, { isLoading }] = useLoginMutation();
 
-  useEffect(()=>{
-    if(isAuthenticated){
-      navigate('/', {replace:true})
+  const { isAuthenticated, isAdmin, isOwner, isTenant, isGuest } = useAuth();
+  useEffect(() => {
+    if (isAuthenticated) {
+      if (isAdmin) {
+        navigate("/admin", { replace: true });
+      } else if (isOwner) {
+        navigate("/owner", { replace: true });
+      } else if (isTenant) {
+        navigate("/tenant", { replace: true });
+      } else {
+        navigate("/", { replace: true });
+      }
     }
-  }, [isAuthenticated, navigate])
+  }, [isAuthenticated,isAdmin, isOwner, isTenant, navigate]);
 
   const {
     register,

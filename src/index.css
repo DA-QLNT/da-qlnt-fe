@@ -133,3 +133,9 @@ body {
     @apply mx-auto max-w-[1440px] px-4 lg:px-12
   }
 }
+
+@layer utilities{
+  .active-link{
+    @apply py-1 px-4 rounded-xl bg-primary/80 text-foreground hover:bg-primary;
+  }
+}
