@@ -25,6 +25,8 @@ import toast from "react-hot-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useAuth } from "../hooks/useAuth";
+import { Badge } from "lucide-react";
+
 export default function LoginForm({ className, ...props }) {
   const { t, i18n } = useTranslation("login");
   const navigate = useNavigate();
@@ -44,7 +46,7 @@ export default function LoginForm({ className, ...props }) {
         navigate("/", { replace: true });
       }
     }
-  }, [isAuthenticated,isAdmin, isOwner, isTenant, navigate]);
+  }, [isAuthenticated, isAdmin, isOwner, isTenant, navigate]);
 
   const {
     register,

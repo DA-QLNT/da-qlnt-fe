@@ -1,3 +1,5 @@
+import { cn } from "@/lib/utils";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -45,8 +47,10 @@ import {
   Trash,
   UserPen,
 } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import { useGetUsersQuery } from "../../store/userApi";
+import { Spinner } from "@/components/ui/spinner";
 const invoices = [
   {
     invoice: "INV001",
@@ -91,13 +95,57 @@ const invoices = [
     paymentMethod: "Credit Card",
   },
 ];
+
+const getRoleBadge = (roles) => {
+  const role = roles[0];
+  let variant = "default";
+  let text = role;
+  if (role === "ADMIN") {
+    variant = "destructive";
+  } else if (role === "OWNER") {
+    variant = "secondary";
+  } else if (role === "TENANT") {
+    variant = "primary";
+  } else {
+    variant = "outline";
+  }
+  return (
+    <Badge
+      variant={variant}
+      className={cn("uppercase", role === "ADMIN" && "bg-red-500")}
+    >
+      {text}
+    </Badge>
+  );
+};
+
 const UserContent = () => {
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const [search, setSearch] = useState("");
+
+  const { data, isLoading, isError, error } = useGetUsersQuery({
+    page: page,
+    size: pageSize,
+  });
+
+  const users = data?.users || [];
+  const totalElements = data?.totalElements || 0;
+  const totalPages = data?.totalPages || 0;
+
+  if (isError)
+    return <div className="p-6 text-center text-red-500">Lỗi tải dữ liệu</div>;
   return (
     <div className="px-4 lg:px-6">
+      {isLoading && (
+        <div className="">
+          <Spinner className="size-16 absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%]" />
+        </div>
+      )}
       <div className="flex flex-col gap-4">
         <div className="flex flex-wrap md:flex-nowrap justify-between items-center gap-4">
           <h1 className="text-2xl font-bold">
-            All user <span>10</span>
+            All user <span>{totalElements}</span>
           </h1>
 
           <div className="relative order-last w-full md:order-none md:w-1/3">
@@ -133,9 +181,11 @@ const UserContent = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {invoices.map((invoice, index) => (
-                <TableRow key={invoice.invoice}>
-                  <TableCell colSpan={1}>{index + 1}</TableCell>
+              {users.map((user, index) => (
+                <TableRow key={user.id}>
+                  <TableCell colSpan={1}>
+                    {page * pageSize + index + 1}
+                  </TableCell>
                   <TableCell colSpan={2} className="font-medium">
                     <div className="flex w-full items-center gap-2">
                       <div className="p-0.5 bg-amber-200 rounded-full">
@@ -146,14 +196,12 @@ const UserContent = () => {
                         />
                       </div>
                       <div>
-                        <h4>LwongHoa</h4>
-                        <p>abc@gmail.com</p>
+                        <h4>{user.username}</h4>
+                        <p>{user.email || "N/A"}</p>
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell colSpan={2}>
-                    <Badge>{invoice.paymentStatus}</Badge>
-                  </TableCell>
+                  <TableCell colSpan={2}>{getRoleBadge(user.roles)}</TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end">
                       <DropdownMenu>
@@ -186,8 +234,8 @@ const UserContent = () => {
                               <KeyRound />
                               Permission
                             </DropdownMenuItem>
-                            <DropdownMenuItem className=''>
-                              <Trash color="red"/>
+                            <DropdownMenuItem className="">
+                              <Trash color="red" />
                               <span className="text-red-500">Delete</span>
                             </DropdownMenuItem>
                           </DropdownMenuGroup>
@@ -197,30 +245,37 @@ const UserContent = () => {
                   </TableCell>
                 </TableRow>
               ))}
+              {users.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={4}>No user</TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </div>
-        <Pagination>
+        <Pagination className={"mt-4"}>
           <PaginationContent>
             <PaginationItem>
-              <PaginationPrevious href="#" />
+              <PaginationPrevious
+                disabled={page === 0}
+                onClick={() => setPage((p) => Math.max(0, p - 1))}
+              />
             </PaginationItem>
+            {[...Array(totalPages)].map((_, i) => (
+              <PaginationItem key={i}>
+                <PaginationLink
+                  onClick={() => setPage(i)}
+                  isActive={i === page}
+                >
+                  {i + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
             <PaginationItem>
-              <PaginationLink href="#">1</PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationLink href="#" isActive>
-                2
-              </PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationLink href="#">3</PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationEllipsis />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationNext href="#" />
+              <PaginationNext
+                disabled={page === totalPages - 1}
+                onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+              />
             </PaginationItem>
           </PaginationContent>
         </Pagination>

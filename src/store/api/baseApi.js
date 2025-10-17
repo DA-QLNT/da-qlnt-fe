@@ -7,14 +7,22 @@ const BASE_URL = import.meta.env.VITE_BASE_API;
 
 const axiosBaseQuery =
   ({ baseUrl } = { baseUrl: "" }) =>
-  async ({ url, method, data, params, headers }) => {
+  async ({ url, method, data, params, headers },{getState}) => {
+
+    const token = getState().auth.token;
+    const defaultHeaders = {
+      "Content-Type": "application/json",
+    };
+    if(token){
+      defaultHeaders['Authorization']= `Bearer ${token}`;
+    }
     try {
       const result = await axios({
         url: baseUrl + url,
         method,
         data,
         params,
-        headers,
+        headers:{...defaultHeaders, ...headers},
       });
       return { data: result.data };
     } catch (axiosError) {
