@@ -39,13 +39,13 @@ import {
 import {
   Ellipsis,
   EllipsisVertical,
+  Eye,
   FunnelPlus,
   KeyRound,
   Plus,
   Search,
   SquarePen,
   Trash,
-  UserPen,
 } from "lucide-react";
 import React, { useState } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -99,7 +99,6 @@ const UserContent = () => {
   });
   // get user
   const users = data?.users || [];
-  console.log(users);
 
   const totalElements = data?.totalElements || 0;
   const totalPages = data?.totalPages || 0;
@@ -224,7 +223,7 @@ const UserContent = () => {
                               Edit
                             </DropdownMenuItem>
                             <DropdownMenuItem>
-                              <UserPen />
+                              <Eye />
                               View profile
                             </DropdownMenuItem>
                             <DropdownMenuItem>

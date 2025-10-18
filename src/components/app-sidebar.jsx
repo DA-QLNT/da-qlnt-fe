@@ -1,22 +1,13 @@
 import * as React from "react"
 import {
-  IconCamera,
   IconChartBar,
   IconDashboard,
-  IconDatabase,
-  IconFileAi,
-  IconFileDescription,
-  IconFileWord,
-  IconFolder,
-  IconHelp,
   IconHome,
   IconInnerShadowTop,
-  IconListDetails,
-  IconReport,
-  IconSearch,
   IconSettings,
   IconUsers,
-} from "@tabler/icons-react"
+  IconUserShield,
+} from "@tabler/icons-react";
 
 
 import { NavMain } from "@/components/nav-main"
@@ -55,6 +46,11 @@ const data = {
       icon: IconUsers,
     },
     {
+      title: "Roles",
+      url: "/admin/roles",
+      icon: IconUserShield,
+    },
+    {
       title: "Analytics",
       url: "/admin/analytics",
       icon: IconChartBar,
@@ -66,10 +62,8 @@ const data = {
       url: "#",
       icon: IconSettings,
     },
-   
   ],
-  
-}
+};
 
 export function AppSidebar({
   ...props

@@ -23,7 +23,6 @@ import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useCreateUserMutation } from "../../store/userApi";
-import { Spinner } from "@/components/ui/spinner";
 
 const defaultValues = {
   username: "",
@@ -49,8 +48,6 @@ const UserAddForm = ({ onFormSubmitSuccess }) => {
   });
   const selectedFile = watch("avatar");
   const onSubmit = async (data) => {
-    console.log(data);
-
     let formattedDob = null;
     if (data.dob && data.dob instanceof Date) {
       formattedDob = format(data.dob, "yyyy-MM-dd");
@@ -58,7 +55,7 @@ const UserAddForm = ({ onFormSubmitSuccess }) => {
     const formData = new FormData();
 
     Object.keys(data).forEach((key) => {
-      if (key !== "img" && key !== "dob") {
+      if (key !== "avatar" && key !== "dob") {
         formData.append(key, data[key]);
       }
     });
@@ -67,25 +64,24 @@ const UserAddForm = ({ onFormSubmitSuccess }) => {
     }
 
     const file = data.avatar?.[0];
-    console.log(file);
 
     if (file) {
       formData.append("avatar", file);
-    } else {
-      formData.append("avatar", "");
     }
 
     try {
       const result = await createUser(formData).unwrap();
       if (result.code === 1000) {
-        toast.success(`Create successfully user ${result.data.username} `);
+        toast.success(`Create successfully user ${result.result.username} `);
         reset();
         onFormSubmitSuccess();
       } else {
-        toast.error("Create failed");
+        toast.error("Create failed 1", result.code);
+        console.error("RTK query error: ", result.code);
       }
     } catch (error) {
-      toast.error("Create failed");
+      toast.error("Create failed 2", error);
+      console.error("RTK query error: ", error);
     }
     // console.log(data);
   };
@@ -93,7 +89,6 @@ const UserAddForm = ({ onFormSubmitSuccess }) => {
   const filePreview = selectedFile?.[0]
     ? URL.createObjectURL(selectedFile[0])
     : null;
-  console.log(filePreview);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-4">
@@ -198,7 +193,6 @@ const UserAddForm = ({ onFormSubmitSuccess }) => {
               )}
             </div>
             <Input
-              onChange={(e) => console.log(e)}
               id="avatar"
               type="file"
               accept="image/*"

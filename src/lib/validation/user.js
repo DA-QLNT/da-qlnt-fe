@@ -1,4 +1,9 @@
 import { z } from "zod";
+
+const fileSchema = z.instanceof(FileList).refine(
+  (files) => files.length > 0,
+  { message: "Avatar is required." } 
+);
 export const UserAddSchema = z.object({
   username: z.string().min(3, "Username must be at least 3 characters long"),
   password: z.string().min(4, "Password must be at least 4 characters long"),
@@ -8,6 +13,7 @@ export const UserAddSchema = z.object({
     .string()
     .min(10, "Phone number must be at least 10 characters long"),
   dob: z.date({
-    required_error: "Date of Birth is required."
+    required_error: "Date of Birth is required.",
   }),
+  avatar: fileSchema,
 });
