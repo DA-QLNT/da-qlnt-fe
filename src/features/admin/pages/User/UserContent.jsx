@@ -98,31 +98,41 @@ const invoices = [
 ];
 
 const getRoleBadge = (roles) => {
-  const role = roles[0];
-  let variant = "default";
-  let text = role;
-  if (role === "ADMIN") {
-    variant = "destructive";
-  } else if (role === "OWNER") {
-    variant = "secondary";
-  } else if (role === "TENANT") {
-    variant = "primary";
-  } else {
-    variant = "outline";
+  if (!roles || roles.length === 0) {
+    return <Badge variant={"outline"}>N/A</Badge>;
   }
+
   return (
-    <Badge
-      variant={variant}
-      className={cn("uppercase", role === "ADMIN" && "bg-red-500")}
-    >
-      {text}
-    </Badge>
+    <div>
+      {roles.map((role) => {
+        let variant = "default";
+        let text = role;
+        if (role === "ADMIN") {
+          variant = "destructive";
+        } else if (role === "OWNER") {
+          variant = "secondary";
+        } else if (role === "TENANT") {
+          variant = "primary";
+        } else {
+          variant = "outline";
+        }
+        return (
+          <Badge
+            key={role}
+            variant={variant}
+            className={cn("uppercase", role === "ADMIN" && "bg-red-500")}
+          >
+            {text}
+          </Badge>
+        );
+      })}
+    </div>
   );
 };
 
 const UserContent = () => {
   const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(20);
   const [search, setSearch] = useState("");
 
   const { data, isLoading, isError, error } = useGetUsersQuery({
@@ -131,6 +141,8 @@ const UserContent = () => {
   });
   // get user
   const users = data?.users || [];
+  console.log(users);
+
   const totalElements = data?.totalElements || 0;
   const totalPages = data?.totalPages || 0;
   // delete user
