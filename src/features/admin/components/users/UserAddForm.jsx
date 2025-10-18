@@ -76,14 +76,11 @@ const UserAddForm = ({ onFormSubmitSuccess }) => {
         reset();
         onFormSubmitSuccess();
       } else {
-        toast.error("Create failed 1", result.code);
         console.error("RTK query error: ", result.code);
       }
     } catch (error) {
-      toast.error("Create failed 2", error);
       console.error("RTK query error: ", error);
     }
-    // console.log(data);
   };
 
   const filePreview = selectedFile?.[0]
@@ -129,52 +126,54 @@ const UserAddForm = ({ onFormSubmitSuccess }) => {
             <FieldError>{errors.phoneNumber?.message}</FieldError>
           </Field>
         </div>
-        <Field>
-          <FieldLabel htmlFor="address">Address(*)</FieldLabel>
-          <Input id="address" {...register("address")} disabled={isLoading} />
-          <FieldError>{errors.address?.message}</FieldError>
-        </Field>
-        <Field>
-          <FieldLabel>Date of Birth(*)</FieldLabel>
-          <Controller
-            name="dob"
-            control={control}
-            render={({ field }) => (
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant={"outline"}
-                    className={cn(
-                      "w-full justify-start text-left font-normal",
-                      !field.value && "text-muted-foreground"
-                    )}
-                    disabled={isLoading}
-                  >
-                    <Calendar1 className="mr-2 h-4 w-4" />
-                    {field.value ? (
-                      format(field.value, "PPP")
-                    ) : (
-                      <span>Select dob</span>
-                    )}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent>
-                  <Calendar
-                    mode="single"
-                    captionLayout="dropdown"
-                    selected={field.value}
-                    onSelect={field.onChange}
-                    disabled={(date) =>
-                      date > new Date() || date < new Date("1900-01-01")
-                    }
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-            )}
-          />
-          <FieldError>{errors.dob?.message}</FieldError>
-        </Field>
+        <div className="flex gap-2">
+          <Field>
+            <FieldLabel htmlFor="address">Address(*)</FieldLabel>
+            <Input id="address" {...register("address")} disabled={isLoading} />
+            <FieldError>{errors.address?.message}</FieldError>
+          </Field>
+          <Field>
+            <FieldLabel>Date of Birth(*)</FieldLabel>
+            <Controller
+              name="dob"
+              control={control}
+              render={({ field }) => (
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !field.value && "text-muted-foreground"
+                      )}
+                      disabled={isLoading}
+                    >
+                      <Calendar1 className="mr-2 h-4 w-4" />
+                      {field.value ? (
+                        format(field.value, "PPP")
+                      ) : (
+                        <span>Select dob</span>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent>
+                    <Calendar
+                      mode="single"
+                      captionLayout="dropdown"
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      disabled={(date) =>
+                        date > new Date() || date < new Date("1900-01-01")
+                      }
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              )}
+            />
+            <FieldError>{errors.dob?.message}</FieldError>
+          </Field>
+        </div>
         {/* avatar */}
         <Field>
           <FieldLabel htmlFor="avatar">Avatar</FieldLabel>

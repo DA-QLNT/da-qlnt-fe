@@ -41,7 +41,6 @@ import {
   EllipsisVertical,
   Eye,
   FunnelPlus,
-  KeyRound,
   Plus,
   Search,
   SquarePen,
@@ -53,40 +52,8 @@ import { useGetUsersQuery } from "../../store/userApi";
 import { Spinner } from "@/components/ui/spinner";
 import UserDeleteConfirm from "../../components/users/UserDeleteConfirm";
 import UserAddDialog from "../../components/users/UserAddDialog";
-
-
-const getRoleBadge = (roles) => {
-  if (!roles || roles.length === 0) {
-    return <Badge variant={"outline"}>N/A</Badge>;
-  }
-
-  return (
-    <div className="flex flex-wrap gap-2">
-      {roles.map((role) => {
-        let variant = "default";
-        let text = role;
-        if (role === "ADMIN") {
-          variant = "destructive";
-        } else if (role === "OWNER") {
-          variant = "secondary";
-        } else if (role === "USER") {
-          variant = "primary";
-        } else {
-          variant = "outline";
-        }
-        return (
-          <Badge
-            key={role}
-            variant={variant}
-            className={cn("uppercase", role === "ADMIN" && "bg-red-500")}
-          >
-            {text}
-          </Badge>
-        );
-      })}
-    </div>
-  );
-};
+import RoleBadgeGroup from "../../components/users/RoleBadgeGroup";
+import UserViewProfileDialog from "./../../components/users/UserViewProfileDialog";
 
 const UserContent = () => {
   const [page, setPage] = useState(0);
@@ -109,7 +76,12 @@ const UserContent = () => {
     username: "",
   });
   // create user
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  // view user profile
+  const [viewDialog, setViewDialog] = useState({
+    open: false,
+    userId: null,
+  });
 
   // function handle
   const openDeleteDialog = (user) => {
@@ -118,6 +90,22 @@ const UserContent = () => {
       userId: user.id,
       username: user.username,
     });
+  };
+  const openViewDialog = (userId) => {
+    setViewDialog({
+      open: true,
+      userId: userId,
+    });
+  };
+  const closeViewDialog = (open) => {
+    if (!open) {
+      setViewDialog({
+        open: false,
+        userId: null,
+      });
+    } else {
+      setViewDialog({ ...prev, open: true });
+    }
   };
 
   if (isError)
@@ -132,12 +120,18 @@ const UserContent = () => {
         username={deleteDialog.username}
       />
       {/* Add user dialog */}
-      <UserAddDialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}/>
+      <UserAddDialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen} />
       {isLoading && (
         <div className="">
           <Spinner className="size-16 absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%]" />
         </div>
       )}
+      {/* View User Profile Dialog */}
+      <UserViewProfileDialog
+        open={viewDialog.open}
+        onOpenChange={closeViewDialog}
+        userId={viewDialog.userId}
+      />
       <div className="flex flex-col gap-4">
         <div className="flex flex-wrap md:flex-nowrap justify-between items-center gap-4">
           <h1 className="text-2xl font-bold">
@@ -157,7 +151,7 @@ const UserContent = () => {
               <FunnelPlus />
               Filter
             </Button>
-            <Button variant="outline" onClick={()=>setIsAddDialogOpen(true)}>
+            <Button variant="outline" onClick={() => setIsAddDialogOpen(true)}>
               <Plus size={24} />
               Add
             </Button>
@@ -186,7 +180,7 @@ const UserContent = () => {
                     <div className="flex w-full items-center gap-2">
                       <div className="p-0.5 bg-amber-400 rounded-full">
                         <img
-                          src={user.avatarUrl || '/userDefault.png'}
+                          src={user.avatarUrl || "/userDefault.png"}
                           alt={user.username}
                           className="w-8 h-8 rounded-full object-cover"
                         />
@@ -197,7 +191,9 @@ const UserContent = () => {
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell colSpan={2}>{getRoleBadge(user.roles)}</TableCell>
+                  <TableCell colSpan={2}>
+                    <RoleBadgeGroup roles={user.roles} />
+                  </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end">
                       <DropdownMenu>
@@ -222,13 +218,11 @@ const UserContent = () => {
                               <SquarePen />
                               Edit
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => openViewDialog(user.id)}
+                            >
                               <Eye />
                               View profile
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                              <KeyRound />
-                              Permission
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={() => openDeleteDialog(user)}
