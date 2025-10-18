@@ -33,20 +33,20 @@ export default function LoginForm({ className, ...props }) {
   // const isAuthenticated = useSelector(selectIsAuthenticated);
   const [login, { isLoading }] = useLoginMutation();
 
-  const { isAuthenticated, isAdmin, isOwner, isTenant, isGuest } = useAuth();
+  const { isAuthenticated, isAdmin, isOwner, isUser, isGuest } = useAuth();
   useEffect(() => {
     if (isAuthenticated) {
       if (isAdmin) {
         navigate("/admin", { replace: true });
       } else if (isOwner) {
         navigate("/owner", { replace: true });
-      } else if (isTenant) {
-        navigate("/tenant", { replace: true });
+      } else if (isUser) {
+        navigate("/user", { replace: true });
       } else {
         navigate("/", { replace: true });
       }
     }
-  }, [isAuthenticated, isAdmin, isOwner, isTenant, navigate]);
+  }, [isAuthenticated, isAdmin, isOwner, isUser, navigate]);
 
   const {
     register,

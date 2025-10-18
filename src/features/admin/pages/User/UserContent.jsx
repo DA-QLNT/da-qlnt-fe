@@ -52,50 +52,8 @@ import { Badge } from "@/components/ui/badge";
 import { useGetUsersQuery } from "../../store/userApi";
 import { Spinner } from "@/components/ui/spinner";
 import UserDeleteConfirm from "../../components/users/UserDeleteConfirm";
-const invoices = [
-  {
-    invoice: "INV001",
-    paymentStatus: "Paid",
-    totalAmount: "$250.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV002",
-    paymentStatus: "Pending",
-    totalAmount: "$150.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV003",
-    paymentStatus: "Unpaid",
-    totalAmount: "$350.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV004",
-    paymentStatus: "Paid",
-    totalAmount: "$450.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV005",
-    paymentStatus: "Paid",
-    totalAmount: "$550.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV006",
-    paymentStatus: "Pending",
-    totalAmount: "$200.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV007",
-    paymentStatus: "Unpaid",
-    totalAmount: "$300.00",
-    paymentMethod: "Credit Card",
-  },
-];
+import UserAddDialog from "../../components/users/UserAddDialog";
+
 
 const getRoleBadge = (roles) => {
   if (!roles || roles.length === 0) {
@@ -103,7 +61,7 @@ const getRoleBadge = (roles) => {
   }
 
   return (
-    <div>
+    <div className="flex flex-wrap gap-2">
       {roles.map((role) => {
         let variant = "default";
         let text = role;
@@ -111,7 +69,7 @@ const getRoleBadge = (roles) => {
           variant = "destructive";
         } else if (role === "OWNER") {
           variant = "secondary";
-        } else if (role === "TENANT") {
+        } else if (role === "USER") {
           variant = "primary";
         } else {
           variant = "outline";
@@ -151,6 +109,8 @@ const UserContent = () => {
     userId: null,
     username: "",
   });
+  // create user
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
 
   // function handle
   const openDeleteDialog = (user) => {
@@ -172,7 +132,8 @@ const UserContent = () => {
         userId={deleteDialog.userId}
         username={deleteDialog.username}
       />
-
+      {/* Add user dialog */}
+      <UserAddDialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}/>
       {isLoading && (
         <div className="">
           <Spinner className="size-16 absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%]" />
@@ -197,7 +158,7 @@ const UserContent = () => {
               <FunnelPlus />
               Filter
             </Button>
-            <Button variant="outline">
+            <Button variant="outline" onClick={()=>setIsAddDialogOpen(true)}>
               <Plus size={24} />
               Add
             </Button>
@@ -226,9 +187,9 @@ const UserContent = () => {
                     <div className="flex w-full items-center gap-2">
                       <div className="p-0.5 bg-amber-400 rounded-full">
                         <img
-                          src="/public/canhdiem8-16803662980981638428853.jpg"
-                          alt=""
-                          className="w-8 h-8 rounded-full"
+                          src={user.avatarUrl || '/userDefault.png'}
+                          alt={user.username}
+                          className="w-8 h-8 rounded-full object-cover"
                         />
                       </div>
                       <div>

@@ -10,7 +10,7 @@ export const useAuth = () => {
 
   const isAdmin = user?.roles?.includes("ROLE_ADMIN");
   const isOwner = user?.roles?.includes("ROLE_OWNER");
-  const isTenant = user?.roles?.includes("ROLE_TENANT");
+  const isUser = user?.roles?.includes("ROLE_USER");
   const isGuest = !isAuthenticated;
-  return { isAuthenticated, user, isAdmin, isOwner, isTenant, isGuest };
+  return { isAuthenticated, user, isAdmin, isOwner, isUser, isGuest };
 };
