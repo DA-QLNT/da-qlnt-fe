@@ -1,9 +1,34 @@
 import { createSlice } from "@reduxjs/toolkit";
-
+import { jwtDecode } from "jwt-decode";
 const getToken = () => localStorage.getItem("token");
+
+// helper decode token
+const decodeToken = (token) => {
+  if (!token) return null;
+  try {
+    const decoded = jwtDecode(token);
+    console.log(decoded);
+    
+    const roles = decoded.scope?.roles || [];
+    const username = decoded.sub;
+
+    return {
+      username: username,
+      roles: roles,
+    };
+  } catch (error) {
+    console.error("failed to decode token:", error);
+    return null;
+  }
+};
+
+const getInitialUser = ()=>{
+  const token = getToken()
+  return decodeToken(token)
+}
 const initialState = {
   token: getToken(),
-  user: null,
+  user: getInitialUser(),
   isAuthenticated: !!getToken(), //trạng thái xác thực
 };
 const authSlice = createSlice({
@@ -11,7 +36,9 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setCredentials: (state, action) => {
-      const { token, user } = action.payload;
+      const { token } = action.payload;
+      const user = decodeToken(token)
+
       state.token = token;
       state.user = user;
       state.isAuthenticated = true;

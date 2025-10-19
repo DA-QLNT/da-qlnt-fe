@@ -24,17 +24,29 @@ import { LoginSchema } from "@/lib/validation/auth";
 import toast from "react-hot-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
+import { useAuth } from "../hooks/useAuth";
+import { Badge } from "lucide-react";
+
 export default function LoginForm({ className, ...props }) {
   const { t, i18n } = useTranslation("login");
   const navigate = useNavigate();
-  const isAuthenticated = useSelector(selectIsAuthenticated);
+  // const isAuthenticated = useSelector(selectIsAuthenticated);
   const [login, { isLoading }] = useLoginMutation();
 
-  useEffect(()=>{
-    if(isAuthenticated){
-      navigate('/', {replace:true})
+  const { isAuthenticated, isAdmin, isOwner, isUser, isGuest } = useAuth();
+  useEffect(() => {
+    if (isAuthenticated) {
+      if (isAdmin) {
+        navigate("/admin", { replace: true });
+      } else if (isOwner) {
+        navigate("/owner", { replace: true });
+      } else if (isUser) {
+        navigate("/user", { replace: true });
+      } else {
+        navigate("/", { replace: true });
+      }
     }
-  }, [isAuthenticated, navigate])
+  }, [isAuthenticated, isAdmin, isOwner, isUser, navigate]);
 
   const {
     register,

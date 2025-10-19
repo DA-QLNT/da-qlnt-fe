@@ -9,6 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Globe } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { locales } from "@/i18n/i18n";
 
 export default function LanguageSwitcher() {
   const { i18n } = useTranslation();
@@ -36,7 +37,7 @@ export default function LanguageSwitcher() {
             alt="English"
             className="inline-block mr-2 h-4 w-6 rounded-sm"
           />{" "}
-          English
+          {locales.en}
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => handleChange("vi")}
@@ -47,7 +48,7 @@ export default function LanguageSwitcher() {
             alt="English"
             className="inline-block mr-2 h-4 w-6 rounded-sm"
           />{" "}
-          Tiếng Việt
+          {locales.vi}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

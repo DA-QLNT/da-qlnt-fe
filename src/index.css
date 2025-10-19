@@ -9,6 +9,10 @@ body {
   scroll-behavior: smooth;
   font-family: "Inter", sans-serif;
 }
+/* width */
+::-webkit-scrollbar {
+  display: none;
+}
 
 @custom-variant dark (&:is(.dark *));
 
@@ -131,5 +135,11 @@ body {
 @layer components{
   .max-padd-container{
     @apply mx-auto max-w-[1440px] px-4 lg:px-12
+  }
+}
+
+@layer utilities{
+  .active-link{
+    @apply py-1 px-4 rounded-xl bg-primary/80 text-foreground hover:bg-primary;
   }
 }
