@@ -32,7 +32,6 @@
     "@reduxjs/toolkit": "^2.9.0",
     "@tabler/icons-react": "^3.35.0",
     "@tailwindcss/vite": "^4.1.14",
-    "@tanstack/react-table": "^8.21.3",
     "axios": "^1.12.2",
     "card": "^2.5.4",
     "class-variance-authority": "^0.7.1",

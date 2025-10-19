@@ -10,7 +10,6 @@ const RoleBadgeGroup = ({ roles }) => {
       {roles.map((role) => {
         let variant = "default";
 
-        // Xác định màu sắc/kiểu Badge dựa trên vai trò
         if (role === "ADMIN") {
           variant = "destructive";
         } else if (role === "OWNER") {
