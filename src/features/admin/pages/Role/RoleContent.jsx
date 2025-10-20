@@ -32,29 +32,7 @@ import RoleBadgeGroup from "../../components/users/RoleBadgeGroup";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 const RoleContent = () => {
-  //   const roles = [
-  //     {
-  //       isActive: true,
-  //       createdAt: "2025-10-12T16:31:44.508496",
-  //       updatedAt: "2025-10-12T16:31:44.508496",
-  //       id: 1,
-  //       name: "ADMIN",
-  //     },
-  //     {
-  //       isActive: true,
-  //       createdAt: "2025-10-14T22:57:33.699452",
-  //       updatedAt: "2025-10-14T22:57:33.699452",
-  //       id: 2,
-  //       name: "OWNER",
-  //     },
-  //     {
-  //       isActive: true,
-  //       createdAt: "2025-10-17T22:06:25.51946",
-  //       updatedAt: "2025-10-17T22:06:25.51946",
-  //       id: 3,
-  //       name: "USER",
-  //     },
-  //   ];
+
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
@@ -107,11 +85,7 @@ const RoleContent = () => {
     return <div className="p-6 text-center text-red-500">Lỗi tải dữ liệu.</div>;
   }
 
-  //   if (isError) {
-  //     return (
-  //       <div className="p-6 text-center text-red-500">Lỗi tải dữ liệu Role.</div>
-  //     );
-  //   }
+
   return (
     <div className="px-4 lg:px-6">
       <RoleAddDialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen} />
@@ -120,10 +94,10 @@ const RoleContent = () => {
         onOpenChange={closeAssignDialog}
         selectedUser={assignDialog.user}
       />
-      <Tabs defaultValue="user" className={"w-full "}>
+      <Tabs defaultValue="role" className={"w-full "}>
         <TabsList>
-          <TabsTrigger value="user">User</TabsTrigger>
-          <TabsTrigger value="role">Roles</TabsTrigger>
+          <TabsTrigger value="role">Roles List</TabsTrigger>
+          <TabsTrigger value="user">Assign Role</TabsTrigger>
         </TabsList>
         <TabsContent value="user">
           <div className="flex flex-col gap-4 mt-4">
@@ -246,35 +220,42 @@ const RoleContent = () => {
         <TabsContent value="role" className={"flex flex-col md:flex-row gap-8"}>
           <div className="mt-4 w-full flex flex-col md:flex-row gap-8">
             <div className={"order-1 md:w-3/5 lg:w-3/5"}>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead colsSpan={1}>No</TableHead>
-                    <TableHead colsSpan={2}>Role</TableHead>
-                    <TableHead colsSpan={2}>Created</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {roles.map((role, index) => (
-                    <TableRow key={index}>
-                      <TableCell>{index + 1}</TableCell>
-                      <TableCell colsSpan={2}>
-                        <RoleBadge roleName={role.name} />
-                      </TableCell>
-                      <TableCell colsSpan={2}>
-                        {formatDateTime(role.createdAt).formattedDate}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                  {roles.length === 0 && !isLoadingRoles && (
+              <div className="relative">
+                {isLoadingRoles && (
+                  <div className="absolute inset-0 z-10 flex items-center justify-center">
+                    <Spinner className={'size-10'}/>
+                  </div>
+                )}
+                <Table>
+                  <TableHeader>
                     <TableRow>
-                      <TableCell colSpan={4} className="text-center">
-                        Chưa có Role nào được tạo.
-                      </TableCell>
+                      <TableHead colsSpan={1}>No</TableHead>
+                      <TableHead colsSpan={2}>Role</TableHead>
+                      <TableHead colsSpan={2}>Created</TableHead>
                     </TableRow>
-                  )}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {roles.map((role, index) => (
+                      <TableRow key={index}>
+                        <TableCell>{index + 1}</TableCell>
+                        <TableCell colsSpan={2}>
+                          <RoleBadge roleName={role.name} />
+                        </TableCell>
+                        <TableCell colsSpan={2}>
+                          {formatDateTime(role.createdAt).formattedDate}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                    {roles.length === 0 && !isLoadingRoles && (
+                      <TableRow>
+                        <TableCell colSpan={4} className="text-center">
+                          Chưa có Role nào được tạo.
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
               {/* pagination */}
               {totalPages > 1 && (
                 <Pagination className={"mt-4"}>
