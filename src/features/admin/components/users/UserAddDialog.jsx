@@ -7,7 +7,9 @@ import {
 import React from "react";
 import UserAddForm from "./UserAddForm";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 const UserAddDialog = ({ open, onOpenChange }) => {
+  const {t} = useTranslation("usercontent")
   const handleSuccess = () => {
     onOpenChange(false); // close dialog after create
   };
@@ -18,7 +20,7 @@ const UserAddDialog = ({ open, onOpenChange }) => {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className={dialogContentClasses}>
         <DialogHeader>
-          <DialogTitle>Add new user</DialogTitle>
+          <DialogTitle>{t('AddNewUser')}</DialogTitle>
         </DialogHeader>
         <UserAddForm onFormSubmitSuccess={handleSuccess} />
       </DialogContent>

@@ -3,19 +3,19 @@ import React from "react";
 
 const RoleBadgeGroup = ({ roles }) => {
   if (!roles || roles.length === 0) {
-    return <Badge variant={"outline"}>N/A</Badge>;
+    return <Badge variant={"ghost"}>N/A</Badge>;
   }
   return (
     <div className="flex flex-wrap gap-1">
       {roles.map((role) => {
-        let variant = "default";
+        let variant = "secondary";
 
         if (role === "ADMIN") {
           variant = "destructive";
         } else if (role === "OWNER") {
-          variant = "secondary";
-        } else if (role === "USER" || role === "TENANT") {
           variant = "default";
+        } else if (role === "USER" || role === "TENANT") {
+          variant = "outline";
         }
 
         return (

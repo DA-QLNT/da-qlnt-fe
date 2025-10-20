@@ -7,11 +7,14 @@ import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field
 import { Input } from "@/components/ui/input";
 import { Button } from '@/components/ui/button';
 import { RoleAddSchema } from "@/lib/validation/role";
+import { useTranslation } from "react-i18next";
+import { Spinner } from "@/components/ui/spinner";
 
 const defaultValues = {
   name: "",
 };
 const RoleAddForm = ({ onFormSubmitSuccess }) => {
+  const {t} = useTranslation('rolecontent')
   const [createRole, { isLoading }] = useCreateRoleMutation();
   const {
     register,
@@ -27,7 +30,7 @@ const RoleAddForm = ({ onFormSubmitSuccess }) => {
       const result = await createRole(data).unwrap();
 
       if (result.code === 1000) {
-        toast.success("Create successfully");
+        toast.success(t('CreateSuccess'));
         reset();
         onFormSubmitSuccess();
       } else {
@@ -42,7 +45,7 @@ const RoleAddForm = ({ onFormSubmitSuccess }) => {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <FieldGroup>
         <Field>
-          <FieldLabel htmlFor="name">Name</FieldLabel>
+          <FieldLabel htmlFor="name">{t('RoleName')}</FieldLabel>
           <Input
             id="name"
             {...register("name")}
@@ -53,7 +56,7 @@ const RoleAddForm = ({ onFormSubmitSuccess }) => {
         </Field>
       </FieldGroup>
       <Button type="submit" className={"w-full"} disabled={isLoading}>
-        {isLoading ? "Creating..." : "Create"}
+        {isLoading ? (<Spinner/>) : t('Create')}
       </Button>
     </form>
   );

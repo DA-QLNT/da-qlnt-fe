@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
+
 import {
   useAssignRoleMutation,
   useGetRolesQuery,
@@ -16,8 +18,10 @@ import { Spinner } from "@/components/ui/spinner";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "react-i18next";
 
 const RoleAssignDialog = ({ selectedUser, open, onOpenChange }) => {
+  const { t } = useTranslation("rolecontent");
   const { id: userId, username, roles: currentRoles } = selectedUser || {};
 
   // get available role
@@ -93,7 +97,7 @@ const RoleAssignDialog = ({ selectedUser, open, onOpenChange }) => {
 
     try {
       await Promise.all(promises);
-      toast.success("Assign roles successfully");
+      toast.success(t("AssignRoleSuccess"));
       onOpenChange(false);
     } catch (error) {
       toast.error("Assign roles failed");
@@ -101,18 +105,27 @@ const RoleAssignDialog = ({ selectedUser, open, onOpenChange }) => {
     }
   };
 
+  const dialogContentClasses = cn(
+    "w-full",
+    "sm:max-w-xl",
+    "md:max-w-2xl",
+    "lg:max-w-3xl",
+    "xl:max-w-4xl"
+  );
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className={"md:max-w-[450px]"}>
+      <DialogContent className={dialogContentClasses}>
         <DialogHeader>
-          <DialogTitle>Assign role to {username}</DialogTitle>
+          <DialogTitle>
+            {t("AssignRoleToUser")} {username}
+          </DialogTitle>
         </DialogHeader>
         {isLoadingRoles ? (
           <Spinner />
         ) : (
           <div className="grid gap-4 py-4">
-            <h3>Choose roles to assign</h3>
-            <div className="space-y-3">
+            <h3>{t("ChooseRole")}</h3>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-y-2">
               {allRoles.map((role) => (
                 <div key={role.id} className="flex items-center space-x-2">
                   <Checkbox
@@ -140,10 +153,10 @@ const RoleAssignDialog = ({ selectedUser, open, onOpenChange }) => {
             onClick={() => onOpenChange(false)}
             disabled={isMutating}
           >
-            Cancel
+            {t("Cancel")}
           </Button>
           <Button onClick={handleConfirm} disabled={isMutating}>
-            {isMutating ? <Spinner /> : "Confirm"}
+            {isMutating ? <Spinner /> : t("Confirm")}
           </Button>
         </DialogFooter>
       </DialogContent>

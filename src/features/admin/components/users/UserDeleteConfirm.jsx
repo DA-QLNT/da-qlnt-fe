@@ -12,13 +12,15 @@ import {
 import { useDeleteUserMutation } from "../../store/userApi";
 import toast from "react-hot-toast";
 import { Spinner } from "@/components/ui/spinner";
+import { useTranslation } from "react-i18next";
 
 const UserDeleteConfirm = ({ userId, username, open, onOpenChange }) => {
+  const { t } = useTranslation("usercontent");
   const [deleteUser, { isLoading }] = useDeleteUserMutation();
   const handleDelete = async () => {
     try {
       await deleteUser(userId).unwrap();
-      toast.success(`Delete user ${username} successfully`);
+      toast.success(`${t("DeleteSuccess")}`);
       onOpenChange(false);
     } catch (error) {
       console.error("Error delete user", error);
@@ -30,10 +32,14 @@ const UserDeleteConfirm = ({ userId, username, open, onOpenChange }) => {
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Confirm delete user {username}</AlertDialogTitle>
+          <AlertDialogTitle>
+            {t("ConfirmDeleteUser")} {username}
+          </AlertDialogTitle>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isLoading}>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={isLoading}>
+            {t("Cancel")}
+          </AlertDialogCancel>
           <AlertDialogAction
             onClick={handleDelete}
             disabled={isLoading}
@@ -41,10 +47,10 @@ const UserDeleteConfirm = ({ userId, username, open, onOpenChange }) => {
           >
             {isLoading ? (
               <div>
-                <Spinner className="size-1" /> Deleting...
+                <Spinner className="size-1" />
               </div>
             ) : (
-              "Delete"
+              <div>{t("Delete")}</div>
             )}
           </AlertDialogAction>
         </AlertDialogFooter>

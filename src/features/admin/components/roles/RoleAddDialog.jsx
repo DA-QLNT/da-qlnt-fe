@@ -1,8 +1,10 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import React from "react";
 import RoleAddForm from "./RoleAddForm";
+import { useTranslation } from "react-i18next";
 
 const RoleAddDialog = ({ open, onOpenChange }) => {
+  const {t} = useTranslation("rolecontent")
   const handleSuccess = () => {
     onOpenChange(false);
   };
@@ -10,9 +12,9 @@ const RoleAddDialog = ({ open, onOpenChange }) => {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add new role</DialogTitle>
+          <DialogTitle>{t('AddNewRole')}</DialogTitle>
           <DialogDescription>
-            Role name need to be unique & uppercase
+            {t('RoleFormat')}
           </DialogDescription>
         </DialogHeader>
         <RoleAddForm onFormSubmitSuccess={handleSuccess} />

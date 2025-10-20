@@ -54,8 +54,10 @@ import UserDeleteConfirm from "../../components/users/UserDeleteConfirm";
 import UserAddDialog from "../../components/users/UserAddDialog";
 import RoleBadgeGroup from "../../components/users/RoleBadgeGroup";
 import UserViewProfileDialog from "./../../components/users/UserViewProfileDialog";
+import { useTranslation } from "react-i18next";
 
 const UserContent = () => {
+  const {t} = useTranslation("usercontent")
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(20);
   const [search, setSearch] = useState("");
@@ -109,7 +111,7 @@ const UserContent = () => {
   };
 
   if (isError)
-    return <div className="p-6 text-center text-red-500">Lỗi tải dữ liệu</div>;
+    return <div className="p-6 text-center text-red-500">{t('ErrorLoadingData')}</div>;
   return (
     <div className="px-4 lg:px-6">
       {/* Delete user confirm */}
@@ -135,7 +137,7 @@ const UserContent = () => {
       <div className="flex flex-col gap-4">
         <div className="flex flex-wrap md:flex-nowrap justify-between items-center gap-4">
           <h1 className="text-2xl font-bold">
-            All user <span>{totalElements}</span>
+            {t("AllUser")} <span>{totalElements}</span>
           </h1>
 
           <div className="relative order-last w-full md:order-none md:w-1/3">
@@ -149,11 +151,11 @@ const UserContent = () => {
           <div className="flex items-center gap-2">
             <Button className="tracking-wider">
               <FunnelPlus />
-              Filter
+              {t("Filter")}
             </Button>
             <Button variant="outline" onClick={() => setIsAddDialogOpen(true)}>
               <Plus size={24} />
-              Add
+              {t("Add")}
             </Button>
           </div>
         </div>
@@ -162,23 +164,23 @@ const UserContent = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead colSpan={1}>No</TableHead>
+                <TableHead colSpan={1}>{t("No")}</TableHead>
                 <TableHead colSpan={2} className="w-[100px]">
-                  User
+                  {t("User")}
                 </TableHead>
-                <TableHead colSpan={2}>Role</TableHead>
-                <TableHead className="text-right">Action</TableHead>
+                <TableHead colSpan={2}>{t("Role")}</TableHead>
+                <TableHead className="text-right">{t("Action")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {users.map((user, index) => (
                 <TableRow key={user.id}>
-                  <TableCell colSpan={1}>
+                  <TableCell className={'w-[50px]'}>
                     {page * pageSize + index + 1}
                   </TableCell>
                   <TableCell colSpan={2} className="font-medium">
                     <div className="flex w-full items-center gap-2">
-                      <div className="p-0.5 bg-amber-400 rounded-full">
+                      <div className="flex-shrink-0 p-0.5 bg-amber-400 rounded-full">
                         <img
                           src={user.avatarUrl || "/userDefault.png"}
                           alt={user.username}
@@ -186,8 +188,12 @@ const UserContent = () => {
                         />
                       </div>
                       <div>
-                        <h4>{user.username}</h4>
-                        <p>{user.email || "N/A"}</p>
+                        <h4 className="line-clamp-2 text-wrap break-all">
+                          {user.username}
+                        </h4>
+                        <p className="line-clamp-2 text-wrap break-all text-foreground/50">
+                          {user.email || "N/A"}
+                        </p>
                       </div>
                     </div>
                   </TableCell>
@@ -216,19 +222,21 @@ const UserContent = () => {
                           <DropdownMenuGroup>
                             <DropdownMenuItem>
                               <SquarePen />
-                              Edit
+                              {t("Edit")}
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={() => openViewDialog(user.id)}
                             >
                               <Eye />
-                              View profile
+                              {t("ViewProfile")}
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={() => openDeleteDialog(user)}
                             >
                               <Trash color="red" />
-                              <span className="text-red-500">Delete</span>
+                              <span className="text-red-500">
+                                {t("Delete")}
+                              </span>
                             </DropdownMenuItem>
                           </DropdownMenuGroup>
                         </DropdownMenuContent>
