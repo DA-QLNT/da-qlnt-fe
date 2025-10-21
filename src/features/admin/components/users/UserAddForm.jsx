@@ -117,7 +117,7 @@ const UserAddForm = ({ onFormSubmitSuccess }) => {
           <Field>
             <FieldLabel htmlFor="email">Email(*)</FieldLabel>
             <Input id="email" {...register("email")} disabled={isLoading} />
-            <FieldError>{errors.username?.message}</FieldError>
+            <FieldError>{errors.email?.message}</FieldError>
           </Field>
           <Field>
             <FieldLabel htmlFor="phoneNumber">{t('PhoneNumber')}(*)</FieldLabel>

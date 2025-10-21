@@ -1,4 +1,3 @@
-import { useTranslation } from "react-i18next";
 import { z } from "zod";
 const fileSchema = z.instanceof(FileList).refine(
   (files) => files.length > 0,
