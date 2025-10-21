@@ -37,6 +37,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
+  ArrowDownZA,
+  ArrowUpAz,
   Ellipsis,
   EllipsisVertical,
   Eye,
@@ -46,7 +48,7 @@ import {
   SquarePen,
   Trash,
 } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { useGetUsersQuery } from "../../store/userApi";
 import { Spinner } from "@/components/ui/spinner";
@@ -55,22 +57,41 @@ import UserAddDialog from "../../components/users/UserAddDialog";
 import RoleBadgeGroup from "../../components/users/RoleBadgeGroup";
 import UserViewProfileDialog from "./../../components/users/UserViewProfileDialog";
 import { useTranslation } from "react-i18next";
+import useDebounce from "@/hooks/useDebounce";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
+const sortOptions = [
+  { value: "name_asc", label: "Name (A-Z)", type: "name", order: "asc" },
+  { value: "name_desc", label: "Name (Z-A)", type: "name", order: "desc" },
+  { value: "role_asc", label: "Role (A-Z)", type: "role", order: "asc" },
+  { value: "role_desc", label: "Role (Z-A)", type: "role", order: "desc" },
+];
 const UserContent = () => {
-  const {t} = useTranslation("usercontent")
+  const { t } = useTranslation("usercontent");
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(20);
   const [search, setSearch] = useState("");
 
-  const { data, isLoading, isError, error } = useGetUsersQuery({
+  const {
+    data: defaultData,
+    isLoading,
+    isError,
+    error,
+  } = useGetUsersQuery({
     page: page,
     size: pageSize,
   });
   // get user
-  const users = data?.users || [];
+  const defaultUsers = defaultData?.users || [];
 
-  const totalElements = data?.totalElements || 0;
-  const totalPages = data?.totalPages || 0;
+  const defaultTotalElements = defaultData?.totalElements || 0;
+  const defaultTotalPages = defaultData?.totalPages || 0;
   // delete user
   const [deleteDialog, setDeleteDialog] = useState({
     open: false,
@@ -84,7 +105,20 @@ const UserContent = () => {
     open: false,
     userId: null,
   });
+  // sort & search
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentSort, setCurrentSort] = useState("none");
 
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
+  const { data: allUsersData, isLoading: isLoadingAllUsers } = useGetUsersQuery(
+    {
+      page: 0,
+      size: 100, // Giả định size lớn để lấy toàn bộ (hoặc max)
+    }
+  );
+  const allUsers = allUsersData?.users || [];
+
+  // ===================================logic=================
   // function handle
   const openDeleteDialog = (user) => {
     setDeleteDialog({
@@ -109,9 +143,89 @@ const UserContent = () => {
       setViewDialog({ ...prev, open: true });
     }
   };
+  // handle sort
+  const isFilteringOrSearching = currentSort !== "none" || debouncedSearchTerm;
+  const filteredAndSortedUsers = useMemo(() => {
+    if (!isFilteringOrSearching || isLoadingAllUsers) {
+      return [];
+    }
+    let list = [...allUsers];
+    if (debouncedSearchTerm) {
+      const searchLower = debouncedSearchTerm.toLowerCase();
+      list = list.filter(
+        (user) =>
+          user.username.toLowerCase().includes(searchLower) 
+        
+        //  || user.email?.toLowerCase().includes(searchLower)
+      );
+    }
+    if (currentSort !== "none") {
+      const sortSetting = sortOptions.find(
+        (option) => option.value === currentSort
+      );
+      if (sortSetting) {
+        list.sort((a, b) => {
+          let valA, valB;
+          if (sortSetting.type === "name") {
+            valA = a.username.toLowerCase();
+            valB = b.username.toLowerCase();
+          } else if (sortSetting.type === "role") {
+            valA = (a.roles[0] || "").toLowerCase();
+            valB = (b.roles[0] || "").toLowerCase();
+          }
+          let comparison = 0;
+          if (valA > valB) comparison = 1;
+          else if (valA < valB) comparison = -1;
+          return sortSetting.order === "asc" ? comparison : comparison * -1;
+        });
+      }
+    }
+    return list;
+  }, [
+    allUsers,
+    currentSort,
+    debouncedSearchTerm,
+    isLoadingAllUsers,
+    isFilteringOrSearching,
+  ]);
+  let usersToDisplay, totalElements, totalPages, startIndex;
 
+  // pagination
+  if (isFilteringOrSearching) {
+    totalElements = filteredAndSortedUsers.length;
+    totalPages = Math.ceil(totalElements / pageSize);
+    startIndex = page * pageSize;
+    const endIndex = startIndex + pageSize;
+    usersToDisplay = filteredAndSortedUsers.slice(startIndex, endIndex);
+  } else {
+    usersToDisplay = defaultUsers;
+    totalElements = defaultTotalElements;
+    totalPages = defaultTotalPages;
+    startIndex = page * pageSize;
+  }
+  useEffect(() => {
+    if (page >= totalPages && totalPages > 0) {
+      setPage(totalPages - 1);
+    } else if (totalPages === 0 && page !== 0) {
+      setPage(0);
+    }
+  }, [page, totalPages]);
+  const handleSortChange = (value) => {
+    setCurrentSort(value);
+    setPage(0);
+  };
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+    setPage(0);
+  };
+
+  //===========UI=========
   if (isError)
-    return <div className="p-6 text-center text-red-500">{t('ErrorLoadingData')}</div>;
+    return (
+      <div className="p-6 text-center text-red-500">
+        {t("ErrorLoadingData")}
+      </div>
+    );
   return (
     <div className="px-4 lg:px-6">
       {/* Delete user confirm */}
@@ -146,13 +260,33 @@ const UserContent = () => {
               size={24}
               strokeWidth={1.5}
             />
-            <Input className="pl-9" type="text" placeholder="Search" />
+            <Input
+              className="pl-9"
+              type="text"
+              placeholder="Search"
+              value={searchTerm}
+              onChange={handleSearchChange}
+            />
           </div>
           <div className="flex items-center gap-2">
-            <Button className="tracking-wider">
-              <FunnelPlus />
-              {t("Filter")}
-            </Button>
+            <Select
+              value={currentSort}
+              onValueChange={handleSortChange}
+              disabled={isLoadingAllUsers}
+            >
+              <SelectTrigger className={"w-[180px] tracking-wider"}>
+                <FunnelPlus size={24} />
+                <SelectValue placeholder={t("Sort")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">{t("NoSort")}</SelectItem>
+                {sortOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value} className={'flex items-center'}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <Button variant="outline" onClick={() => setIsAddDialogOpen(true)}>
               <Plus size={24} />
               {t("Add")}
@@ -173,10 +307,10 @@ const UserContent = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {users.map((user, index) => (
+              {usersToDisplay.map((user, index) => (
                 <TableRow key={user.id}>
-                  <TableCell className={'w-[50px]'}>
-                    {page * pageSize + index + 1}
+                  <TableCell className={"w-[50px]"}>
+                    {startIndex + index + 1}
                   </TableCell>
                   <TableCell colSpan={2} className="font-medium">
                     <div className="flex w-full items-center gap-2">
@@ -245,7 +379,7 @@ const UserContent = () => {
                   </TableCell>
                 </TableRow>
               ))}
-              {users.length === 0 && (
+              {usersToDisplay.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={4}>No user</TableCell>
                 </TableRow>
