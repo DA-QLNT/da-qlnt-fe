@@ -3,7 +3,7 @@
   "AddNewRole": "Thêm vai trò mới",
   "AssignRole": "Gán vai trò",
   "AssignRoleSuccess": "Gán vai trò thành công",
-  "AssignRoleToUser": "Gán vai trò cho ",
+  "AssignRoleToUser": "Gán vai trò",
   "Cancel": "Hủy",
   "ChooseRole": "Chọn vai trò để gán",
   "Confirm": "Xác nhận",
@@ -17,11 +17,19 @@
   "ErrorLoadingData": "Lỗi tải dữ liệu",
   "Filter": "Lọc",
   "No": "STT",
+  "NoSort": "Không lọc",
+  "Name (A-Z)": "Tên (A-Z)",
+  "Name (Z-A)": "Tên (Z-A)",
+  "Role (A-Z)": "Vai trò (A-Z)",
+  "Role (Z-A)": "Vai trò (Z-A)",
+
   "Role": "Vai trò",
   "RoleName": "Tên vai trò",
   "RoleList": "Danh sách Vai trò",
   "RoleFormat": "Tên vai trò cần phải là duy nhất",
   "SearchName": "Tìm kiếm tên",
+  "SortBy": "Lọc theo",
+
   "TotalUser": "Tất cả người dùng",
   "User": "Người dùng"
 }
