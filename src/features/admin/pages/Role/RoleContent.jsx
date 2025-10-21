@@ -7,7 +7,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -43,9 +43,23 @@ import {
 } from "@/components/ui/dropdown-menu";
 import RoleDeleteConfirm from "../../components/roles/RoleDeleteConfirm";
 import { useTranslation } from "react-i18next";
+import useDebounce from "@/hooks/useDebounce";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
+const sortOptions = [
+  { value: "name_asc", label: "Name (A-Z)", type: "name", order: "asc" },
+  { value: "name_desc", label: "Name (Z-A)", type: "name", order: "desc" },
+  { value: "role_asc", label: "Role (A-Z)", type: "role", order: "asc" },
+  { value: "role_desc", label: "Role (Z-A)", type: "role", order: "desc" },
+];
 const RoleContent = () => {
-  const {t} = useTranslation("rolecontent")
+  const { t } = useTranslation("rolecontent");
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
@@ -78,17 +92,28 @@ const RoleContent = () => {
   });
   // user list
   const {
-    data: userData,
+    data: defaultUserData,
     isLoading: isLoadingUsers,
     isError: isUserError,
   } = useGetUsersQuery({
     page: page,
     size: pageSize,
   });
-  const users = userData?.users || [];
-  const totalUserElements = userData?.totalElements || 0;
-  const totalUserPages = userData?.totalPages || 0;
+  const defaultUsers = defaultUserData?.users || [];
+  const defaultTotalUserElements = defaultUserData?.totalElements || 0;
+  const defaultTotalUserPages = defaultUserData?.totalPages || 0;
 
+  const { data: allUsersData, isLoading: isLoadingAllUsers } = useGetUsersQuery(
+    { page: 0, size: 100 }
+  );
+  const allUsers = allUsersData?.users || [];
+
+  // search & filter state
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentSort, setCurrentSort] = useState("none");
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
+
+  // ===============logic==================
   // handle open dialog assign
   const openAssignDialog = (user) => {
     setAssignDialog({ open: true, user });
@@ -101,9 +126,6 @@ const RoleContent = () => {
       setAssignDialog((prev) => ({ ...prev, open: true }));
     }
   };
-  if (isRoleError || isUserError) {
-    return <div className="p-6 text-center text-red-500">{t('ErrorLoadingData')}</div>;
-  }
   // handle open dialog delete role
   const openDeleteRoleDialog = (role) => {
     setDeleteRoleDialog({
@@ -112,7 +134,87 @@ const RoleContent = () => {
       roleName: role.name,
     });
   };
+  // handle search&sort
+  const isFilteringOrSearching = currentSort !== "none" || debouncedSearchTerm;
+  const filteredAndSortedUsers = useMemo(() => {
+    if (!isFilteringOrSearching || isLoadingAllUsers) {
+      return [];
+    }
+    let list = [...allUsers];
+    if (debouncedSearchTerm) {
+      const searchLower = debouncedSearchTerm.toLowerCase();
+      list = list.filter((user) =>
+        user.username.toLowerCase().includes(searchLower)
+      );
+    }
+    if (currentSort !== "none") {
+      const sortSetting = sortOptions.find(
+        (option) => option.value === currentSort
+      );
+      if (sortSetting) {
+        list.sort((a, b) => {
+          let valA, valB;
+          if (sortSetting.type === "name") {
+            valA = a.username.toLowerCase();
+            valB = b.username.toLowerCase();
+          } else if (sortSetting.type === "role") {
+            valA = (a.roles[0] || "").toLowerCase();
+            valB = (b.roles[0] || "").toLowerCase();
+          }
+          let comparison = 0;
+          if (valA > valB) comparison = 1;
+          else if (valA < valB) comparison = -1;
+          return sortSetting.order === "asc" ? comparison : comparison * -1;
+        });
+      }
+    }
+    return list;
+  }, [
+    allUsers,
+    currentSort,
+    debouncedSearchTerm,
+    isLoadingAllUsers,
+    isFilteringOrSearching,
+  ]);
 
+  // pagination
+  let usersToDisplay, totalUserElements, totalUserPages, startIndex;
+  if (isFilteringOrSearching) {
+    totalUserElements = filteredAndSortedUsers.length;
+    totalUserPages = Math.ceil(totalUserElements / pageSize);
+    startIndex = page * pageSize;
+    const endIndex = startIndex + pageSize;
+    usersToDisplay = filteredAndSortedUsers.slice(startIndex, endIndex);
+  } else {
+    usersToDisplay = defaultUsers;
+    totalUserElements = defaultTotalUserElements;
+    totalUserPages = defaultTotalUserPages;
+    startIndex = page * pageSize;
+  }
+  useEffect(() => {
+    if (page >= totalUserPages && totalUserPages > 0) {
+      setPage(totalUserPages - 1);
+    } else if (totalUserPages === 0 && page !== 0) {
+      setPage(0);
+    }
+  }, [page, totalUserPages]);
+
+  const handleSortChange = (value) => {
+    setCurrentSort(value);
+    setPage(0);
+  };
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+    setPage(0);
+  };
+
+  if (isRoleError || isUserError) {
+    return (
+      <div className="p-6 text-center text-red-500">
+        {t("ErrorLoadingData")}
+      </div>
+    );
+  }
   return (
     <div className="px-4 lg:px-6">
       <RoleAddDialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen} />
@@ -131,9 +233,9 @@ const RoleContent = () => {
       />
       <Tabs defaultValue="roleList" className={"w-full "}>
         <TabsList>
-          <TabsTrigger value="roleList">{t('RoleList')}</TabsTrigger>
+          <TabsTrigger value="roleList">{t("RoleList")}</TabsTrigger>
           <TabsTrigger value="assignRoleToUser">
-            {t('AssignRoleToUser')}
+            {t("AssignRoleToUser")}
           </TabsTrigger>
         </TabsList>
         <TabsContent
@@ -151,10 +253,12 @@ const RoleContent = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead colSpan={1}>{t('No')}</TableHead>
-                      <TableHead colSpan={2}>{t('Role')}</TableHead>
-                      <TableHead colSpan={2}>{t('Created')}</TableHead>
-                      <TableHead className="text-right">{t('Actions')}</TableHead>
+                      <TableHead colSpan={1}>{t("No")}</TableHead>
+                      <TableHead colSpan={2}>{t("Role")}</TableHead>
+                      <TableHead colSpan={2}>{t("Created")}</TableHead>
+                      <TableHead className="text-right">
+                        {t("Actions")}
+                      </TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -179,7 +283,7 @@ const RoleContent = () => {
                                 onClick={() => openDeleteRoleDialog(role)}
                               >
                                 <Trash className="mr-2 h-4 w-4" />
-                                {t('DeleteRole')}
+                                {t("DeleteRole")}
                               </DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
@@ -236,7 +340,7 @@ const RoleContent = () => {
                 className={"md:absolute md:left-[0%] top-[20%]"}
               >
                 <Plus className="mr-2 h-4 w-4" />
-                {t('AddNewRole')}
+                {t("AddNewRole")}
               </Button>
             </div>
           </div>
@@ -244,18 +348,37 @@ const RoleContent = () => {
         <TabsContent value="assignRoleToUser">
           <div className="flex flex-col gap-4 mt-4">
             <h1 className="text-2xl font-bold">
-              {t('TotalUser')} <span>{totalUserElements}</span>
+              {t("TotalUser")} <span>{totalUserElements}</span>
             </h1>
             <div className="flex gap-4">
               <Input
                 type={"text"}
                 placeholder="search name"
                 className={"w-2/3 md:max-w-[300px]"}
+                value={searchTerm}
+                onChange={handleSearchChange}
               />
-              <Button className="tracking-wider">
-                <FunnelPlus />
-                {t('Filter')}
-              </Button>
+              <div className="flex gap-2">
+                {/* Select Filter/Sort */}
+                <Select
+                  value={currentSort}
+                  onValueChange={handleSortChange}
+                  disabled={isLoadingAllUsers}
+                >
+                  <SelectTrigger className={"w-[180px] tracking-wider"}>
+                    <FunnelPlus size={24} className="mr-2" />
+                    <SelectValue placeholder={t("SortBy")} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">{t("NoSort")}</SelectItem>
+                    {sortOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {t(`${option.label}`)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             {isLoadingUsers && (
@@ -267,14 +390,14 @@ const RoleContent = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead colSpan={1}>{t('No')}</TableHead>
-                  <TableHead colSpan={2}>{t('User')}</TableHead>
-                  <TableHead colSpan={2}>{t('Role')}</TableHead>
-                  <TableHead className="text-right">{t('Actions')}</TableHead>
+                  <TableHead colSpan={1}>{t("No")}</TableHead>
+                  <TableHead colSpan={2}>{t("User")}</TableHead>
+                  <TableHead colSpan={2}>{t("Role")}</TableHead>
+                  <TableHead className="text-right">{t("Actions")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {users.map((user, index) => (
+                {usersToDisplay.map((user, index) => (
                   <TableRow key={user.id}>
                     <TableCell className={"w-[50px]"}>
                       {page * pageSize + index + 1}
@@ -313,14 +436,14 @@ const RoleContent = () => {
                             onClick={() => openAssignDialog(user)}
                           >
                             <UserPen className="mr-2 h-4 w-4" />
-                            {t('AssignRole')}
+                            {t("AssignRole")}
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </TableCell>
                   </TableRow>
                 ))}
-                {users.length === 0 && !isLoadingUsers && (
+                {usersToDisplay.length === 0 && !isLoadingUsers && (
                   <TableRow>
                     <TableCell colSpan={4} className="text-center">
                       No user created

@@ -276,7 +276,7 @@ const UserContent = () => {
             >
               <SelectTrigger className={"w-[180px] tracking-wider"}>
                 <FunnelPlus size={24} />
-                <SelectValue placeholder={t("Sort")} />
+                <SelectValue placeholder={t("SortBy")} />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="none">{t("NoSort")}</SelectItem>
