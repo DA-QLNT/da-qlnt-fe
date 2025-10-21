@@ -23,6 +23,8 @@ import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useCreateUserMutation } from "../../store/userApi";
+import { useTranslation } from "react-i18next";
+import { Spinner } from "@/components/ui/spinner";
 
 const defaultValues = {
   username: "",
@@ -34,6 +36,7 @@ const defaultValues = {
 };
 
 const UserAddForm = ({ onFormSubmitSuccess }) => {
+  const {t} = useTranslation("usercontent")
   const [createUser, { isLoading }] = useCreateUserMutation();
   const {
     register,
@@ -92,7 +95,7 @@ const UserAddForm = ({ onFormSubmitSuccess }) => {
       <FieldGroup>
         <div className="flex gap-2">
           <Field>
-            <FieldLabel htmlFor="username">Username(*)</FieldLabel>
+            <FieldLabel htmlFor="username">{t('Username')}(*)</FieldLabel>
             <Input
               id="username"
               {...register("username")}
@@ -101,7 +104,7 @@ const UserAddForm = ({ onFormSubmitSuccess }) => {
             <FieldError>{errors.username?.message}</FieldError>
           </Field>
           <Field>
-            <FieldLabel htmlFor="password">Password(*)</FieldLabel>
+            <FieldLabel htmlFor="password">{t('Password')}(*)</FieldLabel>
             <Input
               id="password"
               {...register("password")}
@@ -117,7 +120,7 @@ const UserAddForm = ({ onFormSubmitSuccess }) => {
             <FieldError>{errors.username?.message}</FieldError>
           </Field>
           <Field>
-            <FieldLabel htmlFor="phoneNumber">Phone Number(*)</FieldLabel>
+            <FieldLabel htmlFor="phoneNumber">{t('PhoneNumber')}(*)</FieldLabel>
             <Input
               id="phoneNumber"
               {...register("phoneNumber")}
@@ -128,12 +131,12 @@ const UserAddForm = ({ onFormSubmitSuccess }) => {
         </div>
         <div className="flex gap-2">
           <Field>
-            <FieldLabel htmlFor="address">Address(*)</FieldLabel>
+            <FieldLabel htmlFor="address">{t('Address')}(*)</FieldLabel>
             <Input id="address" {...register("address")} disabled={isLoading} />
             <FieldError>{errors.address?.message}</FieldError>
           </Field>
           <Field>
-            <FieldLabel>Date of Birth(*)</FieldLabel>
+            <FieldLabel>{t('Dob')}(*)</FieldLabel>
             <Controller
               name="dob"
               control={control}
@@ -176,7 +179,7 @@ const UserAddForm = ({ onFormSubmitSuccess }) => {
         </div>
         {/* avatar */}
         <Field>
-          <FieldLabel htmlFor="avatar">Avatar</FieldLabel>
+          <FieldLabel>{t('Avatar')}</FieldLabel>
           <div className="flex items-center space-x-4">
             <div className="relative w-16 h-16 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-800 border">
               {filePreview ? (
@@ -204,7 +207,7 @@ const UserAddForm = ({ onFormSubmitSuccess }) => {
         </Field>
       </FieldGroup>
       <Button type="submit" className={"w-full"} disabled={isLoading}>
-        {isLoading ? "Creating..." : "Create"}
+        {isLoading ? (<Spinner/>) : t('Create')}
       </Button>
     </form>
   );

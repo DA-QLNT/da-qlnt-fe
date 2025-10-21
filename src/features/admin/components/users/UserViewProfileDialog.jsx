@@ -12,8 +12,10 @@ import { Field, FieldLabel } from "@/components/ui/field";
 import RoleBadgeGroup from "./RoleBadgeGroup";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 const UserViewProfileDialog = ({ userId, open, onOpenChange }) => {
+  const {t} = useTranslation("usercontent")
   const {
     data: user,
     isLoading,
@@ -37,7 +39,7 @@ const UserViewProfileDialog = ({ userId, open, onOpenChange }) => {
     return (
       <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogContent className={"sm:max-w-md text-center text-red-500"}>
-          Error: Can't load user profile
+          {t('ErrorLoadingData')}
         </DialogContent>
       </Dialog>
     );
@@ -49,7 +51,7 @@ const UserViewProfileDialog = ({ userId, open, onOpenChange }) => {
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className={dialogContentClasses}>
         <DialogHeader>
-          <DialogTitle>User Profile {user?.id}</DialogTitle>
+          <DialogTitle>{t('UserProfile')} {user?.id}</DialogTitle>
         </DialogHeader>
         {loading ? (
           <div className="flex justify-center">
@@ -66,7 +68,7 @@ const UserViewProfileDialog = ({ userId, open, onOpenChange }) => {
               />
             </div>
             <Field>
-              <FieldLabel>Username</FieldLabel>
+              <FieldLabel>{t('Username')}</FieldLabel>
               <Input value={user?.username} readOnly />
             </Field>
 
@@ -76,48 +78,48 @@ const UserViewProfileDialog = ({ userId, open, onOpenChange }) => {
                 <Input value={user?.email} readOnly />
               </Field>
               <Field>
-                <FieldLabel>Phone number</FieldLabel>
+                <FieldLabel>{t('PhoneNumber')}</FieldLabel>
                 <Input value={user?.phoneNumber} readOnly />
               </Field>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <Field>
-                <FieldLabel>Ngày sinh</FieldLabel>
+                <FieldLabel>{t('Dob')}</FieldLabel>
                 <Input value={formattedDob} readOnly />
               </Field>
               <Field>
-                <FieldLabel>Địa chỉ</FieldLabel>
+                <FieldLabel>{t('Address')}</FieldLabel>
                 <Input value={user?.address || "N/A"} readOnly />
               </Field>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               <Field>
-                <FieldLabel>Vai trò</FieldLabel>
+                <FieldLabel>{t('Role')}</FieldLabel>
                 <div className="p-2 border rounded-md bg-gray-50 dark:bg-gray-800/50 min-h-10 flex items-center">
                   <RoleBadgeGroup roles={user?.roles} />
                 </div>
               </Field>
 
               <Field>
-                <FieldLabel>bank</FieldLabel>
+                <FieldLabel>{t('Bank')}</FieldLabel>
                 <Input value={user?.bankAcc} readOnly />
               </Field>
               <Field>
-                <FieldLabel>businessNo</FieldLabel>
+                <FieldLabel>{t('BusinessNo')}</FieldLabel>
                 <Input value={user?.businessNo} readOnly />
               </Field>
               <Field>
-                <FieldLabel>taxCode</FieldLabel>
+                <FieldLabel>{t('TaxCode')}</FieldLabel>
                 <Input value={user?.taxCode} readOnly />
               </Field>
               <Field>
-                <FieldLabel>verified</FieldLabel>
+                <FieldLabel>{t('Verified')}</FieldLabel>
                 <Input value={user?.verified} readOnly />
               </Field>
               <Field>
-                <FieldLabel>representative</FieldLabel>
+                <FieldLabel>{t('Representative')}</FieldLabel>
                 <Input value={user?.representative} readOnly />
               </Field>
             </div>

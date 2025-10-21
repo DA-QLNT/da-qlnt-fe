@@ -28,7 +28,7 @@ const axiosBaseQuery =
         method,
         data,
         params,
-        headers: { ...defaultHeaders, ...headers },
+        headers: finalHeaders,
       });
       return { data: result.data };
     } catch (axiosError) {
@@ -47,6 +47,6 @@ export const baseApi = createApi({
   baseQuery: axiosBaseQuery({
     baseUrl: BASE_URL,
   }),
-  tagTypes: ["User", "Room", "Contract"], // define tag chung
+  tagTypes: ["User", "Role", "Room", "Contract"], // define tag chung
   endpoints: () => ({}), // endpoint sẽ được tiêm vào từ feature
 });
