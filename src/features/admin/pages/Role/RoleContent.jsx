@@ -243,63 +243,60 @@ const RoleContent = () => {
           className={"flex flex-col md:flex-row gap-8"}
         >
           <div className="mt-4 w-full flex flex-col md:flex-row gap-8">
-            <div className={"order-1 md:w-3/5 lg:w-3/5"}>
-              <div className="relative">
-                {isLoadingRoles && (
-                  <div className="absolute inset-0 z-10 flex items-center justify-center">
-                    <Spinner className={"size-10"} />
-                  </div>
-                )}
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead colSpan={1}>{t("No")}</TableHead>
-                      <TableHead colSpan={2}>{t("Role")}</TableHead>
-                      <TableHead colSpan={2}>{t("Created")}</TableHead>
-                      <TableHead className="text-right">
-                        {t("Actions")}
-                      </TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {roles.map((role, index) => (
-                      <TableRow key={role.id}>
-                        <TableCell>{index + 1}</TableCell>
-                        <TableCell colSpan={2}>
-                          <RoleBadge roleName={role.name} />
-                        </TableCell>
-                        <TableCell colSpan={2}>
-                          {formatDateTime(role.createdAt).formattedDate}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="sm">
-                                <EllipsisVertical size={20} />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-48">
-                              <DropdownMenuItem
-                                onClick={() => openDeleteRoleDialog(role)}
-                              >
-                                <Trash className="mr-2 h-4 w-4" />
-                                {t("DeleteRole")}
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                    {roles.length === 0 && !isLoadingRoles && (
-                      <TableRow>
-                        <TableCell colSpan={4} className="text-center">
-                          No roles created
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
+            {isLoadingRoles && (
+              <div className="absolute inset-0 z-10 flex items-center justify-center">
+                <Spinner className={"size-10"} />
               </div>
+            )}
+            <div className={"order-1 md:w-3/5 lg:w-3/5"}>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead colSpan={1}>{t("No")}</TableHead>
+                    <TableHead colSpan={2}>{t("Role")}</TableHead>
+                    <TableHead colSpan={2}>{t("Created")}</TableHead>
+                    <TableHead className="text-right">{t("Actions")}</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {roles.map((role, index) => (
+                    <TableRow key={role.id}>
+                      <TableCell>{index + 1}</TableCell>
+                      <TableCell colSpan={2}>
+                        <RoleBadge roleName={role.name} />
+                      </TableCell>
+                      <TableCell colSpan={2}>
+                        {formatDateTime(role.createdAt).formattedDate}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="sm">
+                              <EllipsisVertical size={20} />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-48">
+                            <DropdownMenuItem
+                              onClick={() => openDeleteRoleDialog(role)}
+                            >
+                              <Trash className="mr-2 h-4 w-4" />
+                              {t("DeleteRole")}
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                  {roles.length === 0 && !isLoadingRoles && (
+                    <TableRow>
+                      <TableCell colSpan={4} className="text-center">
+                        No roles created
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+
               {/* pagination */}
               {totalPages > 1 && (
                 <Pagination className={"mt-4"}>
@@ -381,12 +378,6 @@ const RoleContent = () => {
               </div>
             </div>
 
-            {isLoadingUsers && (
-              <div className="text-center p-4">
-                <Spinner />
-              </div>
-            )}
-
             <Table>
               <TableHeader>
                 <TableRow>
@@ -452,7 +443,11 @@ const RoleContent = () => {
                 )}
               </TableBody>
             </Table>
-
+            {isLoadingUsers && (
+              <div className="text-center p-4 size-10 ">
+                <Spinner />
+              </div>
+            )}
             {/* Pagination cho User List */}
             {totalUserPages > 1 && (
               <Pagination className={"mt-4"}>

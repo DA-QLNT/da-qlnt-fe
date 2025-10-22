@@ -61,8 +61,7 @@ const UserViewProfileDialog = ({ userId, open, onOpenChange }) => {
         </DialogHeader>
         {loading ? (
           <div className="flex justify-center">
-            <Spinner />
-            Loading...
+            <Spinner className={'size-10'}/>
           </div>
         ) : (
           <div className="grid gap-4 py-4">

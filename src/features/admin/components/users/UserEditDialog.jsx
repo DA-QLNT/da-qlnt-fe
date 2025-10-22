@@ -34,7 +34,7 @@ const UserEditDialog = ({ userId, open, onOpenChange }) => {
         </DialogHeader>
         {loading ? (
           <div className="flex justify-center items-center">
-            <Spinner />
+            <Spinner className={'size-10'}/>
           </div>
         ) : user ? (
           <UserEditForm user={user} onFormSubmitSuccess={handleOpenChange} />

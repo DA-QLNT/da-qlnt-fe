@@ -183,7 +183,7 @@ const UserEditForm = ({ user, onFormSubmitSuccess }) => {
         <div className="grid grid-cols-2 gap-4"></div>
       </FieldGroup>
       <Button>
-        {isLoading ? <Spinner className={"text-white"} /> : t("Update")}
+        {isLoading ? <Spinner className={"text-white size-4"} /> : t("Update")}
       </Button>
     </form>
   );
