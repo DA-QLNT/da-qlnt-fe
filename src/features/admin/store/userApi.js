@@ -39,6 +39,17 @@ export const userApi = baseApi.injectEndpoints({
       transformResponse: (response) => response.result,
       providesTags: (result, error, id) => [{ type: "User", id }],
     }),
+    updateUser: builder.mutation({
+      query: (formData) => ({
+        url: "/users/update",
+        method: "POST",
+        data: formData,
+      }),
+      invalidatesTags: (result, error, {get}) => {
+        const id = result?.result?.id || (result?.id??null);
+        return [{type:'User',id}, 'User']
+      }
+    }),
   }),
 });
 export const {
@@ -46,4 +57,5 @@ export const {
   useDeleteUserMutation,
   useCreateUserMutation,
   useGetUserByIdQuery,
+  useUpdateUserMutation,
 } = userApi;

@@ -65,6 +65,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import UserEditDialog from "../../components/users/UserEditDialog";
 
 const sortOptions = [
   { value: "name_asc", label: "Name (A-Z)", type: "name", order: "asc" },
@@ -102,6 +103,11 @@ const UserContent = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   // view user profile
   const [viewDialog, setViewDialog] = useState({
+    open: false,
+    userId: null,
+  });
+  // edit user
+  const [editDialog, setEditDialog] = useState({
     open: false,
     userId: null,
   });
@@ -143,6 +149,20 @@ const UserContent = () => {
       setViewDialog({ ...prev, open: true });
     }
   };
+  const openEditDialog = (userId) => {
+    setEditDialog({
+      open: true,
+      userId: userId,
+    });
+  };
+  const closeEditDialog = (open) => {
+    if (!open) {
+      setEditDialog({
+        open: false,
+        userId: null,
+      });
+    }
+  };
   // handle sort
   const isFilteringOrSearching = currentSort !== "none" || debouncedSearchTerm;
   const filteredAndSortedUsers = useMemo(() => {
@@ -153,9 +173,8 @@ const UserContent = () => {
     if (debouncedSearchTerm) {
       const searchLower = debouncedSearchTerm.toLowerCase();
       list = list.filter(
-        (user) =>
-          user.username.toLowerCase().includes(searchLower) 
-        
+        (user) => user.username.toLowerCase().includes(searchLower)
+
         //  || user.email?.toLowerCase().includes(searchLower)
       );
     }
@@ -248,6 +267,13 @@ const UserContent = () => {
         onOpenChange={closeViewDialog}
         userId={viewDialog.userId}
       />
+      {/* Edit User Dialog */}
+      <UserEditDialog
+        open={editDialog.open}
+        onOpenChange={closeEditDialog}
+        userId={editDialog.userId}
+      />
+
       <div className="flex flex-col gap-4">
         <div className="flex flex-wrap md:flex-nowrap justify-between items-center gap-4">
           <h1 className="text-2xl font-bold">
@@ -281,7 +307,11 @@ const UserContent = () => {
               <SelectContent>
                 <SelectItem value="none">{t("NoSort")}</SelectItem>
                 {sortOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value} className={'flex items-center'}>
+                  <SelectItem
+                    key={option.value}
+                    value={option.value}
+                    className={"flex items-center"}
+                  >
                     {option.label}
                   </SelectItem>
                 ))}
@@ -354,7 +384,9 @@ const UserContent = () => {
                           align="start"
                         >
                           <DropdownMenuGroup>
-                            <DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => openEditDialog(user.id)}
+                            >
                               <SquarePen />
                               {t("Edit")}
                             </DropdownMenuItem>
