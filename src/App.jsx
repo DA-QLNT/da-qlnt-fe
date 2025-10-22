@@ -12,6 +12,7 @@ import UserContent from "./features/admin/pages/User/UserContent";
 import AnalyticContent from "./features/admin/pages/Analytic/AnalyticContent";
 import RoleContent from "./features/admin/pages/Role/RoleContent";
 import AdminProtectedRoute from "./components/layout/AdminProtectedRoute";
+import PermissionContent from "./features/admin/pages/Permission/PermissionContent";
 function App() {
   return (
     <div className="min-h-screen flex flex-col">
@@ -36,6 +37,7 @@ function App() {
               <Route path="houses" element={<HouseContent />} />
               <Route path="users" element={<UserContent />} />
               <Route path="roles" element={<RoleContent />} />
+              <Route path="permissions" element={<PermissionContent />} />
               <Route path="analytics" element={<AnalyticContent />} />
             </Route>
           </Route>

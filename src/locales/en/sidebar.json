@@ -1,7 +1,9 @@
 {
-    "Dashboard": "Dashboard",
-    "Houses": "House",
-    "Users":"User",
-    "Roles":"Roles",
-    "Analytics":"Analytics"
+  "Dashboard": "Dashboard",
+  "Houses": "House",
+  "Users": "User",
+  "Roles": "Roles",
+  "Permissions": "Permissions",
+
+  "Analytics": "Analytics"
 }
