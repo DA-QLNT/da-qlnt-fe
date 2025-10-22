@@ -39,6 +39,7 @@ export default function LoginForm({ className, ...props }) {
       if (isAdmin) {
         navigate("/admin", { replace: true });
       } else if (isOwner) {
+        
         navigate("/owner", { replace: true });
       } else if (isUser) {
         navigate("/user", { replace: true });
