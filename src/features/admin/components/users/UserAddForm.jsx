@@ -95,7 +95,7 @@ const UserAddForm = ({ onFormSubmitSuccess }) => {
       <FieldGroup>
         <div className="flex gap-2">
           <Field>
-            <FieldLabel htmlFor="username">{t('Username')}(*)</FieldLabel>
+            <FieldLabel htmlFor="username">{t("UserName")}(*)</FieldLabel>
             <Input
               id="username"
               {...register("username")}
@@ -104,7 +104,7 @@ const UserAddForm = ({ onFormSubmitSuccess }) => {
             <FieldError>{errors.username?.message}</FieldError>
           </Field>
           <Field>
-            <FieldLabel htmlFor="password">{t('Password')}(*)</FieldLabel>
+            <FieldLabel htmlFor="password">{t("Password")}(*)</FieldLabel>
             <Input
               id="password"
               {...register("password")}
@@ -120,7 +120,7 @@ const UserAddForm = ({ onFormSubmitSuccess }) => {
             <FieldError>{errors.email?.message}</FieldError>
           </Field>
           <Field>
-            <FieldLabel htmlFor="phoneNumber">{t('PhoneNumber')}(*)</FieldLabel>
+            <FieldLabel htmlFor="phoneNumber">{t("PhoneNumber")}(*)</FieldLabel>
             <Input
               id="phoneNumber"
               {...register("phoneNumber")}
@@ -131,12 +131,12 @@ const UserAddForm = ({ onFormSubmitSuccess }) => {
         </div>
         <div className="flex gap-2">
           <Field>
-            <FieldLabel htmlFor="address">{t('Address')}(*)</FieldLabel>
+            <FieldLabel htmlFor="address">{t("Address")}(*)</FieldLabel>
             <Input id="address" {...register("address")} disabled={isLoading} />
             <FieldError>{errors.address?.message}</FieldError>
           </Field>
           <Field>
-            <FieldLabel>{t('Dob')}(*)</FieldLabel>
+            <FieldLabel>{t("Dob")}(*)</FieldLabel>
             <Controller
               name="dob"
               control={control}
@@ -179,7 +179,7 @@ const UserAddForm = ({ onFormSubmitSuccess }) => {
         </div>
         {/* avatar */}
         <Field>
-          <FieldLabel>{t('Avatar')}</FieldLabel>
+          <FieldLabel>{t("Avatar")}</FieldLabel>
           <div className="flex items-center space-x-4">
             <div className="relative w-16 h-16 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-800 border">
               {filePreview ? (
@@ -207,7 +207,7 @@ const UserAddForm = ({ onFormSubmitSuccess }) => {
         </Field>
       </FieldGroup>
       <Button type="submit" className={"w-full"} disabled={isLoading}>
-        {isLoading ? (<Spinner/>) : t('Create')}
+        {isLoading ? <Spinner /> : t("Create")}
       </Button>
     </form>
   );

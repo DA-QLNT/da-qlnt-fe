@@ -16,6 +16,8 @@
   "DeleteSuccess": "Delete user successfully",
   "Dob": "Date of birth",
   "Edit": "Edit",
+  "EditUser":"Edit user",
+  "EditSuccess":"Edit Successfully",
   "ErrorLoadingData": "Error loading data",
   "Filter": "Filter",
   "Next": "Next",
@@ -38,6 +40,7 @@
   "User": "User",
   "UserName": "Username",
   "UserProfile": "User Profile",
+  "Update":"Update",
   "Verified": "Verified",
   "ViewProfile": "View Profile"
 }
