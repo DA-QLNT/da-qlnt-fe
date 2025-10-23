@@ -46,6 +46,16 @@ export const roleApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Role"],
     }),
+
+    // role-permission
+    getRolePermissions: builder.query({
+      query: (roleId) => ({
+        url: `/roles/role-permissions/${roleId}`,
+        method: "GET",
+      }),
+      transformResponse: (response) => response.result,
+      providesTags: (result, error, id) => [{ type: "RolePermission", id }],
+    }),
   }),
 });
 export const {
@@ -54,4 +64,5 @@ export const {
   useAssignRoleMutation,
   useRemoveRoleMutation,
   useDeleteRoleMutation,
+  useGetRolePermissionsQuery,
 } = roleApi;

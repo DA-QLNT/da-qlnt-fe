@@ -18,13 +18,33 @@ export const permissionApi = baseApi.injectEndpoints({
       providesTags: ["Permission"],
     }),
     deletePermission: builder.mutation({
-      query:(permissionId)=>({
-        url:`/permissions/${permissionId}`,
-        method:'DELETE',
-      })
-      ,
+      query: (permissionId) => ({
+        url: `/permissions/${permissionId}`,
+        method: "DELETE",
+      }),
       invalidatesTags: ["Permission"],
-    })
+    }),
+    assignPermission: builder.mutation({
+      query: ({ roleId, permissionId }) => ({
+        url: `/permissions/assign?roleId=${roleId}&permissionId=${permissionId}`,
+        method: "POST",
+      }),
+      // Invalidates cache của Permission Matrix cho role đó
+      invalidatesTags: (result, error, { roleId }) => [
+        { type: "RolePermissions", id: roleId },
+      ],
+    }),
+    removePermission: builder.mutation({
+      query: ({ roleId, permissionId }) => ({
+        url: `/permissions/remove?roleId=${roleId}&permissionId=${permissionId}`,
+        method: "POST",
+      }),
+      // Invalidates cache của Permission Matrix cho role đó
+      invalidatesTags: (result, error, { roleId }) => [
+        { type: "RolePermissions", id: roleId },
+      ],
+    }),
   }),
 });
-export const { useGetPermissionsQuery, useDeletePermissionMutation } = permissionApi;
+export const { useGetPermissionsQuery, useDeletePermissionMutation, useAssignPermissionMutation, useRemovePermissionMutation} =
+  permissionApi;
