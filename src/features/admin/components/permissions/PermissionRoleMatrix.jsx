@@ -32,7 +32,7 @@ const ALL_PERMISSION_CODE = "ALL";
 function RolePermissionsFetcher({ roleId, onUpdate, skip }) {
   const query = useGetRolePermissionsQuery(roleId, {
     skip,
-    refetchOnMountOrArgChange: true,
+    // refetchOnMountOrArgChange: true,
   });
 
   useEffect(() => {
