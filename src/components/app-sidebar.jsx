@@ -6,6 +6,7 @@ import {
   IconInnerShadowTop,
   IconSettings,
   IconUsers,
+  IconKey,
   IconUserShield,
 } from "@tabler/icons-react";
 
@@ -49,6 +50,11 @@ const data = {
       title: "Roles",
       url: "/admin/roles",
       icon: IconUserShield,
+    },
+    {
+      title: "Permissions",
+      url: "/admin/permissions",
+      icon: IconKey,
     },
     {
       title: "Analytics",

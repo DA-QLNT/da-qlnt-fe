@@ -47,6 +47,6 @@ export const baseApi = createApi({
   baseQuery: axiosBaseQuery({
     baseUrl: BASE_URL,
   }),
-  tagTypes: ["User", "Role", "Room", "Contract"], // define tag chung
+  tagTypes: ["User", "Role","Permission" ,"Room", "Contract"], // define tag chung
   endpoints: () => ({}), // endpoint sẽ được tiêm vào từ feature
 });

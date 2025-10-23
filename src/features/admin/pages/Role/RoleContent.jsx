@@ -242,13 +242,13 @@ const RoleContent = () => {
           value="roleList"
           className={"flex flex-col md:flex-row gap-8"}
         >
-          <div className="mt-4 w-full flex flex-col md:flex-row gap-8">
+          <div className="mt-4 w-full flex flex-col lg:flex-row lg:justify-between gap-8">
             {isLoadingRoles && (
               <div className="absolute inset-0 z-10 flex items-center justify-center">
                 <Spinner className={"size-10"} />
               </div>
             )}
-            <div className={"order-1 md:w-3/5 lg:w-3/5"}>
+            <div className={"order-1 lg:w-3/5"}>
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -331,10 +331,10 @@ const RoleContent = () => {
                 </Pagination>
               )}
             </div>
-            <div className="order-0 md:order-2 text-end md:relative">
+            <div className="order-0 lg:order-2 text-end ">
               <Button
                 onClick={() => setIsAddDialogOpen(true)}
-                className={"md:absolute md:left-[0%] top-[20%]"}
+                
               >
                 <Plus className="mr-2 h-4 w-4" />
                 {t("AddNewRole")}
