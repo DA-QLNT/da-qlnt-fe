@@ -2,7 +2,7 @@ import { ChartAreaInteractive } from '@/components/chart-area-interactive'
 import { SectionCards } from '@/components/section-cards'
 import React from 'react'
 
-const DashboardContent = () => {
+const DashboardAdmin = () => {
   return (
     <>
       <SectionCards/>
@@ -13,4 +13,4 @@ const DashboardContent = () => {
   )
 }
 
-export default DashboardContent
+export default DashboardAdmin

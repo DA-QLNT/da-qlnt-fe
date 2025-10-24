@@ -14,21 +14,30 @@ export function NavMain({ items }) {
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
         <SidebarMenu>
-          {items.map((item) => (
-            <NavLink to={item.url} key={item.title} end={item.url === "/admin"}>
-              {({ isActive }) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    tooltip={t(`${item.title}`)}
-                    isActive={isActive}
-                  >
-                    {item.icon && <item.icon />}
-                    <span className="font-normal">{t(`${item.title}`)}</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              )}
-            </NavLink>
-          ))}
+          {items.map((item) => {
+            const isDashboardLink =
+              item.url === "/admin" || item.url === "/owner";
+
+            return (
+              <NavLink
+                to={item.url}
+                key={item.title}
+                end={ isDashboardLink}
+              >
+                {({ isActive }) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton
+                      tooltip={t(`${item.title}`)}
+                      isActive={isActive}
+                    >
+                      {item.icon && <item.icon />}
+                      <span className="font-normal">{t(`${item.title}`)}</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                )}
+              </NavLink>
+            );
+          })}
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>
