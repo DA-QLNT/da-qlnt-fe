@@ -12,17 +12,20 @@ import {
 import { useDeletePermissionMutation } from "../../store/permissionApi";
 import toast from "react-hot-toast";
 import { Spinner } from "@/components/ui/spinner";
+import { useTranslation } from "react-i18next";
 const PermissionDeleteConfirm = ({
   permissionId,
   permissionCode,
   open,
   onOpenChange,
 }) => {
+      const {t} = useTranslation('permissioncontent')
+  
   const [deletePermission, { isLoading }] = useDeletePermissionMutation();
   const handleDelete = async () => {
     try {
       await deletePermission(permissionId).unwrap();
-      toast.success("Delete success");
+      toast.success(t('DeleteSuccess'));
       onOpenChange(false);
     } catch (error) {
       console.error("error delete", error);
@@ -33,16 +36,16 @@ const PermissionDeleteConfirm = ({
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Confirm Delete {permissionCode}</AlertDialogTitle>
+          <AlertDialogTitle>{t('ConfirmDelete')} {permissionCode}</AlertDialogTitle>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isLoading}>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={isLoading}>{t('Cancel')}</AlertDialogCancel>
           <AlertDialogAction
             onClick={handleDelete}
             disabled={isLoading}
             className="bg-red-500 hover:bg-red-800"
           >
-            {isLoading ? <Spinner /> : "Delete"}
+            {isLoading ? <Spinner /> : t('Delete')}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

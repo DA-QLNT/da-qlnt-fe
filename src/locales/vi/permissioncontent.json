@@ -1,0 +1,23 @@
+{
+  "Action": "Hành động",
+  "AddPermission": "Thêm quyền",
+  "AssignToRole": "Gán cho Vai trò",
+  "Cancel": "Hủy",
+  "ConfirmDelete": "Xác nhận Xóa",
+  "Create": "Tạo",
+  "CreatePermission": "Tạo Quyền",
+  "CreateSuccess": "Tạo thành công",
+  "CreatedAt": "Ngày tạo",
+  "Delete": "Xóa",
+  "DeleteSuccess": "Xóa thành công",
+  "Description": "Mô tả",
+  "Edit": "Chỉnh sửa",
+  "No": "STT",
+  "NoPermission": "Không có Quyền",
+  "Permission": "Quyền",
+  "PermissionCode": "Mã Quyền",
+  "Save": "Lưu",
+  "Update": "Cập nhật",
+  "UpdatePermission": "Cập nhật Quyền",
+  "UpdateSuccess": "Cập nhật thành công"
+}

@@ -1,0 +1,24 @@
+{
+  "Action": "Action",
+  "AddPermission": "Add Permission",
+  "AssignToRole": "Assign To Role",
+  "Cancel": "Cancel",
+  "ConfirmDelete": "Confirm Delete",
+  "Create": "Create",
+  "CreatePermission": "Create Permission",
+  "CreateSuccess": "Create Success",
+  "CreatedAt": "CreatedAt",
+  "Delete": "Delete",
+  "DeleteSuccess": "Delete Success",
+  "Description": "Description",
+  "Edit": "Edit",
+
+  "No": "No",
+  "NoPermission": "No Permission",
+  "Permission": "Permission",
+  "PermissionCode": "Permission Code",
+  "Save": "Save",
+  "Update": "Update",
+  "UpdatePermission": "Update Permission",
+  "UpdateSuccess": "Update Success"
+}

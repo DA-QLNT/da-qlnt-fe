@@ -44,6 +44,14 @@ export const permissionApi = baseApi.injectEndpoints({
         { type: "RolePermissions", id: roleId },
       ],
     }),
+    createOrUpdatePermission: builder.mutation({
+      query: (permissionData) => ({
+        url: "/permissions/createOrUpdate",
+        method: "POST",
+        data: permissionData,
+      }),
+      invalidatesTags: ["Permission"],
+    }),
   }),
 });
 export const {
@@ -51,4 +59,5 @@ export const {
   useDeletePermissionMutation,
   useAssignPermissionMutation,
   useRemovePermissionMutation,
+  useCreateOrUpdatePermissionMutation,
 } = permissionApi;
