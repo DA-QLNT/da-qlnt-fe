@@ -30,9 +30,13 @@ import {
 } from "@/components/ui/pagination";
 import PermissionDeleteConfirm from "../../components/permissions/PermissionDeleteConfirm";
 import MatrixHooksWrapper from "../../components/permissions/MatrixHooksWrapper"; // 🚨 Đã sửa
+import PermissionAddOrCreateDialog from "../../components/permissions/PermissionAddOrCreateDialog";
+import { useTranslation } from "react-i18next";
 // ❌ Bỏ import PermissionRoleMatrix và Checkbox
 
 const PermissionContent = () => {
+      const {t} = useTranslation('permissioncontent')
+  
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
@@ -47,13 +51,21 @@ const PermissionContent = () => {
   });
   const rawPermissions = permissionData?.permissions || [];
   const totalElements = permissionData?.totalElements || 0;
-  const totalPages = permissionData?.totalPages || 0; // delete state
+  const totalPages = permissionData?.totalPages || 0;
 
+  // delete state
   const [deletePermissionDialog, setDeletePermissionDialog] = useState({
     open: false,
     permissionId: null,
     permissionCode: "",
-  }); // handle function====================
+  });
+  // create or update permission
+  const [createUpdateDialog, setCreateUpdateDialog] = useState({
+    open: false,
+    initialData: null,
+  });
+
+  // handle function====================
 
   const openDeletePermissionDialog = (permission) => {
     setDeletePermissionDialog({
@@ -61,7 +73,22 @@ const PermissionContent = () => {
       permissionId: permission.id,
       permissionCode: permission.code,
     });
-  }; // ==========logic========= // sort logic
+  };
+  // create or update
+  const openAddDialog = () => {
+    setCreateUpdateDialog({ open: true, initialData: null });
+  };
+
+  const openEditDialog = (permission) => {
+    setCreateUpdateDialog({ open: true, initialData: permission });
+  };
+  const closeCreateUpdateDialog = (open) => {
+    if (!open) {
+      setCreateUpdateDialog({ open: false, initialData: null });
+    }
+  };
+
+  // ==========logic========= // sort logic
 
   const sortedPermissions = useMemo(() => {
     return [...rawPermissions].sort((a, b) => {
@@ -87,10 +114,17 @@ const PermissionContent = () => {
         permissionId={deletePermissionDialog.permissionId}
         permissionCode={deletePermissionDialog.permissionCode}
       />
+      <PermissionAddOrCreateDialog
+        open={createUpdateDialog.open}
+        onOpenChange={closeCreateUpdateDialog}
+        initialData={createUpdateDialog.initialData}
+      />
       <Tabs defaultValue="permissionList" className={"w-full"}>
         <TabsList>
-          <TabsTrigger value="permissionList">Permissions</TabsTrigger>
-          <TabsTrigger value="assignPermissionToRole">AssignToRole</TabsTrigger>
+          <TabsTrigger value="permissionList">{t("Permission")}</TabsTrigger>
+          <TabsTrigger value="assignPermissionToRole">
+            {t("AssignToRole")}
+          </TabsTrigger>
         </TabsList>
         <TabsContent
           value="assignPermissionToRole"
@@ -111,11 +145,11 @@ const PermissionContent = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>No</TableHead>
-                      <TableHead>Permission</TableHead>
-                      <TableHead>Created</TableHead>
+                      <TableHead>{t("No")}</TableHead>
+                      <TableHead>{t("Permission")}</TableHead>
+                      <TableHead>{t("CreatedAt")}</TableHead>
                       <TableHead className="text-right w-[100px]">
-                        Actions
+                        {t("Action")}
                       </TableHead>
                     </TableRow>
                   </TableHeader>
@@ -144,11 +178,13 @@ const PermissionContent = () => {
                                 className={"text-red-500"}
                               >
                                 <Trash className="mr-2 h-4 w-4 text-red-500" />
-                                Delete
+                                {t("Delete")}
                               </DropdownMenuItem>
-                              <DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() => openEditDialog(permission)}
+                              >
                                 <SquarePen className="mr-2 h-4 w-4" />
-                                Edit
+                                {t("Edit")}
                               </DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
@@ -158,7 +194,7 @@ const PermissionContent = () => {
                     {sortedPermissions.length === 0 && !isLoading && (
                       <TableRow>
                         <TableCell colSpan={5} className="text-center">
-                          Chưa có Permission nào được tạo.
+                          {t("NoPermission")}
                         </TableCell>
                       </TableRow>
                     )}
@@ -197,9 +233,9 @@ const PermissionContent = () => {
               )}
             </div>
             <div className="order-0 lg:order-2 text-end">
-              <Button>
+              <Button onClick={openAddDialog}>
                 <Plus className="mr-2 h-4 w-4" />
-                Add Permission
+                {t("AddPermission")}
               </Button>
             </div>
           </div>

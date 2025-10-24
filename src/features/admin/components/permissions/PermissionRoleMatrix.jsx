@@ -20,7 +20,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Loader2 } from "lucide-react";
 // thêm hook lấy permissions theo role
 import { useGetRolePermissionsQuery } from "../../store/roleApi";
-import { Separator } from "@/components/ui/separator";
+import { useTranslation } from "react-i18next";
 
 const ADMIN_ROLE_NAME = "ADMIN";
 const ALL_PERMISSION_CODE = "ALL";
@@ -51,6 +51,8 @@ const PermissionRoleMatrix = ({
   loadingRoles,
   loadingPermissions,
 }) => {
+  const { t } = useTranslation("permissioncontent");
+
   // ====================== 2. MUTATIONS & STATES ======================
   const [assignPermission] = useAssignPermissionMutation();
   const [removePermission] = useRemovePermissionMutation();
@@ -166,7 +168,7 @@ const PermissionRoleMatrix = ({
 
     try {
       await Promise.all(promises);
-      toast.success("UpdateSuccess");
+      toast.success(t("UpdateSuccess"));
       setInitialMatrixState(matrixState);
       setHasChanges(false);
     } catch (error) {
@@ -211,7 +213,7 @@ const PermissionRoleMatrix = ({
             {isMutating ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : (
-              "Save"
+              t("Save")
             )}
           </Button>
           <Button
@@ -220,7 +222,7 @@ const PermissionRoleMatrix = ({
             title="Cancel"
             variant={"secondary"}
           >
-            Cancel
+            {t("Cancel")}
           </Button>
         </ButtonGroup>
       </div>
@@ -234,7 +236,7 @@ const PermissionRoleMatrix = ({
           <TableHeader>
             <TableRow>
               <TableHead className="sticky left-0 bg-secondary z-20 min-w-[150px]">
-                Permission
+                {t("Permission")}
               </TableHead>
               {/* <Separator orientation="vertical" /> */}
 
@@ -299,7 +301,7 @@ const PermissionRoleMatrix = ({
                   colSpan={allRoles.length + 1}
                   className="text-center"
                 >
-                  Không có Permission nào.
+                  {t("NoPermission")}
                 </TableCell>
               </TableRow>
             )}
