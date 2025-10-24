@@ -46,5 +46,9 @@ export const permissionApi = baseApi.injectEndpoints({
     }),
   }),
 });
-export const { useGetPermissionsQuery, useDeletePermissionMutation, useAssignPermissionMutation, useRemovePermissionMutation} =
-  permissionApi;
+export const {
+  useGetPermissionsQuery,
+  useDeletePermissionMutation,
+  useAssignPermissionMutation,
+  useRemovePermissionMutation,
+} = permissionApi;

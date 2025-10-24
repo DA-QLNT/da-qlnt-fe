@@ -14,7 +14,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { EllipsisVertical, Plus, Trash } from "lucide-react";
+import { EllipsisVertical, Plus, SquarePen, Trash } from "lucide-react";
 import React, { useMemo, useState } from "react";
 import PermissionBadge from "../../components/permissions/PermissionBadge";
 import { useGetPermissionsQuery } from "../../store/permissionApi";
@@ -79,7 +79,6 @@ const PermissionContent = () => {
 
   return (
     <div className="px-4 lg:px-6">
-      
       <PermissionDeleteConfirm
         open={deletePermissionDialog.open}
         onOpenChange={(open) =>
@@ -89,10 +88,8 @@ const PermissionContent = () => {
         permissionCode={deletePermissionDialog.permissionCode}
       />
       <Tabs defaultValue="permissionList" className={"w-full"}>
-        
         <TabsList>
-          
-          <TabsTrigger value="permissionList">Permissions</TabsTrigger>    
+          <TabsTrigger value="permissionList">Permissions</TabsTrigger>
           <TabsTrigger value="assignPermissionToRole">AssignToRole</TabsTrigger>
         </TabsList>
         <TabsContent
@@ -100,75 +97,58 @@ const PermissionContent = () => {
           className={"flex flex-col md:flex-row gap-8"}
         >
           {/* 🚨 SỬ DỤNG WRAPPER MỚI ĐÃ SỬA LỖI HOOK */}
-          <MatrixHooksWrapper />   
+          <MatrixHooksWrapper />
         </TabsContent>
         <TabsContent value="permissionList">
-          
           <div className="mt-4 w-full flex flex-col lg:flex-row lg:justify-between gap-8">
-            
             <div className={"order-1  lg:w-3/5"}>
-              
               <div className="relative">
-                
                 {isLoading && (
                   <div className="absolute inset-0 z-10 flex items-center justify-center">
                     <Spinner className={"size-10"} />
                   </div>
                 )}
                 <Table>
-                  
                   <TableHeader>
-                    
                     <TableRow>
                       <TableHead>No</TableHead>
                       <TableHead>Permission</TableHead>
                       <TableHead>Created</TableHead>
                       <TableHead className="text-right w-[100px]">
-                        Actions           
+                        Actions
                       </TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    
                     {sortedPermissions.map((permission, index) => (
                       <TableRow key={permission.id}>
-                        
+                        <TableCell>{page * pageSize + index + 1}</TableCell>
                         <TableCell>
-                          {page * pageSize + index + 1}
+                          <PermissionBadge permissionName={permission.code} />
                         </TableCell>
                         <TableCell>
-                          
-                          <PermissionBadge
-                            permissionName={permission.code}
-                          />
-                        </TableCell>
-                        <TableCell>
-                          
-                          {
-                            formatDateTime(permission.createdAt).formattedDate
-                          }
+                          {formatDateTime(permission.createdAt).formattedDate}
                         </TableCell>
                         <TableCell className="text-right w-[100px]">
-                          
                           <DropdownMenu>
-                            
                             <DropdownMenuTrigger asChild>
-                              
                               <Button variant="ghost" size="sm">
-                                
                                 <EllipsisVertical size={20} />
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="w-48">
-                              
                               <DropdownMenuItem
                                 onClick={() =>
                                   openDeletePermissionDialog(permission)
                                 }
+                                className={"text-red-500"}
                               >
-                                
-                                <Trash className="mr-2 h-4 w-4" />
+                                <Trash className="mr-2 h-4 w-4 text-red-500" />
                                 Delete
+                              </DropdownMenuItem>
+                              <DropdownMenuItem>
+                                <SquarePen className="mr-2 h-4 w-4" />
+                                Edit
                               </DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
@@ -177,10 +157,8 @@ const PermissionContent = () => {
                     ))}
                     {sortedPermissions.length === 0 && !isLoading && (
                       <TableRow>
-                        
                         <TableCell colSpan={5} className="text-center">
-                          Chưa có Permission nào được tạo.           
-                          
+                          Chưa có Permission nào được tạo.
                         </TableCell>
                       </TableRow>
                     )}
@@ -189,11 +167,8 @@ const PermissionContent = () => {
               </div>
               {totalPages > 1 && (
                 <Pagination className={"mt-4"}>
-                  
                   <PaginationContent>
-                    
                     <PaginationItem>
-                      
                       <PaginationPrevious
                         disabled={page === 0}
                         onClick={() => setPage((p) => Math.max(0, p - 1))}
@@ -201,7 +176,6 @@ const PermissionContent = () => {
                     </PaginationItem>
                     {[...Array(totalPages)].map((_, i) => (
                       <PaginationItem key={i}>
-                        
                         <PaginationLink
                           onClick={() => setPage(i)}
                           isActive={i === page}
@@ -211,7 +185,6 @@ const PermissionContent = () => {
                       </PaginationItem>
                     ))}
                     <PaginationItem>
-                      
                       <PaginationNext
                         disabled={page === totalPages - 1}
                         onClick={() =>
@@ -224,10 +197,9 @@ const PermissionContent = () => {
               )}
             </div>
             <div className="order-0 lg:order-2 text-end">
-              
-              <Button >
+              <Button>
                 <Plus className="mr-2 h-4 w-4" />
-                Add Permission 
+                Add Permission
               </Button>
             </div>
           </div>

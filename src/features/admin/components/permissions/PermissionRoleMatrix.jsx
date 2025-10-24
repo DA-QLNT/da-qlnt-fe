@@ -72,7 +72,7 @@ const PermissionRoleMatrix = ({
     });
   }, []);
 
-  // ====================== 3. ASYNC INITIAL STATE (useEffect) ======================
+  // ====================== 3. ASYNC INITIAL STATE  ======================
   useEffect(() => {
     const allQueriesFulfilled = allRoles.every((role) => {
       const q = rolePermissionsMap[role.id];
