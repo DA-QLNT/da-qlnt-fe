@@ -26,11 +26,11 @@ import {
 import { useAuth } from "@/features/auth";
 
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
+  // user: {
+  //   name: "shadcn",
+  //   email: "m@example.com",
+  //   avatar: "/avatars/shadcn.jpg",
+  // },
   navMainAdmin: [
     {
       title: "Dashboard",
@@ -97,7 +97,7 @@ const data = {
 export function AppSidebar({
   ...props
 }) {
-  const {isAdmin, isOwner, isUser} = useAuth()
+  const { isAdmin, isOwner, isUser, user } = useAuth();
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -121,7 +121,7 @@ export function AppSidebar({
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={user} />
       </SidebarFooter>
     </Sidebar>
   );

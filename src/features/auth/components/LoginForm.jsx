@@ -33,13 +33,13 @@ export default function LoginForm({ className, ...props }) {
   // const isAuthenticated = useSelector(selectIsAuthenticated);
   const [login, { isLoading }] = useLoginMutation();
 
-  const { isAuthenticated, isAdmin, isOwner, isUser, isGuest } = useAuth();
+  const { isAuthenticated, isAdmin, isOwner, isUser, isGuest, isLoadingMe } =
+    useAuth();
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && !isLoadingMe) {
       if (isAdmin) {
         navigate("/admin", { replace: true });
       } else if (isOwner) {
-        
         navigate("/owner", { replace: true });
       } else if (isUser) {
         navigate("/user", { replace: true });
@@ -47,7 +47,7 @@ export default function LoginForm({ className, ...props }) {
         navigate("/", { replace: true });
       }
     }
-  }, [isAuthenticated, isAdmin, isOwner, isUser, navigate]);
+  }, [isAuthenticated, isAdmin, isOwner, isUser, isLoadingMe, navigate]);
 
   const {
     register,
