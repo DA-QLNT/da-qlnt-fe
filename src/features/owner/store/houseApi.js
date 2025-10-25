@@ -20,6 +20,14 @@ export const houseApi = baseApi.injectEndpoints({
       },
       providesTags: ["House"],
     }),
+    createHouse:builder.mutation({
+      query:(houseData)=>({
+        url:"/houses",
+        method:"POST",
+        data:houseData
+      }),
+      invalidatesTags:["House"]
+    }),
     getRules: builder.query({
       query: (params) => ({
         url: "/rules",
@@ -46,4 +54,4 @@ export const houseApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useGetHousesByOwnerIdQuery, useGetRulesQuery, useCreateRuleMutation } = houseApi;
+export const { useGetHousesByOwnerIdQuery, useCreateHouseMutation, useGetRulesQuery, useCreateRuleMutation } = houseApi;

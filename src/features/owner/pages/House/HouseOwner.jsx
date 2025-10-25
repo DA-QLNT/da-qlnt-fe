@@ -1,33 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import HouseCard from "../../components/House/HouseCard";
 import { useAuth } from "@/features/auth";
 import { useGetHousesByOwnerIdQuery } from "../../store/houseApi";
 import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-// const houses = [
-//   {
-//     id: 3,
-//     name: "Nhà trọ Hoa Sen",
-//     code: "HN-003",
-//     province: "Hà Nội",
-//     district: "Cầu Giấy",
-//     area: 150.0,
-//     // ... các trường khác
-//   },
-//   {
-//     id: 4,
-//     name: "Chung cư mini Tùng",
-//     code: "HN-004",
-//     province: "Hà Nội",
-//     district: "Đống Đa",
-//     area: 80.0,
-//   },
-//   // ... thêm nhiều nhà trọ khác
-// ];
+import HouseAddDialog from "../../components/House/HouseAddDialog";
+
 const HouseOwner = () => {
   const { ownerId, isLoadingMe } = useAuth();
   console.log(ownerId);
+  // add house
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   
   const { data, isLoading, isFetching, isError } = useGetHousesByOwnerIdQuery(
     {
@@ -64,9 +48,10 @@ const HouseOwner = () => {
           Anh chưa có nhà trọ nào được đăng ký.
         </div>
       )}
+      <HouseAddDialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}/>
       <div className="flex flex-col gap-8">
         <div className="text-end">
-            <Button><Plus/>Add House</Button>
+            <Button onClick={()=>setIsAddDialogOpen(true)}><Plus/>Add House</Button>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {houses.map((house) => (
