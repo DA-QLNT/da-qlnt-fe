@@ -22,9 +22,10 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { EllipsisIcon, EllipsisVertical, Plus, Trash } from "lucide-react";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useGetRulesQuery } from "../../store/houseApi";
 import { Spinner } from "@/components/ui/spinner";
+import RuleAddDialog from "../../components/Rule/RuleAddDialog";
 
 const RuleOwner = () => {
   const [page, setPage] = useState(0);
@@ -33,9 +34,17 @@ const RuleOwner = () => {
     page: page,
     size: pageSize,
   });
-  const rules = data?.rules || [];
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const rawRules = data?.rules || [];
   const totalElements = data?.totalElements || 0;
   const totalPages = data?.totalPages || 0;
+  const sortedRules = useMemo(() => {
+    return [...rawRules].sort((a, b) => {
+      const nameA = a.name;
+      const nameB = b.name;
+      return nameA.localeCompare(nameB, "vi", { sensitivity: "base" });
+    });
+  }, [rawRules]);
   if (isError) {
     return (
       <div className="p-6 text-center text-red-500">
@@ -45,14 +54,19 @@ const RuleOwner = () => {
   }
   return (
     <div className="px-4 lg:px-6">
+      <RuleAddDialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen} />
       {(isLoading || isFetching) && (
         <div className="text-center p-8">
           <Spinner className={"size-10"} />
         </div>
       )}
       <div className="flex flex-col gap-8">
-        <div className="text-end">
-          <Button>
+        <div className="text-end ">
+          <Button
+            onClick={() => {
+              setIsAddDialogOpen(true);
+            }}
+          >
             <Plus />
             Add Rule
           </Button>
@@ -69,7 +83,7 @@ const RuleOwner = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {rules.length === 0 && !isLoading ? (
+              {sortedRules.length === 0 && !isLoading ? (
                 <TableRow>
                   <TableCell
                     colSpan={3}
@@ -79,7 +93,7 @@ const RuleOwner = () => {
                   </TableCell>
                 </TableRow>
               ) : (
-                rules.map((rule, index) => (
+                sortedRules.map((rule, index) => (
                   <TableRow key={rule.id}>
                     <TableCell>{page * pageSize + index + 1}</TableCell>
                     <TableCell>
@@ -127,14 +141,14 @@ const RuleOwner = () => {
                   onClick={() => setPage((p) => Math.max(0, p - 1))}
                 />
               </PaginationItem>
-              {[...Array(totalPages)].map((_, i)=>(
+              {[...Array(totalPages)].map((_, i) => (
                 <PaginationItem key={i}>
-                    <PaginationLink
-                        onClick={() => setPage(i)}
-                        isActive={i===page}
-                    >
-                        {i + 1}
-                    </PaginationLink>
+                  <PaginationLink
+                    onClick={() => setPage(i)}
+                    isActive={i === page}
+                  >
+                    {i + 1}
+                  </PaginationLink>
                 </PaginationItem>
               ))}
               <PaginationItem>

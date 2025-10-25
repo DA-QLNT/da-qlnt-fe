@@ -21,21 +21,29 @@ export const houseApi = baseApi.injectEndpoints({
       providesTags: ["House"],
     }),
     getRules: builder.query({
-      query:(params)=>({
-        url:'/rules',
-        method:'GET',
-        params:params
+      query: (params) => ({
+        url: "/rules",
+        method: "GET",
+        params: params,
       }),
-      transformResponse:(response)=>{
+      transformResponse: (response) => {
         return {
           rules: response.result.content,
           totalElements: response.result.totalElements,
           totalPages: response.result.totalPages,
-        }
+        };
       },
-      providesTags: ["Rule"]
-    })
+      providesTags: ["Rule"],
+    }),
+    createRule: builder.mutation({
+      query: (ruleData) => ({
+        url: "/rules",
+        method: "POST",
+        data: ruleData,
+      }),
+      invalidatesTags: ["Rule"],
+    }),
   }),
 });
 
-export const { useGetHousesByOwnerIdQuery,useGetRulesQuery } = houseApi;
+export const { useGetHousesByOwnerIdQuery, useGetRulesQuery, useCreateRuleMutation } = houseApi;
