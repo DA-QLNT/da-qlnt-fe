@@ -19,6 +19,7 @@ export const authApi = baseApi.injectEndpoints({
           console.log("login failed:", error);
         }
       },
+      invalidatesTags:['UserDetail']
     }),
     getMe: builder.query({
       query:()=>({

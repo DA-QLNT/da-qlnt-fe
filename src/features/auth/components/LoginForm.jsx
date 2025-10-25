@@ -35,6 +35,7 @@ export default function LoginForm({ className, ...props }) {
 
   const { isAuthenticated, isAdmin, isOwner, isUser, isGuest, isLoadingMe } =
     useAuth();
+    
   useEffect(() => {
     if (isAuthenticated && !isLoadingMe) {
       if (isAdmin) {

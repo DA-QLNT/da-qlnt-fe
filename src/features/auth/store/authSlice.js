@@ -7,6 +7,8 @@ const decodeToken = (token) => {
   if (!token) return null;
   try {
     const decoded = jwtDecode(token);
+    console.log('decoded token', decoded);
+    
     console.log(decoded);
     
     const roles = decoded.scope?.roles || [];
