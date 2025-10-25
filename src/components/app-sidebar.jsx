@@ -8,6 +8,7 @@ import {
   IconUsers,
   IconKey,
   IconUserShield,
+  IconBrandAsana,
 } from "@tabler/icons-react";
 
 
@@ -78,6 +79,11 @@ const data = {
       title: "Users",
       url: "/owner/users",
       icon: IconUsers,
+    },
+    {
+      title: "Rules",
+      url: "/owner/rules",
+      icon: IconBrandAsana,
     },
     {
       title: "Analytics",

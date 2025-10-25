@@ -1,5 +1,5 @@
 import React from "react";
-import HouseCard from "../../components/HouseCard";
+import HouseCard from "../../components/House/HouseCard";
 import { useAuth } from "@/features/auth";
 import { useGetHousesByOwnerIdQuery } from "../../store/houseApi";
 import { Spinner } from "@/components/ui/spinner";

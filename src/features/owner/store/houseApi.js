@@ -20,7 +20,22 @@ export const houseApi = baseApi.injectEndpoints({
       },
       providesTags: ["House"],
     }),
+    getRules: builder.query({
+      query:(params)=>({
+        url:'/rules',
+        method:'GET',
+        params:params
+      }),
+      transformResponse:(response)=>{
+        return {
+          rules: response.result.content,
+          totalElements: response.result.totalElements,
+          totalPages: response.result.totalPages,
+        }
+      },
+      providesTags: ["Rule"]
+    })
   }),
 });
 
-export const { useGetHousesByOwnerIdQuery } = houseApi;
+export const { useGetHousesByOwnerIdQuery,useGetRulesQuery } = houseApi;

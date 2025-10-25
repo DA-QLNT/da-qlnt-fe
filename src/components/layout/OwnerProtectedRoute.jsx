@@ -2,10 +2,14 @@ import { useAuth } from "@/features/auth";
 import React from "react";
 import toast from "react-hot-toast";
 import { Navigate, Outlet } from "react-router-dom";
+import { Spinner } from "../ui/spinner";
 
 const OwnerProtectedRoute = () => {
-  const { isAuthenticated, isOwner } = useAuth();
-  if (!isAuthenticated) {
+  const { isAuthenticated, isOwner, isLoadingMe } = useAuth();
+  if(isAuthenticated && isLoadingMe){
+    return <Spinner className="size-10"/>
+  }
+  if (!isAuthenticated ) {
     toast.error("Require Login");
     return <Navigate to="/auth/login" replace />;
   }
