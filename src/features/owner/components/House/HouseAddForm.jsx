@@ -6,22 +6,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import React, { useEffect, useMemo, useState } from "react";
-import { cn } from "@/lib/utils";
-import { Check, ChevronsUpDown, X } from "lucide-react";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "@/components/ui/command";
-import { Badge } from "@/components/ui/badge";
+import React, { useEffect, useMemo } from "react";
 import { useAuth } from "@/features/auth";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -34,20 +19,21 @@ import toast from "react-hot-toast";
 import HouseRuleSelectGroup from "./HouseRuleSelectGroup";
 import { Spinner } from "@/components/ui/spinner";
 import { useCreateHouseMutation } from "../../store/houseApi";
-
-const defaultValues = {
-  name: "",
-  province: "",
-  district: "",
-  address: "",
-  area: "",
-  ruleIds: [],
-};
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const HouseAddForm = ({ onFormSubmitSuccess }) => {
   const { ownerId } = useAuth();
-  //create
+
+  // Create mutation
   const [createHouse, { isLoading: isMutating }] = useCreateHouseMutation();
+
   const {
     register,
     handleSubmit,
@@ -67,25 +53,32 @@ const HouseAddForm = ({ onFormSubmitSuccess }) => {
       ruleIds: [],
     },
   });
+
   const selectedProvinceName = watch("province");
-  
+
+  // Get provinces
   const { data: provinceData, isLoading: loadingProvinces } =
-  useGetProvincesQuery();
+    useGetProvincesQuery();
   const provinces = provinceData || [];
+
+  // Get current province
   const currentProvince = useMemo(() => {
     return provinces.find((p) => p.name === selectedProvinceName);
   }, [provinces, selectedProvinceName]);
+
+  // Get districts
   const { data: districtData, isLoading: loadingDistricts } =
     useGetDistrictsByProvinceCodeQuery(currentProvince?.code, {
       skip: !currentProvince?.code,
     });
   const districts = districtData || [];
 
-  // reset district when province change
+  // Reset district when province changes
   useEffect(() => {
     setValue("district", "");
   }, [currentProvince?.code, setValue]);
-  // =======handle==
+
+  // Handle form submit
   const onSubmit = async (data) => {
     const payload = {
       ...data,
@@ -103,67 +96,8 @@ const HouseAddForm = ({ onFormSubmitSuccess }) => {
       console.error(error);
     }
   };
-  const isDisabled = isMutating || loadingProvinces || loadingDistricts;
 
-  // render option address
-  const renderAddressCombobox = (
-    options,
-    placeholder,
-    currentValue,
-    onChange,
-    name
-  ) => {
-    const [open, setOpen] = useState(false);
-    // const displayValue = options.find((option) => option.code === value)?.name;
-    const displayValue = currentValue;
-    return (
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            variant={"secondary"}
-            role="combobox"
-            className={cn("w-full justify-between", isDisabled && "opacity-70")}
-            disabled={isDisabled}
-          >
-            {displayValue || placeholder}
-            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className={"p-0 w-full"} align="start">
-          <Command>
-            <CommandInput placeholder="Search" />
-            <CommandEmpty>
-              {options.length === 0 ? "No data" : "No results"}
-            </CommandEmpty>
-            <div className="max-h-[300px] overflow-y-auto">
-              <CommandGroup>
-                {options.map((option) => (
-                  <CommandItem
-                    key={option.code}
-                    value={option.name}
-                    onSelect={() => {
-                      onChange(option.name);
-                      setOpen(false);
-                    }}
-                  >
-                    <Check
-                      className={cn(
-                        "mr-2 h-4 w-4",
-                        currentValue === option.name
-                          ? "opacity-100"
-                          : "opacity-0"
-                      )}
-                    />{" "}
-                    {option.name}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </div>
-          </Command>
-        </PopoverContent>
-      </Popover>
-    );
-  };
+  const isDisabled = isMutating || loadingProvinces || loadingDistricts;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -180,7 +114,7 @@ const HouseAddForm = ({ onFormSubmitSuccess }) => {
             <FieldError>{errors.name?.message}</FieldError>
           </Field>
           <Field className={"md:col-span-1"}>
-            <FieldLabel htmlFor="name">Area (m2)</FieldLabel>
+            <FieldLabel htmlFor="area">Area (m2)</FieldLabel>
             <Input
               id="area"
               type="number"
@@ -191,49 +125,93 @@ const HouseAddForm = ({ onFormSubmitSuccess }) => {
             <FieldError>{errors.area?.message}</FieldError>
           </Field>
         </div>
+
         <Field>
-          <FieldLabel>Adress</FieldLabel>
+          <FieldLabel>Address</FieldLabel>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {/* Province Select */}
             <div className="flex flex-col gap-2">
-              <span>Province</span>
+              <span className="text-sm">Province</span>
               <Controller
                 name="province"
                 control={control}
-                render={({ field }) =>
-                  renderAddressCombobox(
-                    provinces,
-                    "Select province",
-                    field.value,
-                    (name) => {
-                      field.onChange(name);
+                render={({ field }) => (
+                  <Select
+                    value={field.value}
+                    onValueChange={(value) => {
+                      field.onChange(value);
                       setValue("district", "");
-                    },
-                    "province"
-                  )
-                }
+                    }}
+                    disabled={isDisabled || loadingProvinces}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select province" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <ScrollArea className="h-60">
+                        {provinces.map((province) => (
+                          <SelectItem key={province.code} value={province.name}>
+                            {province.name}
+                          </SelectItem>
+                        ))}
+                      </ScrollArea>
+                    </SelectContent>
+                  </Select>
+                )}
               />
               <FieldError>{errors.province?.message}</FieldError>
             </div>
-            <div className="flex flex-col gap-2">
-              <span>District</span>
 
+            {/* District Select */}
+            <div className="flex flex-col gap-2">
+              <span className="text-sm">District</span>
               <Controller
                 name="district"
                 control={control}
-                render={({ field }) =>
-                  renderAddressCombobox(
-                    districts,
-                    currentProvince
-                      ? "Select District"
-                      : "Province first",
-                    field.value,
-                    field.onChange,
-                    "district"
-                  )
-                }
+                render={({ field }) => (
+                  <Select
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    disabled={
+                      isDisabled || !currentProvince || loadingDistricts
+                    }
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue
+                        placeholder={
+                          currentProvince
+                            ? loadingDistricts
+                              ? "Loading..."
+                              : "Select district"
+                            : "Province first"
+                        }
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <ScrollArea className="h-60">
+                        {districts.length === 0 ? (
+                          <div className="py-6 text-center text-sm text-muted-foreground">
+                            No districts available
+                          </div>
+                        ) : (
+                          districts.map((district) => (
+                            <SelectItem
+                              key={district.code}
+                              value={district.name}
+                            >
+                              {district.name}
+                            </SelectItem>
+                          ))
+                        )}
+                      </ScrollArea>
+                    </SelectContent>
+                  </Select>
+                )}
               />
               <FieldError>{errors.district?.message}</FieldError>
             </div>
+
+            {/* Address Input */}
             <Field className={"col-span-full md:col-span-2"}>
               <FieldLabel htmlFor="address">Address</FieldLabel>
               <Input
@@ -246,11 +224,13 @@ const HouseAddForm = ({ onFormSubmitSuccess }) => {
             </Field>
           </div>
         </Field>
+
+        {/* House Rules */}
         <Field>
           <Controller
             name="ruleIds"
             control={control}
-            render={({ field, fieldState }) => (
+            render={({ field }) => (
               <HouseRuleSelectGroup
                 field={field}
                 error={errors.ruleIds?.message}
@@ -259,9 +239,16 @@ const HouseAddForm = ({ onFormSubmitSuccess }) => {
           />
         </Field>
       </FieldGroup>
-      <Button type="submit" disabled={isDisabled} className={"w-full"}>
-        {isMutating ? <Spinner /> : "Create"}
-      </Button>
+
+      <div className="flex justify-center">
+        <Button
+          type="submit"
+          disabled={isDisabled}
+          className={"w-full md:w-1/2"}
+        >
+          {isMutating ? <Spinner /> : "Create"}
+        </Button>
+      </div>
     </form>
   );
 };

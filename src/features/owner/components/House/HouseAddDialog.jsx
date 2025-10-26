@@ -13,7 +13,7 @@ const HouseAddDialog = ({ open, onOpenChange }) => {
   };
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-2xl md:max-w-3xl">
+      <DialogContent className="sm:max-w-2xl md:max-w-4xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             Add new house
