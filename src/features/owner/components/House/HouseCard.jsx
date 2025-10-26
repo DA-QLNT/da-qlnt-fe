@@ -41,7 +41,7 @@ const HouseCard = ({ house }) => {
         <div className="flex gap-x-2 text-primary transition-all duration-200 ease-in-out relative top-12 group-hover:top-0">
           <MapPin />
           <p>
-            {house.district} {house.province}
+            {house.district} - {house.province}
           </p>
         </div>
       </CardContent>

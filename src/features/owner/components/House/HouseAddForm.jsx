@@ -11,7 +11,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Check, ChevronsUpDown, X } from "lucide-react";
 import {
@@ -67,21 +67,24 @@ const HouseAddForm = ({ onFormSubmitSuccess }) => {
       ruleIds: [],
     },
   });
-  const selectedProvinceCode = watch("province");
-
+  const selectedProvinceName = watch("province");
+  
   const { data: provinceData, isLoading: loadingProvinces } =
-    useGetProvincesQuery();
+  useGetProvincesQuery();
   const provinces = provinceData || [];
+  const currentProvince = useMemo(() => {
+    return provinces.find((p) => p.name === selectedProvinceName);
+  }, [provinces, selectedProvinceName]);
   const { data: districtData, isLoading: loadingDistricts } =
-    useGetDistrictsByProvinceCodeQuery(selectedProvinceCode, {
-      skip: !selectedProvinceCode,
+    useGetDistrictsByProvinceCodeQuery(currentProvince?.code, {
+      skip: !currentProvince?.code,
     });
   const districts = districtData || [];
 
   // reset district when province change
   useEffect(() => {
     setValue("district", "");
-  }, [selectedProvinceCode, setValue]);
+  }, [currentProvince?.code, setValue]);
   // =======handle==
   const onSubmit = async (data) => {
     const payload = {
@@ -103,9 +106,16 @@ const HouseAddForm = ({ onFormSubmitSuccess }) => {
   const isDisabled = isMutating || loadingProvinces || loadingDistricts;
 
   // render option address
-  const renderAddressCombobox = (options, placeholder, value, onChange, name) => {
+  const renderAddressCombobox = (
+    options,
+    placeholder,
+    currentValue,
+    onChange,
+    name
+  ) => {
     const [open, setOpen] = useState(false);
-    const displayValue = options.find((option) => option.code === value)?.name;
+    // const displayValue = options.find((option) => option.code === value)?.name;
+    const displayValue = currentValue;
     return (
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
@@ -119,37 +129,41 @@ const HouseAddForm = ({ onFormSubmitSuccess }) => {
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className={"p-0"}>
+        <PopoverContent className={"p-0 w-full"} align="start">
           <Command>
             <CommandInput placeholder="Search" />
             <CommandEmpty>
               {options.length === 0 ? "No data" : "No results"}
             </CommandEmpty>
-            <CommandGroup>
-              {options.map((option) => (
-                <CommandItem
-                  key={option.code}
-                  value={option.name}
-                  onSelect={() => {
-                    onChange(option.code);
-                    setOpen(false);
-                  }}
-                >
-                  <Check
-                    className={cn(
-                      "mr-2 h-4 w-4",
-                      value === option.code ? "opacity-100" : "opacity-0"
-                    )}
-                  />{" "}
-                  {option.name}
-                </CommandItem>
-              ))}
-            </CommandGroup>
+            <div className="max-h-[300px] overflow-y-auto">
+              <CommandGroup>
+                {options.map((option) => (
+                  <CommandItem
+                    key={option.code}
+                    value={option.name}
+                    onSelect={() => {
+                      onChange(option.name);
+                      setOpen(false);
+                    }}
+                  >
+                    <Check
+                      className={cn(
+                        "mr-2 h-4 w-4",
+                        currentValue === option.name
+                          ? "opacity-100"
+                          : "opacity-0"
+                      )}
+                    />{" "}
+                    {option.name}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </div>
           </Command>
         </PopoverContent>
       </Popover>
     );
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -186,10 +200,16 @@ const HouseAddForm = ({ onFormSubmitSuccess }) => {
                 name="province"
                 control={control}
                 render={({ field }) =>
-                  renderAddressCombobox(provinces, "Select province", field.value, (code)=>{
-                    field.onChange(code);
-                    setValue("district", "");
-                  }, "province")
+                  renderAddressCombobox(
+                    provinces,
+                    "Select province",
+                    field.value,
+                    (name) => {
+                      field.onChange(name);
+                      setValue("district", "");
+                    },
+                    "province"
+                  )
                 }
               />
               <FieldError>{errors.province?.message}</FieldError>
@@ -203,11 +223,12 @@ const HouseAddForm = ({ onFormSubmitSuccess }) => {
                 render={({ field }) =>
                   renderAddressCombobox(
                     districts,
-                    selectedProvinceCode
+                    currentProvince
                       ? "Select District"
-                      : "Select Province first",
+                      : "Province first",
                     field.value,
-                    field.onChange, 'district'
+                    field.onChange,
+                    "district"
                   )
                 }
               />
