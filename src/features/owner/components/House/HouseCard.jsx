@@ -52,7 +52,7 @@ const HouseCard = ({ house }) => {
           }
           asChild
         >
-          <NavLink className={"flex items-center gap-2"}>
+          <NavLink to={`/owner/houses/${house.id}`} className={"flex items-center gap-2"}>
             <Eye /> View
           </NavLink>
         </Button>

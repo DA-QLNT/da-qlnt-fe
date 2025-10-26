@@ -21,6 +21,7 @@ import HouseOwner from "./features/owner/pages/House/HouseOwner";
 import UserOwner from "./features/owner/pages/User/UserOwner";
 import AnalyticOwner from "./features/owner/pages/Analytic/AnalyticOwner";
 import RuleOwner from "./features/owner/pages/Rule/RuleOwner";
+import HouseDetailOwner from "./features/owner/pages/House/HouseDetailOwner";
 function App() {
   return (
     <div className="min-h-screen flex flex-col">
@@ -54,15 +55,15 @@ function App() {
           <Route element={<OwnerProtectedRoute />}>
             <Route path="/owner" element={<OwnerLayout />}>
               <Route index element={<DashboardOwner />} />
-              <Route path="houses" element={<HouseOwner />}
-              />
+              {/* house */}
+              <Route path="houses" element={<HouseOwner />} />
+              <Route path="houses/:houseId" element={<HouseDetailOwner/>}/>
+              {/* house */}
               <Route path="users" element={<UserOwner />} />
               <Route path="rules" element={<RuleOwner />} />
-              <Route path="analytics" element={<AnalyticOwner/>} />
-    
+              <Route path="analytics" element={<AnalyticOwner />} />
             </Route>
           </Route>
-          
 
           <Route path="*" element={<NotFound />} />
         </Routes>
