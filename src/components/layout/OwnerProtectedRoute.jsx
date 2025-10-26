@@ -4,20 +4,20 @@ import toast from "react-hot-toast";
 import { Navigate, Outlet } from "react-router-dom";
 import { Spinner } from "../ui/spinner";
 
-const AdminProtectedRoute = () => {
-  const { isAuthenticated, isAdmin, isLoadingMe } = useAuth();
-  if (isAuthenticated && isLoadingMe) {
-    return <Spinner className="size-10" />;
+const OwnerProtectedRoute = () => {
+  const { isAuthenticated, isOwner, isLoadingMe } = useAuth();
+  if(isAuthenticated && isLoadingMe){
+    return <Spinner className="size-10"/>
   }
-  if (!isAuthenticated) {
+  if (!isAuthenticated ) {
     toast.error("Require Login");
     return <Navigate to="/auth/login" replace />;
   }
-  if (!isAdmin) {
-    toast.error("Require Admin Role");
+  if (!isOwner) {
+    toast.error("Require Owner Role");
     return <Navigate to="/" replace />;
   }
   return <Outlet />;
 };
 
-export default AdminProtectedRoute;
+export default OwnerProtectedRoute;

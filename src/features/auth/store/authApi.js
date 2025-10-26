@@ -19,7 +19,16 @@ export const authApi = baseApi.injectEndpoints({
           console.log("login failed:", error);
         }
       },
+      invalidatesTags:['UserDetail']
     }),
+    getMe: builder.query({
+      query:()=>({
+        url:'/users/me',
+        method:'GET'
+      }),
+      transformResponse:(response)=>response.result,
+      providesTags:['UserDetail']
+    })
   }),
 });
-export const { useLoginMutation } = authApi;
+export const { useLoginMutation, useGetMeQuery } = authApi;

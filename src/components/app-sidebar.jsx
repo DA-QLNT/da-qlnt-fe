@@ -8,6 +8,7 @@ import {
   IconUsers,
   IconKey,
   IconUserShield,
+  IconBrandAsana,
 } from "@tabler/icons-react";
 
 
@@ -23,14 +24,15 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { useAuth } from "@/features/auth";
 
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  navMain: [
+  // user: {
+  //   name: "shadcn",
+  //   email: "m@example.com",
+  //   avatar: "/avatars/shadcn.jpg",
+  // },
+  navMainAdmin: [
     {
       title: "Dashboard",
       url: "/admin",
@@ -62,6 +64,33 @@ const data = {
       icon: IconChartBar,
     },
   ],
+  navMainOwner: [
+    {
+      title: "Dashboard",
+      url: "/owner",
+      icon: IconDashboard,
+    },
+    {
+      title: "Houses",
+      url: "/owner/houses",
+      icon: IconHome,
+    },
+    {
+      title: "Users",
+      url: "/owner/users",
+      icon: IconUsers,
+    },
+    {
+      title: "Rules",
+      url: "/owner/rules",
+      icon: IconBrandAsana,
+    },
+    {
+      title: "Analytics",
+      url: "/owner/analytics",
+      icon: IconChartBar,
+    },
+  ],
   navSecondary: [
     {
       title: "Settings",
@@ -74,6 +103,7 @@ const data = {
 export function AppSidebar({
   ...props
 }) {
+  const { isAdmin, isOwner, isUser, user } = useAuth();
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -89,12 +119,15 @@ export function AppSidebar({
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        {isAdmin && <NavMain items={data.navMainAdmin} />}
+        {isOwner && <NavMain items={data.navMainOwner} />}
+
+        {/* <NavMain items={data.navMain} /> */}
         {/* <NavDocuments items={data.documents} /> */}
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={user} />
       </SidebarFooter>
     </Sidebar>
   );

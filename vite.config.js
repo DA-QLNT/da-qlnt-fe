@@ -11,4 +11,15 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  server: {
+    proxy: {
+      // 🚨 Khi frontend gọi '/address-api/', Vite sẽ chuyển hướng request này đến API thật
+      "/address-api": {
+        target: "https://production.cas.so/address-kit",
+        changeOrigin: true,
+        secure: true,
+        rewrite: (path) => path.replace(/^\/address-api/, ""), // Xóa '/address-api' khỏi URL gửi đi
+      },
+    },
+  },
 });

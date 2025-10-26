@@ -35,7 +35,7 @@ const axiosBaseQuery =
       let err = axiosError;
       return {
         error: {
-          status: err.reponse?.status,
+          status: err.response?.status,
           data: err.response?.data || err.message,
         },
       };
@@ -47,6 +47,6 @@ export const baseApi = createApi({
   baseQuery: axiosBaseQuery({
     baseUrl: BASE_URL,
   }),
-  tagTypes: ["User", "Role","Permission" ,"Room", "Contract"], // define tag chung
+  tagTypes: ["User", "Role","Permission","House" ,"Room", "Rule"], // define tag chung
   endpoints: () => ({}), // endpoint sẽ được tiêm vào từ feature
 });
