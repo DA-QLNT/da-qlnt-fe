@@ -36,12 +36,26 @@ export const houseApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["House"],
     }),
-    deleteHouse: builder.mutation({
-      query:(houseId)=>({
-        url:`/houses/${houseId}`,
-        method:'DELETE',
+    updateHouse: builder.mutation({
+      query: ({ houseId, ...houseData }) => ({
+        url: `/houses/${houseId}`,
+        method: "PUT",
+        data: houseData,
       }),
-      invalidatesTags:(results, error, houseId)=>['House', {type:'House', id:houseId}]
+      invalidatesTags: (results, error, { houseId }) => [
+        "House",
+        { type: "House", id: houseId },
+      ],
+    }),
+    deleteHouse: builder.mutation({
+      query: (houseId) => ({
+        url: `/houses/${houseId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (results, error, houseId) => [
+        "House",
+        { type: "House", id: houseId },
+      ],
     }),
     // rules=====================
     getRules: builder.query({
@@ -77,4 +91,5 @@ export const {
   useCreateRuleMutation,
   useGetHouseByIdQuery,
   useDeleteHouseMutation,
+  useUpdateHouseMutation,
 } = houseApi;

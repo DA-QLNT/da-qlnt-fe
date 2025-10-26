@@ -5,7 +5,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import React from "react";
-import HouseAddForm from "./HouseAddForm";
+import HouseForm from "./HouseForm";
 
 const HouseAddDialog = ({ open, onOpenChange }) => {
   const handleSuccess = () => {
@@ -19,7 +19,7 @@ const HouseAddDialog = ({ open, onOpenChange }) => {
             Add new house
           </DialogTitle>
         </DialogHeader>
-        <HouseAddForm onFormSubmitSuccess={handleSuccess} />
+        <HouseForm mode="add" onFormSubmitSuccess={handleSuccess} />
       </DialogContent>
     </Dialog>
   );

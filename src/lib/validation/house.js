@@ -7,3 +7,12 @@ export const HouseAddSchema = z.object({
   area: z.number().optional().or(z.literal("")),
   ruleIds: z.array(z.number()).optional(),
 });
+
+export const HouseEditSchema = z.object({
+  id: z.number(),
+  province: z.string().min(1, "Province is required"),
+  district: z.string().min(1, "District is required"),
+  address: z.string().min(3, "Address must be at least 3 characters long"),
+  area: z.number().optional().or(z.literal("")),
+  ruleIds: z.array(z.number()).optional(),
+});

@@ -6,7 +6,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { useAuth } from "@/features/auth";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,7 +18,10 @@ import {
 import toast from "react-hot-toast";
 import HouseRuleSelectGroup from "./HouseRuleSelectGroup";
 import { Spinner } from "@/components/ui/spinner";
-import { useCreateHouseMutation } from "../../store/houseApi";
+import {
+  useCreateHouseMutation,
+  useUpdateHouseMutation,
+} from "../../store/houseApi";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Select,
@@ -28,11 +31,34 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const HouseAddForm = ({ onFormSubmitSuccess }) => {
+const HouseForm = ({
+  initialData = null,
+  mode = "add",
+  onFormSubmitSuccess,
+}) => {
   const { ownerId } = useAuth();
+  const isEditMode = mode === "edit";
+  const schema = !isEditMode ? HouseAddSchema : HouseAddSchema;
 
   // Create mutation
-  const [createHouse, { isLoading: isMutating }] = useCreateHouseMutation();
+  const [createHouse, { isLoading: isCreating }] = useCreateHouseMutation();
+  // Update mutation
+  const [updateHouse, { isLoading: isUpdating }] = useUpdateHouseMutation();
+  const isMutating = isCreating || isUpdating;
+
+  const defaultValues = useMemo(
+    () => ({
+      id: initialData?.id || undefined,
+      ownerId: initialData?.ownerId || ownerId,
+      name: initialData?.name || "",
+      province: initialData?.province || "",
+      district: initialData?.district || "",
+      address: initialData?.address || "",
+      area: initialData?.area || "",
+      ruleIds: initialData?.rules?.map((rule) => rule.id) || [],
+    }),
+    [initialData, ownerId]
+  );
 
   const {
     register,
@@ -43,15 +69,8 @@ const HouseAddForm = ({ onFormSubmitSuccess }) => {
     formState: { errors },
     reset,
   } = useForm({
-    resolver: zodResolver(HouseAddSchema),
-    defaultValues: {
-      name: "",
-      province: "",
-      district: "",
-      address: "",
-      area: "",
-      ruleIds: [],
-    },
+    resolver: zodResolver(schema),
+    defaultValues: defaultValues,
   });
 
   const selectedProvinceName = watch("province");
@@ -73,26 +92,50 @@ const HouseAddForm = ({ onFormSubmitSuccess }) => {
     });
   const districts = districtData || [];
 
-  // Reset district when province changes
+  const initialProvince = initialData?.province;
+
+  // SỬA LỖI RESET DISTRICT KHI PRELOAD
   useEffect(() => {
-    setValue("district", "");
-  }, [currentProvince?.code, setValue]);
+    // const isPreloadedDistrict =
+    //   initialData && initialData.district === watch("district");
+
+    if (currentProvince?.code) {
+      if (
+        watch("province") !== initialData?.province &&
+        watch("province") !== ""
+      ) {
+        setValue("district", "");
+      }
+    } else if (!isEditMode && watch("province") === "") {
+      setValue("district", "");
+    }
+  }, [
+    currentProvince?.code,
+    setValue,
+    watch("province"),
+    initialData?.province,
+  ]);
 
   // Handle form submit
   const onSubmit = async (data) => {
     const payload = {
       ...data,
-      ownerId: ownerId,
+      ownerId: data.ownerId || ownerId,
       area: data.area ? Number(data.area) : null,
       ruleIds: data.ruleIds || [],
     };
     try {
-      await createHouse(payload).unwrap();
-      toast.success("CreateSuccess");
-      reset();
+      const mutationFn = isEditMode
+        ? () => updateHouse({ houseId: initialData.id, ...payload }).unwrap()
+        : () => createHouse(payload).unwrap();
+      await mutationFn();
+      toast.success(isEditMode ? "UpdateSuccess" : "CreateSuccess");
+      if (!isEditMode) {
+        reset();
+      }
       onFormSubmitSuccess();
     } catch (error) {
-      toast.error("CreateFail");
+      toast.error(isEditMode ? "UpdateFail" : "CreateFail");
       console.error(error);
     }
   };
@@ -101,6 +144,9 @@ const HouseAddForm = ({ onFormSubmitSuccess }) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      {isEditMode && (
+        <input type="hidden" {...register("id", { valueAsNumber: true })} />
+      )}
       <FieldGroup>
         <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
           <Field className={"md:col-span-2"}>
@@ -140,7 +186,9 @@ const HouseAddForm = ({ onFormSubmitSuccess }) => {
                     value={field.value}
                     onValueChange={(value) => {
                       field.onChange(value);
-                      setValue("district", "");
+                      if (value !== initialProvince) {
+                        setValue("district", "");
+                      }
                     }}
                     disabled={isDisabled || loadingProvinces}
                   >
@@ -246,11 +294,11 @@ const HouseAddForm = ({ onFormSubmitSuccess }) => {
           disabled={isDisabled}
           className={"w-full md:w-1/2"}
         >
-          {isMutating ? <Spinner /> : "Create"}
+          {isMutating ? <Spinner /> : isEditMode ? "Update" : "Create"}
         </Button>
       </div>
     </form>
   );
 };
 
-export default HouseAddForm;
+export default HouseForm;

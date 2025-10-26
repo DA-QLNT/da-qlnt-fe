@@ -1,39 +1,96 @@
-import { Button } from '@/components/ui/button'
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import React, { useMemo } from 'react'
-import { useLocation, useParams } from 'react-router-dom'
-import { useGetHouseByIdQuery, useGetRulesQuery } from '../../store/houseApi'
-import { Spinner } from '@/components/ui/spinner'
-import { Separator } from '@/components/ui/separator'
-import { Card } from '@/components/ui/card'
-
+import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import React, { useMemo, useState } from "react";
+import { useLocation, useParams } from "react-router-dom";
+import { useGetHouseByIdQuery, useGetRulesQuery } from "../../store/houseApi";
+import { Spinner } from "@/components/ui/spinner";
+import { Separator } from "@/components/ui/separator";
+import { Card } from "@/components/ui/card";
+import HouseDeleteConfirm from "../../components/House/HouseDeleteConfirm";
+import HouseEditDialog from "../../components/House/HouseEditDialog";
 
 const HouseDetailOwner = () => {
-  const {houseId} = useParams()
-  const id = Number(houseId)
-  const {data: house, isLoading, isFetching, isError} = useGetHouseByIdQuery(id, {
+  const { houseId } = useParams();
+  const id = Number(houseId);
+  const {
+    data: house,
+    isLoading,
+    isFetching,
+    isError,
+  } = useGetHouseByIdQuery(id, {
     skip: !id,
-  })
+  });
+
+  // edit
+  const [editDialog, setEditDialog] = useState({
+    open: false,
+    houseId: null,
+  });
+  // delete
+  const [deleteDialog, setDeleteDialog] = useState({
+    open: false,
+    houseId: null,
+    houseName: "",
+  });
+
   // rules
-  const rules = house?.rules || []
-  console.log(rules);
-  
-  const sortedRules = useMemo(()=>{
-    return [...rules].sort((a, b)=>{
-      const nameA = a.name
-      const nameB = b.name
-      return nameA.localeCompare(nameB, 'vi', {sensitivity: 'base'})
-    })
-  })
+  const rules = house?.rules || [];
+
+  const sortedRules = useMemo(() => {
+    return [...rules].sort((a, b) => {
+      const nameA = a.name;
+      const nameB = b.name;
+      return nameA.localeCompare(nameB, "vi", { sensitivity: "base" });
+    });
+  }, [rules]);
+
+  // handle==================
+  const openDeleteDialog = () => {
+    setDeleteDialog({
+      open: true,
+      houseId: house.id,
+      houseName: house.name || house.code,
+    });
+  };
+  const openEditDialog = () => {
+    setEditDialog({
+      open: true,
+      houseId: house.id,
+    });
+  };
+
   // ================UI========
-  if(isLoading || isFetching) {
-    return <div className="text-center"><Spinner className="size-10"/></div>
+  if (isLoading || isFetching) {
+    return (
+      <div className="text-center">
+        <Spinner className="size-10" />
+      </div>
+    );
   }
-  if(isError || !house) {
-    return <div className="text-center"> No house found</div>
+  if (isError || !house) {
+    return <div className="text-center"> No house found</div>;
   }
   return (
     <div className="px-4 lg:px-6">
+      <HouseEditDialog
+        open={editDialog.open}
+        onOpenChange={(open) => setEditDialog({ ...editDialog, open })}
+        houseId={editDialog.houseId}
+      />
+      <HouseDeleteConfirm
+        open={deleteDialog.open}
+        onOpenChange={(open) => setDeleteDialog((prev) => ({ ...prev, open }))}
+        houseId={deleteDialog.houseId}
+        houseName={deleteDialog.houseName}
+      />
       <div className="flex flex-col gap-4 md:flex-row">
         <div className="w-full md:w-2/3 order-2 md:order-0 rounded-lg border shadow-md shadow-secondary">
           <Table>
@@ -72,11 +129,13 @@ const HouseDetailOwner = () => {
           </Table>
         </div>
         <div className="flex gap-x-2 w-full md:justify-center md:w-1/3 order-1">
-            <div className="w-full flex justify-between md:flex-col md:justify-center md:items-center sm:flex-row md:gap-8">
+          <div className="w-full flex justify-between md:flex-col md:justify-center md:items-center sm:flex-row md:gap-8">
             <Button variant="outline">Danh sách phòng</Button>
             <div className="flex gap-4">
-              <Button >Sửa</Button>
-              <Button variant="destructive">Xóa</Button>
+              <Button onClick={openEditDialog}>Sửa</Button>
+              <Button onClick={openDeleteDialog} variant="destructive">
+                Xóa
+              </Button>
             </div>
           </div>
         </div>
@@ -117,6 +176,6 @@ const HouseDetailOwner = () => {
       </div>
     </div>
   );
-}
+};
 
-export default HouseDetailOwner
+export default HouseDetailOwner;
