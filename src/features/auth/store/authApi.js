@@ -28,6 +28,13 @@ export const authApi = baseApi.injectEndpoints({
       }),
       transformResponse:(response)=>response.result,
       providesTags:['UserDetail']
+    }),
+    refreshToken:builder.mutation({
+      query:(token)=>({
+        url:'/auth/refresh',
+        method:'POST',
+        data:{token}
+      })
     })
   }),
 });

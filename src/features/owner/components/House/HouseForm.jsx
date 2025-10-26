@@ -193,7 +193,7 @@ const HouseForm = ({
                     disabled={isDisabled || loadingProvinces}
                   >
                     <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select province" />
+                      <SelectValue placeholder={loadingProvinces?"Loading...":"Select province"} />
                     </SelectTrigger>
                     <SelectContent>
                       <ScrollArea className="h-60">
