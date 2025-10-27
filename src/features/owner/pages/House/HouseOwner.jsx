@@ -53,7 +53,7 @@ const HouseOwner = () => {
         <div className="text-end">
             <Button onClick={()=>setIsAddDialogOpen(true)}><Plus/>Add House</Button>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {houses.map((house) => (
             <HouseCard key={house.id} house={house} />
           ))}
