@@ -89,6 +89,8 @@ const axiosBaseQuery =
           const retryResult = await axios(originalRequest);
           return { data: retryResult.data };
         } catch (refreshError) {
+          isRefreshing = false;
+          localStorage.removeItem("token");
           dispatch(logout());
           processQueue(refreshError, null);
           return { error: { status: 401, data: "Session Expired" } };

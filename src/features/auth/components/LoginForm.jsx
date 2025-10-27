@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { selectIsAuthenticated } from "../store/authSlice";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLoginMutation } from "../store/authApi";
 import { useForm } from "react-hook-form";
 import { LoginSchema } from "@/lib/validation/auth";
@@ -26,16 +26,22 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { Badge } from "lucide-react";
+import { baseApi } from "@/store/api/baseApi";
 
 export default function LoginForm({ className, ...props }) {
   const { t, i18n } = useTranslation("login");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   // const isAuthenticated = useSelector(selectIsAuthenticated);
   const [login, { isLoading }] = useLoginMutation();
 
   const { isAuthenticated, isAdmin, isOwner, isUser, isGuest, isLoadingMe } =
     useAuth();
-    
+
+  useEffect(() => {
+    // Clear cache của getMe query để tránh dùng data cũ
+    dispatch(baseApi.util.resetApiState());
+  }, [dispatch]);
   useEffect(() => {
     if (isAuthenticated && !isLoadingMe) {
       if (isAdmin) {
