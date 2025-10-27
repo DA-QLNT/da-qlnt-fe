@@ -3,6 +3,10 @@
     {
       "source": "/(.*)",
       "destination": "/index.html"
+    },
+    {
+      "source": "/address-api/(.*)",
+      "destination": "https://production.cas.so/address-kit/:match*"
     }
   ]
 }
