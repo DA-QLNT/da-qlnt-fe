@@ -5,9 +5,8 @@
       "destination": "/index.html"
     },
     {
-      "source": "/address-api/(.*)",
+      "source": "/address-api/:match*",
       "destination": "https://production.cas.so/address-kit/:match*"
     }
   ]
 }
-  
