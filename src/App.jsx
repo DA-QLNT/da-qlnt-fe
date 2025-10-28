@@ -22,6 +22,8 @@ import UserOwner from "./features/owner/pages/User/UserOwner";
 import AnalyticOwner from "./features/owner/pages/Analytic/AnalyticOwner";
 import RuleOwner from "./features/owner/pages/Rule/RuleOwner";
 import HouseDetailOwner from "./features/owner/pages/House/HouseDetailOwner";
+import RoomOwner from "./features/owner/pages/Room/RoomOwner";
+import RoomDetailOwner from "./features/owner/pages/Room/RoomDetailOwner";
 function App() {
   return (
     <div className="min-h-screen flex flex-col">
@@ -57,7 +59,12 @@ function App() {
               <Route index element={<DashboardOwner />} />
               {/* house */}
               <Route path="houses" element={<HouseOwner />} />
-              <Route path="houses/:houseId" element={<HouseDetailOwner/>}/>
+              <Route path="houses/:houseId" element={<HouseDetailOwner />} />
+              <Route path="houses/:houseId/rooms" element={<RoomOwner />} />
+              <Route
+                path="houses/:houseId/rooms/:roomId"
+                element={<RoomDetailOwner />}
+              />
               {/* house */}
               <Route path="users" element={<UserOwner />} />
               <Route path="rules" element={<RuleOwner />} />
