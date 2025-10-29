@@ -52,14 +52,17 @@ const RuleOwner = () => {
       </div>
     );
   }
+  if (isLoading || isFetching) {
+    return (
+      <div className="absolute inset-0 flex items-center justify-center">
+        <Spinner className="size-20 text-primary" />
+      </div>
+    );
+  }
   return (
     <div className="px-4 lg:px-6">
       <RuleAddDialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen} />
-      {(isLoading || isFetching) && (
-        <div className="text-center p-8">
-          <Spinner className={"size-10"} />
-        </div>
-      )}
+
       <div className="flex flex-col gap-8">
         <div className="text-end ">
           <Button

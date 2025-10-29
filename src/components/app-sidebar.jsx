@@ -9,6 +9,7 @@ import {
   IconKey,
   IconUserShield,
   IconBrandAsana,
+  IconDeviceDesktopDollar,
 } from "@tabler/icons-react";
 
 
@@ -86,9 +87,9 @@ const data = {
       icon: IconBrandAsana,
     },
     {
-      title: "Analytics",
-      url: "/owner/analytics",
-      icon: IconChartBar,
+      title: "Assets",
+      url: "/owner/assets",
+      icon: IconDeviceDesktopDollar,
     },
   ],
   navSecondary: [

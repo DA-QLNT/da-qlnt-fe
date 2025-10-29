@@ -71,8 +71,8 @@ const HouseDetailOwner = () => {
   // ================UI========
   if (isLoading || isFetching) {
     return (
-      <div className="text-center">
-        <Spinner className="size-10" />
+      <div className="absolute inset-0 flex items-center justify-center ">
+        <Spinner className="size-20 text-primary" />
       </div>
     );
   }

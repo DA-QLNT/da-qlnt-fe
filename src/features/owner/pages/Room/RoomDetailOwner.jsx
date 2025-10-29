@@ -109,12 +109,11 @@ const RoomDetailOwner = () => {
   // ================UI========
   if (isLoading || isFetching) {
     return (
-      <div className="text-center">
-        <Spinner className="size-10" />
+      <div className="absolute inset-0 flex items-center justify-center">
+        <Spinner className="size-20 text-primary" />
       </div>
     );
-  }
-  if (isError || !room) {
+  } else if (isError || !room) {
     return <div className="text-center"> No room found</div>;
   }
   return (
@@ -156,10 +155,6 @@ const RoomDetailOwner = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                <TableRow>
-                  <TableCell>House name</TableCell>
-                  <TableCell>{}</TableCell>
-                </TableRow>
                 <TableRow>
                   <TableCell>Id room</TableCell>
                   <TableCell>{room.id}</TableCell>
@@ -210,14 +205,14 @@ const RoomDetailOwner = () => {
             }}
             setApi={setApiCarousel}
           >
-            <CarouselContent>
+            <CarouselContent className={"flex p-2 aspect-square"}>
               {allRoomImages.map((image, index) => (
                 <CarouselItem key={index}>
-                  <Card className={"py-1 px-1"}>
+                  <Card className={"p-1"}>
                     <img
                       src={image}
                       alt={room.code}
-                      className="w-full flex rounded-xl object-contain"
+                      className="w-full h-full flex rounded-xl object-contain"
                     />
                   </Card>
                 </CarouselItem>
@@ -233,6 +228,7 @@ const RoomDetailOwner = () => {
           )}
         </div>
       </div>
+      {/* Assets */}
       <div className="flex flex-col mt-20 w-full">
         <h2>Assets</h2>
         <div className="flex gap-4 justify-between items-start">
@@ -287,7 +283,7 @@ const RoomDetailOwner = () => {
             </Table>
           </div>
           <div className="flex w-1/3 lg:w-1/2 justify-center">
-            <Card className={"w-full lg:w-1/2"}>
+            <Card className={"p-1 w-full lg:w-1/2"}>
               {selectedAssetImageUrl ? (
                 <img
                   src={selectedAssetImageUrl}
