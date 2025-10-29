@@ -13,41 +13,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-// const rooms = [
-//   {
-//     id: 3,
-//     houseId: 13,
-//     code: "p207",
-//     floor: 2,
-//     maxPeople: 5,
-//     rent: 2400000.0,
-//     area: 35.0,
-//     status: 1,
-//     description: "phòng vskk, dngd",
-//     avatarUrl:
-//       "http://res.cloudinary.com/dumrmr6xa/image/upload/v1761556323/general/fz1w6mox7zvxudxukrar.jpg",
-//     images: [
-//       "http://res.cloudinary.com/dumrmr6xa/image/upload/v1761556327/general/dvuhlwwfopfehl2yewep.jpg",
-//       "http://res.cloudinary.com/dumrmr6xa/image/upload/v1761556331/general/wz8h2chr2zm06jjtp3wz.jpg",
-//     ],
-//   },
-//   {
-//     id: 2,
-//     houseId: 13,
-//     code: "p205",
-//     floor: 2,
-//     maxPeople: 4,
-//     rent: 2000000.0,
-//     area: 30.0,
-//     status: 0,
-//     description: "phòng vskk, dngd",
-//     avatarUrl:
-//       "http://res.cloudinary.com/dumrmr6xa/image/upload/v1761555549/general/ftkn9brjwxgqi3a7dkwo.webp",
-//     images: [
-//       "http://res.cloudinary.com/dumrmr6xa/image/upload/v1761555558/general/iiv288uv2rcrh8ojkyql.webp",
-//     ],
-//   },
-// ];
+
 const RoomOwner = () => {
   const { houseId } = useParams();
   const id = Number(houseId);
@@ -85,7 +51,6 @@ const RoomOwner = () => {
             Add Room
           </Button>
         </div>
-        {(isLoading || isFetching) && <Spinner className={"size-10"} />}
         {isError && (
           <div className="text-center p-8 text-muted-foreground">
             Loi tai danh sach phong
@@ -96,6 +61,7 @@ const RoomOwner = () => {
             Nhà này chưa có phòng nào được tạo.
           </div>
         )}
+        {(isLoading || isFetching) && <Spinner className={"size-10"} />}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
           {rooms.map((room) => (
             <RoomCard key={room.id} room={room} houseId={houseId}/>
