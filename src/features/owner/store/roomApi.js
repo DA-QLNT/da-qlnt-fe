@@ -25,6 +25,13 @@ export const roomApi = baseApi.injectEndpoints({
       transformResponse: (response) => response.result,
       providesTags: (result, error, id) => [{ type: "Room", id }],
     }),
+    deleteRoom: builder.mutation({
+      query:(roomId)=>({
+        url:`/rooms/${roomId}`,
+        method:'DELETE',
+      }),
+      invalidatesTags:['Room']
+  })
   }),
 });
-export const { useGetRoomsByHouseIdQuery, useGetRoomByIdQuery } = roomApi;
+export const { useGetRoomsByHouseIdQuery, useGetRoomByIdQuery, useDeleteRoomMutation} = roomApi;

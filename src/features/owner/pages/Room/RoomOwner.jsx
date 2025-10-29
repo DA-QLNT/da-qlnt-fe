@@ -61,7 +61,7 @@ const RoomOwner = () => {
             Nhà này chưa có phòng nào được tạo.
           </div>
         )}
-        {(isLoading || isFetching) && <Spinner className={"size-10"} />}
+        {(isLoading || isFetching) && <Spinner className={"size-10 text-primary"} />}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
           {rooms.map((room) => (
             <RoomCard key={room.id} room={room} houseId={houseId}/>

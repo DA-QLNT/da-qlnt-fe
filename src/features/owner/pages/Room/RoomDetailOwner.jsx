@@ -23,6 +23,7 @@ import RoomStatusBadge from "../../components/Room/RoomStatusBadge";
 import { Spinner } from "@/components/ui/spinner";
 import Autoplay from "embla-carousel-autoplay";
 import { Card } from "@/components/ui/card";
+import RoomDeleteConfirm from "../../components/Room/RoomDeleteConfirm";
 const RoomDetailOwner = () => {
   const navigate = useNavigate();
   const { houseId, roomId } = useParams();
@@ -34,6 +35,11 @@ const RoomDetailOwner = () => {
     isError,
   } = useGetRoomByIdQuery(roomId, {
     skip: !roomId,
+  });
+  // delete
+  const [deleteDialog, setDeleteDialog] = useState({
+    open: false,
+    roomId: null,
   });
 
   // images
@@ -113,6 +119,18 @@ const RoomDetailOwner = () => {
   }
   return (
     <div className="px-4 lg:px-6">
+      {/* Dialogs */}
+      <RoomDeleteConfirm
+        open={deleteDialog.open}
+        onOpenChange={(open) =>
+          setDeleteDialog((prev) => ({
+            ...prev,
+            roomId: open ? prev.roomId : null,
+          }))
+        }
+        roomId={deleteDialog.roomId}
+      />
+      {/* End Dialogs */}
       <div className="flex flex-col items-center gap-4 lg:flex-row">
         <div className="flex flex-col w-full lg:w-1/2">
           <div className="flex justify-between items-center mb-4">
@@ -218,7 +236,7 @@ const RoomDetailOwner = () => {
       <div className="flex flex-col mt-20 w-full">
         <h2>Assets</h2>
         <div className="flex gap-4 justify-between items-start">
-          <div className="w-2/3 rounded-lg border shadow-md shadow-secondary">
+          <div className="w-2/3 lg:w-1/2 rounded-lg border shadow-md shadow-secondary">
             <Table>
               <TableHeader className={"bg-sidebar"}>
                 <TableRow>
