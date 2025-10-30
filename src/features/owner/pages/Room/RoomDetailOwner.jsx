@@ -194,7 +194,7 @@ const RoomDetailOwner = () => {
           </div>
         </div>
 
-        <div className="flex flex-col w-full max-w-2/3 items-center lg:w-1/2">
+        <div className="flex flex-col gap-y-1 w-full max-w-2/3 items-center lg:w-1/2 relative">
           <Carousel
             plugins={[plugin.current]}
             className={"w-full lg:w-2/3"}
@@ -222,14 +222,14 @@ const RoomDetailOwner = () => {
             <CarouselNext />
           </Carousel>
           {allRoomImages.length > 0 && (
-            <div className="text-muted-foreground">
+            <div className="absolute bottom-18 lg:bottom-14 xl:bottom-18 text-muted-foreground">
               {currentSlide}/{totalSlide}
             </div>
           )}
         </div>
       </div>
       {/* Assets */}
-      <div className="flex flex-col mt-20 w-full">
+      <div className="flex flex-col mt-2 lg:mt-20 w-full">
         <h2>Assets</h2>
         <div className="flex gap-4 justify-between items-start">
           <div className="w-2/3 lg:w-1/2 rounded-lg border shadow-md shadow-secondary">
