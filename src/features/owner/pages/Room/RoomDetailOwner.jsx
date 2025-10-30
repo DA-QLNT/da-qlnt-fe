@@ -24,6 +24,7 @@ import { Spinner } from "@/components/ui/spinner";
 import Autoplay from "embla-carousel-autoplay";
 import { Card } from "@/components/ui/card";
 import RoomDeleteConfirm from "../../components/Room/RoomDeleteConfirm";
+import RoomEditDialog from "../../components/Room/RoomEditDialog";
 const RoomDetailOwner = () => {
   const navigate = useNavigate();
   const { houseId, roomId } = useParams();
@@ -38,6 +39,11 @@ const RoomDetailOwner = () => {
   });
   // delete
   const [deleteDialog, setDeleteDialog] = useState({
+    open: false,
+    roomId: null,
+  });
+  // edit
+  const [editDialog, setEditDialog] = useState({
     open: false,
     roomId: null,
   });
@@ -106,6 +112,19 @@ const RoomDetailOwner = () => {
   const backToHouseDetail = () => {
     navigate(-1);
   };
+  const openEditDialog = () => {
+    setEditDialog({
+      open: true,
+      roomId: room.id,
+    });
+  };
+  const closeEditDialog = () => {
+    setEditDialog({
+      open: false,
+      roomId: null,
+    });
+  };
+
   // ================UI========
   if (isLoading || isFetching) {
     return (
@@ -116,6 +135,8 @@ const RoomDetailOwner = () => {
   } else if (isError || !room) {
     return <div className="text-center"> No room found</div>;
   }
+
+  // log
   return (
     <div className="px-4 lg:px-6">
       {/* Dialogs */}
@@ -129,6 +150,7 @@ const RoomDetailOwner = () => {
         }
         roomId={deleteDialog.roomId}
       />
+      <RoomEditDialog roomId={room.id} open={editDialog.open} onOpenChange={closeEditDialog}/>
       {/* End Dialogs */}
       <div className="flex flex-col items-center gap-4 lg:flex-row">
         <div className="flex flex-col w-full lg:w-1/2">
@@ -138,7 +160,7 @@ const RoomDetailOwner = () => {
               Back
             </Button>
             <div className="flex  gap-4">
-              <Button>Sửa</Button>
+              <Button onClick={openEditDialog}>Sửa</Button>
               <Button variant="destructive">Xóa</Button>
               {/* <Button onClick={openEditDialog}>Sửa</Button>
                   <Button onClick={openDeleteDialog} variant="destructive">
@@ -205,7 +227,7 @@ const RoomDetailOwner = () => {
             }}
             setApi={setApiCarousel}
           >
-            <CarouselContent className={"flex p-2 aspect-square"}>
+            <CarouselContent className={"flex p-1 aspect-square"}>
               {allRoomImages.map((image, index) => (
                 <CarouselItem key={index}>
                   <Card className={"p-1"}>
@@ -221,11 +243,11 @@ const RoomDetailOwner = () => {
             <CarouselPrevious />
             <CarouselNext />
           </Carousel>
-          {allRoomImages.length > 0 && (
+          {/* {allRoomImages.length > 0 && (
             <div className="absolute bottom-18 lg:bottom-14 xl:bottom-18 text-muted-foreground">
               {currentSlide}/{totalSlide}
             </div>
-          )}
+          )} */}
         </div>
       </div>
       {/* Assets */}

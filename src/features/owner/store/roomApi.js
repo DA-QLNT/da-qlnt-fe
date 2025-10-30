@@ -25,13 +25,29 @@ export const roomApi = baseApi.injectEndpoints({
       transformResponse: (response) => response.result,
       providesTags: (result, error, id) => [{ type: "Room", id }],
     }),
-    deleteRoom: builder.mutation({
-      query:(roomId)=>({
-        url:`/rooms/${roomId}`,
-        method:'DELETE',
+    updateRoom: builder.mutation({
+      query: ({ roomId, formData }) => ({
+        url: `/rooms/${roomId}`,
+        method: "PUT",
+        data: formData,
       }),
-      invalidatesTags:['Room']
-  })
+      invalidatesTags: (result, error, { roomId }) => [
+        { type: "Room", id: roomId },
+        { type: "HouseRooms", id: result?.houseId }, // Cần houseId từ result để invalidation
+      ],
+    }),
+    deleteRoom: builder.mutation({
+      query: (roomId) => ({
+        url: `/rooms/${roomId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Room"],
+    }),
   }),
 });
-export const { useGetRoomsByHouseIdQuery, useGetRoomByIdQuery, useDeleteRoomMutation} = roomApi;
+export const {
+  useGetRoomsByHouseIdQuery,
+  useGetRoomByIdQuery,
+  useDeleteRoomMutation,
+  useUpdateRoomMutation,
+} = roomApi;
