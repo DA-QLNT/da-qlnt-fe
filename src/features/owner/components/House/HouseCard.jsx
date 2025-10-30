@@ -10,26 +10,7 @@ import {
 import { Eye, MapPin } from "lucide-react";
 import React from "react";
 import { NavLink } from "react-router-dom";
-const houses = [
-  {
-    id: 3,
-    name: "Nhà trọ Hoa Sen",
-    code: "HN-003",
-    province: "Hà Nội",
-    district: "Cầu Giấy",
-    area: 150.0,
-    // ... các trường khác
-  },
-  {
-    id: 4,
-    name: "Chung cư mini Tùng",
-    code: "HN-004",
-    province: "Hà Nội",
-    district: "Đống Đa",
-    area: 80.0,
-  },
-  // ... thêm nhiều nhà trọ khác
-];
+
 const HouseCard = ({ house }) => {
   return (
     <Card className={" shadow-md group"}>

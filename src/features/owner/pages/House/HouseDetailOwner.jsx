@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import React, { useMemo, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useGetHouseByIdQuery, useGetRulesQuery } from "../../store/houseApi";
 import { Spinner } from "@/components/ui/spinner";
 import { Separator } from "@/components/ui/separator";
@@ -18,6 +18,7 @@ import HouseDeleteConfirm from "../../components/House/HouseDeleteConfirm";
 import HouseEditDialog from "../../components/House/HouseEditDialog";
 
 const HouseDetailOwner = () => {
+  const navigate = useNavigate();
   const { houseId } = useParams();
   const id = Number(houseId);
   const {
@@ -70,8 +71,8 @@ const HouseDetailOwner = () => {
   // ================UI========
   if (isLoading || isFetching) {
     return (
-      <div className="text-center">
-        <Spinner className="size-10" />
+      <div className="absolute inset-0 flex items-center justify-center ">
+        <Spinner className="size-20 text-primary" />
       </div>
     );
   }
@@ -130,7 +131,12 @@ const HouseDetailOwner = () => {
         </div>
         <div className="flex gap-x-2 w-full md:justify-center md:w-1/3 order-1">
           <div className="w-full flex justify-between md:flex-col md:justify-center md:items-center sm:flex-row md:gap-8">
-            <Button variant="outline">Danh sách phòng</Button>
+            <Button
+              variant="outline"
+              onClick={() => navigate(`/owner/houses/${house.id}/rooms`)}
+            >
+              Danh sách phòng
+            </Button>
             <div className="flex gap-4">
               <Button onClick={openEditDialog}>Sửa</Button>
               <Button onClick={openDeleteDialog} variant="destructive">
