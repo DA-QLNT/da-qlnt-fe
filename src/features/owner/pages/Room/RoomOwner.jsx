@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import RoomCard from "../../components/Room/RoomCard";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Plus } from "lucide-react";
+import { ArrowLeft, Filter, Plus } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useGetRoomsByHouseIdQuery } from "../../store/roomApi";
 import { Spinner } from "@/components/ui/spinner";
@@ -67,10 +67,16 @@ const RoomOwner = () => {
               <ArrowLeft /> Back
             </Button>
 
-            <Button>
-              <Plus />
-              Add Room
-            </Button>
+            <div className="flex">
+              <Button>
+                <Filter/>
+                Filter
+              </Button>
+              <Button>
+                <Plus />
+                Add Room
+              </Button>
+            </div>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">

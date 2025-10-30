@@ -296,7 +296,7 @@ const RoomDetailOwner = () => {
             <Table>
               <TableHeader className={"bg-sidebar"}>
                 <TableRow>
-                  <TableHead className={"w-[150px]"}>Assets type</TableHead>
+                  <TableHead className={"w-[150px]"}>Assets</TableHead>
                   <TableHead>Description</TableHead>
                 </TableRow>
               </TableHeader>
