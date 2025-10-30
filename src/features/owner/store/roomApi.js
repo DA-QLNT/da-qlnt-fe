@@ -36,6 +36,16 @@ export const roomApi = baseApi.injectEndpoints({
         { type: "HouseRooms", id: result?.houseId }, // Cần houseId từ result để invalidation
       ],
     }),
+    updateRoomStatus: builder.mutation({
+      query: ({ roomId, status }) => ({
+        url: `/rooms/${roomId}/status?status=${status}`,
+        method: "PATCH", 
+      }),
+      invalidatesTags: (result, error, { roomId }) => [
+        { type: "Room", id: roomId },
+        "Room",
+      ],
+    }),
     deleteRoom: builder.mutation({
       query: (roomId) => ({
         url: `/rooms/${roomId}`,
@@ -50,4 +60,5 @@ export const {
   useGetRoomByIdQuery,
   useDeleteRoomMutation,
   useUpdateRoomMutation,
+  useUpdateRoomStatusMutation,
 } = roomApi;

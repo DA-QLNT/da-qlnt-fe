@@ -15,16 +15,21 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { Switch } from "@/components/ui/switch";
 import { ArrowLeft, Eye } from "lucide-react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useGetRoomByIdQuery } from "../../store/roomApi";
+import {
+  useGetRoomByIdQuery,
+  useUpdateRoomStatusMutation,
+} from "../../store/roomApi";
 import RoomStatusBadge from "../../components/Room/RoomStatusBadge";
 import { Spinner } from "@/components/ui/spinner";
 import Autoplay from "embla-carousel-autoplay";
 import { Card } from "@/components/ui/card";
 import RoomDeleteConfirm from "../../components/Room/RoomDeleteConfirm";
 import RoomEditDialog from "../../components/Room/RoomEditDialog";
+import toast from "react-hot-toast";
 const RoomDetailOwner = () => {
   const navigate = useNavigate();
   const { houseId, roomId } = useParams();
@@ -37,6 +42,25 @@ const RoomDetailOwner = () => {
   } = useGetRoomByIdQuery(roomId, {
     skip: !roomId,
   });
+  const [updateStatus, { isLoading: isStatusUpdating }] =
+    useUpdateRoomStatusMutation();
+  const currentStatus = room?.status;
+  const isAvailable = currentStatus === 0;
+  const handleStatusToggle = async (checked) => {
+    const newStatus = checked ? 1 : 0;
+    const toastId = toast.loading("Updating status...");
+
+    try {
+      await updateStatus({
+        roomId: room.id,
+        status: newStatus,
+      }).unwrap();
+      toast.success("Update status successfully", { id: toastId });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   // delete
   const [deleteDialog, setDeleteDialog] = useState({
     open: false,
@@ -150,7 +174,11 @@ const RoomDetailOwner = () => {
         }
         roomId={deleteDialog.roomId}
       />
-      <RoomEditDialog roomId={room.id} open={editDialog.open} onOpenChange={closeEditDialog}/>
+      <RoomEditDialog
+        roomId={room.id}
+        open={editDialog.open}
+        onOpenChange={closeEditDialog}
+      />
       {/* End Dialogs */}
       <div className="flex flex-col items-center gap-4 lg:flex-row">
         <div className="flex flex-col w-full lg:w-1/2">
@@ -203,8 +231,18 @@ const RoomDetailOwner = () => {
                 </TableRow>
                 <TableRow>
                   <TableCell>Status</TableCell>
-                  <TableCell>
+                  <TableCell className={"flex items-center justify-between"}>
                     <RoomStatusBadge status={room.status} />
+                    <Switch
+                      checked={!isAvailable}
+                      onCheckedChange={handleStatusToggle}
+                      disabled={isStatusUpdating}
+                      title={
+                        isStatusUpdating
+                          ? "Đang cập nhật..."
+                          : `Chuyển sang ${isAvailable ? "Đã thuê" : "Trống"}`
+                      }
+                    />
                   </TableCell>
                 </TableRow>
                 <TableRow>

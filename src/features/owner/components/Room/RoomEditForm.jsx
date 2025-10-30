@@ -32,7 +32,6 @@ const RoomEditForm = ({ initialData, onFormSubmitSuccess }) => {
       maxPeople: initialData.maxPeople || 1,
       rent: initialData.rent || 0,
       area: initialData.area || 0,
-      status: initialData.status?.toString() || "0", // RHF Select cần giá trị là string
       description: initialData.description || "",
       avatar: undefined,
       images: undefined,
@@ -68,12 +67,12 @@ const RoomEditForm = ({ initialData, onFormSubmitSuccess }) => {
   const onSubmit = async (data) => {
     const formData = new FormData();
     Object.keys(data).forEach((key) => {
-      if (key !== "avatar" && key !== "images") {
+      if (key !== "avatar" && key !== "images" && key !== "status") {
         let value = data[key];
 
         if (["area", "rent"].includes(key)) {
           value = parseFloat(value);
-        } else if (["floor", "maxPeople", "status", "id"].includes(key)) {
+        } else if (["floor", "maxPeople", "id"].includes(key)) {
           value = parseInt(value, 10);
         }
 
@@ -124,29 +123,7 @@ const RoomEditForm = ({ initialData, onFormSubmitSuccess }) => {
             <Input type="number" disabled={isMutating} {...register("rent")} />
             <FieldError>{errors.rent?.message}</FieldError>
           </Field>
-          <Field>
-            <FieldLabel>Status:</FieldLabel>
-            <Controller
-              name="status"
-              control={control}
-              render={({ field }) => (
-                <Select
-                  onValueChange={field.onChange}
-                  value={field.value}
-                  disabled={isMutating}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select Status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="0">Available</SelectItem>
-                    <SelectItem value="1">Rent</SelectItem>
-                  </SelectContent>
-                </Select>
-              )}
-            />
-            <FieldError>{errors.status?.message}</FieldError>
-          </Field>
+
           <Field>
             <FieldLabel>Floor:</FieldLabel>
             <Input
