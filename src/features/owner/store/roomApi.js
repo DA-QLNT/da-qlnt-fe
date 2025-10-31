@@ -62,6 +62,29 @@ export const roomApi = baseApi.injectEndpoints({
 
       invalidatesTags: (result, error, { itemId }) => ["Room"],
     }),
+    updateAssetItem: builder.mutation({
+      query: ({ itemId, formData }) => ({
+        url: `/asset-items/${itemId}`,
+        method: "PUT",
+        data: formData,
+      }),
+      invalidatesTags: (result, error, { itemId }) => [
+        "Room",
+        { type: "Room", id: result?.roomId },
+      ],
+    }),
+    createAssetItem: builder.mutation({
+      query: (formData) => ({
+        url: `/asset-items`,
+        method: "POST",
+        data: formData,
+      }),
+
+      invalidatesTags: (result, error, formData) => [
+        "Room",
+        { type: "Room", id: formData.get("roomId") },
+      ],
+    }),
   }),
 });
 export const {
@@ -71,4 +94,6 @@ export const {
   useUpdateRoomMutation,
   useUpdateRoomStatusMutation,
   useUpdateAssetItemStatusMutation,
+  useUpdateAssetItemMutation,
+  useCreateAssetItemMutation,
 } = roomApi;

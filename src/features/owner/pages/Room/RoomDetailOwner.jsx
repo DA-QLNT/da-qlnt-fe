@@ -16,7 +16,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Switch } from "@/components/ui/switch";
-import { ArrowLeft, Eye, Plus } from "lucide-react";
+import { ArrowLeft, Eye, Plus, SquarePen, Trash } from "lucide-react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -31,6 +31,22 @@ import RoomDeleteConfirm from "../../components/Room/RoomDeleteConfirm";
 import RoomEditDialog from "../../components/Room/RoomEditDialog";
 import toast from "react-hot-toast";
 import AssetItemStatusToggle from "../../components/Room/AssetItemStatusToggle";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import AssetItemsViewDialog from "../../components/Asset/AssetItemsViewDialog";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { AssetImageViewer } from "@/components/common/ImageViewer";
+import AssetItemEditDialog from "../../components/Room/AssetItemEditDialog";
+import AssetItemAddDialog from "../../components/Room/AssetItemAddDialog";
 const RoomDetailOwner = () => {
   const navigate = useNavigate();
   const { houseId, roomId } = useParams();
@@ -67,7 +83,7 @@ const RoomDetailOwner = () => {
     open: false,
     roomId: null,
   });
-  // edit
+  // edit room
   const [editDialog, setEditDialog] = useState({
     open: false,
     roomId: null,
@@ -91,10 +107,17 @@ const RoomDetailOwner = () => {
   const assetsWithItems = useMemo(() => {
     return room?.assetItems || [];
   }, [room]);
-  const handleViewAssetImage = (imageUrl) => {
-    setSelectedAssetImageUrl(imageUrl);
-  };
 
+  //edit item asset=========
+  const [editItemDialog, setEditItemDialog] = useState({
+    open: false,
+    initialData: null,
+  });
+  // add item asset
+  const [addItemDialog, setAddItemDialog] = useState({
+    open: false,
+    roomId: null,
+  });
   // ========carousel=======
   const plugin = useRef(
     Autoplay({
@@ -143,6 +166,30 @@ const RoomDetailOwner = () => {
       roomId: null,
     });
   };
+  //  Edit Item
+  const openEditItemDialog = (item) => {
+    setEditItemDialog({
+      open: true,
+      initialData: item,
+    });
+  };
+  const closeEditItemDialog = (open) => {
+    if (!open) {
+      setEditItemDialog({ open: false, initialData: null });
+    }
+  }; // Add Item
+  // Hàm mở Dialog Add Item
+  const openAddAssetItemDialog = () => {
+    setAddItemDialog({
+      open: true,
+      roomId: room.id,
+    });
+  };
+  const closeAddItemDialog = (open) => {
+    if (!open) {
+      setAddItemDialog({ open: false, roomId: null });
+    }
+  };
 
   // ================UI========
   if (isLoading || isFetching) {
@@ -159,6 +206,17 @@ const RoomDetailOwner = () => {
   return (
     <div className="px-4 lg:px-6">
       {/* Dialogs */}
+      <AssetItemAddDialog
+        roomId={room.id}
+        open={addItemDialog.open}
+        onOpenChange={closeAddItemDialog}
+      />
+
+      <AssetItemEditDialog
+        open={editItemDialog.open}
+        onOpenChange={closeEditItemDialog}
+        initialData={editItemDialog.initialData}
+      />
       <RoomDeleteConfirm
         open={deleteDialog.open}
         onOpenChange={(open) =>
@@ -287,15 +345,18 @@ const RoomDetailOwner = () => {
       <div className="flex flex-col mt-2 lg:mt-20 w-full">
         <h2>Assets</h2>
         <div className="flex gap-4 justify-between items-start">
-          <div className="w-2/3 lg:w-1/2 rounded-lg border shadow-md shadow-secondary">
+          <div className="w-full lg:w-1/2 rounded-lg border shadow-md shadow-secondary">
             <Table>
               <TableHeader className={"bg-sidebar"}>
                 <TableRow>
                   <TableHead className={"w-[150px]"}>Item</TableHead>
                   <TableHead>Description</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead className="flex justify-end">
-                    <Button variant={"outline"}>
+                  <TableHead className="flex justify-end items-center">
+                    <Button
+                      variant={"outline"}
+                      onClick={openAddAssetItemDialog}
+                    >
                       <Plus />
                       Add Item
                     </Button>
@@ -325,42 +386,49 @@ const RoomDetailOwner = () => {
                         <AssetItemStatusToggle item={item} />
                       </TableCell>
                       <TableCell className={"flex justify-end"}>
-                        <Button
-                          variant={"secondary"}
-                          size="icon"
-                          onClick={() =>
-                            item.imageUrl && handleViewAssetImage(item.imageUrl)
-                          }
-                          disabled={!item.imageUrl}
-                          title={item.imageUrl ? "View image" : "No image"}
-                        >
-                          <Eye
-                            className={
-                              item.imageUrl
-                                ? "text-primary"
-                                : "text-muted-foreground"
-                            }
-                          />
-                        </Button>
+                        <div className="flex items-center">
+                          <div
+                            className="flex"
+                            onClick={() => openEditItemDialog(item)}
+                          >
+                            <SquarePen className="" size={"16"} />
+                          </div>
+                          <div className="flex ">
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  disabled={!item.imageUrl}
+                                >
+                                  <Eye
+                                    className={`w-4 h-4 ${
+                                      item.imageUrl
+                                        ? "text-primary"
+                                        : "text-muted-foreground"
+                                    }`}
+                                  />
+                                </Button>
+                              </PopoverTrigger>
+                              {item.imageUrl && (
+                                <PopoverContent
+                                  className="w-auto p-0 border-none bg-transparent shadow-2xl"
+                                  onPointerDownOutside={(e) =>
+                                    e.preventDefault()
+                                  }
+                                >
+                                  <AssetImageViewer imageUrl={item.imageUrl} />
+                                </PopoverContent>
+                              )}
+                            </Popover>
+                          </div>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))
                 )}
               </TableBody>
             </Table>
-          </div>
-          <div className="flex w-1/3 lg:w-1/2 justify-center">
-            <Card className={"p-1 w-full lg:w-1/2"}>
-              {selectedAssetImageUrl ? (
-                <img
-                  src={selectedAssetImageUrl}
-                  alt="asset preview"
-                  className="w-full object-cover rounded-md"
-                />
-              ) : (
-                <div className="flex">press eye icon to view image</div>
-              )}
-            </Card>
           </div>
         </div>
       </div>

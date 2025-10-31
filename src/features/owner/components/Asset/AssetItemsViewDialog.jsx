@@ -26,8 +26,8 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"; // 🚨 Import Popover
-import { AssetImageViewer } from "../../../../components/common/ImageViewer";
+} from "@/components/ui/popover"; 
+import { AssetImageViewer } from "./../../../../components/common/ImageViewer";
 
 // Hàm format tiền tệ
 const formatCurrency = (amount) => {
@@ -38,7 +38,6 @@ const formatCurrency = (amount) => {
 };
 
 // 🚨 COMPONENT XEM ẢNH POPUP
-
 
 export default function AssetItemsViewDialog({ assetId, open, onOpenChange }) {
   // 🚨 BỎ state selectedItemImageUrl (Ta dùng Popover cho từng ô)
