@@ -39,7 +39,7 @@ export const roomApi = baseApi.injectEndpoints({
     updateRoomStatus: builder.mutation({
       query: ({ roomId, status }) => ({
         url: `/rooms/${roomId}/status?status=${status}`,
-        method: "PATCH", 
+        method: "PATCH",
       }),
       invalidatesTags: (result, error, { roomId }) => [
         { type: "Room", id: roomId },
@@ -53,6 +53,15 @@ export const roomApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Room"],
     }),
+    // =============asset-item=============
+    updateAssetItemStatus: builder.mutation({
+      query: ({ itemId, status }) => ({
+        url: `/asset-items/${itemId}/status?status=${status}`,
+        method: "PATCH",
+      }),
+
+      invalidatesTags: (result, error, { itemId }) => ["Room"],
+    }),
   }),
 });
 export const {
@@ -61,4 +70,5 @@ export const {
   useDeleteRoomMutation,
   useUpdateRoomMutation,
   useUpdateRoomStatusMutation,
+  useUpdateAssetItemStatusMutation,
 } = roomApi;

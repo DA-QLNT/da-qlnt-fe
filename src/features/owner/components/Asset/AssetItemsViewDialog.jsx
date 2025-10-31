@@ -27,7 +27,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"; // 🚨 Import Popover
-import { AssetImageViewer } from "./ImageViewer";
+import { AssetImageViewer } from "../../../../components/common/ImageViewer";
 
 // Hàm format tiền tệ
 const formatCurrency = (amount) => {

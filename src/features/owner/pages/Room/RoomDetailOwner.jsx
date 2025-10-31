@@ -16,7 +16,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Switch } from "@/components/ui/switch";
-import { ArrowLeft, Eye } from "lucide-react";
+import { ArrowLeft, Eye, Plus } from "lucide-react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -30,6 +30,7 @@ import { Card } from "@/components/ui/card";
 import RoomDeleteConfirm from "../../components/Room/RoomDeleteConfirm";
 import RoomEditDialog from "../../components/Room/RoomEditDialog";
 import toast from "react-hot-toast";
+import AssetItemStatusToggle from "../../components/Room/AssetItemStatusToggle";
 const RoomDetailOwner = () => {
   const navigate = useNavigate();
   const { houseId, roomId } = useParams();
@@ -290,18 +291,25 @@ const RoomDetailOwner = () => {
             <Table>
               <TableHeader className={"bg-sidebar"}>
                 <TableRow>
-                  <TableHead className={"w-[150px]"}>Assets</TableHead>
+                  <TableHead className={"w-[150px]"}>Item</TableHead>
                   <TableHead>Description</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="flex justify-end">
+                    <Button variant={"outline"}>
+                      <Plus />
+                      Add Item
+                    </Button>
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {assetsWithItems.length === 0 ? (
                   <TableRow>
                     <TableCell
-                      colSpan={3}
+                      colSpan={4}
                       className={"text-center text-muted-foreground"}
                     >
-                      No assets
+                      No items
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -310,8 +318,13 @@ const RoomDetailOwner = () => {
                       <TableCell className={"font-semibold"}>
                         {item.assetName}
                       </TableCell>
-                      <TableCell className={"flex justify-between"}>
-                        {item.description}{" "}
+                      <TableCell className={"font-semibold"}>
+                        {item.description}
+                      </TableCell>
+                      <TableCell className={"font-semibold"}>
+                        <AssetItemStatusToggle item={item} />
+                      </TableCell>
+                      <TableCell className={"flex justify-end"}>
                         <Button
                           variant={"secondary"}
                           size="icon"
