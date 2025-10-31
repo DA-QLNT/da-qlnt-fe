@@ -32,7 +32,6 @@ import PermissionDeleteConfirm from "../../components/permissions/PermissionDele
 import MatrixHooksWrapper from "../../components/permissions/MatrixHooksWrapper"; // 🚨 Đã sửa
 import PermissionAddOrCreateDialog from "../../components/permissions/PermissionAddOrCreateDialog";
 import { useTranslation } from "react-i18next";
-// ❌ Bỏ import PermissionRoleMatrix và Checkbox
 
 const PermissionContent = () => {
       const {t} = useTranslation('permissioncontent')
@@ -130,7 +129,6 @@ const PermissionContent = () => {
           value="assignPermissionToRole"
           className={"flex flex-col md:flex-row gap-8"}
         >
-          {/* 🚨 SỬ DỤNG WRAPPER MỚI ĐÃ SỬA LỖI HOOK */}
           <MatrixHooksWrapper />
         </TabsContent>
         <TabsContent value="permissionList">

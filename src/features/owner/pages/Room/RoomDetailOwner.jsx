@@ -72,7 +72,7 @@ const RoomDetailOwner = () => {
     roomId: null,
   });
 
-  // images
+  // images room
   const allRoomImages = useMemo(() => {
     if (!room) return [];
     const images = [];
@@ -88,13 +88,7 @@ const RoomDetailOwner = () => {
   //====assets=========
   const [selectedAssetImageUrl, setSelectedAssetImageUrl] = useState(null);
   const assetsWithItems = useMemo(() => {
-    if (!room?.assets) return [];
-    return room.assets.flatMap((asset) =>
-      asset.assetItems.map((item) => ({
-        assetName: asset.name,
-        ...item,
-      }))
-    );
+    return room?.assetItems || [];
   }, [room]);
   const handleViewAssetImage = (imageUrl) => {
     setSelectedAssetImageUrl(imageUrl);
