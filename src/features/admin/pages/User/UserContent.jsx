@@ -324,7 +324,7 @@ const UserContent = () => {
           </div>
         </div>
         <Separator />
-        <div className="mt-4">
+        <div className="w-full p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary mt-4">
           <Table>
             <TableHeader>
               <TableRow>

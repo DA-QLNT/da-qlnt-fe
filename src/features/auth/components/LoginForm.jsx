@@ -27,6 +27,7 @@ import { useEffect } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { Badge } from "lucide-react";
 import { baseApi } from "@/store/api/baseApi";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function LoginForm({ className, ...props }) {
   const { t, i18n } = useTranslation("login");
@@ -126,7 +127,7 @@ export default function LoginForm({ className, ...props }) {
               </Field>
               <Field>
                 <Button type="submit" disabled={isLoading}>
-                  {isLoading ? t("LoggingIn") : t("Login")}
+                  {isLoading ? <Spinner/> : t("Login")}
                 </Button>
               </Field>
             </FieldGroup>

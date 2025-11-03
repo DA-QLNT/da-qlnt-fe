@@ -172,7 +172,7 @@ const AssetOwner = () => {
           Quản lý Tài Sản ({totalElements} Loại)
         </h1>
       </header>
-      <div className="w-full lg:w-1/2 rounded-lg border shadow-md shadow-secondary">
+      <div className="w-full p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
         <Table>
           <TableHeader className={"bg-sidebar"}>
             <TableRow>
@@ -230,7 +230,7 @@ const AssetOwner = () => {
                             Edit
                           </DropdownMenuItem>
                           <DropdownMenuItem
-                          onClick={() => openViewItemsDialog(asset.id)}
+                            onClick={() => openViewItemsDialog(asset.id)}
                           >
                             <Eye />
                             View Items

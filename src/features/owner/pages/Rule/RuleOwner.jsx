@@ -74,7 +74,7 @@ const RuleOwner = () => {
             Add Rule
           </Button>
         </div>
-        <div className="w-full rounded-lg border shadow-md shadow-secondary">
+        <div className="w-full p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
           <Table>
             <TableHeader className={"bg-sidebar"}>
               <TableRow>

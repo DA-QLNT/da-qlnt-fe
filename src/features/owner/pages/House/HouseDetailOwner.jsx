@@ -93,7 +93,7 @@ const HouseDetailOwner = () => {
         houseName={deleteDialog.houseName}
       />
       <div className="flex flex-col gap-4 md:flex-row">
-        <div className="w-full md:w-2/3 order-2 md:order-0 rounded-lg border shadow-md shadow-secondary">
+        <div className="w-full md:w-2/3 order-2 md:order-0 rounded-lg border border-purple-300 p-1 shadow-md shadow-secondary">
           <Table>
             <TableHeader className={"bg-sidebar"}>
               <TableRow>
@@ -133,6 +133,9 @@ const HouseDetailOwner = () => {
           <div className="w-full flex justify-between md:flex-col md:justify-center md:items-center sm:flex-row md:gap-8">
             <Button
               variant="outline"
+              className={
+                ""
+              }
               onClick={() => navigate(`/owner/houses/${house.id}/rooms`)}
             >
               Danh sách phòng
@@ -146,7 +149,7 @@ const HouseDetailOwner = () => {
           </div>
         </div>
       </div>
-      <div className="mt-8 md:mt-16 w-full rounded-lg border shadow-md shadow-secondary">
+      <div className="mt-8 md:mt-16 w-full rounded-lg border border-purple-300 p-1 shadow-md shadow-secondary">
         <Table>
           <TableHeader className={"bg-sidebar"}>
             <TableRow>

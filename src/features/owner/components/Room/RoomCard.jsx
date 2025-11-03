@@ -49,11 +49,13 @@ const rooms = [
 const RoomCard = ({ room, houseId }) => {
   return (
     <Card className={" shadow-md group pt-0"}>
-      <img
-        src={room.avatarUrl}
-        alt={room.code}
-        className="w-full h-full flex rounded-t-xl object-cover"
-      />
+      <div className="rounded-t-xl p-1 border border-purple-300">
+        <img
+          src={room.avatarUrl}
+          alt={room.code}
+          className="w-full aspect-square flex rounded-t-xl object-cover"
+        />
+      </div>
       <CardHeader className={"space-y-1"}>
         <CardTitle className={"line-clamp-2"}>Code: {room.code}</CardTitle>
         <CardDescription
@@ -74,7 +76,7 @@ const RoomCard = ({ room, houseId }) => {
             {room.rent}
           </p>
           <div className="text-end">
-            <RoomStatusBadge status={room.status} />
+            <RoomStatusBadge status={room.status}/>
           </div>
         </div>
       </CardContent>

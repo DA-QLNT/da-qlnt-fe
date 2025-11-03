@@ -226,7 +226,7 @@ const PermissionRoleMatrix = ({
           </Button>
         </ButtonGroup>
       </div>
-      <div className="relative w-full overflow-x-scroll border rounded-lg shadow-xl shadow-secondary">
+      <div className="relative w-full overflow-x-scroll border rounded-lg shadow-xl shadow-secondary p-1 border-purple-300">
         {totalLoading && (
           <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/70 dark:bg-black/70">
             <Spinner className={"size-10"} />

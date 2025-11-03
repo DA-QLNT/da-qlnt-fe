@@ -134,7 +134,7 @@ const PermissionContent = () => {
         <TabsContent value="permissionList">
           <div className="mt-4 w-full flex flex-col lg:flex-row lg:justify-between gap-8">
             <div className={"order-1  lg:w-3/5"}>
-              <div className="relative">
+              <div className="relative w-full p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
                 {isLoading && (
                   <div className="absolute inset-0 z-10 flex items-center justify-center">
                     <Spinner className={"size-10"} />
