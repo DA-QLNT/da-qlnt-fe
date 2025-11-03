@@ -29,7 +29,10 @@ const RoomEditDialog = ({ roomId, open, onOpenChange }) => {
         {isLoading || isFetching ? (
           <Spinner className={"size-10 mx-auto"} />
         ) : roomData ? (
-          <RoomEditForm initialData={roomData} onFormSubmitSuccess={handleSuccess}/>
+          <RoomEditForm
+            initialData={roomData}
+            onFormSubmitSuccess={handleSuccess}
+          />
         ) : null}
       </DialogContent>
     </Dialog>

@@ -248,10 +248,6 @@ const RoomDetailOwner = () => {
             <div className="flex  gap-4">
               <Button onClick={openEditDialog}>Sửa</Button>
               <Button variant="destructive">Xóa</Button>
-              {/* <Button onClick={openEditDialog}>Sửa</Button>
-                  <Button onClick={openDeleteDialog} variant="destructive">
-                    Xóa
-                  </Button> */}
             </div>
           </div>
           <div className="w-full p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
@@ -307,8 +303,8 @@ const RoomDetailOwner = () => {
                 <TableRow>
                   <TableCell>Description</TableCell>
                   <TableCell>
-                    <div className="flex justify-between">
-                      {room.description}
+                    <div className="flex justify-between items-center">
+                      <p className="text-wrap">{room.description}</p>
                       <Popover>
                         <PopoverTrigger asChild>
                           <Button
@@ -333,7 +329,6 @@ const RoomDetailOwner = () => {
                             <div className="w-full max-w-xs flex items-center justify-center">
                               <Carousel
                                 plugins={[plugin.current]}
-                                className={"w-full lg:w-2/3"}
                                 onMouseEnter={plugin.current.stop}
                                 onMouseLeave={plugin.current.reset}
                                 opts={{
@@ -341,23 +336,21 @@ const RoomDetailOwner = () => {
                                 }}
                                 setApi={setApiCarousel}
                               >
-                                <CarouselContent
-                                  className={"flex p-1 aspect-square"}
-                                >
+                                <CarouselContent className={"flex p-1 "}>
                                   {allRoomImages.map((image, index) => (
                                     <CarouselItem key={index}>
-                                      <Card className={"p-1"}>
+                                      <Card className={"p-1 w-full h-full"}>
                                         <img
                                           src={image}
                                           alt={room.code}
-                                          className="w-full h-full flex rounded-xl object-contain"
+                                          className="w-full aspect-square h-full flex rounded-xl object-contain"
                                         />
                                       </Card>
                                     </CarouselItem>
                                   ))}
                                 </CarouselContent>
-                                <CarouselPrevious className={'left-1'}/>
-                                <CarouselNext className={'right-1'}/>
+                                <CarouselPrevious className={"left-1"} />
+                                <CarouselNext className={"right-1"} />
                               </Carousel>
                             </div>
                           </PopoverContent>
