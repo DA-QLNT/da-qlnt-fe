@@ -31,11 +31,13 @@ import {
   Calendar as CalendarIcon,
   Save,
   Image as ImageIcon,
+  Plus,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { AssetItemAddSchema } from "@/lib/validation/asset";
 import { Spinner } from "@/components/ui/spinner";
+import AssetCreatOrUpdateDialog from "../Asset/AssetCreatOrUpdateDialog";
 
 const defaultValues = {
   assetId: undefined,
@@ -44,17 +46,37 @@ const defaultValues = {
   boughtAt: undefined,
   image: undefined,
 };
+const ADD_NEW_ASSET_CODE = "ADD_NEW_ASSET_CODE";
 
 export default function AssetItemAddForm({ roomId, onFormSubmitSuccess }) {
   const [createItem, { isLoading: isMutating }] = useCreateAssetItemMutation();
 
   // Fetch danh sách loại tài sản (Asset Types)
-  const { data: assetData, isLoading: loadingAssets } = useGetAssetsQuery({
-    page: 0,
-    size: 50,
-  });
+  // const { data: assetData, isLoading: loadingAssets } = useGetAssetsQuery({
+  //   page: 0,
+  //   size: 50,
+  // });
+  // const assetTypes = assetData?.content || [];
+
+  // Them asset type trong form asset-item
+  const [isAssetTypeDialogOpen, setIsAssetTypeDialogOpen] = useState(false);
+  const {
+    data: assetData,
+    isLoading: loadingAssets,
+    refetch: refetchAssets,
+  } = useGetAssetsQuery(
+    {
+      page: 0,
+      size: 50,
+    },
+    {
+      // Tắt fetch lại khi mount nếu không cần thiết, chỉ dùng refetch
+      refetchOnMountOrArgChange: false,
+    }
+  );
   const assetTypes = assetData?.content || [];
 
+  //
   const {
     register,
     handleSubmit,
@@ -62,6 +84,7 @@ export default function AssetItemAddForm({ roomId, onFormSubmitSuccess }) {
     watch,
     formState: { errors },
     reset,
+    setValue,
   } = useForm({
     resolver: zodResolver(AssetItemAddSchema),
     defaultValues: { ...defaultValues, roomId: roomId },
@@ -92,9 +115,7 @@ export default function AssetItemAddForm({ roomId, onFormSubmitSuccess }) {
     // 2. Xử lý File (Single File)
     const file = data.image?.[0];
     if (file) {
-      formData.append("image", file); // 🚨 Tên field file là 'image'
-    } else {
-      // Validation Zod đã đảm bảo file tồn tại, không cần else
+      formData.append("image", file);
     }
 
     try {
@@ -113,135 +134,163 @@ export default function AssetItemAddForm({ roomId, onFormSubmitSuccess }) {
     : null;
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <input type="hidden" {...register("roomId", { valueAsNumber: true })} />
-      <FieldGroup>
-        <div className="grid gap-4 grid-cols-2 md:grid-cols-3">
-          {/* Select Asset Type */}
-          <Field className="md:col-span-3">
-            <FieldLabel>Loại Tài Sản (*)</FieldLabel>
-            <Controller
-              name="assetId"
-              control={control}
-              render={({ field }) => (
-                <Select
-                  onValueChange={(val) => field.onChange(Number(val))}
-                  value={field.value?.toString()}
-                  disabled={isDisabled || loadingAssets}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Chọn loại tài sản" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {loadingAssets ? (
-                      <div className="p-2 text-center">
-                        <Spinner size={20} /> Loading...
-                      </div>
-                    ) : (
-                      assetTypes.map((asset) => (
-                        <SelectItem key={asset.id} value={asset.id.toString()}>
-                          {asset.name}
-                        </SelectItem>
-                      ))
-                    )}
-                  </SelectContent>
-                </Select>
-              )}
-            />
-            <FieldError>{errors.assetId?.message}</FieldError>
-          </Field>
+    <>
+      {/* dialog */}
+      <AssetCreatOrUpdateDialog
+        open={isAssetTypeDialogOpen}
+        onOpenChange={(open) => {
+          setIsAssetTypeDialogOpen(open);
+          if (!open) {
+            refetchAssets();
+          }
+        }}
+        initialData={null} // mark as add mode
+      />
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <input type="hidden" {...register("roomId", { valueAsNumber: true })} />
+        <FieldGroup>
+          <div className="grid gap-4 grid-cols-2 md:grid-cols-3">
+            {/* Select Asset Type */}
+            <Field className="md:col-span-3">
+              <FieldLabel>Loại Tài Sản (*)</FieldLabel>
+              <Controller
+                name="assetId"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    onValueChange={(val) => {
+                      if (val === ADD_NEW_ASSET_CODE) {
+                        setIsAssetTypeDialogOpen(true);
+                      } else {
+                        field.onChange(Number(val));
+                      }
+                    }}
+                    value={field.value?.toString()}
+                    disabled={isDisabled || loadingAssets}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Chọn loại tài sản" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value={ADD_NEW_ASSET_CODE}>
+                        <div className="flex items-center gap-2">
+                          <Plus /> Thêm loại tài sản mới
+                        </div>
+                      </SelectItem>
 
-          {/* Description */}
-          <Field className="md:col-span-3">
-            <FieldLabel>Mô tả Item (*):</FieldLabel>
-            <Textarea {...register("description")} disabled={isDisabled} />
-            <FieldError>{errors.description?.message}</FieldError>
-          </Field>
-
-          {/* Price */}
-          <Field>
-            <FieldLabel>Giá mua (*):</FieldLabel>
-            <Input
-              type="number"
-              {...register("price", { valueAsNumber: true })}
-              disabled={isDisabled}
-            />
-            <FieldError>{errors.price?.message}</FieldError>
-          </Field>
-
-          {/* Bought At (Date) */}
-          <Field className="md:col-span-2">
-            <FieldLabel>Ngày mua (*):</FieldLabel>
-            <Controller
-              name="boughtAt"
-              control={control}
-              render={({ field }) => (
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant={"outline"}
-                      className={cn(
-                        "w-full justify-start text-left font-normal px-2"
-                      )}
-                      disabled={isDisabled}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {field.value ? (
-                        format(field.value, "PPP")
+                      {loadingAssets ? (
+                        <div className="p-2 text-center">
+                          <Spinner size={20} /> Loading...
+                        </div>
                       ) : (
-                        <span>Chọn ngày mua</span>
+                        assetTypes.map((asset) => (
+                          <SelectItem
+                            key={asset.id}
+                            value={asset.id.toString()}
+                          >
+                            {asset.name}
+                          </SelectItem>
+                        ))
                       )}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      captionLayout="dropdown"
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-              )}
-            />
-            <FieldError>{errors.boughtAt?.message}</FieldError>
-          </Field>
-
-          {/* Image Input */}
-          <Field className="md:col-span-3">
-            <FieldLabel>Ảnh Item (*):</FieldLabel>
-            <div className="flex items-center gap-4">
-              <img
-                src={filePreview || "/userDefault.png"}
-                alt="Item"
-                className="w-12 h-12 object-cover border rounded-md"
+                    </SelectContent>
+                  </Select>
+                )}
               />
+              <FieldError>{errors.assetId?.message}</FieldError>
+            </Field>
+
+            {/* Description */}
+            <Field className="md:col-span-3">
+              <FieldLabel>Mô tả Item (*):</FieldLabel>
+              <Textarea {...register("description")} disabled={isDisabled} />
+              <FieldError>{errors.description?.message}</FieldError>
+            </Field>
+
+            {/* Price */}
+            <Field>
+              <FieldLabel>Giá mua (*):</FieldLabel>
               <Input
-                type={"file"}
-                {...register("image")}
+                type="number"
+                {...register("price", { valueAsNumber: true })}
                 disabled={isDisabled}
               />
-            </div>
-            <FieldError>{errors.image?.message}</FieldError>
-          </Field>
-        </div>
-      </FieldGroup>
+              <FieldError>{errors.price?.message}</FieldError>
+            </Field>
 
-      <div className="mt-6 flex justify-end">
-        <Button
-          type="submit"
-          disabled={isDisabled}
-          className="w-full sm:w-auto"
-        >
-          {isMutating ? (
-            <Loader2 className="h-4 w-4 animate-spin mr-2" />
-          ) : (
-            <Save className="h-4 w-4 mr-2" />
-          )}
-          Thêm Item
-        </Button>
-      </div>
-    </form>
+            {/* Bought At (Date) */}
+            <Field className="md:col-span-2">
+              <FieldLabel>Ngày mua (*):</FieldLabel>
+              <Controller
+                name="boughtAt"
+                control={control}
+                render={({ field }) => (
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "w-full justify-start text-left font-normal px-2"
+                        )}
+                        disabled={isDisabled}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {field.value ? (
+                          format(field.value, "PPP")
+                        ) : (
+                          <span>Chọn ngày mua</span>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        captionLayout="dropdown"
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                )}
+              />
+              <FieldError>{errors.boughtAt?.message}</FieldError>
+            </Field>
+
+            {/* Image Input */}
+            <Field className="md:col-span-3">
+              <FieldLabel>Ảnh Item (*):</FieldLabel>
+              <div className="flex items-center gap-4">
+                <img
+                  src={filePreview || "/userDefault.png"}
+                  alt="Item"
+                  className="w-12 h-12 object-cover border rounded-md"
+                />
+                <Input
+                  type={"file"}
+                  {...register("image")}
+                  disabled={isDisabled}
+                />
+              </div>
+              <FieldError>{errors.image?.message}</FieldError>
+            </Field>
+          </div>
+        </FieldGroup>
+
+        <div className="mt-6 flex justify-end">
+          <Button
+            type="submit"
+            disabled={isDisabled}
+            className="w-full sm:w-auto"
+          >
+            {isMutating ? (
+              <Loader2 className="h-4 w-4 animate-spin mr-2" />
+            ) : (
+              <Save className="h-4 w-4 mr-2" />
+            )}
+            Thêm Item
+          </Button>
+        </div>
+      </form>
+    </>
   );
 }

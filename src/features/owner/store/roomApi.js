@@ -25,6 +25,21 @@ export const roomApi = baseApi.injectEndpoints({
       transformResponse: (response) => response.result,
       providesTags: (result, error, id) => [{ type: "Room", id }],
     }),
+    createRoom: builder.mutation({
+      query: (formData) => ({
+        url: `/rooms`,
+        method: "POST",
+        data: formData,
+      }),
+
+      invalidatesTags: (result, error, formData) => {
+        const tags = ["Room"];
+        if (result?.houseId) {
+          tags.push({ type: "HouseRooms", id: result.houseId });
+        }
+        return tags;
+      },
+    }),
     updateRoom: builder.mutation({
       query: ({ roomId, formData }) => ({
         url: `/rooms/${roomId}`,
@@ -33,7 +48,7 @@ export const roomApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: (result, error, { roomId }) => [
         { type: "Room", id: roomId },
-        { type: "HouseRooms", id: result?.houseId }, // Cần houseId từ result để invalidation
+        { type: "HouseRooms", id: result?.houseId },
       ],
     }),
     updateRoomStatus: builder.mutation({
@@ -96,4 +111,5 @@ export const {
   useUpdateAssetItemStatusMutation,
   useUpdateAssetItemMutation,
   useCreateAssetItemMutation,
+  useCreateRoomMutation,
 } = roomApi;

@@ -13,6 +13,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import RoomAddDialog from "../../components/Room/RoomAddDialog";
 
 const RoomOwner = () => {
   const { houseId } = useParams();
@@ -33,6 +34,9 @@ const RoomOwner = () => {
   const rooms = data?.content || [];
   const totalElements = data?.totalElements || 0;
   const totalPages = data?.totalPages || 0;
+
+  // add
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
   // handle =============
   const backToHouseDetail = () => {
@@ -59,64 +63,67 @@ const RoomOwner = () => {
     );
   }
   return (
-    <>
-      <div className="px-4 lg:px-6">
-        <div className="flex flex-col gap-8">
-          <div className="flex justify-between items-center">
-            <Button variant={"outline"} onClick={backToHouseDetail}>
-              <ArrowLeft /> Back
+    <div className="px-4 lg:px-6">
+      <RoomAddDialog
+        houseId={id}
+        open={isAddDialogOpen}
+        onOpenChange={setIsAddDialogOpen}
+      />
+      <div className="flex flex-col gap-8">
+        <div className="flex justify-between items-center">
+          <Button variant={"outline"} onClick={backToHouseDetail}>
+            <ArrowLeft /> Back
+          </Button>
+
+          <div className="flex">
+            <Button>
+              <Filter />
+              Filter
             </Button>
-
-            <div className="flex">
-              <Button>
-                <Filter/>
-                Filter
-              </Button>
-              <Button>
-                <Plus />
-                Add Room
-              </Button>
-            </div>
+            <Button onClick={() => setIsAddDialogOpen(true)}>
+              <Plus />
+              Add Room
+            </Button>
           </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
-            {rooms.map((room) => (
-              <RoomCard key={room.id} room={room} houseId={houseId} />
-            ))}
-          </div>
-          {totalPages > 1 && (
-            <Pagination className={"mt-4 flex"}>
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious
-                    disabled={page === 0}
-                    onClick={() => setPage((p) => Math.max(0, p - 1))}
-                  ></PaginationPrevious>
-                </PaginationItem>
-                {[...Array(totalPages)].map((_, i) => (
-                  <PaginationItem key={i}>
-                    <PaginationLink
-                      onClick={() => setPage(i)}
-                      isActive={i === page}
-                    >
-                      {i + 1}
-                    </PaginationLink>
-                  </PaginationItem>
-                ))}
-                <PaginationItem>
-                  <PaginationNext
-                    disabled={page === totalPages - 1}
-                    onClick={() =>
-                      setPage((p) => Math.min(totalPages - 1, p + 1))
-                    }
-                  ></PaginationNext>
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          )}
         </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5  gap-4">
+          {rooms.map((room) => (
+            <RoomCard key={room.id} room={room} houseId={houseId} />
+          ))}
+        </div>
+        {totalPages > 1 && (
+          <Pagination className={"mt-4 flex"}>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  disabled={page === 0}
+                  onClick={() => setPage((p) => Math.max(0, p - 1))}
+                ></PaginationPrevious>
+              </PaginationItem>
+              {[...Array(totalPages)].map((_, i) => (
+                <PaginationItem key={i}>
+                  <PaginationLink
+                    onClick={() => setPage(i)}
+                    isActive={i === page}
+                  >
+                    {i + 1}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+              <PaginationItem>
+                <PaginationNext
+                  disabled={page === totalPages - 1}
+                  onClick={() =>
+                    setPage((p) => Math.min(totalPages - 1, p + 1))
+                  }
+                ></PaginationNext>
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        )}
       </div>
-    </>
+    </div>
   );
 };
 
