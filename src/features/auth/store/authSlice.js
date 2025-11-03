@@ -21,7 +21,6 @@ const decodeToken = (token) => {
   if (!token || !isTokenValid(token)) return null;
   try {
     const decoded = jwtDecode(token);
-    console.log("decoded token", decoded);
 
     const roles = decoded.scope?.roles || [];
     const username = decoded.sub;

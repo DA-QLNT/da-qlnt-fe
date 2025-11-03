@@ -100,67 +100,90 @@ export default function RoomUpsertForm({ houseId, initialData = null, mode = 'ad
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       {/* Hidden ID field */}
-      {isEditMode && (<input type="hidden" {...register("id", { valueAsNumber: true })} />)}
-      
+      {isEditMode && (
+        <input type="hidden" {...register("id", { valueAsNumber: true })} />
+      )}
+
       <FieldGroup>
         <div className="grid gap-4 grid-cols-2 md:grid-cols-3">
-          
           {/* Code */}
           <Field>
-            <FieldLabel>Code: (*)</FieldLabel>
+            <FieldLabel>Code: *</FieldLabel>
             <Input disabled={isDisabled} {...register("code")} />
             <FieldError>{errors.code?.message}</FieldError>
           </Field>
-          
+
           {/* Area */}
           <Field>
-            <FieldLabel>Area (m2): (*)</FieldLabel>
+            <FieldLabel>Area (m2) *:</FieldLabel>
             {/* 🚨 THÊM valueAsNumber */}
-            <Input type="number" {...register("area", { valueAsNumber: true })} disabled={isDisabled} />
+            <Input
+              type="number"
+              {...register("area", { valueAsNumber: true })}
+              disabled={isDisabled}
+            />
             <FieldError>{errors.area?.message}</FieldError>
           </Field>
-          
+
           {/* Rent */}
           <Field>
-            <FieldLabel>Rent: (*)</FieldLabel>
+            <FieldLabel>Rent *:</FieldLabel>
             {/* 🚨 THÊM valueAsNumber */}
-            <Input type={"number"} {...register("rent", { valueAsNumber: true })} disabled={isDisabled} />
+            <Input
+              type={"number"}
+              {...register("rent", { valueAsNumber: true })}
+              disabled={isDisabled}
+            />
             <FieldError>{errors.rent?.message}</FieldError>
           </Field>
 
           {/* Floor */}
           <Field>
-            <FieldLabel>Floor: (*)</FieldLabel>
-            <Input type="number" {...register("floor", { valueAsNumber: true })} disabled={isDisabled} />
+            <FieldLabel>Floor *:</FieldLabel>
+            <Input
+              type="number"
+              {...register("floor", { valueAsNumber: true })}
+              disabled={isDisabled}
+            />
             <FieldError>{errors.floor?.message}</FieldError>
           </Field>
-          
+
           {/* Max people */}
           <Field>
-            <FieldLabel>Max people: (*)</FieldLabel>
-            <Input type="number" {...register("maxPeople", { valueAsNumber: true })} disabled={isDisabled} />
+            <FieldLabel>Max people *: </FieldLabel>
+            <Input
+              type="number"
+              {...register("maxPeople", { valueAsNumber: true })}
+              disabled={isDisabled}
+            />
             <FieldError>{errors.maxPeople?.message}</FieldError>
           </Field>
-          
+
           {/* Status Select (Chỉ hiển thị khi Edit) */}
           {isEditMode && (
-              <Field>
-                <FieldLabel>Status:</FieldLabel>
-                <Controller
-                  name="status"
-                  control={control}
-                  render={({ field }) => (
-                    <Select onValueChange={field.onChange} value={field.value} disabled={isDisabled}>
-                      <SelectTrigger><SelectValue placeholder="Select Status" /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="0">Available</SelectItem>
-                        <SelectItem value="1">Rent</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  )}
-                />
-                <FieldError>{errors.status?.message}</FieldError>
-              </Field>
+            <Field>
+              <FieldLabel>Status:</FieldLabel>
+              <Controller
+                name="status"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    disabled={isDisabled}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">Available</SelectItem>
+                      <SelectItem value="1">Rent</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              <FieldError>{errors.status?.message}</FieldError>
+            </Field>
           )}
 
           {/* Description */}
@@ -169,30 +192,51 @@ export default function RoomUpsertForm({ houseId, initialData = null, mode = 'ad
             <Textarea {...register("description")} disabled={isDisabled} />
             <FieldError>{errors.description?.message}</FieldError>
           </Field>
-          
+
           {/* Avatar Input */}
           <Field className={"col-span-full md:col-span-1"}>
-            <FieldLabel>Avatar: {isEditMode ? '' : '(*)'}</FieldLabel>
+            <FieldLabel>Avatar: {isEditMode ? "" : "*"}</FieldLabel>
             <div className="flex items-center gap-2">
-                <img src={avatarPreview} alt="Avatar" className="w-12 h-12 rounded-full object-cover border" />
-                <Input type={"file"} {...register("avatar")} disabled={isDisabled} />
+              <img
+                src={avatarPreview}
+                alt="Avatar"
+                className="w-12 h-12 rounded-full object-cover border"
+              />
+              <Input
+                type={"file"}
+                {...register("avatar")}
+                disabled={isDisabled}
+              />
             </div>
             <FieldError>{errors.avatar?.message}</FieldError>
           </Field>
-          
+
           {/* Other Images Input */}
           <Field className={"col-span-full md:col-span-2"}>
-            <FieldLabel>Other images: (Gallery)</FieldLabel>
-            <Input type={"file"} multiple {...register("images")} disabled={isDisabled} />
+            <FieldLabel>Other images:</FieldLabel>
+            <Input
+              type={"file"}
+              multiple
+              {...register("images")}
+              disabled={isDisabled}
+            />
             <FieldError>{errors.images?.message}</FieldError>
           </Field>
         </div>
       </FieldGroup>
 
       <div className="mt-6 flex justify-end">
-        <Button type="submit" disabled={isDisabled} className="w-full sm:w-auto">
-          {isMutating ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Save className="h-4 w-4 mr-2" />}
-          {isEditMode ? 'Save Changes' : 'Create Room'}
+        <Button
+          type="submit"
+          disabled={isDisabled}
+          className="w-full sm:w-auto"
+        >
+          {isMutating ? (
+            <Loader2 className="h-4 w-4 animate-spin mr-2" />
+          ) : (
+            <Save className="h-4 w-4 mr-2" />
+          )}
+          {isEditMode ? "Save Changes" : "Create Room"}
         </Button>
       </div>
     </form>

@@ -10,13 +10,31 @@ import {
 import { Eye, MapPin } from "lucide-react";
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { useGetRoomsByHouseIdQuery } from "../../store/roomApi";
 
 const HouseCard = ({ house }) => {
+  const {
+    data: roomsData,
+    isLoading,
+    isFetching,
+    isError,
+  } = useGetRoomsByHouseIdQuery({
+    houseId: house.id,
+    page: 0,
+    size: 1000,
+  });
+  const rooms = roomsData?.content || [];
+  const totalRooms = rooms.length || 0;
+  const rentRooms = rooms.filter((room) => room.status === 1);
+
   return (
     <Card className={" shadow-md group"}>
       <CardHeader className={"space-y-1"}>
         <CardTitle className={"line-clamp-2"}>{house.name}</CardTitle>
         <CardDescription>Code: {house.code}</CardDescription>
+        <CardDescription>
+          Rent: {rentRooms.length}/{totalRooms}
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="flex gap-x-2 text-primary transition-all duration-200 ease-in-out relative top-12 group-hover:top-0">
@@ -33,7 +51,10 @@ const HouseCard = ({ house }) => {
           }
           asChild
         >
-          <NavLink to={`/owner/houses/${house.id}`} className={"flex items-center gap-2"}>
+          <NavLink
+            to={`/owner/houses/${house.id}`}
+            className={"flex items-center gap-2"}
+          >
             <Eye /> View
           </NavLink>
         </Button>

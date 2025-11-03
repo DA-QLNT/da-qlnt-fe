@@ -24,7 +24,6 @@ const HouseOwner = () => {
     }
   );
   const houses = data?.houses || [];
-  console.log(houses);
 
   const totalElements = data?.totalElements || 0;
   const totalPages = data?.totalPages || 0;
