@@ -32,7 +32,6 @@ import PermissionDeleteConfirm from "../../components/permissions/PermissionDele
 import MatrixHooksWrapper from "../../components/permissions/MatrixHooksWrapper"; // 🚨 Đã sửa
 import PermissionAddOrCreateDialog from "../../components/permissions/PermissionAddOrCreateDialog";
 import { useTranslation } from "react-i18next";
-// ❌ Bỏ import PermissionRoleMatrix và Checkbox
 
 const PermissionContent = () => {
       const {t} = useTranslation('permissioncontent')
@@ -130,13 +129,12 @@ const PermissionContent = () => {
           value="assignPermissionToRole"
           className={"flex flex-col md:flex-row gap-8"}
         >
-          {/* 🚨 SỬ DỤNG WRAPPER MỚI ĐÃ SỬA LỖI HOOK */}
           <MatrixHooksWrapper />
         </TabsContent>
         <TabsContent value="permissionList">
           <div className="mt-4 w-full flex flex-col lg:flex-row lg:justify-between gap-8">
             <div className={"order-1  lg:w-3/5"}>
-              <div className="relative">
+              <div className="relative w-full p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
                 {isLoading && (
                   <div className="absolute inset-0 z-10 flex items-center justify-center">
                     <Spinner className={"size-10"} />

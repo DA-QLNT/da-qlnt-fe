@@ -248,7 +248,11 @@ const RoleContent = () => {
                 <Spinner className={"size-10"} />
               </div>
             )}
-            <div className={"order-1 lg:w-3/5"}>
+            <div
+              className={
+                "order-1 lg:w-3/5 p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary"
+              }
+            >
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -332,10 +336,7 @@ const RoleContent = () => {
               )}
             </div>
             <div className="order-0 lg:order-2 text-end ">
-              <Button
-                onClick={() => setIsAddDialogOpen(true)}
-                
-              >
+              <Button onClick={() => setIsAddDialogOpen(true)}>
                 <Plus className="mr-2 h-4 w-4" />
                 {t("AddNewRole")}
               </Button>
@@ -377,72 +378,73 @@ const RoleContent = () => {
                 </Select>
               </div>
             </div>
-
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead colSpan={1}>{t("No")}</TableHead>
-                  <TableHead colSpan={2}>{t("User")}</TableHead>
-                  <TableHead colSpan={2}>{t("Role")}</TableHead>
-                  <TableHead className="text-right">{t("Actions")}</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {usersToDisplay.map((user, index) => (
-                  <TableRow key={user.id}>
-                    <TableCell className={"w-[50px]"}>
-                      {page * pageSize + index + 1}
-                    </TableCell>
-                    <TableCell colSpan={2} className="font-medium">
-                      <div className="flex w-full items-center gap-2">
-                        <div className="flex-shrink-0 p-0.5 bg-amber-400 rounded-full">
-                          <img
-                            src={user.avatarUrl || "/userDefault.png"}
-                            alt={user.username}
-                            className="w-8 h-8 rounded-full object-cover"
-                          />
-                        </div>
-                        <div>
-                          <h4 className="line-clamp-2 text-wrap break-all">
-                            {user.username}
-                          </h4>
-                          <p className="line-clamp-2 text-wrap break-all text-foreground/50">
-                            {user.email || "N/A"}
-                          </p>
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell colSpan={2}>
-                      <RoleBadgeGroup roles={user.roles} />
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="sm">
-                            <EllipsisVertical size={20} />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-48">
-                          <DropdownMenuItem
-                            onClick={() => openAssignDialog(user)}
-                          >
-                            <UserPen className="mr-2 h-4 w-4" />
-                            {t("AssignRole")}
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                ))}
-                {usersToDisplay.length === 0 && !isLoadingUsers && (
+            <div className="w-full p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
+              <Table>
+                <TableHeader>
                   <TableRow>
-                    <TableCell colSpan={4} className="text-center">
-                      No user created
-                    </TableCell>
+                    <TableHead colSpan={1}>{t("No")}</TableHead>
+                    <TableHead colSpan={2}>{t("User")}</TableHead>
+                    <TableHead colSpan={2}>{t("Role")}</TableHead>
+                    <TableHead className="text-right">{t("Actions")}</TableHead>
                   </TableRow>
-                )}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {usersToDisplay.map((user, index) => (
+                    <TableRow key={user.id}>
+                      <TableCell className={"w-[50px]"}>
+                        {page * pageSize + index + 1}
+                      </TableCell>
+                      <TableCell colSpan={2} className="font-medium">
+                        <div className="flex w-full items-center gap-2">
+                          <div className="flex-shrink-0 p-0.5 bg-amber-400 rounded-full">
+                            <img
+                              src={user.avatarUrl || "/userDefault.png"}
+                              alt={user.username}
+                              className="w-8 h-8 rounded-full object-cover"
+                            />
+                          </div>
+                          <div>
+                            <h4 className="line-clamp-2 text-wrap break-all">
+                              {user.username}
+                            </h4>
+                            <p className="line-clamp-2 text-wrap break-all text-foreground/50">
+                              {user.email || "N/A"}
+                            </p>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell colSpan={2}>
+                        <RoleBadgeGroup roles={user.roles} />
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="sm">
+                              <EllipsisVertical size={20} />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-48">
+                            <DropdownMenuItem
+                              onClick={() => openAssignDialog(user)}
+                            >
+                              <UserPen className="mr-2 h-4 w-4" />
+                              {t("AssignRole")}
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                  {usersToDisplay.length === 0 && !isLoadingUsers && (
+                    <TableRow>
+                      <TableCell colSpan={4} className="text-center">
+                        No user created
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
             {isLoadingUsers && (
               <div className="text-center p-4 size-10 ">
                 <Spinner />

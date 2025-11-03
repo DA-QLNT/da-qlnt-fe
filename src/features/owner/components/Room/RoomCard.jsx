@@ -11,6 +11,7 @@ import { DollarSign, Expand, Eye, PersonStanding } from "lucide-react";
 import React from "react";
 import { NavLink } from "react-router-dom";
 import RoomStatusBadge from "./RoomStatusBadge";
+import { formatCurrency } from "@/lib/format/currencyFormat";
 const rooms = [
   {
     id: 3,
@@ -48,36 +49,28 @@ const rooms = [
 ];
 const RoomCard = ({ room, houseId }) => {
   return (
-    <Card className={" shadow-md group pt-0"}>
-      <img
-        src={room.avatarUrl}
-        alt={room.code}
-        className="w-full h-full flex rounded-t-xl object-cover"
-      />
-      <CardHeader className={"space-y-1"}>
+    <Card className={" shadow-md group pt-0 "}>
+      <div className="rounded-t-xl p-1 border border-purple-300">
+        <img
+          src={room.avatarUrl}
+          alt={room.code}
+          className="w-full aspect-square flex rounded-t-xl object-cover"
+        />
+      </div>
+      <CardHeader className={"space-y-1 px-2"}>
         <CardTitle className={"line-clamp-2"}>Code: {room.code}</CardTitle>
-        <CardDescription
-          className={"flex md:flex-col md:gap-y-2 lg:flex-row justify-between"}
-        >
-          <span className="flex items-center xl:gap-x-1">
-            <PersonStanding /> {room.maxPeople}
-          </span>
-          <span className="flex items-center lg:gap-x-1">
-            <Expand /> {room.area}(m2)
-          </span>
+        <CardDescription>
+          <div className="flex flex-col 2xl:flex-row justify-between gap-x-2 transition-all duration-200 ease-in-out relative top-12 group-hover:top-0">
+            <p className="flex items-center text-sm md:text-base">
+              {formatCurrency(room.rent)}/m
+            </p>
+            <div className="text-end">
+              <RoomStatusBadge status={room.status} />
+            </div>
+          </div>
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <div className="flex flex-col 2xl:flex-row justify-between gap-x-2 transition-all duration-200 ease-in-out relative top-12 group-hover:top-0">
-          <p className="flex items-center text-sm md:text-base">
-            <DollarSign size={16} />
-            {room.rent}
-          </p>
-          <div className="text-end">
-            <RoomStatusBadge status={room.status} />
-          </div>
-        </div>
-      </CardContent>
+      <CardContent></CardContent>
       <CardFooter className={"px-0"}>
         <Button
           className={

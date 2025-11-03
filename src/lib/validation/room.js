@@ -6,6 +6,10 @@ const requiredNumber = z.coerce
   .min(0, "Phải là số dương.");
 
 // --- File Schema ---
+const requiredSingleFileSchema = z
+  .instanceof(FileList)
+  .refine((files) => files.length === 1, "Vui lòng chọn 1 ảnh đại diện.");
+
 const optionalSingleFileSchema = z
   .instanceof(FileList)
   .refine(
@@ -17,6 +21,22 @@ const optionalSingleFileSchema = z
 const optionalMultipleFilesSchema = z.instanceof(FileList).optional();
 // --------------------
 
+
+//  ADD==============
+export const RoomAddSchema = z.object({
+  code: requiredString,
+  floor: requiredNumber,
+  maxPeople: requiredNumber,
+  rent: requiredNumber,
+  area: requiredNumber,
+
+  description: z.string().optional(),
+
+  avatar: requiredSingleFileSchema,
+  images: optionalMultipleFilesSchema,
+});
+
+//  edit
 export const RoomEditSchema = z.object({
   // ID là null/optional khi Add, number khi Edit
   id: z.number().nullable().optional(),

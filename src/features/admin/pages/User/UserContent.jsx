@@ -66,13 +66,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import UserEditDialog from "../../components/users/UserEditDialog";
+import { sortUserOptions } from "@/assets/sort/sortUser";
 
-const sortOptions = [
-  { value: "name_asc", label: "Name (A-Z)", type: "name", order: "asc" },
-  { value: "name_desc", label: "Name (Z-A)", type: "name", order: "desc" },
-  { value: "role_asc", label: "Role (A-Z)", type: "role", order: "asc" },
-  { value: "role_desc", label: "Role (Z-A)", type: "role", order: "desc" },
-];
 const UserContent = () => {
   const { t } = useTranslation("usercontent");
   const [page, setPage] = useState(0);
@@ -179,7 +174,7 @@ const UserContent = () => {
       );
     }
     if (currentSort !== "none") {
-      const sortSetting = sortOptions.find(
+      const sortSetting = sortUserOptions.find(
         (option) => option.value === currentSort
       );
       if (sortSetting) {
@@ -306,7 +301,7 @@ const UserContent = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="none">{t("NoSort")}</SelectItem>
-                {sortOptions.map((option) => (
+                {sortUserOptions.map((option) => (
                   <SelectItem
                     key={option.value}
                     value={option.value}
@@ -324,7 +319,7 @@ const UserContent = () => {
           </div>
         </div>
         <Separator />
-        <div className="mt-4">
+        <div className="w-full p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary mt-4">
           <Table>
             <TableHeader>
               <TableRow>

@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useGetRulesQuery } from "../../store/houseApi";
 import { FieldError, FieldLabel } from "@/components/ui/field";
 import { Spinner } from "@/components/ui/spinner";
@@ -14,6 +14,18 @@ const HouseRuleSelectGroup = ({ field, error }) => {
     return [...allRules].sort((a, b) => a.name.localeCompare(b.name));
   }, [allRules]);
   const selectedIds = field.value || [];
+
+  useEffect(() => {
+    if (
+      !isLoading &&
+      allRules.length > 0 &&
+      selectedIds.length === 0 &&
+      field.value?.length === 0
+    ) {
+      const allRuleIds = allRules.map((rule) => rule.id);
+      field.onChange(allRuleIds);
+    }
+  }, [isLoading, allRules.length, field.onChange, field.value]);
   const handleCheckedChange = (ruleId, checked) => {
     let newIds;
     if (checked) {

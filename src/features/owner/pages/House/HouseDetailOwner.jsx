@@ -16,6 +16,7 @@ import { Separator } from "@/components/ui/separator";
 import { Card } from "@/components/ui/card";
 import HouseDeleteConfirm from "../../components/House/HouseDeleteConfirm";
 import HouseEditDialog from "../../components/House/HouseEditDialog";
+import { ArrowLeft } from "lucide-react";
 
 const HouseDetailOwner = () => {
   const navigate = useNavigate();
@@ -54,6 +55,9 @@ const HouseDetailOwner = () => {
   }, [rules]);
 
   // handle==================
+  const backToHouseList = () => {
+    navigate(`/owner/houses`);
+  };
   const openDeleteDialog = () => {
     setDeleteDialog({
       open: true,
@@ -92,8 +96,13 @@ const HouseDetailOwner = () => {
         houseId={deleteDialog.houseId}
         houseName={deleteDialog.houseName}
       />
-      <div className="flex flex-col gap-4 md:flex-row">
-        <div className="w-full md:w-2/3 order-2 md:order-0 rounded-lg border shadow-md shadow-secondary">
+      <div className="relative top-0 left-0 mb-0 md:mb-4">
+        <Button variant={"outline"} onClick={backToHouseList}>
+          <ArrowLeft /> Back
+        </Button>
+      </div>
+      <div className="flex flex-col gap-4  md:flex-row">
+        <div className="w-full md:w-2/3 order-2 md:order-0 rounded-lg border border-purple-300 p-1 shadow-md shadow-secondary">
           <Table>
             <TableHeader className={"bg-sidebar"}>
               <TableRow>
@@ -130,14 +139,17 @@ const HouseDetailOwner = () => {
           </Table>
         </div>
         <div className="flex gap-x-2 w-full md:justify-center md:w-1/3 order-1">
-          <div className="w-full flex justify-between md:flex-col md:justify-center md:items-center sm:flex-row md:gap-8">
+          <div className="w-full flex justify-end gap-x-4 md:flex-col md:justify-center md:items-center sm:flex-row md:gap-8">
             <Button
               variant="outline"
+              className={
+                "border-purple-400 dark:border-purple-400 hover:border-amber-500 hover:text-amber-500"
+              }
               onClick={() => navigate(`/owner/houses/${house.id}/rooms`)}
             >
               Danh sách phòng
             </Button>
-            <div className="flex gap-4">
+            <div className="flex gap-2 lg:gap-4">
               <Button onClick={openEditDialog}>Sửa</Button>
               <Button onClick={openDeleteDialog} variant="destructive">
                 Xóa
@@ -146,7 +158,7 @@ const HouseDetailOwner = () => {
           </div>
         </div>
       </div>
-      <div className="mt-8 md:mt-16 w-full rounded-lg border shadow-md shadow-secondary">
+      <div className="mt-8 md:mt-16 w-full rounded-lg border border-purple-300 p-1 shadow-md shadow-secondary">
         <Table>
           <TableHeader className={"bg-sidebar"}>
             <TableRow>
