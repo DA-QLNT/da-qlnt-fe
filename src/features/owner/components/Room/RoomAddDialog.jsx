@@ -5,9 +5,9 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import RoomUpsertForm from "./RoomUpsertForm"; 
 import { Plus } from "lucide-react";
 import React from "react";
+import RoomAddForm from "./RoomAddForm";
 
 export default function RoomAddDialog({ houseId, open, onOpenChange }) {
   const handleSuccess = () => {
@@ -24,8 +24,7 @@ export default function RoomAddDialog({ houseId, open, onOpenChange }) {
             Nhập thông tin cơ bản và ảnh cho phòng trọ mới.
           </DialogDescription>
         </DialogHeader>
-        <RoomUpsertForm
-          mode="add"
+        <RoomAddForm
           houseId={houseId}
           onFormSubmitSuccess={handleSuccess}
         />

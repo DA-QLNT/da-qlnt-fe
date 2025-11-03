@@ -96,7 +96,7 @@ const HouseDetailOwner = () => {
         houseId={deleteDialog.houseId}
         houseName={deleteDialog.houseName}
       />
-      <div className="relative top-0 left-0 mb-0 md:mb-4">
+      <div className="relative top-0 left-0 mb-2 md:mb-4 ">
         <Button variant={"outline"} onClick={backToHouseList}>
           <ArrowLeft /> Back
         </Button>
