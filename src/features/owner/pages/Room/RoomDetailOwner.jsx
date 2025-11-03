@@ -249,7 +249,7 @@ const RoomDetailOwner = () => {
                   </Button> */}
             </div>
           </div>
-          <div className="w-full rounded-lg border shadow-md shadow-secondary">
+          <div className="w-full p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
             <Table>
               <TableHeader className={"bg-sidebar"}>
                 <TableRow>
@@ -298,54 +298,79 @@ const RoomDetailOwner = () => {
                     />
                   </TableCell>
                 </TableRow>
+
                 <TableRow>
                   <TableCell>Description</TableCell>
-                  <TableCell>{room.description}</TableCell>
+                  <TableCell>
+                    <div className="flex justify-between">
+                      {room.description}
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            disabled={!allRoomImages}
+                          >
+                            <Eye
+                              className={`w-4 h-4 ${
+                                allRoomImages.length > 0
+                                  ? "text-primary"
+                                  : "text-muted-foreground"
+                              }`}
+                            />
+                          </Button>
+                        </PopoverTrigger>
+                        {allRoomImages.length > 0 && (
+                          <PopoverContent
+                            className="w-auto p-0 border-none shadow-2xl"
+                            onPointerDownOutside={(e) => e.preventDefault()}
+                          >
+                            <div className="w-full max-w-xs flex items-center justify-center">
+                              <Carousel
+                                plugins={[plugin.current]}
+                                className={"w-full lg:w-2/3"}
+                                onMouseEnter={plugin.current.stop}
+                                onMouseLeave={plugin.current.reset}
+                                opts={{
+                                  loop: true,
+                                }}
+                                setApi={setApiCarousel}
+                              >
+                                <CarouselContent
+                                  className={"flex p-1 aspect-square"}
+                                >
+                                  {allRoomImages.map((image, index) => (
+                                    <CarouselItem key={index}>
+                                      <Card className={"p-1"}>
+                                        <img
+                                          src={image}
+                                          alt={room.code}
+                                          className="w-full h-full flex rounded-xl object-contain"
+                                        />
+                                      </Card>
+                                    </CarouselItem>
+                                  ))}
+                                </CarouselContent>
+                                <CarouselPrevious className={'left-1'}/>
+                                <CarouselNext className={'right-1'}/>
+                              </Carousel>
+                            </div>
+                          </PopoverContent>
+                        )}
+                      </Popover>
+                    </div>
+                  </TableCell>
                 </TableRow>
               </TableBody>
             </Table>
           </div>
-        </div>
-
-        <div className="flex flex-col gap-y-1 w-full max-w-2/3 items-center lg:w-1/2 relative">
-          <Carousel
-            plugins={[plugin.current]}
-            className={"w-full lg:w-2/3"}
-            onMouseEnter={plugin.current.stop}
-            onMouseLeave={plugin.current.reset}
-            opts={{
-              loop: true,
-            }}
-            setApi={setApiCarousel}
-          >
-            <CarouselContent className={"flex p-1 aspect-square"}>
-              {allRoomImages.map((image, index) => (
-                <CarouselItem key={index}>
-                  <Card className={"p-1"}>
-                    <img
-                      src={image}
-                      alt={room.code}
-                      className="w-full h-full flex rounded-xl object-contain"
-                    />
-                  </Card>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious />
-            <CarouselNext />
-          </Carousel>
-          {/* {allRoomImages.length > 0 && (
-            <div className="absolute bottom-18 lg:bottom-14 xl:bottom-18 text-muted-foreground">
-              {currentSlide}/{totalSlide}
-            </div>
-          )} */}
         </div>
       </div>
       {/* Assets */}
       <div className="flex flex-col mt-2 lg:mt-20 w-full">
         <h2>Assets</h2>
         <div className="flex gap-4 justify-between items-start">
-          <div className="w-full lg:w-1/2 rounded-lg border shadow-md shadow-secondary">
+          <div className="w-full lg:w-1/2 p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
             <Table>
               <TableHeader className={"bg-sidebar"}>
                 <TableRow>
