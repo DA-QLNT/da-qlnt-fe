@@ -32,7 +32,7 @@ export const roomApi = baseApi.injectEndpoints({
         data: formData,
       }),
 
-      invalidatesTags: (result, error, formData) => {
+      invalidatesTags: (result, error, arg) => {
         const tags = ["Room"];
         if (result?.houseId) {
           tags.push({ type: "HouseRooms", id: result.houseId });
@@ -95,9 +95,9 @@ export const roomApi = baseApi.injectEndpoints({
         data: formData,
       }),
 
-      invalidatesTags: (result, error, formData) => [
+      invalidatesTags: (result, error, arg) => [
         "Room",
-        { type: "Room", id: formData.get("roomId") },
+        { type: "Room", id: result?.roomId },
       ],
     }),
   }),

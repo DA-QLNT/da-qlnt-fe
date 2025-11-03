@@ -303,8 +303,8 @@ const RoomDetailOwner = () => {
                 <TableRow>
                   <TableCell>Description</TableCell>
                   <TableCell>
-                    <div className="flex justify-between">
-                      {room.description}
+                    <div className="flex justify-between items-center">
+                      <p className="text-wrap">{room.description}</p>
                       <Popover>
                         <PopoverTrigger asChild>
                           <Button
