@@ -119,7 +119,7 @@ const RoomEditForm = ({ initialData, onFormSubmitSuccess }) => {
             <FieldError>{errors.area?.message}</FieldError>
           </Field>
           <Field>
-            <FieldLabel>Rent:</FieldLabel>
+            <FieldLabel>Rent/month (vnd):</FieldLabel>
             <Input type="number" disabled={isMutating} {...register("rent")} />
             <FieldError>{errors.rent?.message}</FieldError>
           </Field>

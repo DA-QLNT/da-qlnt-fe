@@ -28,19 +28,11 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"; 
 import { AssetImageViewer } from "./../../../../components/common/ImageViewer";
+import { formatCurrency } from './../../../../lib/format/currencyFormat';
 
-// Hàm format tiền tệ
-const formatCurrency = (amount) => {
-  return amount?.toLocaleString("vi-VN", {
-    style: "currency",
-    currency: "VND",
-  });
-};
 
-// 🚨 COMPONENT XEM ẢNH POPUP
 
 export default function AssetItemsViewDialog({ assetId, open, onOpenChange }) {
-  // 🚨 BỎ state selectedItemImageUrl (Ta dùng Popover cho từng ô)
 
   const {
     data: asset,

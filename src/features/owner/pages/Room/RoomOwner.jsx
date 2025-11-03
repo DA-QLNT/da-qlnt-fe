@@ -45,23 +45,7 @@ const RoomOwner = () => {
 
   // ================UI========
 
-  if (isLoading || isFetching) {
-    return (
-      <div className="absolute inset-0 flex items-center justify-center ">
-        <Spinner className={"text-primary size-20"} />
-      </div>
-    );
-  } else if (isError) {
-    return (
-      <div className="text-center p-8 text-muted-foreground">Lỗi tải phòng</div>
-    );
-  } else if (rooms.length === 0) {
-    return (
-      <div className="text-center p-8 text-muted-foreground">
-        Nhà này chưa có phòng nào được tạo.
-      </div>
-    );
-  }
+  
   return (
     <div className="px-4 lg:px-6">
       <RoomAddDialog
@@ -76,7 +60,7 @@ const RoomOwner = () => {
           </Button>
 
           <div className="flex">
-            <Button>
+            <Button >
               <Filter />
               Filter
             </Button>
@@ -88,6 +72,21 @@ const RoomOwner = () => {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5  gap-4">
+          {(isLoading || isFetching) && (
+            <div className="absolute inset-0 flex items-center justify-center ">
+              <Spinner className={"text-primary size-20"} />
+            </div>
+          )}
+          {isError && (
+            <div className="text-center p-8 text-muted-foreground">
+              Lỗi tải phòng
+            </div>
+          )}
+          {rooms.length === 0 && !isLoading && !isError && (
+            <div className="text-center p-8 text-muted-foreground">
+              Nhà này chưa có phòng nào được tạo.
+            </div>
+          )}
           {rooms.map((room) => (
             <RoomCard key={room.id} room={room} houseId={houseId} />
           ))}

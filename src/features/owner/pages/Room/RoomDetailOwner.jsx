@@ -47,6 +47,7 @@ import {
 import { AssetImageViewer } from "@/components/common/ImageViewer";
 import AssetItemEditDialog from "../../components/Room/AssetItemEditDialog";
 import AssetItemAddDialog from "../../components/Room/AssetItemAddDialog";
+import { formatCurrency } from "@/lib/format/currencyFormat";
 const RoomDetailOwner = () => {
   const navigate = useNavigate();
   const { houseId, roomId } = useParams();
@@ -103,10 +104,14 @@ const RoomDetailOwner = () => {
   }, [room]);
 
   //====assets=========
-  const [selectedAssetImageUrl, setSelectedAssetImageUrl] = useState(null);
-  const assetsWithItems = useMemo(() => {
-    return room?.assetItems || [];
-  }, [room]);
+  const rawAssetsWithItems = room?.assetItems || []
+  const sortedAssetsWithItems = useMemo(() => {
+    return [...rawAssetsWithItems].sort((a, b) => {
+      const nameA = a.assetName.toLowerCase();
+      const nameB = b.assetName.toLowerCase();
+      return nameA.localeCompare(nameB, "vi", { sensitivity: "base" });
+    });
+  }, [rawAssetsWithItems]);
 
   //edit item asset=========
   const [editItemDialog, setEditItemDialog] = useState({
@@ -276,7 +281,7 @@ const RoomDetailOwner = () => {
                 </TableRow>
                 <TableRow>
                   <TableCell>Price</TableCell>
-                  <TableCell>{room.rent}</TableCell>
+                  <TableCell>{formatCurrency(room.rent)}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Area</TableCell>
@@ -389,7 +394,7 @@ const RoomDetailOwner = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {assetsWithItems.length === 0 ? (
+                {sortedAssetsWithItems.length === 0 ? (
                   <TableRow>
                     <TableCell
                       colSpan={4}
@@ -399,7 +404,7 @@ const RoomDetailOwner = () => {
                     </TableCell>
                   </TableRow>
                 ) : (
-                  assetsWithItems.map((item) => (
+                  sortedAssetsWithItems.map((item) => (
                     <TableRow key={item.id}>
                       <TableCell className={"font-semibold"}>
                         {item.assetName}
