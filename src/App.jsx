@@ -24,6 +24,7 @@ import HouseDetailOwner from "./features/owner/pages/House/HouseDetailOwner";
 import RoomOwner from "./features/owner/pages/Room/RoomOwner";
 import RoomDetailOwner from "./features/owner/pages/Room/RoomDetailOwner";
 import AssetOwner from "./features/owner/pages/Asset/AssetOwner";
+import ServiceOwner from "./features/owner/pages/Service/ServiceOwner";
 function App() {
   return (
     <div className="min-h-screen flex flex-col">
@@ -69,6 +70,7 @@ function App() {
               <Route path="users" element={<UserOwner />} />
               <Route path="rules" element={<RuleOwner />} />
               <Route path="assets" element={<AssetOwner />} />
+              <Route path="services" element={<ServiceOwner />} />
             </Route>
           </Route>
 
