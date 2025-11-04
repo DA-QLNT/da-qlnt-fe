@@ -104,17 +104,20 @@ const RoomOwner = () => {
   };
 
   // ================UI========
-  if (loadingAllRooms || fetchingAllRooms) {
-    return (
-      <div className="absolute inset-0 flex items-center justify-center ">
-        <Spinner className={"text-primary size-20"} />
-      </div>
-    );
-  } else if (isError) {
+  if (isError) {
     return <div className="text-center p-8 text-red-500">Lỗi tải phòng</div>;
   }
   return (
     <div className="px-4 lg:px-6">
+      {/* initial */}
+      {(loadingAllRooms || fetchingAllRooms) && (
+        <div className="absolute inset-0 flex items-center justify-center ">
+          <Spinner className={"text-primary size-20"} />
+        </div>
+      )}
+
+      {/* initial */}
+
       <RoomAddDialog
         houseId={id}
         open={isAddDialogOpen}

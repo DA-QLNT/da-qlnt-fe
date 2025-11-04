@@ -125,13 +125,7 @@ const AssetOwner = () => {
     });
   };
 
-  if (isLoadingAssets || isFetchingAssets) {
-    return (
-      <div className="absolute inset-0 flex items-center justify-center">
-        <Spinner className={"size-20"} />
-      </div>
-    );
-  }
+ 
   if (isErrorAssets) {
     return (
       <div className="p-6 text-center text-red-500">
@@ -141,6 +135,15 @@ const AssetOwner = () => {
   }
   return (
     <div className="px-4 lg:px-6">
+      {/* initial */}
+      {(isLoadingAssets || isFetchingAssets) && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <Spinner className={"size-20 text-primary"} />
+        </div>
+      )}
+
+      {/* initial */}
+
       {/* dialog */}
       <AssetItemsViewDialog
         open={viewItemsDialog.open}

@@ -24,38 +24,41 @@ const HouseOwner = () => {
     }
   );
   const rawHouses = data?.houses || [];
-  const sortedHouses = useMemo(()=>{
-    const housesCopy = [...rawHouses]
-    return housesCopy.sort((a, b)=>{
-      const nameA = a.name.toLowerCase()
-      const nameB = b.name.toLowerCase()
-      return nameA.localeCompare(nameB, 'vi', {sensitivity: 'base'})
-    })
-  }, [rawHouses])
+  const sortedHouses = useMemo(() => {
+    const housesCopy = [...rawHouses];
+    return housesCopy.sort((a, b) => {
+      const nameA = a.name.toLowerCase();
+      const nameB = b.name.toLowerCase();
+      return nameA.localeCompare(nameB, "vi", { sensitivity: "base" });
+    });
+  }, [rawHouses]);
 
   const totalElements = data?.totalElements || 0;
   const totalPages = data?.totalPages || 0;
 
-  if (isLoading || isFetching) {
-    return (
-      <div className="absolute inset-0 flex items-center justify-center">
-        <Spinner className="size-20 text-primary" />
-      </div>
-    );
-  } else if (isError) {
+  if (isError) {
     return (
       <div className="p-6 text-center text-red-500">
         Lỗi tải danh sách nhà trọ.
       </div>
     );
-  } else if (!isLoading && rawHouses.length === 0) {
-    <div className="text-center p-8 text-muted-foreground">
-      Anh chưa có nhà trọ nào được đăng ký.
-    </div>;
   }
 
   return (
     <div className="px-4 lg:px-6">
+      {/* initial */}
+      {(isLoading || isFetching) && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <Spinner className={"size-20 text-primary"} />
+        </div>
+      )}
+      {!isLoading && rawHouses.length === 0 && (
+        <div className="text-center p-8 text-muted-foreground">
+          Anh chưa có nhà trọ nào được đăng ký.
+        </div>
+      )}
+      {/* initial */}
+
       <HouseAddDialog
         open={isAddDialogOpen}
         onOpenChange={setIsAddDialogOpen}

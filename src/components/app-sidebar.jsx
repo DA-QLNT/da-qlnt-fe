@@ -10,6 +10,7 @@ import {
   IconUserShield,
   IconBrandAsana,
   IconDeviceDesktopDollar,
+  IconDeviceIpadHorizontalCog,
 } from "@tabler/icons-react";
 
 
@@ -91,6 +92,11 @@ const data = {
       url: "/owner/assets",
       icon: IconDeviceDesktopDollar,
     },
+    {
+      title: "Services",
+      url: "/owner/services",
+      icon: IconSettings,
+    },
   ],
   navSecondary: [
     {
@@ -125,7 +131,7 @@ export function AppSidebar({
 
         {/* <NavMain items={data.navMain} /> */}
         {/* <NavDocuments items={data.documents} /> */}
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={user} />
