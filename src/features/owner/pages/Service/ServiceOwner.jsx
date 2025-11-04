@@ -48,6 +48,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import ServiceUpsertDialog from "../../components/Service/ServiceUpsertDialog";
+import ServiceDeleteConfirm from "../../components/Service/ServiceDeleteConfirm";
 
 const ServiceOwner = () => {
   const [page, setPage] = useState(0);
@@ -86,6 +87,20 @@ const ServiceOwner = () => {
     }
   };
 
+  // delete
+  const [deleteDialog, setDeleteDialog] = useState({
+    open: false,
+    serviceId: null,
+    serviceName: "",
+  });
+  const openDeleteDialog = (service) => {
+    setDeleteDialog({
+      open: true,
+      serviceId: service.id,
+      serviceName: service.name,
+    });
+  };
+
   // ====UI=============
   if (isLoading || isFetching) {
     return (
@@ -104,12 +119,24 @@ const ServiceOwner = () => {
   return (
     <div className="px-4 lg:px-6">
       {/* Dialog */}
+      <ServiceDeleteConfirm
+        serviceId={deleteDialog.serviceId}
+        serviceName={deleteDialog.serviceName}
+        open={deleteDialog.open}
+        onOpenChange={(open) =>
+          setDeleteDialog((prev) => ({
+            ...prev,
+            open,
+            serviceId: open ? prev.serviceId : null,
+          }))
+        }
+      />
       <ServiceUpsertDialog
         open={upsertDialog.open}
         onOpenChange={closeUpsertDialog}
         initialData={upsertDialog.initialData}
       />
-      
+
       {/* Dialog */}
       <div className="w-full p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
         <Table>
@@ -161,12 +188,16 @@ const ServiceOwner = () => {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent className="w-48 mr-4" align="start">
                         <DropdownMenuGroup>
-                          <DropdownMenuItem onClick={() => openEditDialog(service)}>
+                          <DropdownMenuItem
+                            onClick={() => openEditDialog(service)}
+                          >
                             <SquarePen />
                             Edit
                           </DropdownMenuItem>
 
-                          <DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => openDeleteDialog(service)}
+                          >
                             <Trash color="red" />
                             <span className="text-red-500">Delete</span>
                           </DropdownMenuItem>
