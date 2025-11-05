@@ -73,18 +73,19 @@ const HouseDetailOwner = () => {
   };
 
   // ================UI========
-
+  if (isLoading || isFetching) {
+    return (
+      <div className="absolute inset-0 flex items-center justify-center ">
+        <Spinner className="size-20 text-primary" />
+      </div>
+    );
+  }
   if (isError) {
     return <div className="text-center"> No house found</div>;
   }
   return (
     <div className="px-4 lg:px-6">
       {/* initial */}
-      {(isLoading || isFetching) && (
-        <div className="absolute inset-0 flex items-center justify-center ">
-          <Spinner className="size-20 text-primary" />
-        </div>
-      )}
 
       {/* initial */}
 

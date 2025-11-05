@@ -191,7 +191,7 @@ const AssetOwner = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {assetSummary.length === 0 && !isLoading ? (
+            {assetSummary.length === 0 && !isLoadingAssets ? (
               <TableRow>
                 <TableCell
                   colSpan={4}
