@@ -20,12 +20,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { TYPE_OPTIONS } from './../../../../assets/service/typeOptions';
 
-const TYPE_OPTIONS = [
-  { value: 0, label: "Tính theo công tơ (Điện, Nước)" },
-  { value: 1, label: "Tính theo đầu người (Wifi, Giữ xe)" },
-  { value: 2, label: "Tính theo phòng (Vệ sinh, Thu rác)" },
-];
+
 const ServiceUpsertForm = ({ initialData = null, onFormSubmitSuccess }) => {
   const [createOrUpdateService, { isLoading }] =
     useCreateOrUpdateServiceMutation();

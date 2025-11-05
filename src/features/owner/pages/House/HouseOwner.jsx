@@ -8,7 +8,7 @@ import { Plus } from "lucide-react";
 import HouseAddDialog from "../../components/House/HouseAddDialog";
 
 const HouseOwner = () => {
-  const { ownerId, isLoadingMe } = useAuth();
+  const { userId:ownerId, isLoadingMe } = useAuth();
   console.log(ownerId);
   // add house
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
@@ -36,17 +36,22 @@ const HouseOwner = () => {
   const totalElements = data?.totalElements || 0;
   const totalPages = data?.totalPages || 0;
 
-  if (isError) {
-    return (
-      <div className="p-6 text-center text-red-500">
-        Lỗi tải danh sách nhà trọ.
-      </div>
-    );
-  }
+  // if (isError) {
+  //   return (
+  //     <div className="p-6 text-center text-red-500">
+  //       Lỗi tải danh sách nhà trọ.
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="px-4 lg:px-6">
       {/* initial */}
+      {isError && (
+        <div className="p-6 text-center text-red-500">
+          Lỗi tải danh sách nhà trọ.
+        </div>
+      )}
       {(isLoading || isFetching) && (
         <div className="absolute inset-0 flex items-center justify-center">
           <Spinner className={"size-20 text-primary"} />

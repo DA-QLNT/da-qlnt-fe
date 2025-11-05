@@ -258,42 +258,5 @@ const AssetOwner = () => {
   );
 };
 
-<TableCell className={"flex justify-end"}>
-  {" "}
-  <DropdownMenu>
-    <DropdownMenuTrigger asChild>
-      <Button variant={"outline"} className={"px-1"}>
-        Actions
-      </Button>
-    </DropdownMenuTrigger>
-    <DropdownMenuContent className="w-48 mr-4" align="start">
-      <DropdownMenuGroup>
-        <DropdownMenuItem
-        // onClick={() => openEditDialog(user.id)}
-        >
-          <Plus />
-          Add Item
-        </DropdownMenuItem>
-        <DropdownMenuItem
-        // onClick={() => openEditDialog(user.id)}
-        >
-          <SquarePen />
-          Edit
-        </DropdownMenuItem>
-        <DropdownMenuItem
-        // onClick={() => openViewDialog(user.id)}
-        >
-          <Eye />
-          View Items
-        </DropdownMenuItem>
-        <DropdownMenuItem
-        // onClick={() => openDeleteDialog(user)}
-        >
-          <Trash color="red" />
-          <span className="text-red-500">Delete</span>
-        </DropdownMenuItem>
-      </DropdownMenuGroup>
-    </DropdownMenuContent>
-  </DropdownMenu>
-</TableCell>;
+
 export default AssetOwner;

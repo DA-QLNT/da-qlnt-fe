@@ -29,6 +29,7 @@ import {
   EllipsisVertical,
   Eye,
   FunnelPlus,
+  PackagePlus,
   Plus,
   Search,
   SquarePen,
@@ -39,6 +40,8 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useGetServicesQuery } from "../../store/serviceApi";
 import ServiceTypeBadge from "../../components/Service/ServiceTypeBadge";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Pagination,
   PaginationContent,
@@ -49,6 +52,7 @@ import {
 } from "@/components/ui/pagination";
 import ServiceUpsertDialog from "../../components/Service/ServiceUpsertDialog";
 import ServiceDeleteConfirm from "../../components/Service/ServiceDeleteConfirm";
+import ServiceHouseAddDialog from "../../components/Service/ServiceHouseAddDialog";
 
 const ServiceOwner = () => {
   const [page, setPage] = useState(0);
@@ -101,6 +105,28 @@ const ServiceOwner = () => {
     });
   };
 
+  const [serviceHouseAddDialog, setServiceHouseAddDialog] = useState({
+    open: false,
+    serviceId: null,
+    serviceName: "",
+  });
+  const openServiceHouseAddDialog = (service) => {
+    setServiceHouseAddDialog({
+      open: true,
+      serviceId: service.id,
+      serviceName: service.name,
+    });
+  };
+  const closeServiceHouseAddDialog = (open) => {
+    if (!open) {
+      setServiceHouseAddDialog({
+        open: open,
+        serviceId: null,
+        serviceName: "",
+      });
+    }
+  };
+
   // ====UI=============
   if (isLoading || isFetching) {
     return (
@@ -119,6 +145,12 @@ const ServiceOwner = () => {
   return (
     <div className="px-4 lg:px-6">
       {/* Dialog */}
+      <ServiceHouseAddDialog
+        open={serviceHouseAddDialog.open}
+        serviceId={serviceHouseAddDialog.serviceId}
+        serviceName={serviceHouseAddDialog.serviceName}
+        onOpenChange={closeServiceHouseAddDialog}
+      />
       <ServiceDeleteConfirm
         serviceId={deleteDialog.serviceId}
         serviceName={deleteDialog.serviceName}
@@ -138,108 +170,135 @@ const ServiceOwner = () => {
       />
 
       {/* Dialog */}
-      <div className="w-full p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
-        <Table>
-          <TableHeader className={"bg-sidebar"}>
-            <TableRow>
-              <TableHead className="w-[50px]">No</TableHead>
-              <TableHead>Tên dịch vụ</TableHead>
-              <TableHead className="">Cách tính tiền</TableHead>
-              <TableHead className="">Đơn vị</TableHead>
-              <TableHead className="text-right w-[100px]">
-                <Button
-                  variant={"outline"}
-                  className={
-                    "border-purple-400 dark:border-purple-400 hover:border-amber-500 hover:text-amber-500"
-                  }
-                  onClick={openAddDialog}
-                >
-                  <Plus className="mr-2 h-4 w-4" />
-                  Thêm
-                </Button>
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {services.length === 0 ? (
-              <TableRow>
-                <TableCell
-                  colSpan={4}
-                  className="text-center text-muted-foreground"
-                >
-                  Chưa có loại dịch vụ nào được tạo
-                </TableCell>
-              </TableRow>
-            ) : (
-              services.map((service, index) => (
-                <TableRow key={service.id}>
-                  <TableCell className={"w-[50px]"}>{index + 1}</TableCell>
-                  <TableCell>
-                    <h4 className="font-semibold text-wrap ">{service.name}</h4>
-                  </TableCell>
-                  <TableCell className="font-medium">
-                    <ServiceTypeBadge type={service.type} />
-                  </TableCell>
-                  <TableCell className="font-medium">{service.unit}</TableCell>
-                  <TableCell className={"flex justify-end"}>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <EllipsisVertical className="h-4 w-4" />
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent className="w-48 mr-4" align="start">
-                        <DropdownMenuGroup>
-                          <DropdownMenuItem
-                            onClick={() => openEditDialog(service)}
-                          >
-                            <SquarePen />
-                            Edit
-                          </DropdownMenuItem>
 
-                          <DropdownMenuItem
-                            onClick={() => openDeleteDialog(service)}
-                          >
-                            <Trash color="red" />
-                            <span className="text-red-500">Delete</span>
-                          </DropdownMenuItem>
-                        </DropdownMenuGroup>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
+      <Tabs defaultValue="serviceList" className={"w-full "}>
+        <TabsList>
+          <TabsTrigger value="serviceList">Service list</TabsTrigger>
+          <TabsTrigger value="serviceHouse">Service & House</TabsTrigger>
+        </TabsList>
+        <TabsContent value="serviceHouse">abc</TabsContent>
+
+        <TabsContent value="serviceList">
+          <div className="w-full p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
+            <Table>
+              <TableHeader className={"bg-sidebar"}>
+                <TableRow>
+                  <TableHead className="w-[50px]">No</TableHead>
+                  <TableHead>Tên dịch vụ</TableHead>
+                  <TableHead className="">Cách tính tiền</TableHead>
+                  <TableHead className="">Đơn vị</TableHead>
+                  <TableHead className="text-right w-[100px]">
+                    <Button
+                      variant={"outline"}
+                      className={
+                        "border-purple-400 dark:border-purple-400 hover:border-amber-500 hover:text-amber-500"
+                      }
+                      onClick={openAddDialog}
+                    >
+                      <Plus className="mr-2 h-4 w-4" />
+                      Thêm
+                    </Button>
+                  </TableHead>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </div>
-      {/* 🚨 PHÂN TRANG */}
-      {totalPages > 1 && (
-        <Pagination className={"mt-4"}>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                disabled={page === 0}
-                onClick={() => setPage((p) => Math.max(0, p - 1))}
-              />
-            </PaginationItem>
-            {[...Array(totalPages)].map((_, i) => (
-              <PaginationItem key={i}>
-                <PaginationLink
-                  onClick={() => setPage(i)}
-                  isActive={i === page}
-                >
-                  {i + 1}
-                </PaginationLink>
-              </PaginationItem>
-            ))}
-            <PaginationItem>
-              <PaginationNext
-                disabled={page === totalPages - 1}
-                onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      )}
+              </TableHeader>
+              <TableBody>
+                {services.length === 0 ? (
+                  <TableRow>
+                    <TableCell
+                      colSpan={4}
+                      className="text-center text-muted-foreground"
+                    >
+                      Chưa có loại dịch vụ nào được tạo
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  services.map((service, index) => (
+                    <TableRow key={service.id}>
+                      <TableCell className={"w-[50px]"}>{index + 1}</TableCell>
+                      <TableCell>
+                        <h4 className="font-semibold text-wrap ">
+                          {service.name}
+                        </h4>
+                      </TableCell>
+                      <TableCell className="font-medium">
+                        <ServiceTypeBadge type={service.type} />
+                      </TableCell>
+                      <TableCell className="font-medium">
+                        {service.unit}
+                      </TableCell>
+                      <TableCell className={"flex justify-end"}>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <EllipsisVertical className="h-4 w-4" />
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent
+                            className="w-48 mr-4"
+                            align="start"
+                          >
+                            <DropdownMenuGroup>
+                              <DropdownMenuItem
+                                onClick={() => openServiceHouseAddDialog(service)}
+                              >
+                                <PackagePlus />
+                                Add service to house
+                              </DropdownMenuItem>
+
+                              <DropdownMenuItem
+                                onClick={() => openEditDialog(service)}
+                              >
+                                <SquarePen />
+                                Edit
+                              </DropdownMenuItem>
+
+                              <DropdownMenuItem
+                                onClick={() => openDeleteDialog(service)}
+                              >
+                                <Trash color="red" />
+                                <span className="text-red-500">Delete</span>
+                              </DropdownMenuItem>
+                            </DropdownMenuGroup>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </div>
+          {/* PHÂN TRANG */}
+          {totalPages > 1 && (
+            <Pagination className={"mt-4"}>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    disabled={page === 0}
+                    onClick={() => setPage((p) => Math.max(0, p - 1))}
+                  />
+                </PaginationItem>
+                {[...Array(totalPages)].map((_, i) => (
+                  <PaginationItem key={i}>
+                    <PaginationLink
+                      onClick={() => setPage(i)}
+                      isActive={i === page}
+                    >
+                      {i + 1}
+                    </PaginationLink>
+                  </PaginationItem>
+                ))}
+                <PaginationItem>
+                  <PaginationNext
+                    disabled={page === totalPages - 1}
+                    onClick={() =>
+                      setPage((p) => Math.min(totalPages - 1, p + 1))
+                    }
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          )}
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
