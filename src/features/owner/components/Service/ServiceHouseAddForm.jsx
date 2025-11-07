@@ -256,28 +256,11 @@ const ServiceHouseAddForm = ({ serviceId, onFormSubmitSuccess }) => {
           <FieldError>{errors.houseIds?.message}</FieldError>
         </div>
       </FieldGroup>
-      <div className="flex items-center justify-between">
-        <Button
-          variant={"outline"}
-          type="submit"
-          disabled={isDisabled || !isValid}
-          className={
-            "border-purple-400 dark:border-purple-400 hover:border-amber-500 hover:text-amber-500"
-          }
-        >
-          {isMutating ? (
-            <Spinner />
-          ) : (
-            <>
-              <Edit className="mr-2 h-4 w-4" />
-              Sửa 
-            </>
-          )}
-        </Button>
+       
         <Button
           type="submit"
           disabled={isDisabled || !isValid}
-          className={"w-auto"}
+          className={"w-full sm:w-auto flex justify-self-end"}
         >
           {isMutating ? (
             <Spinner />
@@ -288,7 +271,6 @@ const ServiceHouseAddForm = ({ serviceId, onFormSubmitSuccess }) => {
             </>
           )}
         </Button>
-      </div>
     </form>
   );
 };

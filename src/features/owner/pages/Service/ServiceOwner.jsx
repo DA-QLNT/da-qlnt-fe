@@ -239,22 +239,26 @@ const ServiceOwner = () => {
                               <DropdownMenuItem
                                 onClick={() => openServiceHouseAddDialog(service)}
                               >
-                                <PackagePlus />
-                                Add service to house
+                                Add service - house
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() => openServiceHouseAddDialog(service)}
+                              >
+                                Edit service - house
                               </DropdownMenuItem>
 
                               <DropdownMenuItem
                                 onClick={() => openEditDialog(service)}
                               >
                                 <SquarePen />
-                                Edit
+                                Edit service
                               </DropdownMenuItem>
 
                               <DropdownMenuItem
                                 onClick={() => openDeleteDialog(service)}
                               >
                                 <Trash color="red" />
-                                <span className="text-red-500">Delete</span>
+                                <span className="text-red-500">Delete service</span>
                               </DropdownMenuItem>
                             </DropdownMenuGroup>
                           </DropdownMenuContent>
