@@ -130,6 +130,7 @@ export const baseApi = createApi({
     "Rule",
     "Asset",
     "Service",
+    "ServiceHouse",
   ], // define tag chung
   endpoints: () => ({}), // endpoint sẽ được tiêm vào từ feature
 });

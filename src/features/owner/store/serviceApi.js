@@ -35,7 +35,37 @@ export const serviceApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Service"],
     }),
+    // house - service
+    getHouseServicesByHouseId: builder.query({
+      query: (houseId) => ({
+        url: `/house-services/house/${houseId}`,
+        method: "GET",
+      }),
+      transformResponse: (response) => response.result,
+      providesTags: (result, error, houseId) => [
+        { type: "ServiceHouse", id: houseId },
+      ],
+    }),
+    assignServiceToHouses: builder.mutation({
+      query: (payload) => ({
+        url: `/house-services`,
+        method: "POST",
+        data: payload,
+      }),
+
+      invalidatesTags: (result, error, { houseIds }) => [
+        "ServiceHouse",
+
+        ...(houseIds?.map((id) => ({ type: "ServiceHouse", id })) || []),
+      ],
+    }),
+    
   }),
 });
-export const { useGetServicesQuery, useCreateOrUpdateServiceMutation, useDeleteServiceMutation } =
-  serviceApi;
+export const {
+  useGetServicesQuery,
+  useCreateOrUpdateServiceMutation,
+  useDeleteServiceMutation,
+  useGetHouseServicesByHouseIdQuery,
+  useAssignServiceToHousesMutation,
+} = serviceApi;
