@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Table,
   TableBody,
@@ -53,10 +53,39 @@ import {
 import ServiceUpsertDialog from "../../components/Service/ServiceUpsertDialog";
 import ServiceDeleteConfirm from "../../components/Service/ServiceDeleteConfirm";
 import ServiceHouseAddDialog from "../../components/Service/ServiceHouseAddDialog";
+import { useAuth } from "@/features/auth";
+import { useGetHousesByOwnerIdQuery } from "../../store/houseApi";
 
 const ServiceOwner = () => {
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
+  const { userId: ownerId, isLoadingMe } = useAuth();
+
+  // get house-list
+  const {
+    data: houseData,
+    isLoading: houseLoading,
+    isFetching: houseFetching,
+    isError: houseError,
+  } = useGetHousesByOwnerIdQuery(
+    {
+      ownerId: ownerId,
+      page: 0,
+      size: 20,
+    },
+    {
+      skip: !ownerId || isLoadingMe,
+    }
+  );
+  const rawHouses = houseData?.houses || [];
+  const sortedHouses = useMemo(() => {
+    const housesCopy = [...rawHouses];
+    return housesCopy.sort((a, b) => {
+      const nameA = a.name.toLowerCase();
+      const nameB = b.name.toLowerCase();
+      return nameA.localeCompare(nameB, "vi", { sensitivity: "base" });
+    });
+  }, [rawHouses]);
 
   const { data, isLoading, isFetching, isError } = useGetServicesQuery({
     page,
@@ -171,12 +200,43 @@ const ServiceOwner = () => {
 
       {/* Dialog */}
 
-      <Tabs defaultValue="serviceList" className={"w-full "}>
+      <Tabs defaultValue="serviceHouse" className={"w-full "}>
         <TabsList>
           <TabsTrigger value="serviceList">Service list</TabsTrigger>
           <TabsTrigger value="serviceHouse">Service & House</TabsTrigger>
         </TabsList>
-        <TabsContent value="serviceHouse">abc</TabsContent>
+        <TabsContent value="serviceHouse">
+          <div className="w-full md:w-2/3 lg:w-1/2 p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
+            <Table>
+              <TableHeader className={"bg-sidebar"}>
+                <TableRow>
+                  <TableHead className="w-[50px]">No</TableHead>
+                  <TableHead className={"w-[300px]"}>House</TableHead>
+                  <TableHead className={"hidden sm:table-cell"}>
+                    Address
+                  </TableHead>
+                  <TableHead className="text-right w-[100px]">Action</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {sortedHouses.length > 0 &&
+                  sortedHouses.map((house, index) => (
+                    <TableRow key={house.id}>
+                      <TableCell className={"w-[50px]"}>{index + 1}</TableCell>
+                      <TableCell>
+                        <h4 className="font-semibold text-wrap ">
+                          {house.name}
+                        </h4>
+                      </TableCell>
+                      <TableCell className={"flex justify-end"}>
+                        <SquarePen className="h-4 w-4 md:w-8 lg:h-8" />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
+            </Table>
+          </div>
+        </TabsContent>
 
         <TabsContent value="serviceList">
           <div className="w-full p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
@@ -237,12 +297,16 @@ const ServiceOwner = () => {
                           >
                             <DropdownMenuGroup>
                               <DropdownMenuItem
-                                onClick={() => openServiceHouseAddDialog(service)}
+                                onClick={() =>
+                                  openServiceHouseAddDialog(service)
+                                }
                               >
                                 Add service - house
                               </DropdownMenuItem>
                               <DropdownMenuItem
-                                onClick={() => openServiceHouseAddDialog(service)}
+                                onClick={() =>
+                                  openServiceHouseAddDialog(service)
+                                }
                               >
                                 Edit service - house
                               </DropdownMenuItem>
@@ -258,7 +322,9 @@ const ServiceOwner = () => {
                                 onClick={() => openDeleteDialog(service)}
                               >
                                 <Trash color="red" />
-                                <span className="text-red-500">Delete service</span>
+                                <span className="text-red-500">
+                                  Delete service
+                                </span>
                               </DropdownMenuItem>
                             </DropdownMenuGroup>
                           </DropdownMenuContent>
