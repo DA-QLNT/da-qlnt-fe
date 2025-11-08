@@ -104,7 +104,7 @@ const RoomDetailOwner = () => {
   }, [room]);
 
   //====assets=========
-  const rawAssetsWithItems = room?.assetItems || []
+  const rawAssetsWithItems = room?.assetItems || [];
   const sortedAssetsWithItems = useMemo(() => {
     return [...rawAssetsWithItems].sort((a, b) => {
       const nameA = a.assetName.toLowerCase();
@@ -239,7 +239,7 @@ const RoomDetailOwner = () => {
       />
       {/* End Dialogs */}
       <div className="flex flex-col items-center gap-4 lg:flex-row">
-        <div className="flex flex-col w-full lg:w-1/2">
+        <div className="flex flex-col w-full lg:w-2/3">
           <div className="flex justify-between items-center mb-4">
             <Button variant="outline" onClick={backToHouseDetail}>
               <ArrowLeft />
@@ -256,6 +256,7 @@ const RoomDetailOwner = () => {
                 <TableRow>
                   <TableHead className={"w-[150px]"}>Info</TableHead>
                   <TableHead>Details</TableHead>
+                  <TableHead className="text-right">Action</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -287,6 +288,8 @@ const RoomDetailOwner = () => {
                   <TableCell>Status</TableCell>
                   <TableCell className={"flex items-center justify-between"}>
                     <RoomStatusBadge status={room.status} />
+                  </TableCell>
+                  <TableCell className={"text-right"}>
                     <Switch
                       checked={!isAvailable}
                       onCheckedChange={handleStatusToggle}
@@ -303,60 +306,60 @@ const RoomDetailOwner = () => {
                 <TableRow>
                   <TableCell>Description</TableCell>
                   <TableCell>
-                    <div className="flex justify-between items-center">
-                      <p className="text-wrap">{room.description}</p>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            disabled={!allRoomImages}
-                          >
-                            <Eye
-                              className={`w-4 h-4 ${
-                                allRoomImages.length > 0
-                                  ? "text-primary"
-                                  : "text-muted-foreground"
-                              }`}
-                            />
-                          </Button>
-                        </PopoverTrigger>
-                        {allRoomImages.length > 0 && (
-                          <PopoverContent
-                            className="w-auto p-0 border-none shadow-2xl"
-                            onPointerDownOutside={(e) => e.preventDefault()}
-                          >
-                            <div className="w-full max-w-xs flex items-center justify-center">
-                              <Carousel
-                                plugins={[plugin.current]}
-                                onMouseEnter={plugin.current.stop}
-                                onMouseLeave={plugin.current.reset}
-                                opts={{
-                                  loop: true,
-                                }}
-                                setApi={setApiCarousel}
-                              >
-                                <CarouselContent className={"flex p-1 "}>
-                                  {allRoomImages.map((image, index) => (
-                                    <CarouselItem key={index}>
-                                      <Card className={"p-1 w-full h-full"}>
-                                        <img
-                                          src={image}
-                                          alt={room.code}
-                                          className="w-full aspect-square h-full flex rounded-xl object-contain"
-                                        />
-                                      </Card>
-                                    </CarouselItem>
-                                  ))}
-                                </CarouselContent>
-                                <CarouselPrevious className={"left-1"} />
-                                <CarouselNext className={"right-1"} />
-                              </Carousel>
-                            </div>
-                          </PopoverContent>
-                        )}
-                      </Popover>
-                    </div>
+                    <p className="text-wrap">{room.description}</p>
+                  </TableCell>
+                  <TableCell className={"text-right"}>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          disabled={!allRoomImages}
+                        >
+                          <Eye
+                            className={`w-4 h-4 ${
+                              allRoomImages.length > 0
+                                ? "text-primary"
+                                : "text-muted-foreground"
+                            }`}
+                          />
+                        </Button>
+                      </PopoverTrigger>
+                      {allRoomImages.length > 0 && (
+                        <PopoverContent
+                          className="w-auto p-0 border-none shadow-2xl"
+                          onPointerDownOutside={(e) => e.preventDefault()}
+                        >
+                          <div className="w-full max-w-xs flex items-center justify-center">
+                            <Carousel
+                              plugins={[plugin.current]}
+                              onMouseEnter={plugin.current.stop}
+                              onMouseLeave={plugin.current.reset}
+                              opts={{
+                                loop: true,
+                              }}
+                              setApi={setApiCarousel}
+                            >
+                              <CarouselContent className={"flex p-1 "}>
+                                {allRoomImages.map((image, index) => (
+                                  <CarouselItem key={index}>
+                                    <Card className={"p-1 w-full h-full"}>
+                                      <img
+                                        src={image}
+                                        alt={room.code}
+                                        className="w-full aspect-square h-full flex rounded-xl object-contain"
+                                      />
+                                    </Card>
+                                  </CarouselItem>
+                                ))}
+                              </CarouselContent>
+                              <CarouselPrevious className={"left-1"} />
+                              <CarouselNext className={"right-1"} />
+                            </Carousel>
+                          </div>
+                        </PopoverContent>
+                      )}
+                    </Popover>
                   </TableCell>
                 </TableRow>
               </TableBody>
@@ -368,7 +371,7 @@ const RoomDetailOwner = () => {
       <div className="flex flex-col mt-2 lg:mt-20 w-full">
         <h2>Assets</h2>
         <div className="flex gap-4 justify-between items-start">
-          <div className="w-full lg:w-1/2 p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
+          <div className="w-full lg:w-2/3 p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
             <Table>
               <TableHeader className={"bg-sidebar"}>
                 <TableRow>
@@ -378,6 +381,9 @@ const RoomDetailOwner = () => {
                   <TableHead className="flex justify-end items-center">
                     <Button
                       variant={"outline"}
+                      className={
+                        "border-purple-400 dark:border-purple-400 hover:border-amber-500 hover:text-amber-500"
+                      }
                       onClick={openAddAssetItemDialog}
                     >
                       <Plus />

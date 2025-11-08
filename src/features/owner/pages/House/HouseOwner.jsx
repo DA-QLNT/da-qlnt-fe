@@ -4,11 +4,19 @@ import { useAuth } from "@/features/auth";
 import { useGetHousesByOwnerIdQuery } from "../../store/houseApi";
 import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Eye, Plus } from "lucide-react";
 import HouseAddDialog from "../../components/House/HouseAddDialog";
-
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { NavLink } from "react-router-dom";
 const HouseOwner = () => {
-  const { userId:ownerId, isLoadingMe } = useAuth();
+  const { userId: ownerId, isLoadingMe } = useAuth();
   console.log(ownerId);
   // add house
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
@@ -35,8 +43,6 @@ const HouseOwner = () => {
 
   const totalElements = data?.totalElements || 0;
   const totalPages = data?.totalPages || 0;
-
- 
 
   return (
     <div className="px-4 lg:px-6">
@@ -69,10 +75,66 @@ const HouseOwner = () => {
             Add House
           </Button>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {/* <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {sortedHouses.map((house) => (
             <HouseCard key={house.id} house={house} />
           ))}
+        </div> */}
+        <div className="w-full lg:w-4/5 p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
+          <Table>
+            <TableHeader className={"bg-sidebar"}>
+              <TableRow>
+                <TableHead className="w-[50px]">No</TableHead>
+                <TableHead className={"w-[250px]"}>House</TableHead>
+                <TableHead className={"hidden sm:table-cell"}>
+                  Address
+                </TableHead>
+                <TableHead className="text-right w-[100px]">Action</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {sortedHouses.length === 0 && !isLoading ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={4}
+                    className="text-center text-muted-foreground"
+                  >
+                    Chưa có nhà nào được đăng ký.
+                  </TableCell>
+                </TableRow>
+              ) : (
+                sortedHouses.map((house, index) => (
+                  <TableRow key={house.id}>
+                    <TableCell className={"w-[50px]"}>{index + 1}</TableCell>
+                    <TableCell>
+                      <h4 className="font-semibold text-wrap ">{house.name}</h4>
+                    </TableCell>
+                    <TableCell className={"hidden sm:table-cell"}>
+                      <h4 className="text-muted-foreground text-wrap ">
+                        {house.address}-{house.district}-{house.province}
+                      </h4>
+                    </TableCell>
+                    <TableCell className={"flex justify-end"}>
+                      <Button
+                        variant={"outline"}
+                        className={
+                          "border-purple-400 dark:border-purple-400 hover:border-amber-500 hover:text-amber-500"
+                        }
+                        asChild
+                      >
+                        <NavLink
+                          to={`/owner/houses/${house.id}`}
+                          className={"flex items-center gap-1"}
+                        >
+                          <Eye /> View
+                        </NavLink>
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
         </div>
       </div>
     </div>

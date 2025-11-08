@@ -106,7 +106,7 @@ const HouseDetailOwner = () => {
         </Button>
       </div>
       <div className="flex flex-col gap-4  md:flex-row">
-        <div className="w-full md:w-2/3 order-2 md:order-0 rounded-lg border border-purple-300 p-1 shadow-md shadow-secondary">
+        <div className="w-full lg:w-1/2 order-2 md:order-0 rounded-lg border border-purple-300 p-1 shadow-md shadow-secondary">
           <Table>
             <TableHeader className={"bg-sidebar"}>
               <TableRow>
@@ -162,7 +162,7 @@ const HouseDetailOwner = () => {
           </div>
         </div>
       </div>
-      <div className="mt-8 md:mt-16 w-full rounded-lg border border-purple-300 p-1 shadow-md shadow-secondary">
+      <div className="mt-8 md:mt-16 w-full lg:w-3/4 rounded-lg border border-purple-300 p-1 shadow-md shadow-secondary">
         <Table>
           <TableHeader className={"bg-sidebar"}>
             <TableRow>
@@ -186,7 +186,7 @@ const HouseDetailOwner = () => {
                   <TableCell>{index + 1}</TableCell>
                   <TableCell>
                     <h4 className="font-semibold line-clamp-1">{rule.name}</h4>
-                    <p className="text-muted-foreground text-wrap line-clamp-4">
+                    <p className="text-muted-foreground text-wrap line-clamp-5">
                       {rule.description}
                     </p>
                   </TableCell>
