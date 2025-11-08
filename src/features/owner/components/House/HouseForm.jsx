@@ -30,13 +30,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useTranslation } from "react-i18next";
 
 const HouseForm = ({
   initialData = null,
   mode = "add",
   onFormSubmitSuccess,
 }) => {
-  const { userId:ownerId } = useAuth();
+  const { t } = useTranslation("house");
+
+  const { userId: ownerId } = useAuth();
   const isEditMode = mode === "edit";
   const schema = !isEditMode ? HouseAddSchema : HouseAddSchema;
 
@@ -150,21 +153,21 @@ const HouseForm = ({
       <FieldGroup>
         <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
           <Field className={"md:col-span-2"}>
-            <FieldLabel htmlFor="name">Name</FieldLabel>
+            <FieldLabel htmlFor="name">{t("Name")}</FieldLabel>
             <Input
               id="name"
               {...register("name")}
-              placeholder="Enter house name"
+              placeholder={`${t("EnterHouseName")}`}
               disabled={isDisabled}
             />
             <FieldError>{errors.name?.message}</FieldError>
           </Field>
           <Field className={"md:col-span-1"}>
-            <FieldLabel htmlFor="area">Area (m2)</FieldLabel>
+            <FieldLabel htmlFor="area">{t("Area")} (m2)</FieldLabel>
             <Input
               id="area"
               type="number"
-              placeholder="Enter house area"
+              placeholder={`${t("EnterArea")}`}
               disabled={isDisabled}
               {...register("area", { valueAsNumber: true })}
             />
@@ -173,11 +176,11 @@ const HouseForm = ({
         </div>
 
         <Field>
-          <FieldLabel>Address</FieldLabel>
+          <FieldLabel>{t("Address")}</FieldLabel>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {/* Province Select */}
             <div className="flex flex-col gap-2">
-              <span className="text-sm">Province</span>
+              <span className="text-sm">{t("Province")}</span>
               <Controller
                 name="province"
                 control={control}
@@ -193,7 +196,13 @@ const HouseForm = ({
                     disabled={isDisabled || loadingProvinces}
                   >
                     <SelectTrigger className="w-full">
-                      <SelectValue placeholder={loadingProvinces?"Loading...":"Select province"} />
+                      <SelectValue
+                        placeholder={
+                          loadingProvinces
+                            ? `${t("Loading")}`
+                            : `${t("SelectProvince")}`
+                        }
+                      />
                     </SelectTrigger>
                     <SelectContent>
                       <ScrollArea className="h-60">
@@ -212,7 +221,7 @@ const HouseForm = ({
 
             {/* District Select */}
             <div className="flex flex-col gap-2">
-              <span className="text-sm">District</span>
+              <span className="text-sm">{t("District")}</span>
               <Controller
                 name="district"
                 control={control}
@@ -229,9 +238,9 @@ const HouseForm = ({
                         placeholder={
                           currentProvince
                             ? loadingDistricts
-                              ? "Loading..."
-                              : "Select district"
-                            : "Province first"
+                              ? `${t("Loading")}`
+                              : `${t("SelectDistrict")}}`
+                            : `${t("ProvinceFirst")}`
                         }
                       />
                     </SelectTrigger>
@@ -239,7 +248,7 @@ const HouseForm = ({
                       <ScrollArea className="h-60">
                         {districts.length === 0 ? (
                           <div className="py-6 text-center text-sm text-muted-foreground">
-                            No districts available
+                            {t("NoDistrict")}
                           </div>
                         ) : (
                           districts.map((district) => (
@@ -261,10 +270,10 @@ const HouseForm = ({
 
             {/* Address Input */}
             <Field className={"col-span-full md:col-span-2"}>
-              <FieldLabel htmlFor="address">Address</FieldLabel>
+              <FieldLabel htmlFor="address">{t("Address")}</FieldLabel>
               <Input
                 id="address"
-                placeholder="Enter house address"
+                placeholder={t("EnterAddress")}
                 {...register("address")}
                 disabled={isDisabled}
               />
@@ -294,7 +303,7 @@ const HouseForm = ({
           disabled={isDisabled}
           className={"w-full md:w-1/2"}
         >
-          {isMutating ? <Spinner /> : isEditMode ? "Update" : "Create"}
+          {isMutating ? <Spinner /> : isEditMode ? t("Update") : t("Create")}
         </Button>
       </div>
     </form>

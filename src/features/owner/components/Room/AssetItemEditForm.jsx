@@ -23,14 +23,15 @@ import { format, parseISO } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Spinner } from "@/components/ui/spinner";
 import React, { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function AssetItemEditForm({
   initialData,
   onFormSubmitSuccess,
 }) {
+  const { t } = useTranslation("house");
   const [updateItem, { isLoading: isMutating }] = useUpdateAssetItemMutation();
 
-  
   const defaultValues = useMemo(
     () => ({
       id: initialData.id,
@@ -63,13 +64,11 @@ export default function AssetItemEditForm({
   const onSubmit = async (data) => {
     const formData = new FormData();
 
-    
     const formattedBoughtAt = data.boughtAt
       ? format(new Date(data.boughtAt), "yyyy-MM-dd")
       : null;
 
     Object.keys(data).forEach((key) => {
-      
       if (key !== "image" && key !== "boughtAt") {
         formData.append(key, data[key]);
       }
@@ -79,18 +78,17 @@ export default function AssetItemEditForm({
       formData.append("boughtAt", formattedBoughtAt);
     }
 
-    
     const file = data.image?.[0];
     if (file) {
-      formData.append("image", file); 
+      formData.append("image", file);
     }
 
     try {
       await updateItem({ itemId: initialData.id, formData }).unwrap();
-      toast.success(`Cập nhật Item ${initialData.id} thành công!`);
+      toast.success(t("UpdateSuccess"));
       onFormSubmitSuccess();
     } catch (error) {
-      toast.error(error.data?.message || "Cập nhật thất bại.");
+      toast.error(t("UpdateFail"));
       console.error("Asset Item update error:", error);
     }
   };
@@ -106,14 +104,14 @@ export default function AssetItemEditForm({
         <div className="grid gap-4 grid-cols-2">
           {/* Serial Number */}
           <Field>
-            <FieldLabel>Serial Number:</FieldLabel>
+            <FieldLabel>{t("SerialNumber")}:</FieldLabel>
             <Input {...register("serialNumber")} disabled={isDisabled} />
             <FieldError>{errors.serialNumber?.message}</FieldError>
           </Field>
 
           {/* Price */}
           <Field>
-            <FieldLabel>Price (*):</FieldLabel>
+            <FieldLabel>{t("Price")}(*):</FieldLabel>
             <Input
               type="number"
               {...register("price", { valueAsNumber: true })}
@@ -124,7 +122,7 @@ export default function AssetItemEditForm({
 
           {/* Bought At (Date) */}
           <Field>
-            <FieldLabel>Bought At:</FieldLabel>
+            <FieldLabel>{t("DateBought")}</FieldLabel>
             <Controller
               name="boughtAt"
               control={control}
@@ -142,7 +140,7 @@ export default function AssetItemEditForm({
                       {field.value ? (
                         format(new Date(field.value), "PPP")
                       ) : (
-                        <span>Select Date</span>
+                        <span>{t("EnterDateBought")}</span>
                       )}
                     </Button>
                   </PopoverTrigger>
@@ -163,7 +161,7 @@ export default function AssetItemEditForm({
 
           {/* Avatar Input */}
           <Field>
-            <FieldLabel>Image:</FieldLabel>
+            <FieldLabel>{t("Image")}:</FieldLabel>
             <div className="flex items-center gap-2">
               <img
                 src={filePreview}
@@ -181,7 +179,7 @@ export default function AssetItemEditForm({
 
           {/* Description */}
           <Field className={"col-span-full"}>
-            <FieldLabel>Description (*):</FieldLabel>
+            <FieldLabel>{t("Description")}(*):</FieldLabel>
             <Textarea {...register("description")} disabled={isDisabled} />
             <FieldError>{errors.description?.message}</FieldError>
           </Field>
@@ -199,7 +197,7 @@ export default function AssetItemEditForm({
           ) : (
             <Save className="h-4 w-4 mr-2" />
           )}
-          Save Changes
+          {t("Save")}
         </Button>
       </div>
     </form>

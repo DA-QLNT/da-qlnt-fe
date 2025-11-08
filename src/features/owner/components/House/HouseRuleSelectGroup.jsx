@@ -5,8 +5,10 @@ import { Spinner } from "@/components/ui/spinner";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { useTranslation } from "react-i18next";
 
 const HouseRuleSelectGroup = ({ field, error }) => {
+  const { t } = useTranslation("house");
   const { data, isLoading } = useGetRulesQuery({ page: 0, size: 100 });
   const allRules = data?.rules || [];
 
@@ -44,9 +46,7 @@ const HouseRuleSelectGroup = ({ field, error }) => {
             <Spinner />
           </div>
         ) : sortedRules.length === 0 ? (
-          <p className="text-muted-foreground text-sm">
-            Chưa có nội quy nào. Hãy tạo Rule trước.
-          </p>
+          <p className="text-muted-foreground text-sm">{t("NoRule")}</p>
         ) : (
           <ScrollArea className={"h-40"}>
             <div className="space-y-2">

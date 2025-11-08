@@ -17,8 +17,10 @@ import { Card } from "@/components/ui/card";
 import HouseDeleteConfirm from "../../components/House/HouseDeleteConfirm";
 import HouseEditDialog from "../../components/House/HouseEditDialog";
 import { ArrowLeft } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const HouseDetailOwner = () => {
+  const { t } = useTranslation("house");
   const navigate = useNavigate();
   const { houseId } = useParams();
   const id = Number(houseId);
@@ -81,7 +83,7 @@ const HouseDetailOwner = () => {
     );
   }
   if (isError) {
-    return <div className="text-center"> No house found</div>;
+    return <div className="text-center"> {t("NoHouse")}</div>;
   }
   return (
     <div className="px-4 lg:px-6">
@@ -102,7 +104,7 @@ const HouseDetailOwner = () => {
       />
       <div className="relative top-0 left-0 mb-2 md:mb-4 ">
         <Button variant={"outline"} onClick={backToHouseList}>
-          <ArrowLeft /> Back
+          <ArrowLeft /> {t("Back")}
         </Button>
       </div>
       <div className="flex flex-col gap-4  md:flex-row">
@@ -110,33 +112,33 @@ const HouseDetailOwner = () => {
           <Table>
             <TableHeader className={"bg-sidebar"}>
               <TableRow>
-                <TableHead className={"w-[150px]"}>Info</TableHead>
-                <TableHead>Details</TableHead>
+                <TableHead className={"w-[150px]"}>{t("Infor")}</TableHead>
+                <TableHead>{t("Detail")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               <TableRow>
-                <TableCell>Name</TableCell>
+                <TableCell>{t("Name")}</TableCell>
                 <TableCell>{house.name}</TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>Code</TableCell>
+                <TableCell>{t("Code")}</TableCell>
                 <TableCell>{house.code}</TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>Province</TableCell>
+                <TableCell>{t("Province")}</TableCell>
                 <TableCell>{house.province}</TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>District</TableCell>
+                <TableCell>{t("District")}</TableCell>
                 <TableCell>{house.district}</TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>Address</TableCell>
+                <TableCell>{t("Address")}</TableCell>
                 <TableCell>{house.address}</TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>Area</TableCell>
+                <TableCell>{t("Area")}</TableCell>
                 <TableCell>{house.area}</TableCell>
               </TableRow>
             </TableBody>
@@ -151,12 +153,12 @@ const HouseDetailOwner = () => {
               }
               onClick={() => navigate(`/owner/houses/${house.id}/rooms`)}
             >
-              Danh sách phòng
+              {t("RoomList")}
             </Button>
             <div className="flex gap-2 lg:gap-4">
-              <Button onClick={openEditDialog}>Sửa</Button>
+              <Button onClick={openEditDialog}>{t("Edit")}</Button>
               <Button onClick={openDeleteDialog} variant="destructive">
-                Xóa
+                {t("Delete")}
               </Button>
             </div>
           </div>
@@ -166,8 +168,8 @@ const HouseDetailOwner = () => {
         <Table>
           <TableHeader className={"bg-sidebar"}>
             <TableRow>
-              <TableHead className={"w-[50px]"}>No</TableHead>
-              <TableHead>Rules</TableHead>
+              <TableHead className={"w-[50px]"}>{t("No")}</TableHead>
+              <TableHead>{t("Rule")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -177,7 +179,7 @@ const HouseDetailOwner = () => {
                   colSpan={3}
                   className="text-center text-muted-foreground"
                 >
-                  No Rule
+                  {t("NoRule")}
                 </TableCell>
               </TableRow>
             ) : (

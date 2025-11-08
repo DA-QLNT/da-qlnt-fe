@@ -32,7 +32,9 @@ import {
 } from "@/components/ui/table";
 import RoomStatusBadge from "../../components/Room/RoomStatusBadge";
 import { formatCurrency } from "@/lib/format/currencyFormat";
+import { useTranslation } from "react-i18next";
 const RoomOwner = () => {
+  const { t } = useTranslation("house");
   const { houseId } = useParams();
   const id = Number(houseId);
   const navigate = useNavigate();
@@ -119,7 +121,9 @@ const RoomOwner = () => {
 
   // ================UI========
   if (isError) {
-    return <div className="text-center p-8 text-red-500">Lỗi tải phòng</div>;
+    return (
+      <div className="text-center p-8 text-red-500">{t("ErrorLoadRoom")}</div>
+    );
   }
   return (
     <div className="px-4 lg:px-6">
@@ -140,7 +144,7 @@ const RoomOwner = () => {
       <div className="flex flex-col gap-8">
         <div className="flex justify-between items-center">
           <Button variant={"outline"} onClick={backToHouseDetail}>
-            <ArrowLeft /> Back
+            <ArrowLeft /> {t("Back")}
           </Button>
 
           <div className="flex items-center gap-x-2">
@@ -153,7 +157,7 @@ const RoomOwner = () => {
                 className={"w-[150px] md:w-[200px] tracking-wider"}
               >
                 <FunnelPlus size={24} />
-                <SelectValue placeholder="sort" />
+                <SelectValue placeholder="Sort" />
               </SelectTrigger>
               <SelectContent>
                 {sortRoomOptions.map((option) => (
@@ -162,7 +166,7 @@ const RoomOwner = () => {
                     value={option.value}
                     className={"flex items-center"}
                   >
-                    {option.label}
+                    {t(option.label)}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -170,7 +174,7 @@ const RoomOwner = () => {
 
             <Button onClick={() => setIsAddDialogOpen(true)}>
               <Plus />
-              <span className="hidden md:block">Add Room</span>
+              <span className="hidden md:block">{t("AddRoom")}</span>
             </Button>
           </div>
         </div>
@@ -178,11 +182,13 @@ const RoomOwner = () => {
           <Table>
             <TableHeader className={"bg-sidebar"}>
               <TableRow>
-                <TableHead className="w-[50px]">No</TableHead>
-                <TableHead className={""}>Room</TableHead>
-                <TableHead className={""}>Price</TableHead>
-                <TableHead className={""}>Status</TableHead>
-                <TableHead className="text-right w-[100px]">Action</TableHead>
+                <TableHead className="w-[50px]">{t("No")}</TableHead>
+                <TableHead className={""}>{t("Room")}</TableHead>
+                <TableHead className={""}>{t("Price")}</TableHead>
+                <TableHead className={""}>{t("Status")}</TableHead>
+                <TableHead className="text-right w-[100px]">
+                  {t("Action")}
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -192,7 +198,7 @@ const RoomOwner = () => {
                     colSpan={4}
                     className="text-center text-muted-foreground"
                   >
-                    Không tìm thấy phòng ở trang này.
+                    {t("NoRoom")}
                   </TableCell>
                 </TableRow>
               ) : (
@@ -222,7 +228,7 @@ const RoomOwner = () => {
                           to={`/owner/houses/${houseId}/rooms/${room.id}`}
                           className={"flex items-center gap-2"}
                         >
-                          <Eye /> View
+                          <Eye /> {t("View")}
                         </NavLink>
                       </Button>
                     </TableCell>

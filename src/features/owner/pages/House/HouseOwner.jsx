@@ -15,7 +15,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { NavLink } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 const HouseOwner = () => {
+  const { t } = useTranslation("house");
   const { userId: ownerId, isLoadingMe } = useAuth();
   console.log(ownerId);
   // add house
@@ -49,7 +51,7 @@ const HouseOwner = () => {
       {/* initial */}
       {isError && (
         <div className="p-6 text-center text-red-500">
-          Lỗi tải danh sách nhà trọ.
+          {t("ErrorLoadHouse")}
         </div>
       )}
       {(isLoading || isFetching) && (
@@ -59,7 +61,7 @@ const HouseOwner = () => {
       )}
       {!isLoading && rawHouses.length === 0 && (
         <div className="text-center p-8 text-muted-foreground">
-          Anh chưa có nhà trọ nào được đăng ký.
+          {t("NoHouse")}
         </div>
       )}
       {/* initial */}
@@ -72,24 +74,19 @@ const HouseOwner = () => {
         <div className="text-end">
           <Button onClick={() => setIsAddDialogOpen(true)}>
             <Plus />
-            Add House
+            {t('AddHouse')}
           </Button>
         </div>
-        {/* <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {sortedHouses.map((house) => (
-            <HouseCard key={house.id} house={house} />
-          ))}
-        </div> */}
         <div className="w-full lg:w-4/5 p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
           <Table>
             <TableHeader className={"bg-sidebar"}>
               <TableRow>
-                <TableHead className="w-[50px]">No</TableHead>
-                <TableHead className={"w-[250px]"}>House</TableHead>
+                <TableHead className="w-[50px]">{t("No")}</TableHead>
+                <TableHead className={"w-[250px]"}>{t('House')}</TableHead>
                 <TableHead className={"hidden sm:table-cell"}>
-                  Address
+                  {t("Address")}
                 </TableHead>
-                <TableHead className="text-right w-[100px]">Action</TableHead>
+                <TableHead className="text-right w-[100px]">{t("Action")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -98,8 +95,7 @@ const HouseOwner = () => {
                   <TableCell
                     colSpan={4}
                     className="text-center text-muted-foreground"
-                  >
-                    Chưa có nhà nào được đăng ký.
+                  >{t("NoHouse")}
                   </TableCell>
                 </TableRow>
               ) : (
@@ -126,7 +122,7 @@ const HouseOwner = () => {
                           to={`/owner/houses/${house.id}`}
                           className={"flex items-center gap-1"}
                         >
-                          <Eye /> View
+                          <Eye /> {t("View")}
                         </NavLink>
                       </Button>
                     </TableCell>

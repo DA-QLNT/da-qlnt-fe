@@ -21,8 +21,10 @@ import { useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useUpdateRoomMutation } from "../../store/roomApi";
+import { useTranslation } from "react-i18next";
 
 const RoomEditForm = ({ initialData, onFormSubmitSuccess }) => {
+  const { t } = useTranslation("house");
   const [updateRoom, { isLoading: isMutating }] = useUpdateRoomMutation();
   const defaultValues = useMemo(
     () => ({
@@ -94,10 +96,10 @@ const RoomEditForm = ({ initialData, onFormSubmitSuccess }) => {
         roomId: initialData.id,
         formData,
       }).unwrap();
-      toast.success("Update room successfully");
+      toast.success(t("UpdateSuccess"));
       onFormSubmitSuccess();
     } catch (error) {
-      toast.error("Update room failed");
+      toast.error(t("UpdateFail"));
       console.error(error);
     }
   };
@@ -109,23 +111,23 @@ const RoomEditForm = ({ initialData, onFormSubmitSuccess }) => {
       <FieldGroup>
         <div className="grid gap-4 grid-cols-2 md:grid-cols-3">
           <Field>
-            <FieldLabel>Code:</FieldLabel>
+            <FieldLabel>{t("Code")}:</FieldLabel>
             <Input disabled={isMutating} {...register("code")} />
             <FieldError>{errors.code?.message}</FieldError>
           </Field>
           <Field>
-            <FieldLabel>Area:</FieldLabel>
+            <FieldLabel>{t("Area")}:</FieldLabel>
             <Input type="number" disabled={isMutating} {...register("area")} />
             <FieldError>{errors.area?.message}</FieldError>
           </Field>
           <Field>
-            <FieldLabel>Rent/month (vnd):</FieldLabel>
+            <FieldLabel>{t("RentPerMonth")} (vnd):</FieldLabel>
             <Input type="number" disabled={isMutating} {...register("rent")} />
             <FieldError>{errors.rent?.message}</FieldError>
           </Field>
 
           <Field>
-            <FieldLabel>Floor:</FieldLabel>
+            <FieldLabel>{t("Floor")}:</FieldLabel>
             <Input
               type="number"
               disabled={isMutating}
@@ -134,7 +136,7 @@ const RoomEditForm = ({ initialData, onFormSubmitSuccess }) => {
             <FieldError>{errors.floor?.message}</FieldError>
           </Field>
           <Field>
-            <FieldLabel>Max people:</FieldLabel>
+            <FieldLabel>{t("MaxPeople")}:</FieldLabel>
             <Input
               type="number"
               disabled={isMutating}
@@ -143,12 +145,12 @@ const RoomEditForm = ({ initialData, onFormSubmitSuccess }) => {
             <FieldError>{errors.maxPeople?.message}</FieldError>
           </Field>
           <Field className="col-span-full">
-            <FieldLabel>Description:</FieldLabel>
+            <FieldLabel>{t("Description")}:</FieldLabel>
             <Textarea {...register("description")} disabled={isMutating} />
             <FieldError>{errors.description?.message}</FieldError>
           </Field>
           <Field className="col-start-1">
-            <FieldLabel>Avatar:</FieldLabel>
+            <FieldLabel>{t("Avatar")}:</FieldLabel>
             <div className="flex items-center gap-2">
               <img
                 src={avatarPreview}
@@ -164,7 +166,9 @@ const RoomEditForm = ({ initialData, onFormSubmitSuccess }) => {
             <FieldError>{errors.avatar?.message}</FieldError>
           </Field>
           <Field className="md:col-start-3">
-            <FieldLabel>Other images: ({allImages.length} images)</FieldLabel>
+            <FieldLabel>
+              {t("OtherImages")}: ({allImages.length} {t("Image")})
+            </FieldLabel>
             <Input
               type="file"
               multiple
@@ -181,7 +185,7 @@ const RoomEditForm = ({ initialData, onFormSubmitSuccess }) => {
           disabled={isMutating}
           className="w-full sm:w-auto"
         >
-          {isMutating ? <Spinner /> : "Update"}
+          {isMutating ? <Spinner /> : t("Update")}
         </Button>
       </div>
     </form>

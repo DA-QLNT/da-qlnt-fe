@@ -15,8 +15,10 @@ import toast from "react-hot-toast";
 import { useCreateRoomMutation } from "../../store/roomApi"; // Chỉ dùng Create Mutation
 import { Loader2, Plus } from "lucide-react"; // Thay Save bằng Plus cho Add
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 export default function RoomAddForm({ houseId, onFormSubmitSuccess }) {
+  const { t } = useTranslation("house");
   const [createRoom, { isLoading: isCreating }] = useCreateRoomMutation();
   const isMutating = isCreating;
 
@@ -65,15 +67,14 @@ export default function RoomAddForm({ houseId, onFormSubmitSuccess }) {
 
     // THÊM houseId và Status MẶC ĐỊNH
     formData.append("houseId", houseId);
-    formData.append("status", 0); 
+    formData.append("status", 0);
 
     // 2. Xử lý Files
     const avatarFile = data.avatar?.[0];
     if (avatarFile) {
       formData.append("avatar", avatarFile);
     } else {
-      
-      toast.error("Vui lòng chọn ảnh đại diện cho phòng.");
+      toast.error(t("PleaseSelectAvatar"));
       return;
     }
 
@@ -86,11 +87,11 @@ export default function RoomAddForm({ houseId, onFormSubmitSuccess }) {
 
     try {
       await createRoom(formData).unwrap(); // Truyền formData trực tiếp
-      toast.success("Tạo phòng mới thành công!");
-      reset(); 
+      toast.success(t("AddSuccess"));
+      reset();
       onFormSubmitSuccess();
     } catch (error) {
-      toast.error(error.data?.message || "Tạo phòng thất bại");
+      toast.error(error.data?.message || t("AddFail"));
       console.error("Room add error:", error);
     }
   };
@@ -101,14 +102,14 @@ export default function RoomAddForm({ houseId, onFormSubmitSuccess }) {
         <div className="grid gap-4 grid-cols-2 md:grid-cols-3">
           {/* Code */}
           <Field>
-            <FieldLabel>Code: *</FieldLabel>
+            <FieldLabel>{t("Code")}:*</FieldLabel>
             <Input disabled={isDisabled} {...register("code")} />
             <FieldError>{errors.code?.message}</FieldError>
           </Field>
 
           {/* Area */}
           <Field>
-            <FieldLabel>Area (m2) *:</FieldLabel>
+            <FieldLabel>{t("Area")} (m2)*:</FieldLabel>
             <Input
               type="number"
               {...register("area", { valueAsNumber: true })}
@@ -119,7 +120,7 @@ export default function RoomAddForm({ houseId, onFormSubmitSuccess }) {
 
           {/* Rent */}
           <Field>
-            <FieldLabel>Rent *: </FieldLabel>
+            <FieldLabel>{t("Rent")}*: </FieldLabel>
             <Input
               type={"number"}
               {...register("rent", { valueAsNumber: true })}
@@ -130,7 +131,7 @@ export default function RoomAddForm({ houseId, onFormSubmitSuccess }) {
 
           {/* Floor */}
           <Field>
-            <FieldLabel>Floor *: </FieldLabel>
+            <FieldLabel>{t("Floor")}*: </FieldLabel>
             <Input
               type="number"
               {...register("floor", { valueAsNumber: true })}
@@ -141,7 +142,7 @@ export default function RoomAddForm({ houseId, onFormSubmitSuccess }) {
 
           {/* Max people */}
           <Field>
-            <FieldLabel>Max people *: </FieldLabel>
+            <FieldLabel>{t("MaxPeople")}*: </FieldLabel>
             <Input
               type="number"
               {...register("maxPeople", { valueAsNumber: true })}
@@ -152,14 +153,14 @@ export default function RoomAddForm({ houseId, onFormSubmitSuccess }) {
 
           {/* Description */}
           <Field className={"col-span-full"}>
-            <FieldLabel>Description:</FieldLabel>
+            <FieldLabel>{t("Description")}:</FieldLabel>
             <Textarea {...register("description")} disabled={isDisabled} />
             <FieldError>{errors.description?.message}</FieldError>
           </Field>
 
           {/* Avatar Input */}
           <Field className={"col-span-full md:col-span-1"}>
-            <FieldLabel>Avatar: *</FieldLabel>
+            <FieldLabel>{t("Avatar")}:*</FieldLabel>
             <div className="flex items-center gap-2">
               <img
                 src={avatarPreview}
@@ -177,7 +178,7 @@ export default function RoomAddForm({ houseId, onFormSubmitSuccess }) {
 
           {/* Other Images Input */}
           <Field className={"col-span-full md:col-span-2"}>
-            <FieldLabel>Other images:</FieldLabel>
+            <FieldLabel>{t("OtherImages")}:</FieldLabel>
             <Input
               type={"file"}
               multiple
@@ -200,7 +201,7 @@ export default function RoomAddForm({ houseId, onFormSubmitSuccess }) {
           ) : (
             <Plus className="h-4 w-4 mr-2" />
           )}
-          Create Room
+          {t("AddRoom")}
         </Button>
       </div>
     </form>

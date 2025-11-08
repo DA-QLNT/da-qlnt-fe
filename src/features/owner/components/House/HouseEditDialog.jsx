@@ -8,8 +8,10 @@ import {
 } from "@/components/ui/dialog";
 import { Spinner } from "@/components/ui/spinner";
 import HouseForm from "./HouseForm";
+import { useTranslation } from "react-i18next";
 
 const HouseEditDialog = ({ houseId, open, onOpenChange }) => {
+  const { t } = useTranslation("house");
   const {
     data: house,
     isLoading,
@@ -33,7 +35,7 @@ const HouseEditDialog = ({ houseId, open, onOpenChange }) => {
     return (
       <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogContent className="sm:max-w-md text-center text-red-500">
-          Lỗi tải chi tiết nhà.
+          {t("ErrorLoadHouseDetail")}
         </DialogContent>
       </Dialog>
     );
@@ -42,7 +44,9 @@ const HouseEditDialog = ({ houseId, open, onOpenChange }) => {
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className={"m:max-w-2xl md:max-w-4xl"}>
         <DialogHeader>
-          <DialogTitle>Edit House: {house?.name || house?.code}</DialogTitle>
+          <DialogTitle>
+            {t("EditHouse")}: {house?.name || house?.code}
+          </DialogTitle>
         </DialogHeader>
         {loading ? (
           <Spinner className={"size-10"} />

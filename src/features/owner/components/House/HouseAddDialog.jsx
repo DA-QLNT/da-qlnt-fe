@@ -6,8 +6,10 @@ import {
 } from "@/components/ui/dialog";
 import React from "react";
 import HouseForm from "./HouseForm";
+import { useTranslation } from "react-i18next";
 
 const HouseAddDialog = ({ open, onOpenChange }) => {
+  const {t} = useTranslation("house")
   const handleSuccess = () => {
     onOpenChange(false);
   };
@@ -16,7 +18,7 @@ const HouseAddDialog = ({ open, onOpenChange }) => {
       <DialogContent className="sm:max-w-2xl md:max-w-4xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            Add new house
+            {t("AddNewHouse")}
           </DialogTitle>
         </DialogHeader>
         <HouseForm mode="add" onFormSubmitSuccess={handleSuccess} />

@@ -8,8 +8,10 @@ import {
 import { Plus } from "lucide-react";
 import React from "react";
 import RoomAddForm from "./RoomAddForm";
+import { useTranslation } from "react-i18next";
 
 export default function RoomAddDialog({ houseId, open, onOpenChange }) {
+  const { t } = useTranslation("house");
   const handleSuccess = () => {
     onOpenChange(false);
   };
@@ -18,16 +20,10 @@ export default function RoomAddDialog({ houseId, open, onOpenChange }) {
       <DialogContent className="sm:max-w-2xl md:max-w-4xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Plus className="h-6 w-6" /> Thêm Phòng Mới (Nhà #{houseId})
+            <Plus className="h-6 w-6" /> {t("AddNewRoom")}
           </DialogTitle>
-          <DialogDescription>
-            Nhập thông tin cơ bản và ảnh cho phòng trọ mới.
-          </DialogDescription>
         </DialogHeader>
-        <RoomAddForm
-          houseId={houseId}
-          onFormSubmitSuccess={handleSuccess}
-        />
+        <RoomAddForm houseId={houseId} onFormSubmitSuccess={handleSuccess} />
       </DialogContent>
     </Dialog>
   );
