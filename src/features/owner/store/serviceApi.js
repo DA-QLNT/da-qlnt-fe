@@ -65,13 +65,20 @@ export const serviceApi = baseApi.injectEndpoints({
         method: "PUT",
         data: data,
       }),
-      invalidatesTags: (result, error, { houseServiceId }) => [
+      invalidatesTags: (result, error,  houseServiceId ) => [
         "ServiceHouse",
         {
           type: "ServiceHouse",
           id: result?.houseId,
         },
       ],
+    }),
+    deleteHouseService: builder.mutation({
+      query: (houseServiceId) => ({
+        url: `/house-services/${houseServiceId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["ServiceHouse"],
     }),
   }),
 });
@@ -82,4 +89,5 @@ export const {
   useGetHouseServicesByHouseIdQuery,
   useAssignServiceToHousesMutation,
   useUpdateHouseServiceMutation,
+  useDeleteHouseServiceMutation,
 } = serviceApi;

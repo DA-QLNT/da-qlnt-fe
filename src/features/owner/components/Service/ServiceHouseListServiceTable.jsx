@@ -9,17 +9,7 @@ import {
 } from "@/components/ui/table";
 import { useGetHouseServicesByHouseIdQuery } from "../../store/serviceApi";
 import { Spinner } from "@/components/ui/spinner";
-import { formatCurrency } from "@/lib/format/currencyFormat";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { METHOD_OPTIONS } from "@/assets/service/methodOptions";
-import { Calendar } from "@/components/ui/calendar";
+
 import { useState } from "react";
 import HouseServiceRow from "./HouseServiceRow";
 const ServiceHouseListServiceTable = ({ houseId, onFormSubmitSuccess }) => {
@@ -56,8 +46,8 @@ const ServiceHouseListServiceTable = ({ houseId, onFormSubmitSuccess }) => {
         <TableBody>
           {assignedServices.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={6} className={"text-center"} />
-              No services{" "}
+              <TableCell colSpan={3} className={"text-center"} />
+              No services
             </TableRow>
           ) : (
             assignedServices.map((houseService, index) => (

@@ -344,13 +344,7 @@ const ServiceOwner = () => {
                               >
                                 Add service - house
                               </DropdownMenuItem>
-                              <DropdownMenuItem
-                                onClick={() =>
-                                  openServiceHouseAddDialog(service)
-                                }
-                              >
-                                Edit service - house
-                              </DropdownMenuItem>
+                              
 
                               <DropdownMenuItem
                                 onClick={() => openEditDialog(service)}
