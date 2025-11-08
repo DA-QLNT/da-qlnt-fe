@@ -20,3 +20,11 @@ export const ServiceHouseAssignmentSchema = z.object({
 
   houseIds: z.array(z.number()).min(1, "Vui lòng chọn ít nhất một nhà trọ."),
 });
+
+export const HouseServiceRowSchema = z.object({
+  method: z.coerce.number({ invalid_type_error: "Chọn cách tính." }),
+  price: z.coerce
+    .number({ invalid_type_error: "Giá phải là số" })
+    .min(0, "Giá phải >= 0."),
+  effectiveDate: z.date({ required_error: "Ngày hiệu lực là bắt buộc." }),
+});

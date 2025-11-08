@@ -55,6 +55,7 @@ import ServiceDeleteConfirm from "../../components/Service/ServiceDeleteConfirm"
 import ServiceHouseAddDialog from "../../components/Service/ServiceHouseAddDialog";
 import { useAuth } from "@/features/auth";
 import { useGetHousesByOwnerIdQuery } from "../../store/houseApi";
+import ServiceHouseListServiceDialog from "../../components/Service/ServiceHouseListServiceDialog";
 
 const ServiceOwner = () => {
   const [page, setPage] = useState(0);
@@ -133,6 +134,7 @@ const ServiceOwner = () => {
       serviceName: service.name,
     });
   };
+  // ======house-service
 
   const [serviceHouseAddDialog, setServiceHouseAddDialog] = useState({
     open: false,
@@ -156,8 +158,31 @@ const ServiceOwner = () => {
     }
   };
 
+  const [serviceHouseListServiceDialog, setServiceHouseListServiceDialog] =
+    useState({
+      open: false,
+      houseId: null,
+      houseName: "",
+    });
+  const openServiceHouseListServiceDialog = (house) => {
+    setServiceHouseListServiceDialog({
+      open: true,
+      houseId: house.id,
+      houseName: house.name,
+    });
+  };
+  const closeServiceHouseListServiceDialog = (open) => {
+    if (!open) {
+      setServiceHouseListServiceDialog({
+        open: open,
+        houseId: null,
+        houseName: "",
+      });
+    }
+  };
+
   // ====UI=============
-  if (isLoading || isFetching) {
+  if (isLoading || isFetching || houseLoading || houseFetching) {
     return (
       <div className="absolute inset-0 flex items-center justify-center">
         <Spinner className="size-20" />
@@ -174,6 +199,12 @@ const ServiceOwner = () => {
   return (
     <div className="px-4 lg:px-6">
       {/* Dialog */}
+      <ServiceHouseListServiceDialog
+        open={serviceHouseListServiceDialog.open}
+        onOpenChange={closeServiceHouseListServiceDialog}
+        houseId={serviceHouseListServiceDialog.houseId}
+        houseName={serviceHouseListServiceDialog.houseName}
+      />
       <ServiceHouseAddDialog
         open={serviceHouseAddDialog.open}
         serviceId={serviceHouseAddDialog.serviceId}
@@ -206,7 +237,7 @@ const ServiceOwner = () => {
           <TabsTrigger value="serviceHouse">Service & House</TabsTrigger>
         </TabsList>
         <TabsContent value="serviceHouse">
-          <div className="w-full md:w-2/3 lg:w-1/2 p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
+          <div className="w-full lg:w-2/3 p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
             <Table>
               <TableHeader className={"bg-sidebar"}>
                 <TableRow>
@@ -228,8 +259,18 @@ const ServiceOwner = () => {
                           {house.name}
                         </h4>
                       </TableCell>
+                      <TableCell className={"hidden sm:table-cell"}>
+                        <h4 className="text-muted-foreground text-wrap ">
+                          {house.address}-{house.district}-{house.province}
+                        </h4>
+                      </TableCell>
                       <TableCell className={"flex justify-end"}>
-                        <SquarePen className="h-4 w-4 md:w-8 lg:h-8" />
+                        <SquarePen
+                          onClick={() => {
+                            openServiceHouseListServiceDialog(house);
+                          }}
+                          className="h-4 w-4 md:w-6 lg:h-6"
+                        />
                       </TableCell>
                     </TableRow>
                   ))}
