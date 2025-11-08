@@ -45,11 +45,7 @@ const RoomOwner = () => {
       skip: !id,
     }
   );
-  // temp
-  // const rooms = data?.content || [];
-  // const totalElements = data?.totalElements || 0;
-  // const totalPages = data?.totalPages || 0;
-  // used
+  
   const [currentSort, setCurrentSort] = useState("none");
   const allRooms = allRoomsData?.content || [];
   const filteredAndSortedRooms = useMemo(() => {

@@ -25,7 +25,7 @@ export const useAuth = () => {
   });
 
   const user = isAuthenticated ? { ...jwtUser, ...userDetail } : null;
-  const ownerId = userDetail?.id;
+  const userId = userDetail?.id;
 
   const isAdmin = user?.roles?.includes("ADMIN");
   const isOwner = user?.roles?.includes("OWNER");
@@ -38,7 +38,7 @@ export const useAuth = () => {
     isOwner,
     isUser,
     isGuest,
-    ownerId,
+    userId,
     isLoadingMe,
   };
 };

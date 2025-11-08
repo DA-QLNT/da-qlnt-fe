@@ -36,7 +36,7 @@ const HouseForm = ({
   mode = "add",
   onFormSubmitSuccess,
 }) => {
-  const { ownerId } = useAuth();
+  const { userId:ownerId } = useAuth();
   const isEditMode = mode === "edit";
   const schema = !isEditMode ? HouseAddSchema : HouseAddSchema;
 
