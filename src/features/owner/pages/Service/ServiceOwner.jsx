@@ -242,7 +242,7 @@ const ServiceOwner = () => {
               <TableHeader className={"bg-sidebar"}>
                 <TableRow>
                   <TableHead className="w-[50px]">No</TableHead>
-                  <TableHead className={"w-[300px]"}>House</TableHead>
+                  <TableHead className={"w-[250px]"}>House</TableHead>
                   <TableHead className={"hidden sm:table-cell"}>
                     Address
                   </TableHead>
