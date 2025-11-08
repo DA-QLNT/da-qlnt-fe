@@ -38,6 +38,7 @@ import React, { useMemo, useState } from "react";
 import { AssetItemAddSchema } from "@/lib/validation/asset";
 import { Spinner } from "@/components/ui/spinner";
 import AssetCreatOrUpdateDialog from "../Asset/AssetCreatOrUpdateDialog";
+import { useTranslation } from "react-i18next";
 
 const defaultValues = {
   assetId: undefined,
@@ -49,14 +50,8 @@ const defaultValues = {
 const ADD_NEW_ASSET_CODE = "ADD_NEW_ASSET_CODE";
 
 export default function AssetItemAddForm({ roomId, onFormSubmitSuccess }) {
+  const { t } = useTranslation("house");
   const [createItem, { isLoading: isMutating }] = useCreateAssetItemMutation();
-
-  // Fetch danh sách loại tài sản (Asset Types)
-  // const { data: assetData, isLoading: loadingAssets } = useGetAssetsQuery({
-  //   page: 0,
-  //   size: 50,
-  // });
-  // const assetTypes = assetData?.content || [];
 
   // Them asset type trong form asset-item
   const [isAssetTypeDialogOpen, setIsAssetTypeDialogOpen] = useState(false);
@@ -120,11 +115,11 @@ export default function AssetItemAddForm({ roomId, onFormSubmitSuccess }) {
 
     try {
       await createItem(formData).unwrap();
-      toast.success(`Đã thêm Item vào phòng ${roomId} thành công!`);
+      toast.success(t("AddSuccess"));
       reset();
       onFormSubmitSuccess();
     } catch (error) {
-      toast.error(error.data?.message || "Thêm Item thất bại.");
+      toast.error(t("AddFail"));
       console.error("Asset Item create error:", error);
     }
   };
@@ -152,7 +147,7 @@ export default function AssetItemAddForm({ roomId, onFormSubmitSuccess }) {
           <div className="grid gap-4 grid-cols-2 md:grid-cols-3">
             {/* Select Asset Type */}
             <Field className="md:col-span-3">
-              <FieldLabel>Loại Tài Sản (*)</FieldLabel>
+              <FieldLabel>{t("Assets")}(*)</FieldLabel>
               <Controller
                 name="assetId"
                 control={control}
@@ -169,18 +164,18 @@ export default function AssetItemAddForm({ roomId, onFormSubmitSuccess }) {
                     disabled={isDisabled || loadingAssets}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Chọn loại tài sản" />
+                      <SelectValue placeholder={t("SelectAssets")} />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value={ADD_NEW_ASSET_CODE}>
                         <div className="flex items-center gap-2">
-                          <Plus /> Thêm loại tài sản mới
+                          <Plus /> {t("AddNewAsset")}
                         </div>
                       </SelectItem>
 
                       {loadingAssets ? (
                         <div className="p-2 text-center">
-                          <Spinner size={20} /> Loading...
+                          <Spinner size={20} />
                         </div>
                       ) : (
                         assetTypes.map((asset) => (
@@ -201,14 +196,14 @@ export default function AssetItemAddForm({ roomId, onFormSubmitSuccess }) {
 
             {/* Description */}
             <Field className="md:col-span-3">
-              <FieldLabel>Mô tả Item (*):</FieldLabel>
+              <FieldLabel>{t("Description")}(*):</FieldLabel>
               <Textarea {...register("description")} disabled={isDisabled} />
               <FieldError>{errors.description?.message}</FieldError>
             </Field>
 
             {/* Price */}
             <Field>
-              <FieldLabel>Giá mua (*):</FieldLabel>
+              <FieldLabel>{t("PriceBought")}(*):</FieldLabel>
               <Input
                 type="number"
                 {...register("price", { valueAsNumber: true })}
@@ -219,7 +214,7 @@ export default function AssetItemAddForm({ roomId, onFormSubmitSuccess }) {
 
             {/* Bought At (Date) */}
             <Field className="md:col-span-2">
-              <FieldLabel>Ngày mua (*):</FieldLabel>
+              <FieldLabel>{t("DateBought")}(*):</FieldLabel>
               <Controller
                 name="boughtAt"
                 control={control}
@@ -237,7 +232,7 @@ export default function AssetItemAddForm({ roomId, onFormSubmitSuccess }) {
                         {field.value ? (
                           format(field.value, "PPP")
                         ) : (
-                          <span>Chọn ngày mua</span>
+                          <span>{t("EnterDateBought")}</span>
                         )}
                       </Button>
                     </PopoverTrigger>
@@ -287,7 +282,7 @@ export default function AssetItemAddForm({ roomId, onFormSubmitSuccess }) {
             ) : (
               <Save className="h-4 w-4 mr-2" />
             )}
-            Thêm Item
+            {t("AddItem")}
           </Button>
         </div>
       </form>

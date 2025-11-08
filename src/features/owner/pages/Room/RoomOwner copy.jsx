@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import RoomCard from "../../components/Room/RoomCard";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Eye, Filter, FunnelPlus, Plus } from "lucide-react";
-import { NavLink, useNavigate, useParams } from "react-router-dom";
+import { ArrowLeft, Filter, FunnelPlus, Plus } from "lucide-react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useGetRoomsByHouseIdQuery } from "../../store/roomApi";
 import { Spinner } from "@/components/ui/spinner";
 import {
@@ -22,19 +22,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { sortRoomOptions } from "@/assets/sort/sortRoom";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import RoomStatusBadge from "../../components/Room/RoomStatusBadge";
-import { formatCurrency } from "@/lib/format/currencyFormat";
-import { useTranslation } from "react-i18next";
+
 const RoomOwner = () => {
-  const { t } = useTranslation("house");
   const { houseId } = useParams();
   const id = Number(houseId);
   const navigate = useNavigate();
@@ -56,20 +45,11 @@ const RoomOwner = () => {
       skip: !id,
     }
   );
-
+  
   const [currentSort, setCurrentSort] = useState("none");
   const allRooms = allRoomsData?.content || [];
-  // initial sort by name
-  const sortedRoomByName = useMemo(() => {
-    return [...allRooms].sort((a, b) => {
-      const nameA = a.code.toLowerCase();
-      const nameB = b.code.toLowerCase();
-      return nameA.localeCompare(nameB, "vi", { sensitivity: "base" });
-    });
-  }, [allRooms]);
-
   const filteredAndSortedRooms = useMemo(() => {
-    let list = [...sortedRoomByName];
+    let list = [...allRooms];
     const sortSetting = sortRoomOptions.find(
       (option) => option.value === currentSort
     );
@@ -121,9 +101,7 @@ const RoomOwner = () => {
 
   // ================UI========
   if (isError) {
-    return (
-      <div className="text-center p-8 text-red-500">{t("ErrorLoadRoom")}</div>
-    );
+    return <div className="text-center p-8 text-red-500">Lỗi tải phòng</div>;
   }
   return (
     <div className="px-4 lg:px-6">
@@ -144,7 +122,7 @@ const RoomOwner = () => {
       <div className="flex flex-col gap-8">
         <div className="flex justify-between items-center">
           <Button variant={"outline"} onClick={backToHouseDetail}>
-            <ArrowLeft /> {t("Back")}
+            <ArrowLeft /> Back
           </Button>
 
           <div className="flex items-center gap-x-2">
@@ -157,7 +135,7 @@ const RoomOwner = () => {
                 className={"w-[150px] md:w-[200px] tracking-wider"}
               >
                 <FunnelPlus size={24} />
-                <SelectValue placeholder="Sort" />
+                <SelectValue placeholder="sort" />
               </SelectTrigger>
               <SelectContent>
                 {sortRoomOptions.map((option) => (
@@ -166,7 +144,7 @@ const RoomOwner = () => {
                     value={option.value}
                     className={"flex items-center"}
                   >
-                    {t(option.label)}
+                    {option.label}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -174,71 +152,23 @@ const RoomOwner = () => {
 
             <Button onClick={() => setIsAddDialogOpen(true)}>
               <Plus />
-              <span className="hidden md:block">{t("AddRoom")}</span>
+              <span className="hidden md:block">Add Room</span>
             </Button>
           </div>
         </div>
-        <div className="w-full lg:w-4/5 p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
-          <Table>
-            <TableHeader className={"bg-sidebar"}>
-              <TableRow>
-                <TableHead className="w-[50px]">{t("No")}</TableHead>
-                <TableHead className={""}>{t("Room")}</TableHead>
-                <TableHead className={""}>{t("Price")}</TableHead>
-                <TableHead className={""}>{t("Status")}</TableHead>
-                <TableHead className="text-right w-[100px]">
-                  {t("Action")}
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {roomsToDisplay.length === 0 && !loadingAllRooms ? (
-                <TableRow>
-                  <TableCell
-                    colSpan={4}
-                    className="text-center text-muted-foreground"
-                  >
-                    {t("NoRoom")}
-                  </TableCell>
-                </TableRow>
-              ) : (
-                roomsToDisplay.map((room, index) => (
-                  <TableRow key={room.id}>
-                    <TableCell className={"w-[50px]"}>{index + 1}</TableCell>
-                    <TableCell>
-                      <h4 className="font-semibold line-clamp-1">
-                        {room.code}
-                      </h4>
-                    </TableCell>
-                    <TableCell className={""}>
-                      {formatCurrency(room.rent)}
-                    </TableCell>
-                    <TableCell>
-                      <RoomStatusBadge status={room.status} />
-                    </TableCell>
-                    <TableCell className={"flex justify-end"}>
-                      <Button
-                        variant={"outline"}
-                        className={
-                          "border-purple-400 dark:border-purple-400 hover:border-amber-500 hover:text-amber-500"
-                        }
-                        asChild
-                      >
-                        <NavLink
-                          to={`/owner/houses/${houseId}/rooms/${room.id}`}
-                          className={"flex items-center gap-2"}
-                        >
-                          <Eye /> {t("View")}
-                        </NavLink>
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
 
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5  gap-4">
+          {roomsToDisplay.length === 0 && (
+            <div className="text-center p-8 text-muted-foreground col-span-full">
+              {totalFilteredElements > 0
+                ? "Không tìm thấy phòng ở trang này."
+                : "Nhà này chưa có phòng nào được tạo."}
+            </div>
+          )}
+          {roomsToDisplay.map((room) => (
+            <RoomCard key={room.id} room={room} houseId={houseId} />
+          ))}
+        </div>
         {totalPages > 1 && (
           <Pagination className={"mt-4 flex"}>
             <PaginationContent>

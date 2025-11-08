@@ -175,7 +175,7 @@ const AssetOwner = () => {
           Quản lý Tài Sản ({totalElements} Loại)
         </h1>
       </header>
-      <div className="w-full p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
+      <div className="w-full lg:w-2/3 p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
         <Table>
           <TableHeader className={"bg-sidebar"}>
             <TableRow>
@@ -183,7 +183,13 @@ const AssetOwner = () => {
               <TableHead>Tên Tài Sản</TableHead>
               <TableHead className="w-[150px]">Tổng Số Lượng</TableHead>
               <TableHead className="text-right w-[100px]">
-                <Button variant={"outline"} onClick={openAddDialog}>
+                <Button
+                  variant={"outline"}
+                  className={
+                    "border-purple-400 dark:border-purple-400 hover:border-amber-500 hover:text-amber-500"
+                  }
+                  onClick={openAddDialog}
+                >
                   <Plus className="mr-2 h-4 w-4" />
                   Thêm
                 </Button>

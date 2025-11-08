@@ -8,8 +8,10 @@ import {
 import AssetItemAddForm from "./AssetItemAddForm";
 import { Plus } from "lucide-react";
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 export default function AssetItemAddDialog({ roomId, open, onOpenChange }) {
+  const { t } = useTranslation("house");
   const handleSuccess = () => {
     onOpenChange(false);
   };
@@ -20,11 +22,8 @@ export default function AssetItemAddDialog({ roomId, open, onOpenChange }) {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
             <Plus className="h-6 w-6" />
-            Thêm Item mới cho Phòng #{roomId}
+            {t("AddNewItem")}
           </DialogTitle>
-          <DialogDescription>
-            Chọn loại tài sản và thêm chi tiết mục tài sản.
-          </DialogDescription>
         </DialogHeader>
 
         <AssetItemAddForm roomId={roomId} onFormSubmitSuccess={handleSuccess} />

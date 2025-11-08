@@ -1,9 +1,0 @@
-{
-  "name": "abc",
-  "province": "Ha Nam",
-  "district": "Phu Ly",
-  "address": "So 25 ngo 20 xa Hop Tien",
-  "area": 120,
-  "ownerId": 2,
-  "ruleIds": [1, 2]
-}

@@ -11,6 +11,9 @@ import ROLECONTENT_EN from "../locales/en/rolecontent.json";
 import ROLECONTENT_VI from "../locales/vi/rolecontent.json";
 import PERMISSIONCONTENT_EN from "../locales/en/permissioncontent.json";
 import PERMISSIONCONTENT_VI from "../locales/vi/permissioncontent.json";
+import HOUSE_EN from "../locales/en/house.json";
+import HOUSE_VI from "../locales/vi/house.json";
+
 // import { locales } from "@/i18n/i18n";
 export const locales = {
   en: "English",
@@ -24,6 +27,7 @@ const resources = {
     usercontent: USERCONTENT_EN,
     rolecontent: ROLECONTENT_EN,
     permissioncontent: PERMISSIONCONTENT_EN,
+    house: HOUSE_EN,
   },
   vi: {
     login: LOGIN_VI,
@@ -31,6 +35,7 @@ const resources = {
     usercontent: USERCONTENT_VI,
     rolecontent: ROLECONTENT_VI,
     permissioncontent: PERMISSIONCONTENT_VI,
+    house: HOUSE_VI,
   },
 };
 

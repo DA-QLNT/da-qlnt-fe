@@ -1,7 +1,9 @@
 import { Badge } from "@/components/ui/badge";
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 const RoomStatusBadge = ({ status }) => {
+  const { t } = useTranslation("house");
   let color;
   let statusName;
   let variant;
@@ -15,7 +17,7 @@ const RoomStatusBadge = ({ status }) => {
   }
   return (
     <Badge variant={variant} className={color}>
-      {statusName}
+      {t(statusName)}
     </Badge>
   );
 };

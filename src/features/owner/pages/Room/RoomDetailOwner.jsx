@@ -48,7 +48,9 @@ import { AssetImageViewer } from "@/components/common/ImageViewer";
 import AssetItemEditDialog from "../../components/Room/AssetItemEditDialog";
 import AssetItemAddDialog from "../../components/Room/AssetItemAddDialog";
 import { formatCurrency } from "@/lib/format/currencyFormat";
+import { useTranslation } from "react-i18next";
 const RoomDetailOwner = () => {
+  const { t } = useTranslation("house");
   const navigate = useNavigate();
   const { houseId, roomId } = useParams();
 
@@ -66,15 +68,16 @@ const RoomDetailOwner = () => {
   const isAvailable = currentStatus === 0;
   const handleStatusToggle = async (checked) => {
     const newStatus = checked ? 1 : 0;
-    const toastId = toast.loading("Updating status...");
+    const toastId = toast.loading(t("UpdatingStatus"));
 
     try {
       await updateStatus({
         roomId: room.id,
         status: newStatus,
       }).unwrap();
-      toast.success("Update status successfully", { id: toastId });
+      toast.success(t("UpdateSuccess"), { id: toastId });
     } catch (error) {
+      toast.error(t("UpdateFail"), { id: toastId });
       console.error(error);
     }
   };
@@ -104,7 +107,7 @@ const RoomDetailOwner = () => {
   }, [room]);
 
   //====assets=========
-  const rawAssetsWithItems = room?.assetItems || []
+  const rawAssetsWithItems = room?.assetItems || [];
   const sortedAssetsWithItems = useMemo(() => {
     return [...rawAssetsWithItems].sort((a, b) => {
       const nameA = a.assetName.toLowerCase();
@@ -171,6 +174,12 @@ const RoomDetailOwner = () => {
       roomId: null,
     });
   };
+  const openDeleteDialog = () => {
+    setDeleteDialog({
+      open: true,
+      roomId: room.id,
+    });
+  };
   //  Edit Item
   const openEditItemDialog = (item) => {
     setEditItemDialog({
@@ -182,7 +191,9 @@ const RoomDetailOwner = () => {
     if (!open) {
       setEditItemDialog({ open: false, initialData: null });
     }
-  }; // Add Item
+  };
+
+  // Add Item
   // Hàm mở Dialog Add Item
   const openAddAssetItemDialog = () => {
     setAddItemDialog({
@@ -204,7 +215,7 @@ const RoomDetailOwner = () => {
       </div>
     );
   } else if (isError || !room) {
-    return <div className="text-center"> No room found</div>;
+    return <div className="text-center"> {t("NoRoom")}</div>;
   }
 
   // log
@@ -239,124 +250,120 @@ const RoomDetailOwner = () => {
       />
       {/* End Dialogs */}
       <div className="flex flex-col items-center gap-4 lg:flex-row">
-        <div className="flex flex-col w-full lg:w-1/2">
+        <div className="flex flex-col w-full lg:w-2/3">
           <div className="flex justify-between items-center mb-4">
             <Button variant="outline" onClick={backToHouseDetail}>
               <ArrowLeft />
-              Back
+              {t("Back")}
             </Button>
             <div className="flex  gap-4">
-              <Button onClick={openEditDialog}>Sửa</Button>
-              <Button variant="destructive">Xóa</Button>
+              <Button onClick={openEditDialog}>{t("Edit")}</Button>
+              <Button variant="destructive" onClick={openDeleteDialog}>
+                {t("Delete")}
+              </Button>
             </div>
           </div>
           <div className="w-full p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
             <Table>
               <TableHeader className={"bg-sidebar"}>
                 <TableRow>
-                  <TableHead className={"w-[150px]"}>Info</TableHead>
-                  <TableHead>Details</TableHead>
+                  <TableHead className={"w-[150px]"}>{t("Infor")}</TableHead>
+                  <TableHead>{t("Detail")}</TableHead>
+                  <TableHead className="text-right">{t("Action")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 <TableRow>
-                  <TableCell>Id room</TableCell>
-                  <TableCell>{room.id}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>Code</TableCell>
+                  <TableCell>{t("Code")}</TableCell>
                   <TableCell>{room.code}</TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell>Floor</TableCell>
+                  <TableCell>{t("Floor")}</TableCell>
                   <TableCell>{room.floor}</TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell>Max People</TableCell>
+                  <TableCell>{t("MaxPeople")}</TableCell>
                   <TableCell>{room.maxPeople}</TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell>Price</TableCell>
+                  <TableCell>{t("Price")}</TableCell>
                   <TableCell>{formatCurrency(room.rent)}</TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell>Area</TableCell>
+                  <TableCell>{t("Area")}</TableCell>
                   <TableCell>{room.area}</TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell>Status</TableCell>
+                  <TableCell>{t("Status")}</TableCell>
                   <TableCell className={"flex items-center justify-between"}>
                     <RoomStatusBadge status={room.status} />
+                  </TableCell>
+                  <TableCell className={"text-right"}>
                     <Switch
                       checked={!isAvailable}
                       onCheckedChange={handleStatusToggle}
                       disabled={isStatusUpdating}
-                      title={
-                        isStatusUpdating
-                          ? "Đang cập nhật..."
-                          : `Chuyển sang ${isAvailable ? "Đã thuê" : "Trống"}`
-                      }
                     />
                   </TableCell>
                 </TableRow>
 
                 <TableRow>
-                  <TableCell>Description</TableCell>
+                  <TableCell>{t("Description")}</TableCell>
                   <TableCell>
-                    <div className="flex justify-between items-center">
-                      <p className="text-wrap">{room.description}</p>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            disabled={!allRoomImages}
-                          >
-                            <Eye
-                              className={`w-4 h-4 ${
-                                allRoomImages.length > 0
-                                  ? "text-primary"
-                                  : "text-muted-foreground"
-                              }`}
-                            />
-                          </Button>
-                        </PopoverTrigger>
-                        {allRoomImages.length > 0 && (
-                          <PopoverContent
-                            className="w-auto p-0 border-none shadow-2xl"
-                            onPointerDownOutside={(e) => e.preventDefault()}
-                          >
-                            <div className="w-full max-w-xs flex items-center justify-center">
-                              <Carousel
-                                plugins={[plugin.current]}
-                                onMouseEnter={plugin.current.stop}
-                                onMouseLeave={plugin.current.reset}
-                                opts={{
-                                  loop: true,
-                                }}
-                                setApi={setApiCarousel}
-                              >
-                                <CarouselContent className={"flex p-1 "}>
-                                  {allRoomImages.map((image, index) => (
-                                    <CarouselItem key={index}>
-                                      <Card className={"p-1 w-full h-full"}>
-                                        <img
-                                          src={image}
-                                          alt={room.code}
-                                          className="w-full aspect-square h-full flex rounded-xl object-contain"
-                                        />
-                                      </Card>
-                                    </CarouselItem>
-                                  ))}
-                                </CarouselContent>
-                                <CarouselPrevious className={"left-1"} />
-                                <CarouselNext className={"right-1"} />
-                              </Carousel>
-                            </div>
-                          </PopoverContent>
-                        )}
-                      </Popover>
-                    </div>
+                    <p className="text-wrap">{room.description}</p>
+                  </TableCell>
+                  <TableCell className={"text-right"}>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          disabled={!allRoomImages}
+                        >
+                          <Eye
+                            className={`w-4 h-4 ${
+                              allRoomImages.length > 0
+                                ? "text-primary"
+                                : "text-muted-foreground"
+                            }`}
+                          />
+                        </Button>
+                      </PopoverTrigger>
+                      {allRoomImages.length > 0 && (
+                        <PopoverContent
+                          className="w-auto p-0 border-none shadow-2xl"
+                          onPointerDownOutside={(e) => e.preventDefault()}
+                        >
+                          <div className="w-full max-w-xs flex items-center justify-center">
+                            <Carousel
+                              plugins={[plugin.current]}
+                              onMouseEnter={plugin.current.stop}
+                              onMouseLeave={plugin.current.reset}
+                              opts={{
+                                loop: true,
+                              }}
+                              setApi={setApiCarousel}
+                            >
+                              <CarouselContent className={"flex p-1 "}>
+                                {allRoomImages.map((image, index) => (
+                                  <CarouselItem key={index}>
+                                    <Card className={"p-1 w-full h-full"}>
+                                      <img
+                                        src={image}
+                                        alt={room.code}
+                                        className="w-full aspect-square h-full flex rounded-xl object-contain"
+                                      />
+                                    </Card>
+                                  </CarouselItem>
+                                ))}
+                              </CarouselContent>
+                              <CarouselPrevious className={"left-1"} />
+                              <CarouselNext className={"right-1"} />
+                            </Carousel>
+                          </div>
+                        </PopoverContent>
+                      )}
+                    </Popover>
                   </TableCell>
                 </TableRow>
               </TableBody>
@@ -366,22 +373,25 @@ const RoomDetailOwner = () => {
       </div>
       {/* Assets */}
       <div className="flex flex-col mt-2 lg:mt-20 w-full">
-        <h2>Assets</h2>
+        <h2>{t("Assets")}</h2>
         <div className="flex gap-4 justify-between items-start">
-          <div className="w-full lg:w-1/2 p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
+          <div className="w-full lg:w-2/3 p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
             <Table>
               <TableHeader className={"bg-sidebar"}>
                 <TableRow>
-                  <TableHead className={"w-[150px]"}>Item</TableHead>
-                  <TableHead>Description</TableHead>
-                  <TableHead>Status</TableHead>
+                  <TableHead className={"w-[150px]"}>{t("Item")}</TableHead>
+                  <TableHead>{t("Description")}</TableHead>
+                  <TableHead>{t("Status")}</TableHead>
                   <TableHead className="flex justify-end items-center">
                     <Button
                       variant={"outline"}
+                      className={
+                        "border-purple-400 dark:border-purple-400 hover:border-amber-500 hover:text-amber-500"
+                      }
                       onClick={openAddAssetItemDialog}
                     >
                       <Plus />
-                      Add Item
+                      {t("Add")}
                     </Button>
                   </TableHead>
                 </TableRow>
@@ -393,7 +403,7 @@ const RoomDetailOwner = () => {
                       colSpan={4}
                       className={"text-center text-muted-foreground"}
                     >
-                      No items
+                      {t("NoItem")}
                     </TableCell>
                   </TableRow>
                 ) : (
