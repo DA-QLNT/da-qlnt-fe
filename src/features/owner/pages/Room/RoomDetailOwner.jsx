@@ -18,7 +18,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { ArrowLeft, Eye, Plus, SquarePen, Trash } from "lucide-react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import {
   useGetRoomByIdQuery,
   useUpdateRoomStatusMutation,
@@ -238,6 +238,7 @@ const RoomDetailOwner = () => {
         onOpenChange={(open) =>
           setDeleteDialog((prev) => ({
             ...prev,
+            open: open,
             roomId: open ? prev.roomId : null,
           }))
         }
@@ -258,8 +259,19 @@ const RoomDetailOwner = () => {
             </Button>
             <div className="flex  gap-4">
               <Button onClick={openEditDialog}>{t("Edit")}</Button>
-              <Button variant="destructive" onClick={openDeleteDialog}>
-                {t("Delete")}
+              <Button
+                variant={"outline"}
+                className={
+                  "border-purple-400 dark:border-purple-400 hover:border-amber-500 hover:text-amber-500"
+                }
+              >
+                <NavLink
+                  to={`/owner/houses/${houseId}/rooms/${room.id}/contracts`}
+                  className={"flex items-center gap-2"}
+                >
+                  {/* <Eye /> {t("View")} */}
+                  {t("Contract")}
+                </NavLink>
               </Button>
             </div>
           </div>
@@ -463,6 +475,11 @@ const RoomDetailOwner = () => {
               </TableBody>
             </Table>
           </div>
+        </div>
+        <div className="flex justify-end mt-4 lg:w-2/3">
+          <Button variant="destructive" onClick={openDeleteDialog}>
+            {t("Delete")}
+          </Button>
         </div>
       </div>
     </div>
