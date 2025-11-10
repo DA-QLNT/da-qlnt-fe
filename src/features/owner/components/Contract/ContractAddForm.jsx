@@ -90,7 +90,7 @@ export default function ContractAddForm({
       endDate: undefined,
       houseServiceIds: [],
       // Khởi tạo Tenant đầu tiên (bắt buộc)
-      tenants: [{ fullName: "", phoneNumber: "" }],
+      tenants: [{ fullName: "", phoneNumber: "", email: "" }],
     },
   });
   useEffect(() => {
@@ -105,13 +105,13 @@ export default function ContractAddForm({
         roomId: Number(roomId),
         ownerId: ownerId,
         rent: roomData.rent || 0,
-        deposit: roomData.rent || 0, // Hoặc roomData.deposit nếu có
+        deposit: roomData.rent || 0,
         penaltyAmount: 50000,
         paymentCycle: 1,
         startDate: undefined,
         endDate: undefined,
         houseServiceIds: [],
-        tenants: [{ fullName: "", phoneNumber: "" }],
+        tenants: [{ fullName: "", phoneNumber: "", email: "" }],
       });
     }
   }, [roomData, reset, roomId, ownerId]);
@@ -326,12 +326,10 @@ export default function ContractAddForm({
               key={fieldItem.id}
               className="grid grid-cols-6 gap-2 items-start bg-secondary/50 p-3 rounded-md"
             >
-              <span className="col-span-1 text-sm font-medium">
-                #{index + 1}
-              </span>
+              <span className="text-sm font-medium">#{index + 1}</span>
 
               {/* Full Name */}
-              <Field className="col-span-3">
+              <Field className="col-span-6">
                 <Input
                   placeholder="Họ Tên"
                   {...register(`tenants.${index}.fullName`)}
@@ -343,7 +341,7 @@ export default function ContractAddForm({
               </Field>
 
               {/* Phone Number */}
-              <Field className="col-span-2">
+              <Field className="col-span-3">
                 <Input
                   placeholder="Số điện thoại"
                   {...register(`tenants.${index}.phoneNumber`)}
@@ -351,6 +349,17 @@ export default function ContractAddForm({
                 />
                 <FieldError>
                   {errors.tenants?.[index]?.phoneNumber?.message}
+                </FieldError>
+              </Field>
+              {/* Email */}
+              <Field className="col-span-3">
+                <Input
+                  placeholder="Email"
+                  {...register(`tenants.${index}.email`)}
+                  disabled={isDisabled}
+                />
+                <FieldError>
+                  {errors.tenants?.[index]?.email?.message}
                 </FieldError>
               </Field>
 

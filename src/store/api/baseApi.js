@@ -42,8 +42,13 @@ const axiosBaseQuery =
       // Nếu ta đặt Content-Type: application/json, nó sẽ thất bại.
       // Cần đảm bảo KHÔNG có Content-Type nào được định nghĩa cho FormData.
       delete finalHeaders["Content-Type"];
-    } else {
-      // Dùng JSON mặc định cho các request khác
+    }
+    // else {
+    //   // Dùng JSON mặc định cho các request khác
+    //   finalHeaders["Content-Type"] = "application/json";
+    // }
+    else if (data && !finalHeaders["Content-Type"]) {
+      // ✅ Chỉ set khi chưa có và có data
       finalHeaders["Content-Type"] = "application/json";
     }
 
@@ -131,6 +136,7 @@ export const baseApi = createApi({
     "Asset",
     "Service",
     "ServiceHouse",
+    "Contract",
   ], // define tag chung
   endpoints: () => ({}), // endpoint sẽ được tiêm vào từ feature
 });

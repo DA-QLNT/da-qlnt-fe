@@ -53,7 +53,6 @@ const RoomDetailOwner = () => {
   const { t } = useTranslation("house");
   const navigate = useNavigate();
   const { houseId, roomId } = useParams();
-
   const {
     data: room,
     isLoading,

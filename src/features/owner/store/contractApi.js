@@ -6,7 +6,10 @@ export const contractApi = baseApi.injectEndpoints({
       query: (contractData) => ({
         url: "/contracts",
         method: "POST",
-        body: contractData,
+        data: contractData,
+        headers: {
+          "Content-Type": "application/json", // ✅ Explicitly set
+        },
       }),
       // Invalidates tags Contract chung và Room Detail (vì status phòng sẽ thay đổi)
       invalidatesTags: (result, error, { roomId }) => [
@@ -14,7 +17,29 @@ export const contractApi = baseApi.injectEndpoints({
         { type: "Room", id: roomId },
       ],
     }),
+    getContractById: builder.query({
+      query: (contractId) => ({
+        url: `/contracts/${contractId}`,
+        method: "GET",
+      }),
+      transformResponse: (response) => response.result,
+      providesTags: (result, error, id) => [{ type: "Contract", id }],
+    }),
+    updateContractInfor: builder.mutation({
+      query: ({ contractId, ...contractData }) => ({
+        url: `/contracts/${contractId}`,
+        method: "PUT",
+        data: contractData,
+      }),
+      invalidatesTags: (results, error, { contractId }) => [
+        { type: "Contract", id: contractId },
+      ],
+    }),
   }),
 });
 
-export const { useCreateContractMutation } = contractApi;
+export const {
+  useCreateContractMutation,
+  useGetContractByIdQuery,
+  useUpdateContractInforMutation,
+} = contractApi;
