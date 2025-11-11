@@ -35,6 +35,30 @@ export const contractApi = baseApi.injectEndpoints({
         { type: "Contract", id: contractId },
       ],
     }),
+    // ===========tenant==========
+    addTenant: builder.mutation({
+      query: ({ contractId, tenantData }) => ({
+        url: `/contracts/${contractId}/tenants`,
+        method: "POST",
+        data: tenantData,
+      }),
+      invalidatesTags: (result, error, { contractId }) => [
+        { type: "Contract", id: contractId },
+      ],
+    }),
+    // ===========service============
+    updateContractServices: builder.mutation({
+      query: ({ contractId, houseServiceIds }) => ({
+        url: `/contracts/${contractId}/services`,
+        method: "PUT",
+        data: { houseServiceIds },
+      }),
+
+      invalidatesTags: (result, error, { contractId }) => [
+        { type: "Contract", id: contractId },
+        "ServiceHouse",
+      ],
+    }),
   }),
 });
 
@@ -42,4 +66,6 @@ export const {
   useCreateContractMutation,
   useGetContractByIdQuery,
   useUpdateContractInforMutation,
+  useAddTenantMutation,
+  useUpdateContractServicesMutation,
 } = contractApi;

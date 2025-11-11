@@ -18,6 +18,9 @@ import {
   DollarSign,
   Info,
   Check,
+  Settings,
+  Settings2,
+  Trash,
 } from "lucide-react";
 import { formatCurrency } from "@/lib/format/currencyFormat";
 import { formatDateTime } from "@/lib/format/dateTimeFormat";
@@ -25,6 +28,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ContractStatusBadge from "../../components/Contract/ContractStatusBadge";
 import ServiceTypeBadge from "../../components/Service/ServiceTypeBadge";
 import ContractInforEditDialog from "../../components/Contract/ContractInforEditDialog";
+import TenantAddDialog from "../../components/Contract/TenantAddDialog";
+import ContractServiceAddDialog from "../../components/Contract/ContractServiceAddDialog";
 
 export const CONTRACT_STATUS_MAP_Dev = {
   0: { label: "DRAFT", color: "bg-gray-400" },
@@ -55,11 +60,45 @@ const ContractDetailOwner = () => {
     navigate(`/owner/houses/${houseId}/rooms/${roomId}/contracts`);
   };
 
-  //   update
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const openEditDialog = () => {
-    setIsEditDialogOpen((prev) => !prev);
+  //   update contract
+  const [isContractInforEditDialogOpen, setIsContractInforEditDialogOpen] =
+    useState(false);
+  const openContractInforEditDialog = () => {
+    setIsContractInforEditDialogOpen((prev) => !prev);
   };
+  // add tenant
+  const [isTenantAddDialogOpen, setIsTenantAddDialogOpen] = useState(false);
+  const openTenantAddDialog = () => {
+    // Chỉ cho phép thêm khi DRAFT (0) hoặc ACTIVE (2) cũng đã kiểm tra trước đó với nút thêm
+    if (contract.status === 0 || contract.status === 2) {
+      setIsTenantAddDialogOpen(true);
+    } else {
+      toast.error(
+        "Không thể thêm khách thuê khi hợp đồng không phải DRAFT hoặc ACTIVE."
+      );
+    }
+  };
+  // add Service
+  const [isServiceAddDialogOpen, setIsServiceAddDialogOpen] = useState(false);
+  const openServiceAddDialog = () => {
+    console.log("abc");
+
+    // Chỉ cho phép thêm khi DRAFT (0) hoặc ACTIVE (2)
+    if (contract.status === 0 || contract.status === 2) {
+      setIsServiceAddDialogOpen(true);
+    } else {
+      toast.error(
+        "Không thể chỉnh sửa dịch vụ khi hợp đồng không phải DRAFT hoặc ACTIVE."
+      );
+    }
+  };
+  const closeServiceAddDialog = (open) => {
+    if (!open) {
+      setIsServiceAddDialogOpen(false);
+    }
+  };
+
+  // ========UI===========
 
   if (loadingContract) {
     return (
@@ -75,15 +114,26 @@ const ContractDetailOwner = () => {
     );
   }
 
-  const formattedStartDate = formatDateTime(contract.startDate).formattedDate;
-  const formattedEndDate = formatDateTime(contract.endDate).formattedDate;
-
   return (
     <div className="px-4 lg:px-6 space-y-6">
+      {/* update contract */}
       <ContractInforEditDialog
         contractId={id}
-        open={isEditDialogOpen}
-        onOpenChange={setIsEditDialogOpen}
+        open={isContractInforEditDialogOpen}
+        onOpenChange={setIsContractInforEditDialogOpen}
+      />
+      {/* add tenant */}
+      <TenantAddDialog
+        contractId={id}
+        open={isTenantAddDialogOpen}
+        onOpenChange={setIsTenantAddDialogOpen}
+      />
+      {/* add service */}
+      <ContractServiceAddDialog
+        contract={contract}
+        houseId={houseID}
+        open={isServiceAddDialogOpen}
+        onOpenChange={closeServiceAddDialog}
       />
       <Button variant="outline" onClick={backToContractList}>
         <ArrowLeft className="mr-2 h-4 w-4" /> Quay lại Danh sách Hợp đồng
@@ -117,7 +167,7 @@ const ContractDetailOwner = () => {
               <Info className="h-5 w-5" /> Thông tin Hợp đồng
             </div>
             {contract.status === 0 && (
-              <Button onClick={openEditDialog}>Sửa</Button>
+              <Button onClick={openContractInforEditDialog}>Sửa</Button>
             )}
           </CardTitle>
         </CardHeader>
@@ -151,7 +201,8 @@ const ContractDetailOwner = () => {
               <TableRow>
                 <TableCell className="font-medium">Ngày hiệu lực</TableCell>
                 <TableCell>
-                  {formattedStartDate} - {formattedEndDate}
+                  {formatDateTime(contract.startDate).formattedDate} -
+                  {formatDateTime(contract.endDate).formattedDate}
                 </TableCell>
               </TableRow>
               <TableRow>
@@ -168,9 +219,13 @@ const ContractDetailOwner = () => {
       {/* --------------------- KHÁCH THUÊ --------------------- */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-xl flex items-center gap-2">
-            <User className="h-5 w-5" /> Danh sách Khách thuê (
-            {contract.tenants?.length || 0})
+          <CardTitle className="text-xl flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <User className="h-5 w-5" /> Danh sách Khách thuê{" "}
+            </div>
+            {(contract.status === 0 || contract.status === 2) && (
+              <Button onClick={openTenantAddDialog}>Add tenant</Button>
+            )}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -180,7 +235,7 @@ const ContractDetailOwner = () => {
                 <TableHead className="w-[10px]">#</TableHead>
                 <TableHead>Họ Tên</TableHead>
                 <TableHead>SĐT</TableHead>
-                <TableHead>Đại diện</TableHead>
+                <TableHead>Email</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -188,16 +243,17 @@ const ContractDetailOwner = () => {
               {contract.tenants?.map((tenant, index) => (
                 <TableRow key={tenant.id}>
                   <TableCell>{index + 1}</TableCell>
-                  <TableCell>{tenant.fullName}</TableCell>
-                  <TableCell>{tenant.phoneNumber}</TableCell>
                   <TableCell>
-                    {tenant.representative ? <Check color="green" /> : ""}
+                    <div className="flex items-center gap-1">
+                      {tenant.fullName}
+                      {tenant.representative ? <Check color="green" /> : ""}
+                    </div>
                   </TableCell>
+                  <TableCell>{tenant.phoneNumber}</TableCell>
+                  <TableCell>{tenant.email}</TableCell>
                   <TableCell className="text-right">
-                    {contract.status === 2 && (
-                      <Button variant="destructive" size="sm">
-                        Khách rời
-                      </Button>
+                    {(contract.status === 2 || contract.status === 0) && (
+                      <Button variant="destructive">Leave</Button>
                     )}
                   </TableCell>
                 </TableRow>
@@ -210,9 +266,13 @@ const ContractDetailOwner = () => {
       {/* --------------------- DỊCH VỤ --------------------- */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-xl flex items-center gap-2">
-            <DollarSign className="h-5 w-5" /> Dịch vụ áp dụng (
-            {contract.services?.length || 0})
+          <CardTitle className="text-xl flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Settings className="h-5 w-5" /> Dịch vụ áp dụng
+            </div>
+            {(contract.status === 0 || contract.status === 2) && (
+              <Button onClick={openServiceAddDialog}>Thêm dịch vụ</Button>
+            )}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -222,6 +282,7 @@ const ContractDetailOwner = () => {
                 <TableHead>Dịch vụ</TableHead>
                 <TableHead>Giá/Chu kỳ</TableHead>
                 <TableHead>Cách tính</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -232,6 +293,9 @@ const ContractDetailOwner = () => {
                   <TableCell>
                     <ServiceTypeBadge type={Number(service.method)} />
                   </TableCell>
+                  <TableCell className="text-right">
+                    <Trash />
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -241,17 +305,13 @@ const ContractDetailOwner = () => {
       {/* ACTIONS */}
       <div className="flex justify-end gap-2">
         {/* DRAFT ACTIONS */}
-        {contract.status === 0 && (
-          <Button variant="secondary">Kích hoạt</Button>
+        {(contract.status === 0 || contract.status === 1) && (
+          <Button variant="secondary">Cancel</Button>
         )}
+        {contract.status === 0 && <Button variant="">Kích hoạt</Button>}
 
         {/* ACTIVE ACTIONS */}
         {contract.status === 2 && <Button variant="outline">Gia hạn</Button>}
-
-        {/* HỦY/THANH LÝ ACTIONS (Placeholder) */}
-        {contract.status < 3 && (
-          <Button variant="destructive">Thanh lý/Hủy</Button>
-        )}
       </div>
     </div>
   );

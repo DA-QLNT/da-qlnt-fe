@@ -95,7 +95,7 @@ export default function ContractAddForm({
   });
   useEffect(() => {
     if (Object.keys(errors).length > 0) {
-      console.log("❌ Form validation errors:", errors);
+      console.log("Form validation errors:", errors);
     }
   }, [errors]);
   // ✅ Reset form khi roomData được fetch xong
@@ -116,7 +116,7 @@ export default function ContractAddForm({
     }
   }, [roomData, reset, roomId, ownerId]);
 
-  // 🚨 QUẢN LÝ MẢNG TENANTS
+  // QUẢN LÝ MẢNG TENANTS
   const { fields, append, remove } = useFieldArray({
     control,
     name: "tenants",
