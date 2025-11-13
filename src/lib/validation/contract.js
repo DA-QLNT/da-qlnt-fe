@@ -44,3 +44,12 @@ export const ContractInforEditSchema = z.object({
     .number()
     .min(1, "Chu kỳ thanh toán tối thiểu là 1 tháng."),
 });
+
+export const ContractExtendSchema = z.object({
+  newEndDate: z.date({ required_error: "Ngày kết thúc mới là bắt buộc." }),
+
+  // Tùy chọn
+  newRent: requiredNumber.min(1000, "Giá thuê phải lớn hơn 1,000 VNĐ."),
+
+  note: z.string().optional(),
+});

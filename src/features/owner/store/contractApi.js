@@ -46,6 +46,26 @@ export const contractApi = baseApi.injectEndpoints({
         { type: "Contract", id: contractId },
       ],
     }),
+    leaveTenant: builder.mutation({
+      query: ({ contractId, tenantId }) => ({
+        url: `/contracts/${contractId}/tenants/${tenantId}/leave`,
+        method: "PUT",
+      }),
+      // Invalidates Contract chi tiết để cập nhật danh sách tenants
+      invalidatesTags: (result, error, { contractId }) => [
+        { type: "Contract", id: contractId },
+      ],
+    }),
+    setNewRepresentative: builder.mutation({
+      query: ({ contractId, newRepresentativeId }) => ({
+        url: `/contracts/${contractId}/tenants/${newRepresentativeId}/representative`,
+        method: "PUT",
+      }),
+      // Invalidates Contract chi tiết
+      invalidatesTags: (result, error, { contractId }) => [
+        { type: "Contract", id: contractId },
+      ],
+    }),
     // ===========service============
     updateContractServices: builder.mutation({
       query: ({ contractId, houseServiceIds }) => ({
@@ -59,6 +79,42 @@ export const contractApi = baseApi.injectEndpoints({
         "ServiceHouse",
       ],
     }),
+    // ================active contract
+    activateContract: builder.mutation({
+      query: (contractId) => ({
+        url: `/contracts/${contractId}/activate`,
+        method: "PUT",
+      }),
+      // Invalidates Contract chi tiết và danh sách Rooms (vì status phòng có thể thay đổi)
+      invalidatesTags: (result, error, contractId) => [
+        { type: "Contract", id: contractId },
+        "Room", // Phòng bị ảnh hưởng (chuyển sang RENTED)
+      ],
+    }),
+    // =============cancel contract
+    cancelContract: builder.mutation({
+      query: (contractId) => ({
+        url: `/contracts/${contractId}/cancel`, // Endpoint: /api/contracts/{id}/cancel
+        method: "PUT",
+      }),
+      // Invalidates Contract chi tiết và Room Detail
+      invalidatesTags: (result, error, contractId) => [
+        { type: "Contract", id: contractId },
+        "Room",
+      ],
+    }),
+    // ================ extend contract
+    extendContract: builder.mutation({
+      query: ({ contractId, data }) => ({
+        url: `/contracts/${contractId}/extend`,
+        method: "PUT",
+        data: data,
+      }),
+      // Invalidates Contract chi tiết để cập nhật ngày và giá mới
+      invalidatesTags: (result, error, { contractId }) => [
+        { type: "Contract", id: contractId },
+      ],
+    }),
   }),
 });
 
@@ -67,5 +123,10 @@ export const {
   useGetContractByIdQuery,
   useUpdateContractInforMutation,
   useAddTenantMutation,
+  useLeaveTenantMutation,
+  useSetNewRepresentativeMutation,
   useUpdateContractServicesMutation,
+  useActivateContractMutation,
+  useCancelContractMutation,
+  useExtendContractMutation,
 } = contractApi;

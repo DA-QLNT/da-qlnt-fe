@@ -1,6 +1,9 @@
 import React, { useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useGetContractByIdQuery } from "../../store/contractApi"; // 🚨 Import hook
+import {
+  useGetContractByIdQuery,
+  useSetNewRepresentativeMutation,
+} from "../../store/contractApi"; // 🚨 Import hook
 import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,6 +34,11 @@ import ContractInforEditDialog from "../../components/Contract/ContractInforEdit
 import TenantAddDialog from "../../components/Contract/TenantAddDialog";
 import ContractServiceAddDialog from "../../components/Contract/ContractServiceAddDialog";
 import { Checkbox } from "@/components/ui/checkbox";
+import toast from "react-hot-toast";
+import TenantLeaveDialog from "../../components/Contract/TenantLeaveDialog";
+import ContractActivateConfirm from "../../components/Contract/ContractActiveConfirm";
+import ContractCancelConfirm from "../../components/Contract/ContractCancelConfirm";
+import ContractExtendDialog from "../../components/Contract/ContractExtendDialog";
 
 export const CONTRACT_STATUS_MAP_Dev = {
   0: { label: "DRAFT", color: "bg-gray-400" },
@@ -79,6 +87,48 @@ const ContractDetailOwner = () => {
       );
     }
   };
+  // leave tenant
+  const [isTenantLeaveDialogOpen, setIsTenantLeaveDialogOpen] = useState(false);
+  const [tenantToLeave, setTenantToLeave] = useState(null);
+  const [setRepresentative] = useSetNewRepresentativeMutation();
+
+  const openLeaveTenantDialog = (tenant) => {
+    if (contract.status === 2 || contract.status === 0) {
+      setTenantToLeave(tenant);
+      setIsTenantLeaveDialogOpen(true);
+    } else {
+      toast.error(
+        "Không thể thay đổi khách thuê khi hợp đồng không phải DRAFT hoặc ACTIVE."
+      );
+    }
+  };
+  const handleSetRepresentative = async (tenantId) => {
+    if (contract.status !== 2) {
+      return toast.error("Chỉ có thể thay đổi đại diện khi hợp đồng ACTIVE.");
+    }
+
+    // 🚨 CHỈ THỰC HIỆN KHI UNCHECKING (để chuyển sang người khác)
+    // Nếu người dùng cố gắng check một người đã là đại diện, ta bỏ qua
+    const tenant = contract.tenants.find((t) => t.id === tenantId);
+    if (tenant.representative) return; // Đã là đại diện, không làm gì.
+
+    // Gửi mutation chọn người này làm đại diện
+    const toastId = toast.loading(
+      `Đang gán ${tenant.fullName} làm đại diện...`
+    );
+    try {
+      await setRepresentative({
+        contractId: contract.id,
+        newRepresentativeId: tenantId,
+      }).unwrap();
+      toast.success("Đã gán đại diện thành công!", { id: toastId });
+    } catch (error) {
+      toast.error(error.data?.message || "Gán đại diện thất bại.", {
+        id: toastId,
+      });
+    }
+  };
+
   // add Service
   const [isServiceAddDialogOpen, setIsServiceAddDialogOpen] = useState(false);
   const openServiceAddDialog = () => {
@@ -96,6 +146,58 @@ const ContractDetailOwner = () => {
   const closeServiceAddDialog = (open) => {
     if (!open) {
       setIsServiceAddDialogOpen(false);
+    }
+  };
+  // active contract
+  const [isActivateDialogOpen, setIsActivateDialogOpen] = useState(false);
+  const openActivateDialog = () => {
+    if (contract.status === 0) {
+      // Chỉ khi DRAFT (0)
+      setIsActivateDialogOpen(true);
+    } else {
+      toast.error("Chỉ hợp đồng bản nháp (DRAFT) mới có thể Kích hoạt.");
+    }
+  };
+  const closeActivateDialog = (open) => {
+    if (!open) {
+      setIsActivateDialogOpen(false);
+    }
+  };
+
+  // cancel contract
+  const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
+
+  // Hàm mở Dialog Hủy
+  const openCancelDialog = () => {
+    // Chỉ khi DRAFT (0) hoặc PENDING (1)
+    if (contract.status === 0 || contract.status === 1) {
+      setIsCancelDialogOpen(true);
+    } else {
+      toast.error(
+        "Chỉ có thể Hủy hợp đồng trước ngày hiệu lực (DRAFT/PENDING)."
+      );
+    }
+  };
+  const closeCancelDialog = (open) => {
+    if (!open) {
+      setIsCancelDialogOpen(false);
+    }
+  };
+  // =========== extend======
+  const [isExtendDialogOpen, setIsExtendDialogOpen] = useState(false);
+
+  // Logic mở Dialog Gia hạn
+  const openExtendDialog = () => {
+    // Chỉ cho phép gia hạn khi ACTIVE (2)
+    if (contract.status === 2) {
+      setIsExtendDialogOpen(true);
+    } else {
+      toast.error("Chỉ hợp đồng đang ACTIVE mới có thể Gia hạn.");
+    }
+  };
+  const closeExtendDialog = (open) => {
+    if (!open) {
+      setIsExtendDialogOpen(false);
     }
   };
 
@@ -117,6 +219,26 @@ const ContractDetailOwner = () => {
 
   return (
     <div className="px-4 lg:px-6 space-y-6">
+      {/* extend contract */}
+      {contract && (
+        <ContractExtendDialog
+          contract={contract}
+          open={isExtendDialogOpen}
+          onOpenChange={closeExtendDialog}
+        />
+      )}
+      {/* cancel contract */}
+      <ContractCancelConfirm
+        contract={contract}
+        open={isCancelDialogOpen}
+        onOpenChange={closeCancelDialog}
+      />
+      {/* activate contract */}
+      <ContractActivateConfirm
+        contract={contract}
+        open={isActivateDialogOpen}
+        onOpenChange={closeActivateDialog}
+      />
       {/* update contract */}
       <ContractInforEditDialog
         contractId={id}
@@ -129,6 +251,15 @@ const ContractDetailOwner = () => {
         open={isTenantAddDialogOpen}
         onOpenChange={setIsTenantAddDialogOpen}
       />
+      {/* leave tenant */}
+      {tenantToLeave && (
+        <TenantLeaveDialog
+          contractId={id}
+          tenant={tenantToLeave}
+          open={isTenantLeaveDialogOpen}
+          onOpenChange={setIsTenantLeaveDialogOpen}
+        />
+      )}
       {/* add service */}
       <ContractServiceAddDialog
         contract={contract}
@@ -145,19 +276,6 @@ const ContractDetailOwner = () => {
           <FileText className="w-6 h-6" /> Chi tiết Hợp đồng phòng{" "}
           {contract.roomName}
         </h1>
-
-        {/* ACTIONS */}
-        <div className="flex gap-2">
-          {/* DRAFT ACTIONS */}
-
-          {/* ACTIVE ACTIONS */}
-          {contract.status === 2 && <Button variant="outline">Gia hạn</Button>}
-
-          {/* HỦY/THANH LÝ ACTIONS (Placeholder) */}
-          {contract.status < 3 && (
-            <Button variant="destructive">Thanh lý/Hủy</Button>
-          )}
-        </div>
       </header>
 
       {/* --------------------- PHẦN THÔNG TIN CHÍNH --------------------- */}
@@ -246,12 +364,31 @@ const ContractDetailOwner = () => {
                   <TableCell>{index + 1}</TableCell>
                   <TableCell>{tenant.fullName}</TableCell>
                   <TableCell>{tenant.phoneNumber}</TableCell>
+
+                  {/* 🚨 CHỌN ĐẠI DIỆN BẰNG CHECKBOX */}
                   <TableCell>
-                    <Checkbox checked={tenant.representative} />
+                    <Checkbox
+                      checked={tenant.representative}
+                      disabled={contract.status !== 2} // Chỉ sửa khi ACTIVE
+                      // Xử lý khi Checkbox thay đổi
+                      onCheckedChange={(checked) => {
+                        if (checked) {
+                          handleSetRepresentative(tenant.id);
+                        }
+                        // Nếu uncheck, hệ thống sẽ tự chọn người khác (hoặc báo lỗi)
+                        // Frontend không cần xử lý uncheck vì luôn phải có 1 đại diện
+                      }}
+                    />
                   </TableCell>
+
                   <TableCell className="text-right">
                     {(contract.status === 2 || contract.status === 0) && (
-                      <Button variant="destructive">Leave</Button>
+                      <Button
+                        variant="destructive"
+                        onClick={() => openLeaveTenantDialog(tenant)}
+                      >
+                        Leave
+                      </Button>
                     )}
                   </TableCell>
                 </TableRow>
@@ -304,12 +441,20 @@ const ContractDetailOwner = () => {
       <div className="flex justify-end gap-2">
         {/* DRAFT ACTIONS */}
         {(contract.status === 0 || contract.status === 1) && (
-          <Button variant="secondary">Cancel</Button>
+          <Button variant="secondary" onClick={openCancelDialog}>
+            Cancel
+          </Button>
         )}
-        {contract.status === 0 && <Button variant="">Kích hoạt</Button>}
+        {contract.status === 0 && (
+          <Button onClick={openActivateDialog}>Kích hoạt</Button>
+        )}
 
         {/* ACTIVE ACTIONS */}
-        {contract.status === 2 && <Button variant="outline">Gia hạn</Button>}
+        {contract.status === 2 && (
+          <Button onClick={openExtendDialog} variant="outline">
+            Gia hạn
+          </Button>
+        )}
       </div>
     </div>
   );
