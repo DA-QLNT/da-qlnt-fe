@@ -38,7 +38,6 @@ export default function ContractServiceAddForm({
   const { data: allServicesData, isLoading: loadingServices } =
     useGetHouseServicesByHouseIdQuery(houseId, { skip: !houseId });
   const allHouseServices = allServicesData || [];
-  console.log(allHouseServices);
 
   const [updateServices, { isLoading: isMutating }] =
     useUpdateContractServicesMutation();
@@ -60,7 +59,10 @@ export default function ContractServiceAddForm({
   useEffect(() => {
     if (isServiceDataReady && !isFormPreloadedRef.current) {
       // Khi Services và Contract đã load, ta reset form với IDs đã gán
+      console.log(existingServiceIds);
+
       reset({ houseServiceIds: existingServiceIds });
+      console.log(existingServiceIds);
       isFormPreloadedRef.current = true;
     }
   }, [isServiceDataReady, existingServiceIds, reset]);

@@ -30,6 +30,7 @@ import ServiceTypeBadge from "../../components/Service/ServiceTypeBadge";
 import ContractInforEditDialog from "../../components/Contract/ContractInforEditDialog";
 import TenantAddDialog from "../../components/Contract/TenantAddDialog";
 import ContractServiceAddDialog from "../../components/Contract/ContractServiceAddDialog";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export const CONTRACT_STATUS_MAP_Dev = {
   0: { label: "DRAFT", color: "bg-gray-400" },
@@ -235,7 +236,7 @@ const ContractDetailOwner = () => {
                 <TableHead className="w-[10px]">#</TableHead>
                 <TableHead>Họ Tên</TableHead>
                 <TableHead>SĐT</TableHead>
-                <TableHead>Email</TableHead>
+                <TableHead>Đại diện</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -243,14 +244,11 @@ const ContractDetailOwner = () => {
               {contract.tenants?.map((tenant, index) => (
                 <TableRow key={tenant.id}>
                   <TableCell>{index + 1}</TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-1">
-                      {tenant.fullName}
-                      {tenant.representative ? <Check color="green" /> : ""}
-                    </div>
-                  </TableCell>
+                  <TableCell>{tenant.fullName}</TableCell>
                   <TableCell>{tenant.phoneNumber}</TableCell>
-                  <TableCell>{tenant.email}</TableCell>
+                  <TableCell>
+                    <Checkbox checked={tenant.representative} />
+                  </TableCell>
                   <TableCell className="text-right">
                     {(contract.status === 2 || contract.status === 0) && (
                       <Button variant="destructive">Leave</Button>
@@ -293,7 +291,7 @@ const ContractDetailOwner = () => {
                   <TableCell>
                     <ServiceTypeBadge type={Number(service.method)} />
                   </TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="flex justify-end">
                     <Trash />
                   </TableCell>
                 </TableRow>

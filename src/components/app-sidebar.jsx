@@ -1,4 +1,4 @@
-import * as React from "react"
+import * as React from "react";
 import {
   IconChartBar,
   IconDashboard,
@@ -13,10 +13,9 @@ import {
   IconDeviceIpadHorizontalCog,
 } from "@tabler/icons-react";
 
-
-import { NavMain } from "@/components/nav-main"
-import { NavSecondary } from "@/components/nav-secondary"
-import { NavUser } from "@/components/nav-user"
+import { NavMain } from "@/components/nav-main";
+import { NavSecondary } from "@/components/nav-secondary";
+import { NavUser } from "@/components/nav-user";
 import {
   Sidebar,
   SidebarContent,
@@ -25,7 +24,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 import { useAuth } from "@/features/auth";
 
 const data = {
@@ -102,16 +101,17 @@ const data = {
   ],
 };
 
-export function AppSidebar({
-  ...props
-}) {
+export function AppSidebar({ ...props }) {
   const { isAdmin, isOwner, isUser, user } = useAuth();
   return (
-    <Sidebar collapsible="offcanvas" {...props}>
+    <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:!p-1.5">
+            <SidebarMenuButton
+              asChild
+              className="data-[slot=sidebar-menu-button]:!p-1.5"
+            >
               <a href="#">
                 <IconInnerShadowTop className="!size-5" />
                 <span className="text-base font-semibold">PTIT </span>

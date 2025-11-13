@@ -50,7 +50,7 @@ export const contractApi = baseApi.injectEndpoints({
     updateContractServices: builder.mutation({
       query: ({ contractId, houseServiceIds }) => ({
         url: `/contracts/${contractId}/services`,
-        method: "PUT",
+        method: "PATCH",
         data: { houseServiceIds },
       }),
 
