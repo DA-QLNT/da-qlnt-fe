@@ -36,8 +36,15 @@ export default function LoginForm({ className, ...props }) {
   // const isAuthenticated = useSelector(selectIsAuthenticated);
   const [login, { isLoading }] = useLoginMutation();
 
-  const { isAuthenticated, isAdmin, isOwner, isUser, isGuest, isLoadingMe } =
-    useAuth();
+  const {
+    isAuthenticated,
+    isAdmin,
+    isOwner,
+    isUser,
+    isTenant,
+    isGuest,
+    isLoadingMe,
+  } = useAuth();
 
   useEffect(() => {
     // Clear cache của getMe query để tránh dùng data cũ
@@ -49,6 +56,8 @@ export default function LoginForm({ className, ...props }) {
         navigate("/admin", { replace: true });
       } else if (isOwner) {
         navigate("/owner", { replace: true });
+      } else if (isTenant) {
+        navigate("/tenant", { replace: true });
       } else if (isUser) {
         navigate("/user", { replace: true });
       } else {
@@ -127,7 +136,7 @@ export default function LoginForm({ className, ...props }) {
               </Field>
               <Field>
                 <Button type="submit" disabled={isLoading}>
-                  {isLoading ? <Spinner/> : t("Login")}
+                  {isLoading ? <Spinner /> : t("Login")}
                 </Button>
               </Field>
             </FieldGroup>

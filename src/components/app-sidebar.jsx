@@ -10,7 +10,7 @@ import {
   IconUserShield,
   IconBrandAsana,
   IconDeviceDesktopDollar,
-  IconDeviceIpadHorizontalCog,
+  IconUserStar,
 } from "@tabler/icons-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -70,6 +70,11 @@ const data = {
       title: "Houses",
       url: "/owner/houses",
       icon: IconHome,
+    },
+    {
+      title: "Tenants",
+      url: "/owner/tenants",
+      icon: IconUserStar,
     },
     {
       title: "Users",

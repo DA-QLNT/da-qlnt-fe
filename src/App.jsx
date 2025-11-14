@@ -27,6 +27,7 @@ import AssetOwner from "./features/owner/pages/Asset/AssetOwner";
 import ServiceOwner from "./features/owner/pages/Service/ServiceOwner";
 import ContractOwner from "./features/owner/pages/Contract/ContractOwner";
 import ContractDetailOwner from "./features/owner/pages/Contract/ContractDetailOwner";
+import TenantOwner from "./features/owner/pages/Tenant/TenantOwner";
 function App() {
   return (
     <div className="min-h-screen flex flex-col">
@@ -56,6 +57,7 @@ function App() {
               <Route path="analytics" element={<AnalyticContent />} />
             </Route>
           </Route>
+
           {/* Owner pages */}
           <Route element={<OwnerProtectedRoute />}>
             <Route path="/owner" element={<OwnerLayout />}>
@@ -77,6 +79,8 @@ function App() {
                 element={<ContractDetailOwner />}
               />
               {/* house */}
+
+              <Route path="tenants" element={<TenantOwner />} />
               <Route path="users" element={<UserOwner />} />
               <Route path="rules" element={<RuleOwner />} />
               <Route path="assets" element={<AssetOwner />} />
