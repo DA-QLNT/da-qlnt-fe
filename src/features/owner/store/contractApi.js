@@ -25,6 +25,14 @@ export const contractApi = baseApi.injectEndpoints({
       transformResponse: (response) => response.result,
       providesTags: (result, error, id) => [{ type: "Contract", id }],
     }),
+    getContractsByRoomId: builder.query({
+      query: (roomId) => ({
+        url: `/contracts/rooms/${roomId}`,
+        method: "GET",
+      }),
+      transformResponse: (response) => response.result,
+      providesTags: ["Contract"],
+    }),
     updateContractInfor: builder.mutation({
       query: ({ contractId, ...contractData }) => ({
         url: `/contracts/${contractId}`,
@@ -121,6 +129,7 @@ export const contractApi = baseApi.injectEndpoints({
 export const {
   useCreateContractMutation,
   useGetContractByIdQuery,
+  useGetContractsByRoomIdQuery,
   useUpdateContractInforMutation,
   useAddTenantMutation,
   useLeaveTenantMutation,
