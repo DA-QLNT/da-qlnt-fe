@@ -69,24 +69,21 @@ const ContractOwner = () => {
         open={addContractDialog.open}
         onOpenChange={closeAddContractDialog}
       />
-      <div className="flex flex-col w-full lg:w-2/3">
+      <div className="flex flex-col w-full ">
         <div className="flex justify-between items-center mb-4">
           <Button variant="outline" onClick={backToHouseDetail}>
             <ArrowLeft />
             {t("Back")}
           </Button>
-          <div className="flex  gap-4">
-            <Button>{t("Edit")}</Button>
-            <Button
-              onClick={openAddContractDialog}
-              variant={"outline"}
-              className={
-                "border-purple-400 dark:border-purple-400 hover:border-amber-500 hover:text-amber-500"
-              }
-            >
-              {t("Create")}
-            </Button>
-          </div>
+          <Button
+            onClick={openAddContractDialog}
+            variant={"outline"}
+            className={
+              "border-purple-400 dark:border-purple-400 hover:border-amber-500 hover:text-amber-500"
+            }
+          >
+            {t("Create")}
+          </Button>
         </div>
       </div>
       <Table>

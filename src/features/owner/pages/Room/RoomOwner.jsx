@@ -178,7 +178,7 @@ const RoomOwner = () => {
             </Button>
           </div>
         </div>
-        <div className="w-full lg:w-4/5 p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
+        <div className="w-full  p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
           <Table>
             <TableHeader className={"bg-sidebar"}>
               <TableRow>

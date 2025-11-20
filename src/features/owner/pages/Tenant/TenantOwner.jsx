@@ -137,7 +137,11 @@ const TenantOwner = () => {
                 <TableCell colSpan={2}>{tenant.phoneNumber}</TableCell>
                 <TableCell className="text-right">
                   <div className="flex justify-end">
-                    <SquarePen onClick={() => openEditDialog(tenant.id)} />
+                    <SquarePen
+                      onClick={() => {
+                        openEditDialog(tenant.id);
+                      }}
+                    />
                   </div>
                 </TableCell>
               </TableRow>

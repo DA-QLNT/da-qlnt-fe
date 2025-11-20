@@ -250,7 +250,7 @@ const RoomDetailOwner = () => {
       />
       {/* End Dialogs */}
       <div className="flex flex-col items-center gap-4 lg:flex-row">
-        <div className="flex flex-col w-full lg:w-2/3">
+        <div className="flex flex-col w-full ">
           <div className="flex justify-between items-center mb-4">
             <Button variant="outline" onClick={backToHouseDetail}>
               <ArrowLeft />
@@ -386,7 +386,7 @@ const RoomDetailOwner = () => {
       <div className="flex flex-col mt-2 lg:mt-20 w-full">
         <h2>{t("Assets")}</h2>
         <div className="flex gap-4 justify-between items-start">
-          <div className="w-full lg:w-2/3 p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
+          <div className="w-full  p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
             <Table>
               <TableHeader className={"bg-sidebar"}>
                 <TableRow>
@@ -475,7 +475,7 @@ const RoomDetailOwner = () => {
             </Table>
           </div>
         </div>
-        <div className="flex justify-end mt-4 lg:w-2/3">
+        <div className="flex justify-end mt-4 ">
           <Button variant="destructive" onClick={openDeleteDialog}>
             {t("Delete")}
           </Button>
