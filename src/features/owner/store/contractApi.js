@@ -8,7 +8,7 @@ export const contractApi = baseApi.injectEndpoints({
         method: "POST",
         data: contractData,
         headers: {
-          "Content-Type": "application/json", // ✅ Explicitly set
+          "Content-Type": "application/json",
         },
       }),
       // Invalidates tags Contract chung và Room Detail (vì status phòng sẽ thay đổi)

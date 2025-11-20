@@ -60,11 +60,11 @@ export default function ContractAddForm({
   const { userId: ownerId } = useAuth();
 
   const [createContract, { isLoading: isMutating }] =
-    useCreateContractMutation(); // Fetch danh sách dịch vụ của nhà trọ
+    useCreateContractMutation();
 
   const { data: serviceData, isLoading: loadingServices } =
     useGetHouseServicesByHouseIdQuery(houseId, { skip: !houseId });
-  const houseServices = serviceData || []; //   fetch thông tin room
+  const houseServices = serviceData || [];
 
   const {
     data: roomData,
@@ -81,6 +81,8 @@ export default function ContractAddForm({
     control,
     formState: { errors },
     reset,
+    watch, // ✅ Thêm watch để theo dõi giá trị của houseServiceIds
+    setValue, // ✅ Thêm setValue để cập nhật lastMeterReading
   } = useForm({
     resolver: zodResolver(ContractAddSchema),
     defaultValues: {
@@ -95,6 +97,17 @@ export default function ContractAddForm({
       houseServiceIds: [],
       tenants: [], // Khởi tạo mảng tenants rỗng
     },
+  });
+  // ✅ Sử dụng useFieldArray cho houseServiceIds
+  const {
+    fields: serviceFields,
+    append: appendService,
+    remove: removeService,
+    update: updateService, // Thêm update để thay đổi giá trị lastMeterReading
+  } = useFieldArray({
+    control,
+    name: "houseServiceIds",
+    keyName: "uniqueId", // keyName để react-hook-form quản lý field tốt hơn
   });
   useEffect(() => {
     if (Object.keys(errors).length > 0) {
@@ -116,8 +129,9 @@ export default function ContractAddForm({
         tenants: [],
       });
     }
-  }, [roomData, reset, roomId, ownerId]); // QUẢN LÝ MẢNG TENANTS
+  }, [roomData, reset, roomId, ownerId]);
 
+  // QUẢN LÝ MẢNG TENANTS
   const { fields, append, remove } = useFieldArray({
     control,
     name: "tenants",
@@ -159,6 +173,32 @@ export default function ContractAddForm({
     refetchSearch();
   };
 
+  // ✅ Xử lý khi checkbox dịch vụ thay đổi
+  const handleServiceCheckboxChange = (checked, service) => {
+    const currentServices = watch("houseServiceIds"); // Lấy giá trị hiện tại của houseServiceIds
+
+    if (checked) {
+      // Nếu được chọn, thêm dịch vụ vào mảng
+      const newServiceEntry = {
+        serviceId: service.serviceId,
+        houseServiceId: service.id,
+      };
+      // Nếu là dịch vụ công tơ (method: "0"), thêm lastMeterReading mặc định
+      if (service.method === "0") {
+        newServiceEntry.lastMeterReading = 0;
+      }
+      appendService(newServiceEntry);
+    } else {
+      // Nếu bỏ chọn, xóa dịch vụ khỏi mảng
+      const indexToRemove = currentServices.findIndex(
+        (item) => item.houseServiceId === service.id
+      );
+      if (indexToRemove !== -1) {
+        removeService(indexToRemove);
+      }
+    }
+  };
+
   const onSubmit = async (data) => {
     // 1. Format Dates
     const payload = {
@@ -167,6 +207,17 @@ export default function ContractAddForm({
       startDate: format(data.startDate, "yyyy-MM-dd"),
       endDate: format(data.endDate, "yyyy-MM-dd"),
     };
+    // Loại bỏ lastMeterReading nếu method không phải là "0" trước khi gửi
+    payload.houseServiceIds = payload.houseServiceIds.map((service) => {
+      const originalService = houseServices.find(
+        (hs) => hs.id === service.houseServiceId
+      );
+      if (originalService && originalService.method !== "0") {
+        const { lastMeterReading, ...rest } = service; // Destructure để loại bỏ
+        return rest;
+      }
+      return service;
+    });
 
     try {
       console.log("Payload gửi đi:", payload);
@@ -317,41 +368,68 @@ export default function ContractAddForm({
           <FieldLabel>
             Dịch vụ áp dụng ({houseServices.length} có sẵn):
           </FieldLabel>
+          <ScrollArea className="h-60 border rounded-md p-3">
+            {loadingServices ? (
+              <Spinner />
+            ) : (
+              houseServices.map((service) => {
+                const isChecked = serviceFields.some(
+                  (sf) => sf.houseServiceId === service.id
+                );
+                // Tìm index của dịch vụ trong houseServiceIds array của form
+                const fieldIndex = serviceFields.findIndex(
+                  (sf) => sf.houseServiceId === service.id
+                );
 
-          <Controller
-            name="houseServiceIds"
-            control={control}
-            render={({ field }) => (
-              <ScrollArea className="h-40 border rounded-md p-3">
-                {loadingServices ? (
-                  <Spinner />
-                ) : (
-                  houseServices.map((service) => (
-                    <div
-                      key={service.id}
-                      className="flex items-center space-x-2 py-1"
-                    >
+                return (
+                  <div
+                    key={service.id}
+                    className="flex items-center justify-between space-x-2 py-1"
+                  >
+                    <div className="flex items-center space-x-2">
                       <Checkbox
-                        checked={field.value.includes(service.serviceId)}
-                        onCheckedChange={(checked) => {
-                          const newIds = checked
-                            ? [...field.value, service.serviceId]
-                            : field.value.filter(
-                                (id) => id !== service.serviceId
-                              );
-                          field.onChange(newIds);
-                        }}
+                        checked={isChecked}
+                        onCheckedChange={(checked) =>
+                          handleServiceCheckboxChange(checked, service)
+                        }
                       />
-
                       <label className="text-sm font-medium">
-                        {service.serviceName}
+                        {service.serviceName} (Giá:{" "}
+                        {service.price.toLocaleString()} VNĐ)
                       </label>
                     </div>
-                  ))
-                )}
-              </ScrollArea>
+
+                    {/* ✅ HIỂN THỊ INPUT CHO lastMeterReading NẾU method === "0" VÀ ĐƯỢC CHỌN */}
+                    {isChecked &&
+                      service.method === "0" &&
+                      fieldIndex !== -1 && (
+                        <Field className="w-32">
+                          <FieldLabel className="sr-only">
+                            Chỉ số đầu
+                          </FieldLabel>
+                          <Input
+                            type="number"
+                            placeholder="Chỉ số đầu"
+                            {...register(
+                              `houseServiceIds.${fieldIndex}.lastMeterReading`,
+                              { valueAsNumber: true }
+                            )}
+                            disabled={isDisabled}
+                            min={0}
+                          />
+                          <FieldError>
+                            {
+                              errors.houseServiceIds?.[fieldIndex]
+                                ?.lastMeterReading?.message
+                            }
+                          </FieldError>
+                        </Field>
+                      )}
+                  </div>
+                );
+              })
             )}
-          />
+          </ScrollArea>
           <FieldError>{errors.houseServiceIds?.message}</FieldError>
         </Field>
 
