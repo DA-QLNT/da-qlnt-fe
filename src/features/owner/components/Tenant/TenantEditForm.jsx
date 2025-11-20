@@ -67,6 +67,8 @@ const TenantEditForm = ({ tenant, onFormSubmitSuccess }) => {
     if (file) {
       formData.append("avatar", file);
     }
+    console.log(formData);
+
     try {
       const result = await updateUser(formData).unwrap();
       if (result.code === 1000) {
@@ -77,7 +79,7 @@ const TenantEditForm = ({ tenant, onFormSubmitSuccess }) => {
         console.error("RTK query error update: ", result.code);
       }
     } catch (error) {
-      // toast.error(`${t('UpdateFail')}`)
+      toast.error(`${t("UpdateFail")}`);
       console.error("RTK query error update: ", error);
     }
   };

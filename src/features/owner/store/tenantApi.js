@@ -39,6 +39,22 @@ export const tenantApi = baseApi.injectEndpoints({
         return [{ type: "Tenant", id }, "Tenant"];
       },
     }),
+    searchTenantByPhoneNumber: builder.query({
+      query: (phoneNumber) => ({
+        url: `/tenants/search`,
+        method: "GET",
+        params: { phoneNumber },
+      }),
+      transformResponse: (response) => response.result,
+    }),
+    createTenant: builder.mutation({
+      query: (tenantData) => ({
+        url: "/tenants/create",
+        method: "POST",
+        data: tenantData,
+      }),
+      invalidatesTags: ["Tenant"],
+    }),
   }),
 });
 
@@ -46,4 +62,6 @@ export const {
   useGetTenantsByOwnerIdQuery,
   useGetTenantsByIdQuery,
   useUpdateTenantMutation,
+  useSearchTenantByPhoneNumberQuery,
+  useCreateTenantMutation,
 } = tenantApi;

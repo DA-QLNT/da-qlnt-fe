@@ -25,6 +25,9 @@ import {
   Loader2,
   UserPlus,
   X,
+  Search,
+  CheckCircle,
+  User,
 } from "lucide-react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -41,7 +44,13 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useGetRoomByIdQuery } from "../../store/roomApi";
 import { PAYMENT_CYCLE_OPTIONS } from "@/assets/contract/paymentOptions";
 import { useCreateContractMutation } from "../../store/contractApi";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import useDebounce from "@/hooks/useDebounce";
+import { Card } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+// Import component TenantCreateDialog mới
+import TenantCreateDialog from "../Tenant/TenantCreateDialog";
+import { useSearchTenantByPhoneNumberQuery } from "../../store/tenantApi";
 
 export default function ContractAddForm({
   houseId,
@@ -49,17 +58,14 @@ export default function ContractAddForm({
   onFormSubmitSuccess,
 }) {
   const { userId: ownerId } = useAuth();
-  console.log(ownerId);
 
   const [createContract, { isLoading: isMutating }] =
-    useCreateContractMutation();
+    useCreateContractMutation(); // Fetch danh sách dịch vụ của nhà trọ
 
-  // Fetch danh sách dịch vụ của nhà trọ
   const { data: serviceData, isLoading: loadingServices } =
     useGetHouseServicesByHouseIdQuery(houseId, { skip: !houseId });
-  const houseServices = serviceData || [];
+  const houseServices = serviceData || []; //   fetch thông tin room
 
-  //   fetch thông tin room
   const {
     data: roomData,
     isLoading: loadingRoom,
@@ -67,14 +73,12 @@ export default function ContractAddForm({
     isError,
   } = useGetRoomByIdQuery(roomId, {
     skip: !roomId,
-  });
+  }); //  RHF SETUP
 
-  //  RHF SETUP
   const {
     register,
     handleSubmit,
     control,
-    watch,
     formState: { errors },
     reset,
   } = useForm({
@@ -89,16 +93,14 @@ export default function ContractAddForm({
       startDate: undefined,
       endDate: undefined,
       houseServiceIds: [],
-      // Khởi tạo Tenant đầu tiên (bắt buộc)
-      tenants: [{ fullName: "", phoneNumber: "", email: "" }],
+      tenants: [], // Khởi tạo mảng tenants rỗng
     },
   });
   useEffect(() => {
     if (Object.keys(errors).length > 0) {
       console.log("Form validation errors:", errors);
     }
-  }, [errors]);
-  // ✅ Reset form khi roomData được fetch xong
+  }, [errors]); // ✅ Reset form khi roomData được fetch xong
   useEffect(() => {
     if (roomData) {
       reset({
@@ -111,18 +113,51 @@ export default function ContractAddForm({
         startDate: undefined,
         endDate: undefined,
         houseServiceIds: [],
-        tenants: [{ fullName: "", phoneNumber: "", email: "" }],
+        tenants: [],
       });
     }
-  }, [roomData, reset, roomId, ownerId]);
+  }, [roomData, reset, roomId, ownerId]); // QUẢN LÝ MẢNG TENANTS
 
-  // QUẢN LÝ MẢNG TENANTS
   const { fields, append, remove } = useFieldArray({
     control,
     name: "tenants",
-  });
+  }); // THÊM: State và Logic tìm kiếm Tenant
 
-  const isDisabled = isMutating || loadingServices;
+  const [searchPhoneNumber, setSearchPhoneNumber] = useState("");
+  const debouncedSearch = useDebounce(searchPhoneNumber, 500); // Query API tìm kiếm Tenant
+  const {
+    data: searchedTenantData,
+    isLoading: loadingSearch,
+    refetch: refetchSearch, // Giữ refetch để người dùng có thể kích hoạt tìm kiếm thủ công
+  } = useSearchTenantByPhoneNumberQuery(debouncedSearch, {
+    // Skip khi SĐT chưa đủ 10 ký tự
+    skip: debouncedSearch.length < 10,
+  });
+  const searchedTenant = searchedTenantData; // Logic kiểm tra để hiển thị kết quả chính xác (tránh lỗi cache) // => Chỉ hiển thị kết quả nếu tìm kiếm đã xong VÀ SĐT hiện tại trong input khớp với SĐT đã dùng để query
+  const showSearchResults =
+    !loadingSearch &&
+    debouncedSearch.length >= 10 &&
+    // Điều kiện quan trọng: đảm bảo kết quả cache khớp với input hiện tại
+    searchPhoneNumber === debouncedSearch; // KIỂM TRA ĐÃ CÓ TRONG DANH SÁCH CHƯA
+  const isAlreadyAdded = (tenantId) => fields.some((f) => f.id === tenantId); // Logic thêm Tenant vào form hợp đồng
+
+  const handleAddTenantToContract = (tenant) => {
+    if (isAlreadyAdded(tenant.id)) {
+      toast.error("Tenant này đã được thêm vào hợp đồng.");
+      return;
+    } // Thêm Tenant đã tìm thấy hoặc mới tạo
+
+    append({
+      id: tenant.id, // ID của Tenant
+      fullName: tenant.fullName,
+      phoneNumber: tenant.phoneNumber,
+      email: tenant.email,
+    });
+    setSearchPhoneNumber(""); // Reset ô tìm kiếm
+    toast.success(`Đã thêm ${tenant.fullName} vào hợp đồng.`);
+    // Refetch lại để xóa kết quả tìm kiếm cũ
+    refetchSearch();
+  };
 
   const onSubmit = async (data) => {
     // 1. Format Dates
@@ -134,7 +169,7 @@ export default function ContractAddForm({
     };
 
     try {
-      console.log("Contract created successfully:", payload);
+      console.log("Payload gửi đi:", payload);
       await createContract(payload).unwrap();
       toast.success("Hợp đồng được tạo thành bản nháp (DRAFT)!");
       reset();
@@ -145,13 +180,17 @@ export default function ContractAddForm({
     }
   };
 
+  const isDisabled = isMutating || loadingServices;
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <input type="hidden" {...register("roomId", { valueAsNumber: true })} />
+
       <input type="hidden" {...register("ownerId", { valueAsNumber: true })} />
 
       <FieldGroup>
         {/* ------------------- THÔNG TIN CƠ BẢN ------------------- */}
+
         <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
           {/* Rent & Deposit */}
           <Field>
@@ -162,6 +201,7 @@ export default function ContractAddForm({
               disabled={isDisabled}
             />
           </Field>
+
           <Field>
             <FieldLabel>Deposit (*)</FieldLabel>
             <Input
@@ -170,7 +210,6 @@ export default function ContractAddForm({
               disabled={isDisabled}
             />
           </Field>
-
           {/* Start/End Date */}
           <Field>
             <FieldLabel>Start Date (*)</FieldLabel>
@@ -182,11 +221,13 @@ export default function ContractAddForm({
                   <PopoverTrigger asChild>
                     <Button variant={"outline"} disabled={isDisabled}>
                       <CalendarIcon className="mr-2 h-4 w-4" />
+
                       {field.value
                         ? format(new Date(field.value), "PPP")
                         : "Chọn ngày"}
                     </Button>
                   </PopoverTrigger>
+
                   <PopoverContent className="w-auto p-0">
                     <Calendar
                       mode="single"
@@ -200,6 +241,7 @@ export default function ContractAddForm({
             />
             <FieldError>{errors.startDate?.message}</FieldError>
           </Field>
+
           <Field>
             <FieldLabel>End Date (*)</FieldLabel>
             <Controller
@@ -210,11 +252,13 @@ export default function ContractAddForm({
                   <PopoverTrigger asChild>
                     <Button variant={"outline"} disabled={isDisabled}>
                       <CalendarIcon className="mr-2 h-4 w-4" />
+
                       {field.value
                         ? format(new Date(field.value), "PPP")
                         : "Chọn ngày"}
                     </Button>
                   </PopoverTrigger>
+
                   <PopoverContent className="w-auto p-0">
                     <Calendar
                       mode="single"
@@ -228,7 +272,6 @@ export default function ContractAddForm({
             />
             <FieldError>{errors.endDate?.message}</FieldError>
           </Field>
-
           {/* Payment Cycle & Penalty */}
           <Field>
             <FieldLabel>Payment Cycle(*)</FieldLabel>
@@ -244,6 +287,7 @@ export default function ContractAddForm({
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
+
                   <SelectContent>
                     {PAYMENT_CYCLE_OPTIONS.map((val) => (
                       <SelectItem key={val} value={val.toString()}>
@@ -256,6 +300,7 @@ export default function ContractAddForm({
             />
             <FieldError>{errors.paymentCycle?.message}</FieldError>
           </Field>
+
           <Field>
             <FieldLabel>Penalty Amountn (*)</FieldLabel>
             <Input
@@ -267,10 +312,12 @@ export default function ContractAddForm({
         </div>
 
         {/* ------------------- DỊCH VỤ (MULTI-SELECT CHECKBOX) ------------------- */}
+
         <Field className="pt-4 border-t">
           <FieldLabel>
             Dịch vụ áp dụng ({houseServices.length} có sẵn):
           </FieldLabel>
+
           <Controller
             name="houseServiceIds"
             control={control}
@@ -295,6 +342,7 @@ export default function ContractAddForm({
                           field.onChange(newIds);
                         }}
                       />
+
                       <label className="text-sm font-medium">
                         {service.serviceName}
                       </label>
@@ -308,85 +356,195 @@ export default function ContractAddForm({
         </Field>
 
         {/* ------------------- KHÁCH THUÊ (DYNAMIC ARRAY) ------------------- */}
-        <Field className="pt-4 border-t">
-          <FieldLabel className="flex justify-between items-center">
+
+        <Field className="pt-4 border-t space-y-3">
+          <FieldLabel className="font-bold">
             Danh sách Khách thuê (*):
-            <Button
-              type="button"
-              size="sm"
-              onClick={() => append({ fullName: "", phoneNumber: "" })}
-              disabled={isDisabled}
-            >
-              <UserPlus className="h-4 w-4 mr-2" /> Thêm khách
-            </Button>
           </FieldLabel>
+          {/* ============= PHẦN TÌM KIẾM/NÚT TẠO MỚI ============= */}
 
-          {fields.map((fieldItem, index) => (
-            <div
-              key={fieldItem.id}
-              className="grid grid-cols-6 gap-2 items-start bg-secondary/50 p-3 rounded-md"
-            >
-              <span className="text-sm font-medium">#{index + 1}</span>
-
-              {/* Full Name */}
-              <Field className="col-span-6">
+          <div className="flex gap-2 items-start">
+            <div className="flex-grow space-y-2">
+              <div className="flex gap-2 justify-end">
                 <Input
-                  placeholder="Họ Tên"
-                  {...register(`tenants.${index}.fullName`)}
+                  placeholder="Nhập SĐT để tìm kiếm"
+                  value={searchPhoneNumber}
+                  onChange={(e) => setSearchPhoneNumber(e.target.value)}
                   disabled={isDisabled}
+                  className={"w-50 lg:80"}
                 />
-                <FieldError>
-                  {errors.tenants?.[index]?.fullName?.message}
-                </FieldError>
-              </Field>
 
-              {/* Phone Number */}
-              <Field className="col-span-3">
-                <Input
-                  placeholder="Số điện thoại"
-                  {...register(`tenants.${index}.phoneNumber`)}
-                  disabled={isDisabled}
-                />
-                <FieldError>
-                  {errors.tenants?.[index]?.phoneNumber?.message}
-                </FieldError>
-              </Field>
-              {/* Email */}
-              <Field className="col-span-3">
-                <Input
-                  placeholder="Email"
-                  {...register(`tenants.${index}.email`)}
-                  disabled={isDisabled}
-                />
-                <FieldError>
-                  {errors.tenants?.[index]?.email?.message}
-                </FieldError>
-              </Field>
-
-              {/* Remove Button */}
-              {fields.length > 1 && (
                 <Button
                   type="button"
                   size="icon"
-                  variant="ghost"
-                  onClick={() => remove(index)}
-                  disabled={isDisabled}
-                  className="col-span-1"
+                  onClick={refetchSearch}
+                  disabled={isDisabled || searchPhoneNumber.length < 10}
                 >
-                  <X className="h-4 w-4 text-red-500" />
+                  <Search className="h-4 w-4" />
                 </Button>
+              </div>
+              {/* HIỂN THỊ KẾT QUẢ TÌM KIẾM */}
+
+              {loadingSearch && debouncedSearch.length >= 10 && (
+                <div className="flex items-center text-sm">
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" /> Đang tìm
+                  kiếm Tenant...
+                </div>
               )}
+
+              {showSearchResults &&
+                (searchedTenant ? (
+                  // Tenant ĐƯỢC TÌM THẤY
+                  <Card className="flex items-center justify-between w-80 lg:w-90 p-3 border-green-500 bg-green-50 dark:bg-green-900/10">
+                    <div className="flex items-center space-x-3">
+                      <Avatar>
+                        <AvatarImage
+                          src={searchedTenant.avatarUrl || "/userDefault.png"}
+                        />
+
+                        <AvatarFallback>
+                          <User className="h-4 w-4" />
+                        </AvatarFallback>
+                      </Avatar>
+
+                      <div>
+                        <p className="font-semibold">
+                          {searchedTenant.fullName}
+                        </p>
+
+                        <p className="text-xs text-muted-foreground">
+                          {searchedTenant.phoneNumber}| {searchedTenant.email}
+                        </p>
+                      </div>
+                    </div>
+
+                    <Button
+                      type="button"
+                      size="sm"
+                      onClick={() => handleAddTenantToContract(searchedTenant)}
+                      disabled={isDisabled || isAlreadyAdded(searchedTenant.id)}
+                    >
+                      {isAlreadyAdded(searchedTenant.id) ? (
+                        <CheckCircle className="h-4 w-4 mr-2" />
+                      ) : (
+                        <UserPlus className="h-4 w-4 mr-2" />
+                      )}
+
+                      {isAlreadyAdded(searchedTenant.id)
+                        ? "Đã thêm"
+                        : "Thêm vào Hợp đồng"}
+                    </Button>
+                  </Card>
+                ) : (
+                  // Tenant KHÔNG TÌM THẤY
+                  <Card className="p-3 border-red-500 bg-red-50 dark:bg-red-900/10">
+                    <p className="font-medium text-sm">
+                      Không tìm thấy Tenant với SĐT *{debouncedSearch}*. Vui
+                      lòng Tạo Tenant mới.
+                    </p>
+                  </Card>
+                ))}
+              {/* THÔNG BÁO KHI SĐT CHƯA ĐỦ DÀI */}
+
+              {searchPhoneNumber.length > 0 &&
+                searchPhoneNumber.length < 10 && (
+                  <p className="text-sm text-yellow-600">
+                    Nhập đủ 10 số để tìm kiếm.
+                  </p>
+                )}
             </div>
-          ))}
+            {/* NÚT TẠO TENANT MỚI (Mở Dialog) */}
+            <TenantCreateDialog onTenantCreated={handleAddTenantToContract} />
+          </div>
+
+          {/* ============= DANH SÁCH TENANT ĐÃ THÊM ============= */}
+          <div className="space-y-2 pt-2">
+            <h4 className="font-semibold text-sm">
+              Khách thuê trong Hợp đồng ({fields.length}):
+            </h4>
+
+            {fields.map((fieldItem, index) => (
+              <div
+                key={fieldItem.id}
+                className="grid grid-cols-10 gap-2 items-center bg-white dark:bg-gray-800 p-3 rounded-md border"
+              >
+                <span className="text-sm font-medium col-span-1">
+                  #{index + 1}
+                </span>
+                {/* Full Name (Readonly) */}
+                <Field className="col-span-3">
+                  <Input
+                    value={fieldItem.fullName}
+                    readOnly
+                    placeholder="Họ Tên"
+                    className="bg-gray-100 dark:bg-gray-700"
+                  />
+                  {/* Hidden fields để gửi payload */}
+
+                  <input type="hidden" {...register(`tenants.${index}.id`)} />
+
+                  <input
+                    type="hidden"
+                    {...register(`tenants.${index}.fullName`)}
+                  />
+                </Field>
+                {/* Phone Number (Readonly) */}
+                <Field className="col-span-3">
+                  <Input
+                    value={fieldItem.phoneNumber}
+                    readOnly
+                    placeholder="Số điện thoại"
+                    className="bg-gray-100 dark:bg-gray-700"
+                  />
+
+                  <input
+                    type="hidden"
+                    {...register(`tenants.${index}.phoneNumber`)}
+                  />
+                </Field>
+                {/* Email (Readonly) */}
+                <Field className="col-span-2">
+                  <Input
+                    value={fieldItem.email}
+                    readOnly
+                    placeholder="Email"
+                    className="bg-gray-100 dark:bg-gray-700"
+                  />
+
+                  <input
+                    type="hidden"
+                    {...register(`tenants.${index}.email`)}
+                  />
+                </Field>
+                {/* Remove Button */}
+                <div className="col-span-1 flex justify-end">
+                  <Button
+                    type="button"
+                    size="icon"
+                    variant="ghost"
+                    onClick={() => remove(index)}
+                    disabled={isDisabled}
+                  >
+                    <X className="h-8 w-8 text-red-500" />
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {fields.length === 0 && (
+            <p className="text-sm text-muted-foreground italic">
+              Vui lòng tìm kiếm hoặc tạo ít nhất một khách thuê.
+            </p>
+          )}
           <FieldError>{errors.tenants?.message}</FieldError>
         </Field>
       </FieldGroup>
-
       {/* ------------------- SUBMIT ------------------- */}
       <div className="mt-6 flex justify-end">
         <Button
           type="submit"
-          disabled={isDisabled}
+          disabled={isDisabled || fields.length === 0}
           className="w-full sm:w-auto"
         >
           {isMutating ? (
