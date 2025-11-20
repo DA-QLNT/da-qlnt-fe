@@ -27,6 +27,7 @@ const optionalFileSchema = z
 export const TenantEditSchema = z.object({
   id: z.number(),
   username: z.string(),
+  fullName: z.string().min(1, "Full name is required"),
   email: z.email("Email is invalid").min(1, "Email is required"),
   address: z.string().min(1, "Address is required"),
   phoneNumber: z

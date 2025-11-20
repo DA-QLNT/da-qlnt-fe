@@ -31,6 +31,7 @@ const TenantEditForm = ({ tenant, onFormSubmitSuccess }) => {
   const defaultValues = {
     id: tenant.id,
     username: tenant.username,
+    fullName: tenant.fullName,
     email: tenant.email,
     address: tenant.address,
     phoneNumber: tenant.phoneNumber,
@@ -118,6 +119,15 @@ const TenantEditForm = ({ tenant, onFormSubmitSuccess }) => {
               disabled
               className={"bg-gray-100 dark:bg-gray-800"}
             />
+          </Field>
+          <Field>
+            <FieldLabel>{t("FullName")}</FieldLabel>
+            <Input
+              id="fullName"
+              {...register("fullName")}
+              disabled={isLoading}
+            />
+            <FieldError>{errors.fullName?.message}</FieldError>
           </Field>
           <Field>
             <FieldLabel>Email</FieldLabel>

@@ -35,8 +35,8 @@ const TenantOwner = () => {
   const defaultTenants = defaultTenantData?.content || [];
   const sortedTenantByName = useMemo(() => {
     return [...defaultTenants].sort((a, b) => {
-      const nameA = a.fullName.toLowerCase();
-      const nameB = b.fullName.toLowerCase();
+      const nameA = (a.fullName ?? "").toLowerCase();
+      const nameB = (b.fullName ?? "").toLowerCase();
       return nameA.localeCompare(nameB, "vi", { sensitivity: "base" });
     });
   }, [defaultTenants]);
