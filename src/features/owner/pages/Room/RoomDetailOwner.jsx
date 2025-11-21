@@ -18,7 +18,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { ArrowLeft, Eye, Plus, SquarePen, Trash } from "lucide-react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import {
   useGetRoomByIdQuery,
   useUpdateRoomStatusMutation,
@@ -53,7 +53,6 @@ const RoomDetailOwner = () => {
   const { t } = useTranslation("house");
   const navigate = useNavigate();
   const { houseId, roomId } = useParams();
-
   const {
     data: room,
     isLoading,
@@ -160,7 +159,7 @@ const RoomDetailOwner = () => {
 
   // ===handle=========
   const backToHouseDetail = () => {
-    navigate(-1);
+    navigate(`/owner/houses/${houseId}/rooms`);
   };
   const openEditDialog = () => {
     setEditDialog({
@@ -238,6 +237,7 @@ const RoomDetailOwner = () => {
         onOpenChange={(open) =>
           setDeleteDialog((prev) => ({
             ...prev,
+            open: open,
             roomId: open ? prev.roomId : null,
           }))
         }
@@ -250,7 +250,7 @@ const RoomDetailOwner = () => {
       />
       {/* End Dialogs */}
       <div className="flex flex-col items-center gap-4 lg:flex-row">
-        <div className="flex flex-col w-full lg:w-2/3">
+        <div className="flex flex-col w-full ">
           <div className="flex justify-between items-center mb-4">
             <Button variant="outline" onClick={backToHouseDetail}>
               <ArrowLeft />
@@ -258,8 +258,19 @@ const RoomDetailOwner = () => {
             </Button>
             <div className="flex  gap-4">
               <Button onClick={openEditDialog}>{t("Edit")}</Button>
-              <Button variant="destructive" onClick={openDeleteDialog}>
-                {t("Delete")}
+              <Button
+                variant={"outline"}
+                className={
+                  "border-purple-400 dark:border-purple-400 hover:border-amber-500 hover:text-amber-500"
+                }
+              >
+                <NavLink
+                  to={`/owner/houses/${houseId}/rooms/${room.id}/contracts`}
+                  className={"flex items-center gap-2"}
+                >
+                  {/* <Eye /> {t("View")} */}
+                  {t("Contract")}
+                </NavLink>
               </Button>
             </div>
           </div>
@@ -375,7 +386,7 @@ const RoomDetailOwner = () => {
       <div className="flex flex-col mt-2 lg:mt-20 w-full">
         <h2>{t("Assets")}</h2>
         <div className="flex gap-4 justify-between items-start">
-          <div className="w-full lg:w-2/3 p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
+          <div className="w-full  p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
             <Table>
               <TableHeader className={"bg-sidebar"}>
                 <TableRow>
@@ -463,6 +474,11 @@ const RoomDetailOwner = () => {
               </TableBody>
             </Table>
           </div>
+        </div>
+        <div className="flex justify-end mt-4 ">
+          <Button variant="destructive" onClick={openDeleteDialog}>
+            {t("Delete")}
+          </Button>
         </div>
       </div>
     </div>

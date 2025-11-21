@@ -65,7 +65,7 @@ export const serviceApi = baseApi.injectEndpoints({
         method: "PUT",
         data: data,
       }),
-      invalidatesTags: (result, error,  houseServiceId ) => [
+      invalidatesTags: (result, error, houseServiceId) => [
         "ServiceHouse",
         {
           type: "ServiceHouse",
@@ -80,6 +80,98 @@ export const serviceApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["ServiceHouse"],
     }),
+
+    // declare service meter
+    // Lấy tất cả chỉ số dịch vụ của phòng
+    getServiceUsagesByRoomId: builder.query({
+      query: (roomId) => ({
+        url: `/service-usage/get-all`,
+        method: "GET",
+        params: { roomId },
+      }),
+      transformResponse: (response) => response.result,
+      providesTags: (result, error, roomId) => [
+        { type: "ServiceUsage", id: roomId },
+        "ServiceUsage",
+      ],
+    }),
+
+    // Lấy chi tiết chỉ số theo ID
+    getServiceUsageById: builder.query({
+      query: (id) => ({
+        url: `/service-usage`,
+        method: "GET",
+        params: { id },
+      }),
+      transformResponse: (response) => response.result,
+      providesTags: (result, error, id) => [{ type: "ServiceUsage", id }],
+    }),
+
+    // Lấy chỉ số mới nhất của dịch vụ theo phòng
+    getLatestReading: builder.query({
+      query: ({ roomId, serviceId }) => ({
+        url: `/service-usage/latest-reading`,
+        method: "GET",
+        params: { roomId, serviceId },
+      }),
+      transformResponse: (response) => response.result,
+      providesTags: (result, error, { roomId, serviceId }) => [
+        { type: "ServiceUsage", id: `${roomId}-${serviceId}` },
+      ],
+    }),
+
+    // Khai báo chỉ số dịch vụ
+    declareServiceUsage: builder.mutation({
+      query: (data) => ({
+        url: `/service-usage/declare`,
+        method: "POST",
+        data: data,
+      }),
+      invalidatesTags: (result, error, { roomId }) => [
+        { type: "ServiceUsage", id: roomId },
+        "ServiceUsage",
+        "Contract",
+      ],
+    }),
+
+    // Xác nhận tất cả chỉ số
+    confirmServiceUsage: builder.mutation({
+      query: ({ month, year }) => ({
+        url: `/service-usage/confirm_all`,
+        method: "POST",
+        params: { month, year },
+      }),
+      invalidatesTags: ["ServiceUsage", "Contract"],
+    }),
+    // ================HÓA ĐƠN=============
+    // 🚨 QUERY LẤY DANH SÁCH HÓA ĐƠN THEO ROOM ID
+    getInvoicesByRoomId: builder.query({
+      query: (roomId) => ({
+        url: `/invoices/all/${roomId}`, // Endpoint: /invoices/all/{roomId}
+        method: "GET",
+      }),
+      transformResponse: (response) => response.result,
+      providesTags: ["Invoice"],
+    }),
+
+    // 🚨 QUERY LẤY CHI TIẾT HÓA ĐƠN
+    getInvoiceById: builder.query({
+      query: (invoiceId) => ({
+        url: `/invoices/${invoiceId}`, // Endpoint: /invoices/{id}
+        method: "GET",
+      }),
+      transformResponse: (response) => response.result,
+      providesTags: (result, error, id) => [{ type: "Invoice", id }],
+    }),
+
+    // 🚨 MUTATION TẠO HÓA ĐƠN
+    createInvoice: builder.mutation({
+      query: ({ roomId, month, year }) => ({
+        url: `/invoices/create?roomId=${roomId}&month=${month}&year=${year}`,
+        method: "POST",
+      }),
+      invalidatesTags: ["Invoice", "ServiceUsage"], // Cập nhật danh sách hóa đơn và chỉ số
+    }),
   }),
 });
 export const {
@@ -90,4 +182,12 @@ export const {
   useAssignServiceToHousesMutation,
   useUpdateHouseServiceMutation,
   useDeleteHouseServiceMutation,
+  useDeclareServiceUsageMutation,
+  useConfirmServiceUsageMutation,
+  useGetServiceUsageByIdQuery,
+  useGetServiceUsagesByRoomIdQuery,
+  useGetLatestReadingQuery,
+  useGetInvoicesByRoomIdQuery,
+  useGetInvoiceByIdQuery,
+  useCreateInvoiceMutation,
 } = serviceApi;

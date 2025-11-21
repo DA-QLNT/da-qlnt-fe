@@ -18,7 +18,7 @@ const ServiceHouseAddDialog = ({
   };
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className={"w-full h-[80vh]  sm:max-w-4xl"}>
+      <DialogContent className={"w-[90vw] sm:max-w-4xl"}>
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             Thêm dịch vụ {serviceName} vào nhà

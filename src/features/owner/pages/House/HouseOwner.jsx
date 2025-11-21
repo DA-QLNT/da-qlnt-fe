@@ -74,19 +74,21 @@ const HouseOwner = () => {
         <div className="text-end">
           <Button onClick={() => setIsAddDialogOpen(true)}>
             <Plus />
-            {t('AddHouse')}
+            {t("AddHouse")}
           </Button>
         </div>
-        <div className="w-full lg:w-4/5 p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
+        <div className="w-full p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
           <Table>
             <TableHeader className={"bg-sidebar"}>
               <TableRow>
                 <TableHead className="w-[50px]">{t("No")}</TableHead>
-                <TableHead className={"w-[250px]"}>{t('House')}</TableHead>
+                <TableHead className={"w-[250px]"}>{t("House")}</TableHead>
                 <TableHead className={"hidden sm:table-cell"}>
                   {t("Address")}
                 </TableHead>
-                <TableHead className="text-right w-[100px]">{t("Action")}</TableHead>
+                <TableHead className="text-right w-[100px]">
+                  {t("Action")}
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -95,7 +97,8 @@ const HouseOwner = () => {
                   <TableCell
                     colSpan={4}
                     className="text-center text-muted-foreground"
-                  >{t("NoHouse")}
+                  >
+                    {t("NoHouse")}
                   </TableCell>
                 </TableRow>
               ) : (

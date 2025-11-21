@@ -11,11 +11,9 @@ const MethodBadge = ({ methodValue }) => {
   const method = BADGE_METHOD_OPTIONS.find(
     (option) => option.value === methodValue
   );
-  console.log(method);
-  
 
   if (!method) {
-    return null; 
+    return null;
   }
 
   let variant = "default";

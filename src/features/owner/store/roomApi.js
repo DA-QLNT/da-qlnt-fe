@@ -100,6 +100,24 @@ export const roomApi = baseApi.injectEndpoints({
         { type: "Room", id: result?.roomId },
       ],
     }),
+    // use for service log:
+    // ✅ THÊM API QUERY MỚI ĐỂ LẤY PHÒNG THEO STATUS
+    getRoomsByHouseIdAndStatus: builder.query({
+      query: ({ houseId, status, page = 0, size = 10 }) => ({
+        url: `/rooms/house/${houseId}/status/${status}`, // Endpoint đã cho
+        method: "GET",
+        params: {
+          page,
+          size,
+        },
+      }),
+      transformResponse: (response) => response.result,
+      providesTags: (result, error, { houseId, status }) => [
+        "Room",
+        { type: "HouseRooms", id: houseId },
+        { type: "RoomsByStatus", id: `${houseId}-${status}` }, // Tag cụ thể hơn
+      ],
+    }),
   }),
 });
 export const {
@@ -112,4 +130,5 @@ export const {
   useUpdateAssetItemMutation,
   useCreateAssetItemMutation,
   useCreateRoomMutation,
+  useGetRoomsByHouseIdAndStatusQuery,
 } = roomApi;

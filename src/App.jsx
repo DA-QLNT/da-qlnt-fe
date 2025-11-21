@@ -25,6 +25,16 @@ import RoomOwner from "./features/owner/pages/Room/RoomOwner";
 import RoomDetailOwner from "./features/owner/pages/Room/RoomDetailOwner";
 import AssetOwner from "./features/owner/pages/Asset/AssetOwner";
 import ServiceOwner from "./features/owner/pages/Service/ServiceOwner";
+import ContractOwner from "./features/owner/pages/Contract/ContractOwner";
+import ContractDetailOwner from "./features/owner/pages/Contract/ContractDetailOwner";
+import TenantOwner from "./features/Tenant/TenantLayout";
+import ServiceListRoomRent from "./features/owner/pages/Service/ServiceListRoomRent";
+import TenantProtectedRoute from "./components/layout/TenantProtectedRoute";
+import TenantLayout from "./features/Tenant/TenantLayout";
+import RoomTenant from "./features/Tenant/pages/Room/RoomTenant";
+import DashboardTenant from "./features/Tenant/pages/Dashboard/DashboardTenant";
+import InvoiceTenant from "./features/Tenant/pages/Invoice/InvoiceTenant";
+import ContractTenant from "./features/Tenant/pages/Contract/ContractTenant";
 function App() {
   return (
     <div className="min-h-screen flex flex-col">
@@ -54,6 +64,7 @@ function App() {
               <Route path="analytics" element={<AnalyticContent />} />
             </Route>
           </Route>
+
           {/* Owner pages */}
           <Route element={<OwnerProtectedRoute />}>
             <Route path="/owner" element={<OwnerLayout />}>
@@ -66,11 +77,38 @@ function App() {
                 path="houses/:houseId/rooms/:roomId"
                 element={<RoomDetailOwner />}
               />
+              <Route
+                path="houses/:houseId/rooms/:roomId/contracts"
+                element={<ContractOwner />}
+              />
+              <Route
+                path="houses/:houseId/rooms/:roomId/contracts/:contractId"
+                element={<ContractDetailOwner />}
+              />
               {/* house */}
+
+              <Route path="tenants" element={<TenantOwner />} />
               <Route path="users" element={<UserOwner />} />
               <Route path="rules" element={<RuleOwner />} />
               <Route path="assets" element={<AssetOwner />} />
+
+              {/* services */}
               <Route path="services" element={<ServiceOwner />} />
+              <Route
+                path="services/houses/:houseId/rooms"
+                element={<ServiceListRoomRent />}
+              />
+              {/* services */}
+            </Route>
+          </Route>
+
+          {/* Tenant pages */}
+          <Route element={<TenantProtectedRoute />}>
+            <Route path="/tenant" element={<TenantLayout />}>
+              <Route index element={<DashboardTenant />} />
+              <Route path="rooms" element={<RoomTenant />} />
+              <Route path="invoices" element={<InvoiceTenant />} />
+              <Route path="contracts" element={<ContractTenant />} />
             </Route>
           </Route>
 
