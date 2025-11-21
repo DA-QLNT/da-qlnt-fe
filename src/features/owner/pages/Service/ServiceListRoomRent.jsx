@@ -25,6 +25,8 @@ import { useConfirmServiceUsageMutation } from "../../store/serviceApi";
 import ServiceUsageDeclareDialog from "../../components/Service/ServiceUsageDeclareDialog";
 import ServiceUsageViewDialog from "../../components/Service/ServiceUsageViewDialog";
 import toast from "react-hot-toast";
+import InvoiceCreateConfirmDialog from "../../components/Service/InvoiceCreateConfirmDialog";
+import InvoiceListDialog from "../../components/Service/InvoiceListDialog";
 
 const ServiceListRoomRent = () => {
   const { t } = useTranslation();
@@ -38,6 +40,28 @@ const ServiceListRoomRent = () => {
   // State cho View Dialog
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [selectedRoomForView, setSelectedRoomForView] = useState(null);
+
+  // 🚨 STATE CHO INVOICE LIST
+  const [invoiceListDialog, setInvoiceListDialog] = useState({
+    open: false,
+    roomId: null,
+  });
+
+  // 🚨 STATE CHO INVOICE CREATE CONFIRM
+  const [isInvoiceCreateConfirmOpen, setIsInvoiceCreateConfirmOpen] =
+    useState(false);
+  const [roomIdForInvoice, setRoomIdForInvoice] = useState(null);
+
+  // HÀM MỞ DANH SÁCH HÓA ĐƠN
+  const handleOpenInvoiceListDialog = (roomId) => {
+    setInvoiceListDialog({ open: true, roomId });
+  };
+
+  // HÀM MỞ XÁC NHẬN TẠO HÓA ĐƠN
+  const handleOpenCreateInvoiceConfirm = (roomId) => {
+    setRoomIdForInvoice(roomId);
+    setIsInvoiceCreateConfirmOpen(true);
+  };
 
   const { data: rentedRooms, isLoading: loadingRentedRooms } =
     useGetRoomsByHouseIdAndStatusQuery(
@@ -94,6 +118,18 @@ const ServiceListRoomRent = () => {
 
   return (
     <div className="px-4 lg:px-6">
+      <InvoiceCreateConfirmDialog
+        roomId={roomIdForInvoice}
+        open={isInvoiceCreateConfirmOpen}
+        onOpenChange={setIsInvoiceCreateConfirmOpen}
+      />
+
+      {/* 🚨 RENDER INVOICE LIST DIALOG */}
+      <InvoiceListDialog
+        roomId={invoiceListDialog.roomId}
+        open={invoiceListDialog.open}
+        onOpenChange={setInvoiceListDialog}
+      />
       {/* Declare Dialog */}
       <ServiceUsageDeclareDialog
         open={isDeclareDialogOpen}
@@ -180,6 +216,18 @@ const ServiceListRoomRent = () => {
                             onClick={() => handleOpenViewDialog(room)}
                           >
                             Xem chỉ số
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => handleOpenInvoiceListDialog(room.id)}
+                          >
+                            Xem hóa đơn
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() =>
+                              handleOpenCreateInvoiceConfirm(room.id)
+                            }
+                          >
+                            Tạo hóa đơn
                           </DropdownMenuItem>
                         </DropdownMenuGroup>
                       </DropdownMenuContent>

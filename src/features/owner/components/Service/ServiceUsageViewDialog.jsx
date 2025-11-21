@@ -118,6 +118,7 @@ const ServiceUsageViewDialog = ({ open, onOpenChange, roomId, roomName }) => {
           <DialogClose asChild>
             <Button variant="secondary">Đóng</Button>
           </DialogClose>
+          <Button> Tạo Hóa Đơn</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

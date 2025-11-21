@@ -143,6 +143,35 @@ export const serviceApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["ServiceUsage", "Contract"],
     }),
+    // ================HÓA ĐƠN=============
+    // 🚨 QUERY LẤY DANH SÁCH HÓA ĐƠN THEO ROOM ID
+    getInvoicesByRoomId: builder.query({
+      query: (roomId) => ({
+        url: `/invoices/all/${roomId}`, // Endpoint: /invoices/all/{roomId}
+        method: "GET",
+      }),
+      transformResponse: (response) => response.result,
+      providesTags: ["Invoice"],
+    }),
+
+    // 🚨 QUERY LẤY CHI TIẾT HÓA ĐƠN
+    getInvoiceById: builder.query({
+      query: (invoiceId) => ({
+        url: `/invoices/${invoiceId}`, // Endpoint: /invoices/{id}
+        method: "GET",
+      }),
+      transformResponse: (response) => response.result,
+      providesTags: (result, error, id) => [{ type: "Invoice", id }],
+    }),
+
+    // 🚨 MUTATION TẠO HÓA ĐƠN
+    createInvoice: builder.mutation({
+      query: ({ roomId, month, year }) => ({
+        url: `/invoices/create?roomId=${roomId}&month=${month}&year=${year}`,
+        method: "POST",
+      }),
+      invalidatesTags: ["Invoice", "ServiceUsage"], // Cập nhật danh sách hóa đơn và chỉ số
+    }),
   }),
 });
 export const {
@@ -158,4 +187,7 @@ export const {
   useGetServiceUsageByIdQuery,
   useGetServiceUsagesByRoomIdQuery,
   useGetLatestReadingQuery,
+  useGetInvoicesByRoomIdQuery,
+  useGetInvoiceByIdQuery,
+  useCreateInvoiceMutation,
 } = serviceApi;
