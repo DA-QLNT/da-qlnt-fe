@@ -30,7 +30,7 @@ import ContractDetailOwner from "./features/owner/pages/Contract/ContractDetailO
 import TenantOwner from "./features/Tenant/TenantLayout";
 import ServiceListRoomRent from "./features/owner/pages/Service/ServiceListRoomRent";
 import TenantProtectedRoute from "./components/layout/TenantProtectedRoute";
-import TenantLayout from "./features/tenant/TenantLayout";
+import TenantLayout from "./features/Tenant/TenantLayout";
 import RoomTenant from "./features/Tenant/pages/Room/RoomTenant";
 import DashboardTenant from "./features/Tenant/pages/Dashboard/DashboardTenant";
 import InvoiceTenant from "./features/Tenant/pages/Invoice/InvoiceTenant";
