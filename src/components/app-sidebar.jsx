@@ -11,6 +11,8 @@ import {
   IconBrandAsana,
   IconDeviceDesktopDollar,
   IconUserStar,
+  IconReceipt2,
+  IconReceipt,
 } from "@tabler/icons-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -97,6 +99,28 @@ const data = {
       icon: IconSettings,
     },
   ],
+  navMainTenant: [
+    {
+      title: "Dashboard",
+      url: "/tenant",
+      icon: IconDashboard,
+    },
+    {
+      title: "Room",
+      url: "/tenant/rooms",
+      icon: IconHome,
+    },
+    {
+      title: "Invoice",
+      url: "/tenant/invoices",
+      icon: IconReceipt2,
+    },
+    {
+      title: "Contract",
+      url: "/tenant/contracts",
+      icon: IconReceipt,
+    },
+  ],
   navSecondary: [
     {
       title: "Settings",
@@ -107,7 +131,7 @@ const data = {
 };
 
 export function AppSidebar({ ...props }) {
-  const { isAdmin, isOwner, isUser, user } = useAuth();
+  const { isAdmin, isOwner, isUser, isTenant, user } = useAuth();
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -128,6 +152,8 @@ export function AppSidebar({ ...props }) {
       <SidebarContent>
         {isAdmin && <NavMain items={data.navMainAdmin} />}
         {isOwner && <NavMain items={data.navMainOwner} />}
+        {/* {isUser && <NavMain items={data.navMainOwner} />} */}
+        {isTenant && <NavMain items={data.navMainTenant} />}
 
         {/* <NavMain items={data.navMain} /> */}
         {/* <NavDocuments items={data.documents} /> */}

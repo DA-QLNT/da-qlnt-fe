@@ -27,8 +27,14 @@ import AssetOwner from "./features/owner/pages/Asset/AssetOwner";
 import ServiceOwner from "./features/owner/pages/Service/ServiceOwner";
 import ContractOwner from "./features/owner/pages/Contract/ContractOwner";
 import ContractDetailOwner from "./features/owner/pages/Contract/ContractDetailOwner";
-import TenantOwner from "./features/owner/pages/Tenant/TenantOwner";
+import TenantOwner from "./features/Tenant/TenantLayout";
 import ServiceListRoomRent from "./features/owner/pages/Service/ServiceListRoomRent";
+import TenantProtectedRoute from "./components/layout/TenantProtectedRoute";
+import TenantLayout from "./features/tenant/TenantLayout";
+import RoomTenant from "./features/Tenant/pages/Room/RoomTenant";
+import DashboardTenant from "./features/Tenant/pages/Dashboard/DashboardTenant";
+import InvoiceTenant from "./features/Tenant/pages/Invoice/InvoiceTenant";
+import ContractTenant from "./features/Tenant/pages/Contract/ContractTenant";
 function App() {
   return (
     <div className="min-h-screen flex flex-col">
@@ -93,6 +99,16 @@ function App() {
                 element={<ServiceListRoomRent />}
               />
               {/* services */}
+            </Route>
+          </Route>
+
+          {/* Tenant pages */}
+          <Route element={<TenantProtectedRoute />}>
+            <Route path="/tenant" element={<TenantLayout />}>
+              <Route index element={<DashboardTenant />} />
+              <Route path="rooms" element={<RoomTenant />} />
+              <Route path="invoices" element={<InvoiceTenant />} />
+              <Route path="contracts" element={<ContractTenant />} />
             </Route>
           </Route>
 

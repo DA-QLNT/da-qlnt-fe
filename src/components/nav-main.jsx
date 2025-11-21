@@ -16,14 +16,12 @@ export function NavMain({ items }) {
         <SidebarMenu>
           {items.map((item) => {
             const isDashboardLink =
-              item.url === "/admin" || item.url === "/owner";
+              item.url === "/admin" ||
+              item.url === "/owner" ||
+              item.url === "/tenant";
 
             return (
-              <NavLink
-                to={item.url}
-                key={item.title}
-                end={ isDashboardLink}
-              >
+              <NavLink to={item.url} key={item.title} end={isDashboardLink}>
                 {({ isActive }) => (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton
