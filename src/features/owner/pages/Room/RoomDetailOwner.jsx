@@ -159,7 +159,7 @@ const RoomDetailOwner = () => {
 
   // ===handle=========
   const backToHouseDetail = () => {
-    navigate(-1);
+    navigate(`/owner/houses/${houseId}/rooms`);
   };
   const openEditDialog = () => {
     setEditDialog({

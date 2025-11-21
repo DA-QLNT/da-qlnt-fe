@@ -58,8 +58,15 @@ const ContractOwner = () => {
 
   // ===========handle=========
   const backToHouseDetail = () => {
-    navigate(-1);
+    navigate(`/owner/houses/${houseId}/rooms/${roomId}`);
   };
+  if (isLoadingContract) {
+    return (
+      <div className="absolute">
+        <Spinner variant="primary" className="size-20" />
+      </div>
+    );
+  }
 
   return (
     <div className="px-4 lg:px-6">
@@ -110,7 +117,7 @@ const ContractOwner = () => {
                   {representativeName}
                 </TableCell>
                 <TableCell colSpan={2}>
-                  <ContractStatusBadge status={contract.status} />
+                  <ContractStatusBadge contractStatus={contract.status} />
                 </TableCell>
                 <TableCell className="flex justify-end">
                   <Button
