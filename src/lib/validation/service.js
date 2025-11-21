@@ -28,3 +28,20 @@ export const HouseServiceRowSchema = z.object({
     .min(0, "Giá phải >= 0."),
   effectiveDate: z.date({ required_error: "Ngày hiệu lực là bắt buộc." }),
 });
+
+// ==============Declare Service Meter=========
+export const ServiceUsageItemSchema = z.object({
+  serviceId: z.number({ required_error: "Service ID là bắt buộc." }),
+  currReading: z
+    .number({ required_error: "Chỉ số hiện tại là bắt buộc." })
+    .min(0, "Chỉ số không được âm."),
+});
+
+export const DeclareServiceUsageSchema = z.object({
+  roomId: z.number({ required_error: "Room ID là bắt buộc." }),
+  month: z.number({ required_error: "Tháng là bắt buộc." }).min(1).max(12),
+  year: z.number({ required_error: "Năm là bắt buộc." }).min(2000), // Hoặc giới hạn theo năm hợp lý
+  serviceUsages: z
+    .array(ServiceUsageItemSchema)
+    .min(1, "Cần khai báo ít nhất một chỉ số dịch vụ."),
+});

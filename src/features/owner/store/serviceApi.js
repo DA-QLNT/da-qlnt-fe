@@ -65,7 +65,7 @@ export const serviceApi = baseApi.injectEndpoints({
         method: "PUT",
         data: data,
       }),
-      invalidatesTags: (result, error,  houseServiceId ) => [
+      invalidatesTags: (result, error, houseServiceId) => [
         "ServiceHouse",
         {
           type: "ServiceHouse",
@@ -80,6 +80,69 @@ export const serviceApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["ServiceHouse"],
     }),
+
+    // declare service meter
+    // Lấy tất cả chỉ số dịch vụ của phòng
+    getServiceUsagesByRoomId: builder.query({
+      query: (roomId) => ({
+        url: `/service-usage/get-all`,
+        method: "GET",
+        params: { roomId },
+      }),
+      transformResponse: (response) => response.result,
+      providesTags: (result, error, roomId) => [
+        { type: "ServiceUsage", id: roomId },
+        "ServiceUsage",
+      ],
+    }),
+
+    // Lấy chi tiết chỉ số theo ID
+    getServiceUsageById: builder.query({
+      query: (id) => ({
+        url: `/service-usage`,
+        method: "GET",
+        params: { id },
+      }),
+      transformResponse: (response) => response.result,
+      providesTags: (result, error, id) => [{ type: "ServiceUsage", id }],
+    }),
+
+    // Lấy chỉ số mới nhất của dịch vụ theo phòng
+    getLatestReading: builder.query({
+      query: ({ roomId, serviceId }) => ({
+        url: `/service-usage/latest-reading`,
+        method: "GET",
+        params: { roomId, serviceId },
+      }),
+      transformResponse: (response) => response.result,
+      providesTags: (result, error, { roomId, serviceId }) => [
+        { type: "ServiceUsage", id: `${roomId}-${serviceId}` },
+      ],
+    }),
+
+    // Khai báo chỉ số dịch vụ
+    declareServiceUsage: builder.mutation({
+      query: (data) => ({
+        url: `/service-usage/declare`,
+        method: "POST",
+        data: data,
+      }),
+      invalidatesTags: (result, error, { roomId }) => [
+        { type: "ServiceUsage", id: roomId },
+        "ServiceUsage",
+        "Contract",
+      ],
+    }),
+
+    // Xác nhận tất cả chỉ số
+    confirmServiceUsage: builder.mutation({
+      query: ({ month, year }) => ({
+        url: `/service-usage/confirm_all`,
+        method: "POST",
+        params: { month, year },
+      }),
+      invalidatesTags: ["ServiceUsage", "Contract"],
+    }),
   }),
 });
 export const {
@@ -90,4 +153,9 @@ export const {
   useAssignServiceToHousesMutation,
   useUpdateHouseServiceMutation,
   useDeleteHouseServiceMutation,
+  useDeclareServiceUsageMutation,
+  useConfirmServiceUsageMutation,
+  useGetServiceUsageByIdQuery,
+  useGetServiceUsagesByRoomIdQuery,
+  useGetLatestReadingQuery,
 } = serviceApi;

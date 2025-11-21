@@ -56,6 +56,7 @@ import ServiceHouseAddDialog from "../../components/Service/ServiceHouseAddDialo
 import { useAuth } from "@/features/auth";
 import { useGetHousesByOwnerIdQuery } from "../../store/houseApi";
 import ServiceHouseListServiceDialog from "../../components/Service/ServiceHouseListServiceDialog";
+import { NavLink } from "react-router-dom";
 
 const ServiceOwner = () => {
   const [page, setPage] = useState(0);
@@ -231,13 +232,65 @@ const ServiceOwner = () => {
 
       {/* Dialog */}
 
-      <Tabs defaultValue="serviceHouse" className={"w-full "}>
+      <Tabs defaultValue="recordMeter" className={"w-full "}>
         <TabsList>
+          <TabsTrigger value="recordMeter">Record meter</TabsTrigger>
           <TabsTrigger value="serviceList">Service list</TabsTrigger>
           <TabsTrigger value="serviceHouse">Service & House</TabsTrigger>
         </TabsList>
+        {/* Ghi nhận chỉ số dịch vụ */}
+        <TabsContent value="recordMeter">
+          <div className="w-full  p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
+            {/* Cần thay thế bảng danh sách phòng đang thuê tại đây */}
+            <Table>
+              <TableHeader className={"bg-sidebar"}>
+                <TableRow>
+                  <TableHead className="w-[50px]">No</TableHead>
+                  <TableHead className={"w-[250px]"}>Room</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-right w-[100px]">Log</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {sortedHouses.length > 0 &&
+                  sortedHouses.map((house, index) => (
+                    <TableRow key={house.id}>
+                      <TableCell className={"w-[50px]"}>{index + 1}</TableCell>
+                      <TableCell>
+                        <h4 className="font-semibold text-wrap ">
+                          {house.name}
+                        </h4>
+                      </TableCell>
+                      <TableCell className={"hidden sm:table-cell"}>
+                        <h4 className="text-muted-foreground text-wrap ">
+                          {house.address}-{house.district}-{house.province}
+                        </h4>
+                      </TableCell>
+                      <TableCell className={"flex justify-end"}>
+                        <Button
+                          variant={"outline"}
+                          className={
+                            "border-purple-400 dark:border-purple-400 hover:border-amber-500 hover:text-amber-500"
+                          }
+                          asChild
+                        >
+                          <NavLink
+                            to={`/owner/services/houses/${house.id}/rooms`}
+                            className={"flex items-center gap-2"}
+                          >
+                            <Eye /> View Rent Room
+                          </NavLink>
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
+            </Table>
+          </div>
+        </TabsContent>
+        {/* Dịch vụ đã có của nhà */}
         <TabsContent value="serviceHouse">
-          <div className="w-full lg:w-2/3 p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
+          <div className="w-full  p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
             <Table>
               <TableHeader className={"bg-sidebar"}>
                 <TableRow>
@@ -278,7 +331,7 @@ const ServiceOwner = () => {
             </Table>
           </div>
         </TabsContent>
-
+        {/* Danh sách dịch vụ */}
         <TabsContent value="serviceList">
           <div className="w-full p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
             <Table>
@@ -344,7 +397,6 @@ const ServiceOwner = () => {
                               >
                                 Add service - house
                               </DropdownMenuItem>
-                              
 
                               <DropdownMenuItem
                                 onClick={() => openEditDialog(service)}
