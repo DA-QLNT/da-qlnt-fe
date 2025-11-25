@@ -27,7 +27,7 @@ import AssetOwner from "./features/owner/pages/Asset/AssetOwner";
 import ServiceOwner from "./features/owner/pages/Service/ServiceOwner";
 import ContractOwner from "./features/owner/pages/Contract/ContractOwner";
 import ContractDetailOwner from "./features/owner/pages/Contract/ContractDetailOwner";
-import TenantOwner from "./features/Tenant/TenantLayout";
+import TenantOwner from "./features/owner/pages/Tenant/TenantOwner";
 import ServiceListRoomRent from "./features/owner/pages/Service/ServiceListRoomRent";
 import TenantProtectedRoute from "./components/layout/TenantProtectedRoute";
 import TenantLayout from "./features/Tenant/TenantLayout";
