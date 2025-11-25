@@ -120,11 +120,11 @@ const RoomOwner = () => {
   };
 
   // ================UI========
-  if (isError) {
-    return (
-      <div className="text-center p-8 text-red-500">{t("ErrorLoadRoom")}</div>
-    );
-  }
+  // if (isError) {
+  //   return (
+  //     <div className="text-center p-8 text-red-500">{t("ErrorLoadRoom")}</div>
+  //   );
+  // }
   return (
     <div className="px-4 lg:px-6">
       {/* initial */}

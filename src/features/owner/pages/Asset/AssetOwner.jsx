@@ -125,14 +125,13 @@ const AssetOwner = () => {
     });
   };
 
- 
-  if (isErrorAssets) {
-    return (
-      <div className="p-6 text-center text-red-500">
-        Lỗi tải danh sách Assets.
-      </div>
-    );
-  }
+  // if (isErrorAssets) {
+  //   return (
+  //     <div className="p-6 text-center text-red-500">
+  //       Lỗi tải danh sách Assets.
+  //     </div>
+  //   );
+  // }
   return (
     <div className="px-4 lg:px-6">
       {/* initial */}
@@ -263,6 +262,5 @@ const AssetOwner = () => {
     </div>
   );
 };
-
 
 export default AssetOwner;

@@ -2,6 +2,8 @@ import { z } from "zod";
 const fileSchema = z
   .instanceof(FileList)
   .refine((files) => files.length > 0, { message: "Avatar is required." });
+
+// thêm tenant lúc cập nhật contract
 export const TenantAddSchema = z.object({
   username: z.string().min(3, "Username must be at least 3 characters long"),
   password: z.string().min(6, "Password must be at least 4 characters long"),
@@ -41,6 +43,9 @@ export const TenantEditSchema = z.object({
 // Schema cho việc Tạo Tenant mới
 export const NewTenantSchema = z.object({
   fullName: z.string().min(1, "Họ tên không được để trống"),
+  idNumber: z
+    .string()
+    .min(12, "Id Persion must be at least 12 characters long"),
   phoneNumber: z
     .string()
     .min(10, "SĐT phải có ít nhất 10 số")

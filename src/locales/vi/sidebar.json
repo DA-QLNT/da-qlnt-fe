@@ -2,7 +2,12 @@
   "Dashboard": "Bảng điều khiển",
   "Houses": "Nhà",
   "Users": "Người dùng",
+  "Tenants": "Khách thuê",
   "Roles": "Vai trò",
-  "Permissions":"Quyền hạn",
+  "Permissions": "Quyền hạn",
+  "Rules": "Quy tắc",
+  "Assets": "Tài sản",
+  "Services": "Dịch vụ",
+
   "Analytics": "Phân tích"
 }

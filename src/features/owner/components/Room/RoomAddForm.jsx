@@ -53,6 +53,8 @@ export default function RoomAddForm({ houseId, onFormSubmitSuccess }) {
   const isDisabled = isMutating;
 
   const onSubmit = async (data) => {
+    console.log(data);
+
     const formData = new FormData();
 
     // 1. Append Fields CƠ BẢN
