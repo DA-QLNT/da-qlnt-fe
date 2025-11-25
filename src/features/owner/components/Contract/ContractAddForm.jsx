@@ -207,6 +207,8 @@ export default function ContractAddForm({
       startDate: format(data.startDate, "yyyy-MM-dd"),
       endDate: format(data.endDate, "yyyy-MM-dd"),
     };
+    console.log(payload);
+
     // Loại bỏ lastMeterReading nếu method không phải là "0" trước khi gửi
     payload.houseServiceIds = payload.houseServiceIds.map((service) => {
       const originalService = houseServices.find(
@@ -403,10 +405,8 @@ export default function ContractAddForm({
                     {isChecked &&
                       service.method === "0" &&
                       fieldIndex !== -1 && (
-                        <Field className="w-32">
-                          <FieldLabel className="sr-only">
-                            Chỉ số đầu
-                          </FieldLabel>
+                        <Field className="w-fit flex flex-row gap-x-1 items-center">
+                          <span>Chỉ số đầu</span>
                           <Input
                             type="number"
                             placeholder="Chỉ số đầu"

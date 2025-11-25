@@ -9,6 +9,7 @@ export const store = configureStore({
     [addressApi.reducerPath]: addressApi.reducer,
     auth: authReducer,
   },
+  // addressAPi là api tôi sử dụng bên thư 3
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(baseApi.middleware, addressApi.middleware,),
+    getDefaultMiddleware().concat(baseApi.middleware, addressApi.middleware),
 });

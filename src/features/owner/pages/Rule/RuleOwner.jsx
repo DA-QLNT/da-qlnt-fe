@@ -45,13 +45,13 @@ const RuleOwner = () => {
       return nameA.localeCompare(nameB, "vi", { sensitivity: "base" });
     });
   }, [rawRules]);
-  if (isError) {
-    return (
-      <div className="p-6 text-center text-red-500">
-        Lỗi tải danh sách nội quy.
-      </div>
-    );
-  }
+  // if (isError) {
+  //   return (
+  //     <div className="p-6 text-center text-red-500">
+  //       Lỗi tải danh sách nội quy.
+  //     </div>
+  //   );
+  // }
   if (isLoading || isFetching) {
     return (
       <div className="absolute inset-0 flex items-center justify-center">

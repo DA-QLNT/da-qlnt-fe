@@ -89,11 +89,16 @@ export default function AssetItemAddForm({ roomId, onFormSubmitSuccess }) {
   const isDisabled = isMutating || loadingAssets;
 
   const onSubmit = async (data) => {
+    console.log(data);
+
     const formData = new FormData();
 
     // 1. Format DOB và chuẩn bị payload
+    // const formattedBoughtAt = data.boughtAt
+    //   ? format(data.boughtAt, "yyyy-MM-dd")
+    //   : null;
     const formattedBoughtAt = data.boughtAt
-      ? format(data.boughtAt, "yyyy-MM-dd")
+      ? data.boughtAt.toISOString() // <- Sử dụng .toISOString()
       : null;
 
     // Append các trường text/number (RoomId, AssetId, Price, Description)

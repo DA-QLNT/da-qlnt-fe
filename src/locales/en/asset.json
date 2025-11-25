@@ -1,0 +1,18 @@
+{
+  "ManageAssets": "Manage Assets",
+  "No": "No",
+  "AssetName": "Asset Name",
+  "Amount": "Amount",
+  "Add": "Add",
+  "NoAssets": "No Assets",
+  "AddNewAsset": "Add new asset",
+  "Example": "Example",
+  "Create": "CreateNew",
+  "CreateSuccess": "Create success",
+  "CreateFailed": "Create failed",
+  "UpdateSuccess": "Update success",
+  "UpdateFailed": "Update failed",
+  "DeleteSuccess": "Delete success",
+  "DeleteFailed": "Delete failed",
+  "Delete": "Delete"
+}
