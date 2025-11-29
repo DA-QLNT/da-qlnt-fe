@@ -1,5 +1,5 @@
 import { useAuth } from "@/features/auth";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useGetHousesByOwnerIdQuery } from "../../store/houseApi";
 import { Spinner } from "@/components/ui/spinner";
@@ -14,11 +14,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { NavLink } from "react-router-dom";
+import EarlyContractAddDialog from "../../components/Contract/EarlyContractAddDialog";
 const HouseList = () => {
   const { t } = useTranslation("house");
   const { userId: ownerId, isLoadingMe } = useAuth();
-  console.log(ownerId);
-  // add house
 
   const { data, isLoading, isFetching, isError } = useGetHousesByOwnerIdQuery(
     {
@@ -39,6 +38,22 @@ const HouseList = () => {
       return nameA.localeCompare(nameB, "vi", { sensitivity: "base" });
     });
   }, [rawHouses]);
+
+  const [earlyAddContractDialog, setEarlyAddContractDialog] = useState({
+    open: false,
+  });
+  const openEalryAddContractDialog = () => {
+    setEarlyAddContractDialog((prev) => ({
+      ...prev,
+      open: true,
+      // Cần lấy rentPrice thực tế của phòng {roomId} ở đây
+    }));
+  };
+  const closeEalryAddContractDialog = (open) => {
+    if (!open) {
+      setEarlyAddContractDialog((prev) => ({ ...prev, open: false }));
+    }
+  };
   return (
     <div className="px-4 lg:px-6">
       {(isLoading || isFetching) && (
@@ -51,9 +66,15 @@ const HouseList = () => {
           {t("NoHouse")}
         </div>
       )}
+      {/* dialog */}
+      <EarlyContractAddDialog
+        open={earlyAddContractDialog.open}
+        onOpenChange={closeEalryAddContractDialog}
+      />
+      {/* dialog */}
       <div className="flex flex-col gap-8">
         <div className="text-end">
-          <Button>
+          <Button onClick={openEalryAddContractDialog}>
             <Plus />
             {t("CreatContract")}
           </Button>

@@ -32,7 +32,7 @@ export const ContractAddSchema = z.object({
       z.object({
         serviceId: z.number(),
         houseServiceId: z.number(),
-        lastMeterReading: z.number().optional(), // lastMeterReading là tùy chọn
+        // lastMeterReading: z.number().optional(), // lastMeterReading là tùy chọn
       })
     )
     .min(0, "Ít nhất một dịch vụ cần được chọn nếu có."), // Có thể là 0 nếu không có dịch vụ nào
