@@ -13,6 +13,7 @@ import {
   IconUserStar,
   IconReceipt2,
   IconReceipt,
+  IconContract,
 } from "@tabler/icons-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -77,6 +78,11 @@ const data = {
       title: "Tenants",
       url: "/owner/tenants",
       icon: IconUserStar,
+    },
+    {
+      title: "Contracts",
+      url: "/owner/contracts/houses",
+      icon: IconContract,
     },
     {
       title: "Users",

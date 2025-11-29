@@ -25,6 +25,19 @@ export const contractApi = baseApi.injectEndpoints({
       transformResponse: (response) => response.result,
       providesTags: (result, error, id) => [{ type: "Contract", id }],
     }),
+    // 🚨 QUERY LẤY TẤT CẢ HỢP ĐỒNG THEO HOUSE ID
+    getContractsByHouseId: builder.query({
+      query: ({ houseId, page = 0, size = 10 }) => ({
+        url: `/contracts/houses/${houseId}`,
+        method: "GET",
+        params: { page, size },
+      }),
+      transformResponse: (response) => response.result.content,
+      providesTags: (result, error, { houseId }) => [
+        "Contract",
+        { type: "HouseContract", id: houseId },
+      ],
+    }),
     getCurrentContractById: builder.query({
       query: (roomId) => ({
         url: `/contracts/rooms/${roomId}/current`,
@@ -140,6 +153,7 @@ export const contractApi = baseApi.injectEndpoints({
 export const {
   useCreateContractMutation,
   useGetContractByIdQuery,
+  useGetContractsByHouseIdQuery,
   useGetContractsByRoomIdQuery,
   useUpdateContractInforMutation,
   useAddTenantMutation,
