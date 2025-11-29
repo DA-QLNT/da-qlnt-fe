@@ -38,6 +38,34 @@ export const ContractAddSchema = z.object({
     .min(0, "Ít nhất một dịch vụ cần được chọn nếu có."), // Có thể là 0 nếu không có dịch vụ nào
   tenants: z.array(TenantSchema).min(1, "Hợp đồng cần ít nhất một khách thuê."),
 });
+export const EarlyContractAddSchema = z.object({
+  // Foreign Keys (hidden)
+  // houseId: z.number({ required_error: "Vui lòng chọn Nhà trọ." }), // 🚨 THÊM HOUSEID
+  roomId: z.number({ required_error: "Vui lòng chọn Phòng." }),
+  ownerId: z.number(),
+
+  // Thông tin cơ bản
+  startDate: z.date({ required_error: "Ngày bắt đầu là bắt buộc." }),
+  endDate: z.date({ required_error: "Ngày kết thúc là bắt buộc." }),
+  rent: requiredNumber.min(1000, "Giá thuê phải lớn hơn 1,000 VNĐ."),
+  deposit: requiredNumber.min(1000, "Giá cọc phải lớn hơn 1,000 VNĐ."),
+  penaltyAmount: requiredNumber.min(1000, "Phí phạt phải lớn hơn 1,000 VNĐ."),
+  paymentCycle: z.coerce
+    .number()
+    .min(1, "Chu kỳ thanh toán tối thiểu là 1 tháng."),
+
+  // Danh sách dịch vụ và khách thuê
+  houseServiceIds: z
+    .array(
+      z.object({
+        serviceId: z.number(),
+        houseServiceId: z.number(),
+        // lastMeterReading: z.number().optional(), // lastMeterReading là tùy chọn
+      })
+    )
+    .min(0, "Ít nhất một dịch vụ cần được chọn nếu có."), // Có thể là 0 nếu không có dịch vụ nào
+  tenants: z.array(TenantSchema).min(1, "Hợp đồng cần ít nhất một khách thuê."),
+});
 
 export const ContractInforEditSchema = z.object({
   // ID hợp đồng bắt buộc cho việc Update

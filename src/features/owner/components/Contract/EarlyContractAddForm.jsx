@@ -28,10 +28,14 @@ import {
   Search,
   CheckCircle,
   User,
+  Trash,
 } from "lucide-react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ContractAddSchema } from "@/lib/validation/contract";
+import {
+  ContractAddSchema,
+  EarlyContractAddSchema,
+} from "@/lib/validation/contract";
 
 import { useAuth } from "@/features/auth";
 import toast from "react-hot-toast";
@@ -75,9 +79,8 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
     formState: { errors },
     reset,
   } = useForm({
-    resolver: zodResolver(ContractAddSchema),
+    resolver: zodResolver(EarlyContractAddSchema),
     defaultValues: {
-      houseId: undefined, // Bắt đầu từ House
       roomId: undefined,
       ownerId: ownerId,
       rent: 0,
@@ -137,6 +140,13 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
     name: "tenants",
     rules: { required: "Vui lòng thêm ít nhất một khách thuê." },
   });
+  useEffect(() => {
+    if (fields.length === 0) {
+      reset({
+        tenants: [{ fullName: "", phoneNumber: "", email: "" }],
+      });
+    }
+  }, [reset]);
 
   // Cập nhật giá thuê mặc định khi roomData fetch xong (hoặc khi chọn Room)
   useEffect(() => {
@@ -199,6 +209,14 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
       toast.error("Vui lòng thêm ít nhất một khách thuê.");
       return;
     }
+    const finalTenants = data.tenants.filter(
+      (t) => t.fullName && t.phoneNumber
+    );
+
+    if (finalTenants.length === 0) {
+      toast.error("Hợp đồng cần ít nhất một khách thuê hợp lệ.");
+      return;
+    }
 
     // 1. TRANSFORMATION DỊCH VỤ
     const finalHouseServiceIds = data.houseServiceIds
@@ -218,6 +236,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
     const payload = {
       ...data,
       houseServiceIds: finalHouseServiceIds,
+      tenants: finalTenants,
       startDate: format(data.startDate, "yyyy-MM-dd"),
       endDate: format(data.endDate, "yyyy-MM-dd"),
     };
@@ -238,12 +257,6 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <TenantCreateDialog
-        open={isTenantCreateDialogOpen}
-        onOpenChange={setIsTenantCreateDialogOpen}
-        onTenantAdded={handleAddTenantToContract}
-        phone={phoneSearchTerm}
-      />
       <input type="hidden" {...register("roomId", { valueAsNumber: true })} />
       <input type="hidden" {...register("ownerId", { valueAsNumber: true })} />
 
@@ -252,7 +265,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
         <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
           {/* HOUSE SELECT */}
           <Field>
-            <FieldLabel>House (*)</FieldLabel>
+            <FieldLabel>Nhà (*)</FieldLabel>
             <Controller
               name="houseId"
               control={control}
@@ -286,7 +299,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
 
           {/* ROOM SELECT */}
           <Field>
-            <FieldLabel>Room (*)</FieldLabel>
+            <FieldLabel>Phòng (*)</FieldLabel>
             <Controller
               name="roomId"
               control={control}
@@ -329,7 +342,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
 
           {/* Rent & Deposit */}
           <Field>
-            <FieldLabel>Rent (*)</FieldLabel>
+            <FieldLabel>Giá thuê (*)</FieldLabel>
             <Input
               type="number"
               {...register("rent", { valueAsNumber: true })}
@@ -338,7 +351,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
             <FieldError>{errors.rent?.message}</FieldError>
           </Field>
           <Field>
-            <FieldLabel>Deposit (*)</FieldLabel>
+            <FieldLabel>Tiền cọc (*)</FieldLabel>
             <Input
               type="number"
               {...register("deposit", { valueAsNumber: true })}
@@ -349,7 +362,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
 
           {/* Start/End Date */}
           <Field>
-            <FieldLabel>Start Date (*)</FieldLabel>
+            <FieldLabel>Ngày bắt đầu (*)</FieldLabel>
             <Controller
               name="startDate"
               control={control}
@@ -377,7 +390,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
             <FieldError>{errors.startDate?.message}</FieldError>
           </Field>
           <Field>
-            <FieldLabel>End Date (*)</FieldLabel>
+            <FieldLabel>Ngày kết thúc (*)</FieldLabel>
             <Controller
               name="endDate"
               control={control}
@@ -407,7 +420,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
 
           {/* Payment Cycle & Penalty */}
           <Field>
-            <FieldLabel>Payment Cycle(*)</FieldLabel>
+            <FieldLabel>Chu kỳ thanh toán(*)</FieldLabel>
             <Controller
               name="paymentCycle"
               control={control}
@@ -433,7 +446,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
             <FieldError>{errors.paymentCycle?.message}</FieldError>
           </Field>
           <Field>
-            <FieldLabel>Penalty Amountn (*)</FieldLabel>
+            <FieldLabel>Tiền phạt (*)</FieldLabel>
             <Input
               type="number"
               {...register("penaltyAmount", { valueAsNumber: true })}
@@ -507,7 +520,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
         {/* ------------------- KHÁCH THUÊ (DYNAMIC ARRAY) ------------------- */}
         <Field className="pt-4 border-t">
           <FieldLabel className="flex justify-between items-center">
-            Tenant (*):
+            Khách thuê (*):
             <div className="flex items-center gap-4">
               <div className="relative">
                 <Search className="absolute top-1/2 -translate-y-1/2 left-2 size-5" />
@@ -524,14 +537,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
                   />
                 )}
               </div>
-              <Button
-                type="button"
-                size="sm"
-                onClick={() => setIsTenantCreateDialogOpen(true)}
-                disabled={isDisabled}
-              >
-                <UserPlus className="h-4 w-4 mr-2" /> Thêm khách
-              </Button>
+              <TenantCreateDialog onTenantCreated={handleAddTenantToContract} />
             </div>
           </FieldLabel>
 
@@ -583,7 +589,23 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
               key={fieldItem.id}
               className="grid grid-cols-6 gap-2 items-start bg-secondary/50 p-3 rounded-md"
             >
-              <span className="text-sm font-medium">#{index + 1}</span>
+              <div className="col-span-6 flex justify-between items-center">
+                <span className="text-sm font-medium">#{index + 1}</span>
+                {/* Remove Button */}
+                {fields.length > 1 && (
+                  <div className="flex justify-end">
+                    <Button
+                      type="button"
+                      size="icon"
+                      variant="ghost"
+                      onClick={() => remove(index)}
+                      disabled={isDisabled}
+                    >
+                      <Trash className="h-8 w-8 text-red-500" />
+                    </Button>
+                  </div>
+                )}
+              </div>
 
               {/* Full Name */}
               <Field className="col-span-6">
@@ -618,21 +640,6 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
                   {errors.tenants?.[index]?.email?.message}
                 </FieldError>
               </Field>
-
-              {/* Remove Button */}
-              {fields.length > 1 && (
-                <div className="col-span-1 flex justify-end">
-                  <Button
-                    type="button"
-                    size="icon"
-                    variant="ghost"
-                    onClick={() => remove(index)}
-                    disabled={isDisabled}
-                  >
-                    <X className="h-8 w-8 text-red-500" />
-                  </Button>
-                </div>
-              )}
             </div>
           ))}
           <FieldError>{errors.tenants?.message}</FieldError>

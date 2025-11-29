@@ -28,6 +28,7 @@ import {
   Search,
   CheckCircle,
   User,
+  Trash,
 } from "lucide-react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -82,7 +83,6 @@ export default function ContractAddForm({
     formState: { errors },
     reset,
     watch, // ✅ Thêm watch để theo dõi giá trị của houseServiceIds
-    setValue, // ✅ Thêm setValue để cập nhật lastMeterReading
   } = useForm({
     resolver: zodResolver(ContractAddSchema),
     defaultValues: {
@@ -103,7 +103,6 @@ export default function ContractAddForm({
     fields: serviceFields,
     append: appendService,
     remove: removeService,
-    update: updateService, // Thêm update để thay đổi giá trị lastMeterReading
   } = useFieldArray({
     control,
     name: "houseServiceIds",
@@ -183,10 +182,7 @@ export default function ContractAddForm({
         serviceId: service.serviceId,
         houseServiceId: service.id,
       };
-      // Nếu là dịch vụ công tơ (method: "0"), thêm lastMeterReading mặc định
-      if (service.method === "0") {
-        newServiceEntry.lastMeterReading = 0;
-      }
+
       appendService(newServiceEntry);
     } else {
       // Nếu bỏ chọn, xóa dịch vụ khỏi mảng
@@ -208,18 +204,6 @@ export default function ContractAddForm({
       endDate: format(data.endDate, "yyyy-MM-dd"),
     };
     console.log(payload);
-
-    // Loại bỏ lastMeterReading nếu method không phải là "0" trước khi gửi
-    payload.houseServiceIds = payload.houseServiceIds.map((service) => {
-      const originalService = houseServices.find(
-        (hs) => hs.id === service.houseServiceId
-      );
-      if (originalService && originalService.method !== "0") {
-        const { lastMeterReading, ...rest } = service; // Destructure để loại bỏ
-        return rest;
-      }
-      return service;
-    });
 
     try {
       console.log("Payload gửi đi:", payload);
@@ -400,31 +384,6 @@ export default function ContractAddForm({
                         {service.price.toLocaleString()} VNĐ)
                       </label>
                     </div>
-
-                    {/* ✅ HIỂN THỊ INPUT CHO lastMeterReading NẾU method === "0" VÀ ĐƯỢC CHỌN */}
-                    {isChecked &&
-                      service.method === "0" &&
-                      fieldIndex !== -1 && (
-                        <Field className="w-fit flex flex-row gap-x-1 items-center">
-                          <span>Chỉ số đầu</span>
-                          <Input
-                            type="number"
-                            placeholder="Chỉ số đầu"
-                            {...register(
-                              `houseServiceIds.${fieldIndex}.lastMeterReading`,
-                              { valueAsNumber: true }
-                            )}
-                            disabled={isDisabled}
-                            min={0}
-                          />
-                          <FieldError>
-                            {
-                              errors.houseServiceIds?.[fieldIndex]
-                                ?.lastMeterReading?.message
-                            }
-                          </FieldError>
-                        </Field>
-                      )}
                   </div>
                 );
               })
@@ -603,7 +562,7 @@ export default function ContractAddForm({
                     onClick={() => remove(index)}
                     disabled={isDisabled}
                   >
-                    <X className="h-8 w-8 text-red-500" />
+                    <Trash className="h-8 w-8 text-red-500" />
                   </Button>
                 </div>
               </div>

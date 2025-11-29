@@ -38,7 +38,7 @@ export default function TenantCreateForm({
     },
   });
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data, event) => {
     const rawPayload = {
       ...data,
       username: data.phoneNumber,
@@ -47,7 +47,8 @@ export default function TenantCreateForm({
     Object.keys(rawPayload).forEach((key) => {
       formData.append(key, rawPayload[key]);
     });
-
+    event?.preventDefault(); // ✅ Ngăn default behavior
+    event?.stopPropagation(); // ✅ Ngăn event bubble lên form cha
     console.log("Payload gửi đi (dạng FormData):", formData);
 
     try {

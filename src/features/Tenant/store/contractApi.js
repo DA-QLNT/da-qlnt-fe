@@ -17,7 +17,7 @@ export const contractApi = baseApi.injectEndpoints({
     // Endpoint: /contracts/{contractId}/confirm-tenant
     confirmTenantContract: builder.mutation({
       query: (contractId) => ({
-        url: `/contracts/${contractId}/confirm-tenant`,
+        url: `/contracts/${contractId}/tenant/confirm`,
         method: "POST",
       }),
       // Cập nhật lại hợp đồng sau khi xác nhận
