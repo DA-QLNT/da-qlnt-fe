@@ -343,7 +343,7 @@ const ContractDetailOwner = () => {
               <User className="h-5 w-5" /> Danh sách Khách thuê{" "}
             </div>
             {(contract.status === 0 || contract.status === 2) && (
-              <Button onClick={openTenantAddDialog}>Add tenant</Button>
+              <Button onClick={openTenantAddDialog}>Tạo khách thuê</Button>
             )}
           </CardTitle>
         </CardHeader>
@@ -355,7 +355,7 @@ const ContractDetailOwner = () => {
                 <TableHead>Họ Tên</TableHead>
                 <TableHead>SĐT</TableHead>
                 <TableHead>Đại diện</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead className="text-right">Hành động</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -387,7 +387,7 @@ const ContractDetailOwner = () => {
                         variant="destructive"
                         onClick={() => openLeaveTenantDialog(tenant)}
                       >
-                        Leave
+                        Rời
                       </Button>
                     )}
                   </TableCell>
@@ -442,7 +442,7 @@ const ContractDetailOwner = () => {
         {/* DRAFT ACTIONS */}
         {(contract.status === 0 || contract.status === 1) && (
           <Button variant="secondary" onClick={openCancelDialog}>
-            Cancel
+            Hủy
           </Button>
         )}
         {contract.status === 0 && (
