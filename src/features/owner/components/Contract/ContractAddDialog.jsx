@@ -7,7 +7,6 @@ import {
 } from "@/components/ui/dialog";
 import ContractAddForm from "./ContractAddForm";
 import { FileText } from "lucide-react";
-import { formatCurrency } from "@/lib/format/currencyFormat";
 
 export default function ContractAddDialog({
   houseId,

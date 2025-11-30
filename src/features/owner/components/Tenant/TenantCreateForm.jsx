@@ -39,6 +39,11 @@ export default function TenantCreateForm({
   });
 
   const onSubmit = async (data, event) => {
+    // 🚨 Quan trọng: Ngăn form cha bị submit
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
     const rawPayload = {
       ...data,
       username: data.phoneNumber,
@@ -47,8 +52,7 @@ export default function TenantCreateForm({
     Object.keys(rawPayload).forEach((key) => {
       formData.append(key, rawPayload[key]);
     });
-    event?.preventDefault(); // ✅ Ngăn default behavior
-    event?.stopPropagation(); // ✅ Ngăn event bubble lên form cha
+
     console.log("Payload gửi đi (dạng FormData):", formData);
 
     try {
@@ -64,9 +68,14 @@ export default function TenantCreateForm({
       console.error("Create Tenant Error:", error);
     }
   };
-
+  // ✅ FIX: Handler riêng để đảm bảo ngăn submit
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    handleSubmit(onSubmit)(e);
+  };
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form onSubmit={handleFormSubmit} className="space-y-4">
       <FieldGroup className="grid gap-4 md:grid-cols-2">
         <Field>
           <FieldLabel>Họ Tên (*)</FieldLabel>
