@@ -138,15 +138,19 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
   const { fields, append, remove } = useFieldArray({
     control,
     name: "tenants",
-    rules: { required: "Vui lòng thêm ít nhất một khách thuê." },
   });
   useEffect(() => {
+    // Nếu không có tenant nào, thêm 1 field trống để user nhập
     if (fields.length === 0) {
-      reset({
-        tenants: [{ fullName: "", phoneNumber: "", email: "" }],
-      });
+      append({ fullName: "", phoneNumber: "", email: "" });
     }
-  }, [reset]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  useEffect(() => {
+    if (Object.keys(errors).length > 0) {
+      console.log("Form validation errors:", errors);
+    }
+  }, [errors]);
 
   // Cập nhật giá thuê mặc định khi roomData fetch xong (hoặc khi chọn Room)
   useEffect(() => {
@@ -205,6 +209,8 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
 
   // --- SUBMIT ---
   const onSubmit = async (data) => {
+    console.log(data, "abcd");
+
     if (data.tenants.length === 0) {
       toast.error("Vui lòng thêm ít nhất một khách thuê.");
       return;
@@ -232,14 +238,16 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
       })
       .filter((s) => s.houseServiceId);
 
+    const { houseId, ...formDataWithoutHouseId } = data;
     // 2. PAYLOAD CUỐI CÙNG
     const payload = {
-      ...data,
+      ...formDataWithoutHouseId,
       houseServiceIds: finalHouseServiceIds,
       tenants: finalTenants,
       startDate: format(data.startDate, "yyyy-MM-dd"),
       endDate: format(data.endDate, "yyyy-MM-dd"),
     };
+    console.log(payload);
 
     try {
       await createContract(payload).unwrap();
@@ -490,6 +498,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
                                 ...field.value,
                                 {
                                   houseServiceId: service.houseServiceId,
+                                  serviceId: service.serviceId,
                                 },
                               ];
                             } else {
