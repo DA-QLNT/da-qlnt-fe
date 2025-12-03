@@ -228,7 +228,7 @@ const ContractDetailByHouse = () => {
       {/* leave tenant */}
       {tenantToLeave && (
         <TenantLeaveDialog
-          contractId={id}
+          contractId={contractId}
           tenant={tenantToLeave}
           open={isTenantLeaveDialogOpen}
           onOpenChange={setIsTenantLeaveDialogOpen}
@@ -263,7 +263,9 @@ const ContractDetailByHouse = () => {
             <div className="flex items-center gap-2">
               <Info className="h-5 w-5" /> Thông tin Hợp đồng
             </div>
-            {contract.status === 0 && (
+            {(contract.status === 0 ||
+              contract.status === 1 ||
+              contract.status === 2) && (
               <Button onClick={openContractInforEditDialog}>Sửa</Button>
             )}
           </CardTitle>
