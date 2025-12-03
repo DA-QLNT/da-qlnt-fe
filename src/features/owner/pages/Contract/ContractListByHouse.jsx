@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { useGetContractsByHouseIdQuery } from "../../store/contractApi";
 import { Spinner } from "@/components/ui/spinner";
@@ -13,6 +13,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useTranslation } from "react-i18next";
+import EarlyContractAddDialog from "../../components/Contract/EarlyContractAddDialog";
+import ContractStatusBadge from "../../components/Contract/ContractStatusBadge";
 const ContractListByHouse = () => {
   const { t } = useTranslation("house");
   const { houseId } = useParams();
@@ -38,6 +40,21 @@ const ContractListByHouse = () => {
       return nameA.localeCompare(nameB, "vi", { sensitivity: "base" });
     });
   });
+  const [earlyAddContractDialog, setEarlyAddContractDialog] = useState({
+    open: false,
+  });
+  const openEalryAddContractDialog = () => {
+    setEarlyAddContractDialog((prev) => ({
+      ...prev,
+      open: true,
+      // Cần lấy rentPrice thực tế của phòng {roomId} ở đây
+    }));
+  };
+  const closeEalryAddContractDialog = (open) => {
+    if (!open) {
+      setEarlyAddContractDialog((prev) => ({ ...prev, open: false }));
+    }
+  };
   if (loadingContract) {
     return (
       <div className="absolute inset-0 flex items-center justify-center">
@@ -50,6 +67,10 @@ const ContractListByHouse = () => {
   }
   return (
     <div className="px-4 lg:px-6 flex flex-col gap-4">
+      <EarlyContractAddDialog
+        open={earlyAddContractDialog.open}
+        onOpenChange={closeEalryAddContractDialog}
+      />
       <div className="flex items-center justify-between">
         <Button
           variant="outline"
@@ -58,19 +79,19 @@ const ContractListByHouse = () => {
         >
           <ArrowLeft className="mr-2 h-4 w-4" /> Quay lại Danh sách nhà
         </Button>
-        <Button>
+        <Button onClick={openEalryAddContractDialog}>
           <Plus />
-          {t("CreatContract")}
+          Tạo hợp đồng
         </Button>
       </div>
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className={"w-[50px]"}>No</TableHead>
-            <TableHead>Room</TableHead>
-            <TableHead>Representative</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead className={"text-right"}>Actions</TableHead>
+            <TableHead className={"w-[50px]"}>STT</TableHead>
+            <TableHead>Phòng</TableHead>
+            <TableHead>Đại diện</TableHead>
+            <TableHead>Trạng thái</TableHead>
+            <TableHead className={"text-right"}>Thao tác</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -80,7 +101,9 @@ const ContractListByHouse = () => {
                 <TableCell className={"w-[50px]"}>{index + 1}</TableCell>
                 <TableCell>{contract.roomName}</TableCell>
                 <TableCell>{contract.tenants[0].fullName}</TableCell>
-                <TableCell>{contract.status}</TableCell>
+                <TableCell>
+                  <ContractStatusBadge contractStatus={contract.status} />
+                </TableCell>
                 <TableCell className={"text-right"}>
                   <Button
                     variant={"outline"}
