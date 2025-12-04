@@ -30,6 +30,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import ServiceTypeBadge from "../../components/Service/ServiceTypeBadge";
 import toast from "react-hot-toast";
 import { formatDateTime } from "@/lib/format/dateTimeFormat";
+import ContractSendEmailConfirm from "../../components/Contract/ContractSendEmailConfirm";
 const ContractDetailByHouse = () => {
   const { houseId, contractId } = useParams();
   const navigate = useNavigate();
@@ -138,6 +139,16 @@ const ContractDetailByHouse = () => {
       setIsActivateDialogOpen(false);
     }
   };
+  // send email contract
+  const [isSendEmailDialogOpen, setIsSendEmailDialogOpen] = useState(false);
+  const openSendEmailDialog = () => {
+    setIsSendEmailDialogOpen(true);
+  };
+  const closeSendEmailDialog = (open) => {
+    if (!open) {
+      setIsSendEmailDialogOpen(false);
+    }
+  };
 
   // cancel contract
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
@@ -212,6 +223,12 @@ const ContractDetailByHouse = () => {
         contract={contract}
         open={isActivateDialogOpen}
         onOpenChange={closeActivateDialog}
+      />
+      {/* send email contract */}
+      <ContractSendEmailConfirm
+        contract={contract}
+        open={isSendEmailDialogOpen}
+        onOpenChange={closeSendEmailDialog}
       />
       {/* update contract */}
       <ContractInforEditDialog
@@ -420,17 +437,23 @@ const ContractDetailByHouse = () => {
       {/* ACTIONS */}
       <div className="flex justify-end gap-2">
         {/* DRAFT ACTIONS */}
-        {(contract.status === 0 || contract.status === 1) && (
+        {(contract.status === 0 ||
+          contract.status === 1 ||
+          contract.status === 2 ||
+          contract.status === 3) && (
           <Button variant="secondary" onClick={openCancelDialog}>
             Cancel
           </Button>
         )}
-        {contract.status === 0 && (
+        {(contract.status === 0 || contract.status === 1) && (
+          <Button onClick={openSendEmailDialog}>Gửi mail</Button>
+        )}
+        {contract.status === 2 && (
           <Button onClick={openActivateDialog}>Kích hoạt</Button>
         )}
 
         {/* ACTIVE ACTIONS */}
-        {contract.status === 2 && (
+        {contract.status === 4 && (
           <Button onClick={openExtendDialog} variant="outline">
             Gia hạn
           </Button>
