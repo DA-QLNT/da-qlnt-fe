@@ -26,7 +26,7 @@ export default function TenantCreateDialog({ onTenantCreated }) {
         className="flex-shrink-0 mt-0"
       >
         <PlusCircle className="h-4 w-4 mr-2" />
-        Tạo Tenant
+        Tạo Tenant2
       </Button>
 
       <DialogContent className="sm:max-w-[500px] overflow-y-auto">

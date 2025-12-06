@@ -201,7 +201,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
       serviceId: hs.serviceId, // Service ID
       houseServiceId: hs.id, // HouseService ID
       name: hs.serviceName,
-      method: Number(hs.method), // 0: Meter, 1: Per head, 2: Fixed
+      method: Number(hs.method), // 0 1 2
       price: hs.price,
       unit: hs.unit,
     }));
