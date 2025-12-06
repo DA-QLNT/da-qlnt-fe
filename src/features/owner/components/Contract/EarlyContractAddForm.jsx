@@ -24,7 +24,6 @@ import {
   Calendar as CalendarIcon,
   Loader2,
   UserPlus,
-  X,
   Search,
   CheckCircle,
   User,
@@ -32,10 +31,7 @@ import {
 } from "lucide-react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  ContractAddSchema,
-  EarlyContractAddSchema,
-} from "@/lib/validation/contract";
+import { EarlyContractAddSchema } from "@/lib/validation/contract";
 
 import { useAuth } from "@/features/auth";
 import toast from "react-hot-toast";
@@ -46,12 +42,12 @@ import { useGetHouseServicesByHouseIdQuery } from "../../store/serviceApi";
 import { Spinner } from "@/components/ui/spinner";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useGetRoomsByHouseIdQuery } from "../../store/roomApi";
-import { PAYMENT_CYCLE_OPTIONS } from "@/assets/contract/paymentOptions"; // Giả định
+import { PAYMENT_CYCLE_OPTIONS } from "@/assets/contract/paymentOptions";
 import { useCreateContractMutation } from "../../store/contractApi";
 import { useEffect, useState, useCallback, useMemo } from "react";
-import useDebounce from "@/hooks/useDebounce"; // Giả định
-import TenantCreateDialog from "../Tenant/TenantCreateDialog"; // Giả định
-import { useSearchTenantByPhoneNumberQuery } from "../../store/tenantApi"; // Giả định
+import useDebounce from "@/hooks/useDebounce";
+import TenantCreateDialog from "../Tenant/TenantCreateDialog";
+import { useSearchTenantByPhoneNumberQuery } from "../../store/tenantApi";
 import ServiceTypeBadge from "../Service/ServiceTypeBadge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useGetHousesByOwnerIdQuery } from "../../store/houseApi";
@@ -128,7 +124,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
   });
   const foundTenant = searchedTenantData;
   const showSearchResults = !isSearching && debouncedSearch.length >= 5;
-  // Lấy thông tin phòng được chọn để preload giá
+
   const selectedRoom = useMemo(
     () => roomsByHouse.find((r) => r.id === selectedRoomId),
     [roomsByHouse, selectedRoomId]
@@ -139,34 +135,24 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
     control,
     name: "tenants",
   });
-  useEffect(() => {
-    // Nếu không có tenant nào, thêm 1 field trống để user nhập
-    if (fields.length === 0) {
-      append({ fullName: "", phoneNumber: "", email: "" });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+
   useEffect(() => {
     if (Object.keys(errors).length > 0) {
       console.log("Form validation errors:", errors);
     }
   }, [errors]);
 
-  // Cập nhật giá thuê mặc định khi roomData fetch xong (hoặc khi chọn Room)
   useEffect(() => {
     if (selectedRoom) {
       const rent = selectedRoom.rent || 0;
       setValue("rent", rent);
       setValue("deposit", rent * 2);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedRoom, setValue]);
 
-  // Reset RoomId và Services khi HouseId thay đổi
   useEffect(() => {
     setValue("roomId", undefined);
     setValue("houseServiceIds", []);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedHouseId, setValue]);
 
   // --- LOGIC TENANT ---
@@ -181,9 +167,6 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
         `Khách thuê ${tenant.fullName} đã có trong danh sách.`
       );
     }
-    if (fields.length === 1 && !fields[0].fullName) {
-      remove(0);
-    }
 
     append({
       id: tenant.id,
@@ -192,16 +175,17 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
       email: tenant.email,
     });
     setSearchPhoneNumber("");
+    toast.success(`Đã thêm ${tenant.fullName} vào hợp đồng.`);
     refetchSearch();
   };
 
   // LOGIC DỊCH VỤ (Metadata)
   const allHouseServiceMeta = useMemo(() => {
     return houseServices.map((hs) => ({
-      serviceId: hs.serviceId, // Service ID
-      houseServiceId: hs.id, // HouseService ID
+      serviceId: hs.serviceId,
+      houseServiceId: hs.id,
       name: hs.serviceName,
-      method: Number(hs.method), // 0 1 2
+      method: Number(hs.method),
       price: hs.price,
       unit: hs.unit,
     }));
@@ -224,7 +208,6 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
       return;
     }
 
-    // 1. TRANSFORMATION DỊCH VỤ
     const finalHouseServiceIds = data.houseServiceIds
       .map((selectedService) => {
         const serviceMeta = allHouseServiceMeta.find(
@@ -239,7 +222,6 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
       .filter((s) => s.houseServiceId);
 
     const { houseId, ...formDataWithoutHouseId } = data;
-    // 2. PAYLOAD CUỐI CÙNG
     const payload = {
       ...formDataWithoutHouseId,
       houseServiceIds: finalHouseServiceIds,
@@ -488,7 +470,6 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
                         key={service.houseServiceId}
                         className="grid grid-cols-12 items-center space-x-2 py-1"
                       >
-                        {/* Checkbox */}
                         <Checkbox
                           checked={isSelected}
                           onCheckedChange={(checked) => {
@@ -527,130 +508,176 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
         </Field>
 
         {/* ------------------- KHÁCH THUÊ (DYNAMIC ARRAY) ------------------- */}
-        <Field className="pt-4 border-t">
-          <FieldLabel className="flex justify-between items-center">
-            Khách thuê (*):
-            <div className="flex items-center gap-4">
-              <div className="relative">
-                <Search className="absolute top-1/2 -translate-y-1/2 left-2 size-5" />
-                <Input
-                  placeholder="Search with phone number"
-                  className={"pl-8 lg:pl-10"}
-                  value={phoneSearchTerm}
-                  onChange={(e) => setSearchPhoneNumber(e.target.value)}
-                />
-                {(isSearching || loadingServices) && (
-                  <Spinner
-                    className="absolute right-2 top-1/2 -translate-y-1/2"
-                    size={20}
-                  />
-                )}
-              </div>
-              <TenantCreateDialog onTenantCreated={handleAddTenantToContract} />
-            </div>
+        <Field className="pt-4 border-t space-y-3">
+          <FieldLabel className="font-bold">
+            Danh sách Khách thuê (*):
           </FieldLabel>
 
-          {/* HIỂN THỊ KẾT QUẢ TÌM KIẾM */}
-          {showSearchResults &&
-            (foundTenant ? (
-              <Card
-                className="flex items-center justify-between p-3 border-green-500 bg-green-50 dark:bg-green-900/10 cursor-pointer hover:bg-green-500/20"
-                onClick={() => handleAddTenantToContract(foundTenant)}
-              >
-                <div className="flex items-center space-x-3">
-                  <Avatar>
-                    <AvatarImage
-                      src={foundTenant.avatarUrl || "/userDefault.png"}
-                    />
-                    <AvatarFallback>
-                      <User className="h-4 w-4" />
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className="font-semibold">{foundTenant.fullName}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {foundTenant.phoneNumber} | {foundTenant.email}
-                    </p>
-                  </div>
-                </div>
+          {/* ============= PHẦN TÌM KIẾM/NÚT TẠO MỚI ============= */}
+          <div className="flex gap-2 items-start">
+            <div className="flex-grow space-y-2">
+              <div className="flex gap-2 justify-end">
+                <Input
+                  placeholder="Nhập SĐT để tìm kiếm"
+                  value={phoneSearchTerm}
+                  onChange={(e) => setSearchPhoneNumber(e.target.value)}
+                  disabled={isDisabled}
+                  className="w-50 lg:w-80"
+                />
                 <Button
                   type="button"
-                  size="sm"
-                  disabled={isAlreadyAdded(foundTenant.id)}
+                  size="icon"
+                  onClick={refetchSearch}
+                  disabled={isDisabled || phoneSearchTerm.length < 5}
                 >
-                  <UserPlus className="h-4 w-4 mr-2" />
-                  {isAlreadyAdded(foundTenant.id)
-                    ? "Đã thêm"
-                    : "Thêm vào Hợp đồng"}
+                  <Search className="h-4 w-4" />
                 </Button>
-              </Card>
-            ) : (
-              <Card className="p-3 border-red-500 bg-red-50 dark:bg-red-900/10">
-                <p className="font-medium text-sm">
-                  Không tìm thấy Tenant với SĐT *{debouncedSearch}*.
-                </p>
-              </Card>
-            ))}
-
-          {/* DANH SÁCH TENANTS ĐÃ CHỌN/NHẬP THỦ CÔNG */}
-          {fields.map((fieldItem, index) => (
-            <div
-              key={fieldItem.id}
-              className="grid grid-cols-6 gap-2 items-start bg-secondary/50 p-3 rounded-md"
-            >
-              <div className="col-span-6 flex justify-between items-center">
-                <span className="text-sm font-medium">#{index + 1}</span>
-                {/* Remove Button */}
-                {fields.length > 1 && (
-                  <div className="flex justify-end">
-                    <Button
-                      type="button"
-                      size="icon"
-                      variant="ghost"
-                      onClick={() => remove(index)}
-                      disabled={isDisabled}
-                    >
-                      <Trash className="h-8 w-8 text-red-500" />
-                    </Button>
-                  </div>
-                )}
               </div>
 
-              {/* Full Name */}
-              <Field className="col-span-6">
-                <Input
-                  placeholder="Họ Tên"
-                  {...register(`tenants.${index}.fullName`)}
-                  disabled={isDisabled}
-                />
-                <FieldError>
-                  {errors.tenants?.[index]?.fullName?.message}
-                </FieldError>
-              </Field>
-              {/* Phone Number */}
-              <Field className="col-span-3">
-                <Input
-                  placeholder="Số điện thoại"
-                  {...register(`tenants.${index}.phoneNumber`)}
-                  disabled={isDisabled}
-                />
-                <FieldError>
-                  {errors.tenants?.[index]?.phoneNumber?.message}
-                </FieldError>
-              </Field>
-              {/* Email */}
-              <Field className="col-span-3">
-                <Input
-                  placeholder="Email"
-                  {...register(`tenants.${index}.email`)}
-                  disabled={isDisabled}
-                />
-                <FieldError>
-                  {errors.tenants?.[index]?.email?.message}
-                </FieldError>
-              </Field>
+              {/* HIỂN THỊ KẾT QUẢ TÌM KIẾM */}
+              {isSearching && debouncedSearch.length >= 5 && (
+                <div className="flex items-center text-sm">
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" /> Đang tìm
+                  kiếm Tenant...
+                </div>
+              )}
+
+              {showSearchResults &&
+                (foundTenant ? (
+                  <Card className="flex items-center justify-between w-80 lg:w-90 p-3 border-green-500 bg-green-50 dark:bg-green-900/10">
+                    <div className="flex items-center space-x-3">
+                      <Avatar>
+                        <AvatarImage
+                          src={foundTenant.avatarUrl || "/userDefault.png"}
+                        />
+                        <AvatarFallback>
+                          <User className="h-4 w-4" />
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="font-semibold">{foundTenant.fullName}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {foundTenant.phoneNumber} | {foundTenant.email}
+                        </p>
+                      </div>
+                    </div>
+                    <Button
+                      type="button"
+                      size="sm"
+                      onClick={() => handleAddTenantToContract(foundTenant)}
+                      disabled={isDisabled || isAlreadyAdded(foundTenant.id)}
+                    >
+                      {isAlreadyAdded(foundTenant.id) ? (
+                        <CheckCircle className="h-4 w-4 mr-2" />
+                      ) : (
+                        <UserPlus className="h-4 w-4 mr-2" />
+                      )}
+                      {isAlreadyAdded(foundTenant.id)
+                        ? "Đã thêm"
+                        : "Thêm vào Hợp đồng"}
+                    </Button>
+                  </Card>
+                ) : (
+                  <Card className="p-3 border-red-500 bg-red-50 dark:bg-red-900/10">
+                    <p className="font-medium text-sm">
+                      Không tìm thấy Tenant với SĐT *{debouncedSearch}*. Vui
+                      lòng Tạo Tenant mới.
+                    </p>
+                  </Card>
+                ))}
+
+              {/* THÔNG BÁO KHI SĐT CHƯA ĐỦ DÀI */}
+              {phoneSearchTerm.length > 0 && phoneSearchTerm.length < 5 && (
+                <p className="text-sm text-yellow-600">
+                  Nhập đủ 5 số để tìm kiếm.
+                </p>
+              )}
             </div>
-          ))}
+
+            {/* NÚT TẠO TENANT MỚI (Mở Dialog) */}
+            <TenantCreateDialog onTenantCreated={handleAddTenantToContract} />
+          </div>
+
+          {/* ============= DANH SÁCH TENANT ĐÃ THÊM ============= */}
+          <div className="space-y-2 pt-2">
+            <h4 className="font-semibold text-sm">
+              Khách thuê trong Hợp đồng ({fields.length}):
+            </h4>
+
+            {fields.map((fieldItem, index) => (
+              <div
+                key={fieldItem.id}
+                className="grid grid-cols-10 gap-2 items-center bg-white dark:bg-gray-800 p-3 rounded-md border"
+              >
+                <span className="text-sm font-medium col-span-1">
+                  #{index + 1}
+                </span>
+
+                {/* Full Name (Readonly) */}
+                <Field className="col-span-3">
+                  <Input
+                    value={fieldItem.fullName}
+                    readOnly
+                    placeholder="Họ Tên"
+                    className="bg-gray-100 dark:bg-gray-700"
+                  />
+                  <input type="hidden" {...register(`tenants.${index}.id`)} />
+                  <input
+                    type="hidden"
+                    {...register(`tenants.${index}.fullName`)}
+                  />
+                </Field>
+
+                {/* Phone Number (Readonly) */}
+                <Field className="col-span-3">
+                  <Input
+                    value={fieldItem.phoneNumber}
+                    readOnly
+                    placeholder="Số điện thoại"
+                    className="bg-gray-100 dark:bg-gray-700"
+                  />
+                  <input
+                    type="hidden"
+                    {...register(`tenants.${index}.phoneNumber`)}
+                  />
+                </Field>
+
+                {/* Email (Readonly) */}
+                <Field className="col-span-2">
+                  <Input
+                    value={fieldItem.email}
+                    readOnly
+                    placeholder="Email"
+                    className="bg-gray-100 dark:bg-gray-700"
+                  />
+                  <input
+                    type="hidden"
+                    {...register(`tenants.${index}.email`)}
+                  />
+                </Field>
+
+                {/* Remove Button */}
+                <div className="col-span-1 flex justify-end">
+                  <Button
+                    type="button"
+                    size="icon"
+                    variant="ghost"
+                    onClick={() => remove(index)}
+                    disabled={isDisabled}
+                  >
+                    <Trash className="h-8 w-8 text-red-500" />
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {fields.length === 0 && (
+            <p className="text-sm text-muted-foreground italic">
+              Vui lòng tìm kiếm hoặc tạo ít nhất một khách thuê.
+            </p>
+          )}
+
           <FieldError>{errors.tenants?.message}</FieldError>
         </Field>
       </FieldGroup>
