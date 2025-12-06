@@ -172,6 +172,19 @@ export const serviceApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Invoice", "ServiceUsage"], // Cập nhật danh sách hóa đơn và chỉ số
     }),
+    // Xuất hóa đơn
+    exportInvoiceExcel: builder.mutation({
+      query: ({ roomId, month, year }) => ({
+        url: `/excel/invoices/month-year`,
+        method: "POST",
+        params: { roomId, month, year },
+        responseHandler: async (response) => {
+          // Xử lý response dạng blob
+          return response.blob();
+        },
+        cache: "no-cache",
+      }),
+    }),
   }),
 });
 export const {
@@ -190,4 +203,5 @@ export const {
   useGetInvoicesByRoomIdQuery,
   useGetInvoiceByIdQuery,
   useCreateInvoiceMutation,
+  useExportInvoiceExcelMutation,
 } = serviceApi;
