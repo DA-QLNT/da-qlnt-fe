@@ -167,7 +167,7 @@ export const serviceApi = baseApi.injectEndpoints({
     // 🚨 MUTATION TẠO HÓA ĐƠN
     createInvoice: builder.mutation({
       query: ({ roomId, month, year }) => ({
-        url: `/invoices/create?roomId=${roomId}&month=${month}&year=${year}`,
+        url: `/invoices/generate-invoice?roomId=${roomId}&month=${month}&year=${year}`,
         method: "POST",
       }),
       invalidatesTags: ["Invoice", "ServiceUsage"], // Cập nhật danh sách hóa đơn và chỉ số

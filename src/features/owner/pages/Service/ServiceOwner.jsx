@@ -234,9 +234,9 @@ const ServiceOwner = () => {
 
       <Tabs defaultValue="recordMeter" className={"w-full "}>
         <TabsList>
-          <TabsTrigger value="recordMeter">Record meter</TabsTrigger>
-          <TabsTrigger value="serviceList">Service list</TabsTrigger>
-          <TabsTrigger value="serviceHouse">Service & House</TabsTrigger>
+          <TabsTrigger value="recordMeter">Ghi nhận chỉ số</TabsTrigger>
+          <TabsTrigger value="serviceList">Danh sách dịch vụ</TabsTrigger>
+          <TabsTrigger value="serviceHouse">Dịch vụ đã có của nhà</TabsTrigger>
         </TabsList>
         {/* Ghi nhận chỉ số dịch vụ */}
         <TabsContent value="recordMeter">
@@ -245,10 +245,12 @@ const ServiceOwner = () => {
             <Table>
               <TableHeader className={"bg-sidebar"}>
                 <TableRow>
-                  <TableHead className="w-[50px]">No</TableHead>
-                  <TableHead className={"w-[250px]"}>Room</TableHead>
+                  <TableHead className="w-[50px]">STT</TableHead>
+                  <TableHead className={"w-[250px]"}>Phòng</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead className="text-right w-[100px]">Log</TableHead>
+                  <TableHead className="text-right w-[100px]">
+                    Thao tác
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -278,7 +280,7 @@ const ServiceOwner = () => {
                             to={`/owner/services/houses/${house.id}/rooms`}
                             className={"flex items-center gap-2"}
                           >
-                            <Eye /> View Rent Room
+                            <Eye /> Phòng thuê
                           </NavLink>
                         </Button>
                       </TableCell>
