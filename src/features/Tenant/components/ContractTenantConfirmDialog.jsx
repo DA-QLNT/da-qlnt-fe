@@ -8,47 +8,32 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-
-import { CheckCheck, XCircle, Loader2 } from "lucide-react";
+import { CheckCheck, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import React from "react";
 import { Button } from "@/components/ui/button";
-import {
-  useConfirmTenantContractMutation,
-  useRejectTenantContractMutation,
-} from "../store/contractApi";
+import { useConfirmTenantContractMutation } from "../store/contractApi";
 
 /**
- * Dialog xác nhận hành động (Confirm/Reject) của Tenant
+ * Dialog xác nhận hành động (Confirm) của Tenant
  */
 export default function ContractTenantConfirmDialog({
   contract,
-  actionType,
   open,
   onOpenChange,
 }) {
-  const isConfirm = actionType === "confirm";
+  const [confirmContract, { isLoading }] = useConfirmTenantContractMutation();
   const contractId = contract?.id;
-  const actionLabel = isConfirm ? "Xác nhận" : "Từ chối";
-
-  const [confirmContract, { isLoading: confirming }] =
-    useConfirmTenantContractMutation();
-  const [rejectContract, { isLoading: rejecting }] =
-    useRejectTenantContractMutation();
-  const isLoading = confirming || rejecting;
 
   const handleAction = async () => {
-    const mutationFn = isConfirm ? confirmContract : rejectContract;
-    const toastId = toast.loading(`Đang xử lý ${actionLabel} hợp đồng...`);
+    const toastId = toast.loading(`Đang xử lý xác nhận hợp đồng...`);
 
     try {
-      await mutationFn(contractId).unwrap();
-      toast.success(`${actionLabel} thành công!`, { id: toastId });
+      await confirmContract(contractId).unwrap(); // Gửi contractId
+      toast.success("Xác nhận thành công!", { id: toastId });
       onOpenChange(false);
     } catch (error) {
-      toast.error(error.data?.message || `${actionLabel} thất bại.`, {
-        id: toastId,
-      });
+      toast.error(error.data?.message || "Xác nhận thất bại.", { id: toastId });
     }
   };
 
@@ -57,21 +42,14 @@ export default function ContractTenantConfirmDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle
-            className={`flex items-center gap-2 ${
-              isConfirm ? "text-green-600" : "text-red-600"
-            }`}
+            className={`flex items-center gap-2 text-green-600`}
           >
-            {isConfirm ? (
-              <CheckCheck className="w-6 h-6" />
-            ) : (
-              <XCircle className="w-6 h-6" />
-            )}
-            {actionLabel} Hợp đồng #{contractId}
+            <CheckCheck className="w-6 h-6" />
+            Xác nhận Hợp đồng #{contractId}
           </AlertDialogTitle>
           <AlertDialogDescription>
-            {isConfirm
-              ? "Anh có chắc chắn muốn xác nhận và đồng ý với các điều khoản của hợp đồng này không?"
-              : "Việc từ chối hợp đồng này sẽ chuyển trạng thái về CANCELLED. Anh có chắc muốn tiếp tục?"}
+            Anh có chắc chắn muốn xác nhận và đồng ý với các điều khoản của hợp
+            đồng này không?
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -79,12 +57,12 @@ export default function ContractTenantConfirmDialog({
           <AlertDialogAction
             onClick={handleAction}
             disabled={isLoading}
-            variant={isConfirm ? "default" : "destructive"}
+            variant={"default"}
           >
             {isLoading ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : (
-              `Đồng ý ${actionLabel}`
+              `Đồng ý Xác nhận`
             )}
           </AlertDialogAction>
         </AlertDialogFooter>
