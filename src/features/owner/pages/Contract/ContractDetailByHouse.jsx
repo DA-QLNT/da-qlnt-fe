@@ -340,7 +340,7 @@ const ContractDetailByHouse = () => {
               <User className="h-5 w-5" /> Danh sách Khách thuê{" "}
             </div>
             {(contract.status === 0 || contract.status === 2) && (
-              <Button onClick={openTenantAddDialog}>Add tenant</Button>
+              <Button onClick={openTenantAddDialog}>Thêm khách</Button>
             )}
           </CardTitle>
         </CardHeader>
@@ -352,7 +352,7 @@ const ContractDetailByHouse = () => {
                 <TableHead>Họ Tên</TableHead>
                 <TableHead>SĐT</TableHead>
                 <TableHead>Đại diện</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead className="text-right">Thao tác</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -384,7 +384,7 @@ const ContractDetailByHouse = () => {
                         variant="destructive"
                         onClick={() => openLeaveTenantDialog(tenant)}
                       >
-                        Leave
+                        Rời
                       </Button>
                     )}
                   </TableCell>
@@ -414,7 +414,7 @@ const ContractDetailByHouse = () => {
                 <TableHead>Dịch vụ</TableHead>
                 <TableHead>Giá/Chu kỳ</TableHead>
                 <TableHead>Cách tính</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead className="text-right">Thao tác</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -442,7 +442,7 @@ const ContractDetailByHouse = () => {
           contract.status === 2 ||
           contract.status === 3) && (
           <Button variant="secondary" onClick={openCancelDialog}>
-            Cancel
+            Hủy
           </Button>
         )}
         {(contract.status === 0 || contract.status === 1) && (

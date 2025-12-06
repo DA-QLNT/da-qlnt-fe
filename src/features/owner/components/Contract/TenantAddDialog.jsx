@@ -22,9 +22,6 @@ export default function TenantAddDialog({ contractId, open, onOpenChange }) {
             <UserPlus className="h-5 w-5" />
             Thêm Khách Thuê Mới
           </DialogTitle>
-          <DialogDescription>
-            Thêm khách thuê vào hợp đồng #{contractId}.
-          </DialogDescription>
         </DialogHeader>
 
         <TenantAddForm
