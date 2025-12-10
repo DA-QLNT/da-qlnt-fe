@@ -28,6 +28,7 @@ import { Badge } from "@/components/ui/badge";
 import React, { useState } from "react";
 import InvoiceCreateConfirmDialog from "./InvoiceCreateConfirmDialog";
 import toast from "react-hot-toast";
+import ServiceTypeBadge from "./ServiceTypeBadge";
 
 const INVOICE_STATUS_MAP = {
   0: "Chưa thanh toán",
@@ -215,14 +216,14 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
                       <TableRow key={detail.id} className="text-sm">
                         <TableCell>{detail.houseService.serviceName}</TableCell>
                         <TableCell>
-                          {detail.method === "0" ? "Công tơ" : "Khác"}
+                          <ServiceTypeBadge type={detail.method} />
                         </TableCell>
                         <TableCell>
                           {formatCurrency(detail.unitPrice)}
                         </TableCell>
                         <TableCell>
                           {detail.quantity}{" "}
-                          {detail.method === "0" ? "đơn vị" : "người/lần"}
+                          {detail.method === "0" ? "số" : "người/lần"}
                         </TableCell>
                         <TableCell className="text-right">
                           {formatCurrency(detail.amount)}
