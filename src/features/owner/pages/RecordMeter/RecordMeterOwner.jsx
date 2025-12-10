@@ -13,6 +13,7 @@ import { NavLink } from "react-router-dom";
 import { Eye } from "lucide-react";
 import { useAuth } from "@/features/auth";
 import { useGetHousesByOwnerIdQuery } from "../../store/houseApi";
+import { Spinner } from "@/components/ui/spinner";
 const RecordMeter = () => {
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
@@ -33,6 +34,7 @@ const RecordMeter = () => {
       skip: !ownerId || isLoadingMe,
     }
   );
+
   const rawHouses = houseData?.houses || [];
   const sortedHouses = useMemo(() => {
     const housesCopy = [...rawHouses];
@@ -42,6 +44,14 @@ const RecordMeter = () => {
       return nameA.localeCompare(nameB, "vi", { sensitivity: "base" });
     });
   }, [rawHouses]);
+
+  if (houseLoading || houseFetching) {
+    return (
+      <div className="absolute inset-0 flex items-center justify-center">
+        <Spinner className="size-20" />
+      </div>
+    );
+  }
   return (
     <div className="px-4 lg:px-6">
       <div className="w-full  p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">

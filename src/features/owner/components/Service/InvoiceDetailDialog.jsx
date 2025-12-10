@@ -63,17 +63,19 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
     }
 
     try {
-      const result = await triggerExport({
+      const blobResult = await triggerExport({
         roomId: invoice.roomId,
         month: invoice.month,
         year: invoice.year,
-      }).unwrap();
+      }).unwrap(); // 🚨 Nếu thành công, blobResult là đối tượng Blob
 
-      // result là blob
-      const blob = result;
+      // Tạo Blob mới từ kết quả để ép kiểu (quan trọng để khắc phục lỗi trình duyệt)
+      const excelBlob = new Blob([blobResult], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
 
-      // Tạo URL để download
-      const downloadUrl = window.URL.createObjectURL(blob);
+      // Tạo URL để download và kích hoạt download
+      const downloadUrl = window.URL.createObjectURL(excelBlob);
       const link = document.createElement("a");
       link.href = downloadUrl;
       link.download = `HoaDon_${invoice.roomCode}_${invoice.month}_${invoice.year}.xlsx`;
@@ -81,13 +83,15 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
       link.click();
       document.body.removeChild(link);
 
-      // Giải phóng URL
       window.URL.revokeObjectURL(downloadUrl);
-
       toast.success("Xuất Excel thành công!");
     } catch (error) {
+      // 🚨 Bắt lỗi JSON từ server (do responseHandler ném ra)
       console.error("Export Excel error:", error);
-      toast.error("Xuất Excel thất bại");
+      // Hiển thị message lỗi chi tiết từ server nếu có
+      const errorMessage =
+        error.message || error.data?.message || "Xuất Excel thất bại.";
+      toast.error(errorMessage);
     }
   };
 
