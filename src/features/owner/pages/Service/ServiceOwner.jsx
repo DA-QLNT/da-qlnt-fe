@@ -232,76 +232,25 @@ const ServiceOwner = () => {
 
       {/* Dialog */}
 
-      <Tabs defaultValue="recordMeter" className={"w-full "}>
+      <Tabs defaultValue="serviceList" className={"w-full "}>
         <TabsList>
-          <TabsTrigger value="recordMeter">Ghi nhận chỉ số</TabsTrigger>
           <TabsTrigger value="serviceList">Danh sách dịch vụ</TabsTrigger>
           <TabsTrigger value="serviceHouse">Dịch vụ đã có của nhà</TabsTrigger>
         </TabsList>
-        {/* Ghi nhận chỉ số dịch vụ */}
-        <TabsContent value="recordMeter">
-          <div className="w-full  p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
-            {/* Cần thay thế bảng danh sách phòng đang thuê tại đây */}
-            <Table>
-              <TableHeader className={"bg-sidebar"}>
-                <TableRow>
-                  <TableHead className="w-[50px]">STT</TableHead>
-                  <TableHead className={"w-[250px]"}>Phòng</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right w-[100px]">
-                    Thao tác
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {sortedHouses.length > 0 &&
-                  sortedHouses.map((house, index) => (
-                    <TableRow key={house.id}>
-                      <TableCell className={"w-[50px]"}>{index + 1}</TableCell>
-                      <TableCell>
-                        <h4 className="font-semibold text-wrap ">
-                          {house.name}
-                        </h4>
-                      </TableCell>
-                      <TableCell className={"hidden sm:table-cell"}>
-                        <h4 className="text-muted-foreground text-wrap ">
-                          {house.address}-{house.district}-{house.province}
-                        </h4>
-                      </TableCell>
-                      <TableCell className={"flex justify-end"}>
-                        <Button
-                          variant={"outline"}
-                          className={
-                            "border-purple-400 dark:border-purple-400 hover:border-amber-500 hover:text-amber-500"
-                          }
-                          asChild
-                        >
-                          <NavLink
-                            to={`/owner/services/houses/${house.id}/rooms`}
-                            className={"flex items-center gap-2"}
-                          >
-                            <Eye /> Phòng thuê
-                          </NavLink>
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-              </TableBody>
-            </Table>
-          </div>
-        </TabsContent>
         {/* Dịch vụ đã có của nhà */}
         <TabsContent value="serviceHouse">
           <div className="w-full  p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
             <Table>
               <TableHeader className={"bg-sidebar"}>
                 <TableRow>
-                  <TableHead className="w-[50px]">No</TableHead>
-                  <TableHead className={"w-[250px]"}>House</TableHead>
+                  <TableHead className="w-[50px]">STT</TableHead>
+                  <TableHead className={"w-[250px]"}>Nhà</TableHead>
                   <TableHead className={"hidden sm:table-cell"}>
-                    Address
+                    Địa chỉ
                   </TableHead>
-                  <TableHead className="text-right w-[100px]">Action</TableHead>
+                  <TableHead className="text-right w-[100px]">
+                    Thao tác
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -339,7 +288,7 @@ const ServiceOwner = () => {
             <Table>
               <TableHeader className={"bg-sidebar"}>
                 <TableRow>
-                  <TableHead className="w-[50px]">No</TableHead>
+                  <TableHead className="w-[50px]">STT</TableHead>
                   <TableHead>Tên dịch vụ</TableHead>
                   <TableHead className="">Cách tính tiền</TableHead>
                   <TableHead className="">Đơn vị</TableHead>
@@ -351,8 +300,7 @@ const ServiceOwner = () => {
                       }
                       onClick={openAddDialog}
                     >
-                      <Plus className="mr-2 h-4 w-4" />
-                      Thêm
+                      Thêm dịch vụ
                     </Button>
                   </TableHead>
                 </TableRow>
@@ -397,14 +345,14 @@ const ServiceOwner = () => {
                                   openServiceHouseAddDialog(service)
                                 }
                               >
-                                Add service - house
+                                Thêm dịch vụ vào nhà
                               </DropdownMenuItem>
 
                               <DropdownMenuItem
                                 onClick={() => openEditDialog(service)}
                               >
                                 <SquarePen />
-                                Edit service
+                                Sửa dịch vụ
                               </DropdownMenuItem>
 
                               <DropdownMenuItem
@@ -412,7 +360,7 @@ const ServiceOwner = () => {
                               >
                                 <Trash color="red" />
                                 <span className="text-red-500">
-                                  Delete service
+                                  Xóa dịch vụ
                                 </span>
                               </DropdownMenuItem>
                             </DropdownMenuGroup>

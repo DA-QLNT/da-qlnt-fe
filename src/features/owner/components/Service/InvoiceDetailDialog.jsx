@@ -186,7 +186,7 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
-                  <DollarSign /> Chi tiết thanh toán
+                  Chi tiết thanh toán
                 </CardTitle>
               </CardHeader>
               <CardContent>
