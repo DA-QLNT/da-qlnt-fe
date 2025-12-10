@@ -3,11 +3,12 @@
   "Houses": "Houses",
   "Users": "Users",
   "Tenants": "Tenants",
+  "Contracts": "Contracts",
   "Roles": "Roles",
   "Permissions": "Permissions",
   "Rules": "Rules",
   "Assets": "Assets",
   "Services": "Services",
-
-  "Analytics": "Analytics"
+  "LogMeters": "Log Meters",
+  "Statistics": "Statistics"
 }

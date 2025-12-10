@@ -166,11 +166,11 @@ const ServiceListRoomRent = () => {
         <Table>
           <TableHeader className="bg-sidebar">
             <TableRow>
-              <TableHead className="w-[50px]">No</TableHead>
-              <TableHead>Room</TableHead>
-              <TableHead>Price</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right w-[100px]">Action</TableHead>
+              <TableHead className="w-[50px]">STT</TableHead>
+              <TableHead>Phòng</TableHead>
+              <TableHead>Giá</TableHead>
+              <TableHead>Trạng thái</TableHead>
+              <TableHead className="text-right w-[100px]">Thao tác</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

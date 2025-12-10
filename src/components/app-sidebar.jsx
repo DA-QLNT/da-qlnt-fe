@@ -13,6 +13,8 @@ import {
   IconUserStar,
   IconReceipt2,
   IconReceipt,
+  IconContract,
+  IconWritingFilled,
 } from "@tabler/icons-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -64,11 +66,6 @@ const data = {
   ],
   navMainOwner: [
     {
-      title: "Dashboard",
-      url: "/owner",
-      icon: IconDashboard,
-    },
-    {
       title: "Houses",
       url: "/owner/houses",
       icon: IconHome,
@@ -79,6 +76,31 @@ const data = {
       icon: IconUserStar,
     },
     {
+      title: "Contracts",
+      url: "/owner/contracts/houses",
+      icon: IconContract,
+    },
+    {
+      title: "Services",
+      url: "/owner/services",
+      icon: IconSettings,
+    },
+    {
+      title: "LogMeters",
+      url: "/owner/logmeters",
+      icon: IconDashboard,
+    },
+    {
+      title: "Statistics",
+      url: "/owner/statistics",
+      icon: IconChartBar,
+    },
+    {
+      title: "Assets",
+      url: "/owner/assets",
+      icon: IconDeviceDesktopDollar,
+    },
+    {
       title: "Users",
       url: "/owner/users",
       icon: IconUsers,
@@ -87,16 +109,6 @@ const data = {
       title: "Rules",
       url: "/owner/rules",
       icon: IconBrandAsana,
-    },
-    {
-      title: "Assets",
-      url: "/owner/assets",
-      icon: IconDeviceDesktopDollar,
-    },
-    {
-      title: "Services",
-      url: "/owner/services",
-      icon: IconSettings,
     },
   ],
   navMainTenant: [

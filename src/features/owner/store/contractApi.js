@@ -25,6 +25,19 @@ export const contractApi = baseApi.injectEndpoints({
       transformResponse: (response) => response.result,
       providesTags: (result, error, id) => [{ type: "Contract", id }],
     }),
+    // 🚨 QUERY LẤY TẤT CẢ HỢP ĐỒNG THEO HOUSE ID
+    getContractsByHouseId: builder.query({
+      query: ({ houseId, page = 0, size = 10 }) => ({
+        url: `/contracts/houses/${houseId}`,
+        method: "GET",
+        params: { page, size },
+      }),
+      transformResponse: (response) => response.result.content,
+      providesTags: (result, error, { houseId }) => [
+        "Contract",
+        { type: "HouseContract", id: houseId },
+      ],
+    }),
     getCurrentContractById: builder.query({
       query: (roomId) => ({
         url: `/contracts/rooms/${roomId}/current`,
@@ -110,6 +123,17 @@ export const contractApi = baseApi.injectEndpoints({
         "Room", // Phòng bị ảnh hưởng (chuyển sang RENTED)
       ],
     }),
+    // ================send email contract
+    sendContractEmail: builder.mutation({
+      query: (contractId) => ({
+        url: `/contracts/${contractId}/send`, // Endpoint: /contracts/{id}/send
+        method: "POST", // Dùng PUT/POST
+      }),
+      // Invalidates Contract chi tiết (để cập nhật log/thông báo gửi)
+      invalidatesTags: (result, error, contractId) => [
+        { type: "Contract", id: contractId },
+      ],
+    }),
     // =============cancel contract
     cancelContract: builder.mutation({
       query: (contractId) => ({
@@ -140,6 +164,7 @@ export const contractApi = baseApi.injectEndpoints({
 export const {
   useCreateContractMutation,
   useGetContractByIdQuery,
+  useGetContractsByHouseIdQuery,
   useGetContractsByRoomIdQuery,
   useUpdateContractInforMutation,
   useAddTenantMutation,
@@ -147,6 +172,7 @@ export const {
   useSetNewRepresentativeMutation,
   useUpdateContractServicesMutation,
   useActivateContractMutation,
+  useSendContractEmailMutation,
   useCancelContractMutation,
   useExtendContractMutation,
   useGetCurrentContractByIdQuery,

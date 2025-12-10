@@ -1,9 +1,9 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   useGetContractByIdQuery,
   useSetNewRepresentativeMutation,
-} from "../../store/contractApi"; // 🚨 Import hook
+} from "../../store/contractApi";
 import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,60 +14,36 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  ArrowLeft,
-  FileText,
-  User,
-  DollarSign,
-  Info,
-  Check,
-  Settings,
-  Settings2,
-  Trash,
-} from "lucide-react";
-import { formatCurrency } from "@/lib/format/currencyFormat";
-import { formatDateTime } from "@/lib/format/dateTimeFormat";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import ContractStatusBadge from "../../components/Contract/ContractStatusBadge";
-import ServiceTypeBadge from "../../components/Service/ServiceTypeBadge";
+import { useTranslation } from "react-i18next";
+import ContractExtendDialog from "../../components/Contract/ContractExtendDialog";
+import ContractCancelConfirm from "../../components/Contract/ContractCancelConfirm";
+import ContractActivateConfirm from "../../components/Contract/ContractActiveConfirm";
 import ContractInforEditDialog from "../../components/Contract/ContractInforEditDialog";
 import TenantAddDialog from "../../components/Contract/TenantAddDialog";
-import ContractServiceAddDialog from "../../components/Contract/ContractServiceAddDialog";
-import { Checkbox } from "@/components/ui/checkbox";
-import toast from "react-hot-toast";
 import TenantLeaveDialog from "../../components/Contract/TenantLeaveDialog";
-import ContractActivateConfirm from "../../components/Contract/ContractActiveConfirm";
-import ContractCancelConfirm from "../../components/Contract/ContractCancelConfirm";
-import ContractExtendDialog from "../../components/Contract/ContractExtendDialog";
-
-export const CONTRACT_STATUS_MAP_Dev = {
-  0: { label: "DRAFT", color: "bg-gray-400" },
-  1: { label: "PENDING", color: "bg-yellow-500" },
-  2: { label: "ACTIVE", color: "bg-green-600" },
-  3: { label: "EXPIRED", color: "bg-red-600" },
-  4: { label: "CANCELLED", color: "bg-stone-500" },
-};
-
-const ContractDetailOwner = () => {
+import ContractServiceAddDialog from "../../components/Contract/ContractServiceAddDialog";
+import { ArrowLeft, FileText, Info, Settings, Trash, User } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import ContractStatusBadge from "../../components/Contract/ContractStatusBadge";
+import { formatCurrency } from "@/lib/format/currencyFormat";
+import { Checkbox } from "@/components/ui/checkbox";
+import ServiceTypeBadge from "../../components/Service/ServiceTypeBadge";
+import toast from "react-hot-toast";
+import { formatDateTime } from "@/lib/format/dateTimeFormat";
+import ContractSendEmailConfirm from "../../components/Contract/ContractSendEmailConfirm";
+const ContractDetailByHouse = () => {
+  const { houseId, contractId } = useParams();
   const navigate = useNavigate();
-  // 🚨 LẤY contractId TỪ URL
-  const { houseId, roomId, contractId } = useParams();
-  const id = Number(contractId);
-  const houseID = Number(houseId);
-
-  // FETCH DỮ LIỆU
+  const backToContractList = () => {
+    navigate(`/owner/contracts/houses/${houseId}/contracts`);
+  };
   const {
     data: contract,
-    isLoading: isLoadingContract,
-    isFetching: isFetchingContract,
-    isError: isErrorContract,
-  } = useGetContractByIdQuery(id, { skip: !id });
-
-  const loadingContract = isLoadingContract || isFetchingContract;
-
-  const backToContractList = () => {
-    navigate(`/owner/houses/${houseId}/rooms/${roomId}/contracts`);
-  };
+    isLoading: loadingContract,
+    isError: errorContract,
+  } = useGetContractByIdQuery(contractId, {
+    skip: !contractId,
+  });
 
   //   update contract
   const [isContractInforEditDialogOpen, setIsContractInforEditDialogOpen] =
@@ -163,6 +139,16 @@ const ContractDetailOwner = () => {
       setIsActivateDialogOpen(false);
     }
   };
+  // send email contract
+  const [isSendEmailDialogOpen, setIsSendEmailDialogOpen] = useState(false);
+  const openSendEmailDialog = () => {
+    setIsSendEmailDialogOpen(true);
+  };
+  const closeSendEmailDialog = (open) => {
+    if (!open) {
+      setIsSendEmailDialogOpen(false);
+    }
+  };
 
   // cancel contract
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
@@ -209,16 +195,15 @@ const ContractDetailOwner = () => {
         <Spinner className="size-20 text-primary" />
       </div>
     );
-  } else if (isErrorContract || !contract) {
+  } else if (errorContract || !contract) {
     return (
       <div className="p-6 text-center text-red-500">
         Không tìm thấy Hợp đồng ID: {contractId}.
       </div>
     );
   }
-
   return (
-    <div className="px-4 lg:px-6 space-y-6">
+    <div className="px-4 lg:px-6 flex flex-col gap-4">
       {/* extend contract */}
       {contract && (
         <ContractExtendDialog
@@ -239,22 +224,28 @@ const ContractDetailOwner = () => {
         open={isActivateDialogOpen}
         onOpenChange={closeActivateDialog}
       />
+      {/* send email contract */}
+      <ContractSendEmailConfirm
+        contract={contract}
+        open={isSendEmailDialogOpen}
+        onOpenChange={closeSendEmailDialog}
+      />
       {/* update contract */}
       <ContractInforEditDialog
-        contractId={id}
+        contractId={contractId}
         open={isContractInforEditDialogOpen}
         onOpenChange={setIsContractInforEditDialogOpen}
       />
       {/* add tenant */}
       <TenantAddDialog
-        contractId={id}
+        contractId={contractId}
         open={isTenantAddDialogOpen}
         onOpenChange={setIsTenantAddDialogOpen}
       />
       {/* leave tenant */}
       {tenantToLeave && (
         <TenantLeaveDialog
-          contractId={id}
+          contractId={contractId}
           tenant={tenantToLeave}
           open={isTenantLeaveDialogOpen}
           onOpenChange={setIsTenantLeaveDialogOpen}
@@ -263,11 +254,15 @@ const ContractDetailOwner = () => {
       {/* add service */}
       <ContractServiceAddDialog
         contract={contract}
-        houseId={houseID}
+        houseId={houseId}
         open={isServiceAddDialogOpen}
         onOpenChange={closeServiceAddDialog}
       />
-      <Button variant="outline" onClick={backToContractList}>
+      <Button
+        variant="outline"
+        onClick={backToContractList}
+        className={"w-fit"}
+      >
         <ArrowLeft className="mr-2 h-4 w-4" /> Quay lại Danh sách Hợp đồng
       </Button>
 
@@ -285,7 +280,9 @@ const ContractDetailOwner = () => {
             <div className="flex items-center gap-2">
               <Info className="h-5 w-5" /> Thông tin Hợp đồng
             </div>
-            {contract.status === 0 && (
+            {(contract.status === 0 ||
+              contract.status === 1 ||
+              contract.status === 2) && (
               <Button onClick={openContractInforEditDialog}>Sửa</Button>
             )}
           </CardTitle>
@@ -343,7 +340,7 @@ const ContractDetailOwner = () => {
               <User className="h-5 w-5" /> Danh sách Khách thuê{" "}
             </div>
             {(contract.status === 0 || contract.status === 2) && (
-              <Button onClick={openTenantAddDialog}>Tạo khách thuê</Button>
+              <Button onClick={openTenantAddDialog}>Thêm khách</Button>
             )}
           </CardTitle>
         </CardHeader>
@@ -355,7 +352,7 @@ const ContractDetailOwner = () => {
                 <TableHead>Họ Tên</TableHead>
                 <TableHead>SĐT</TableHead>
                 <TableHead>Đại diện</TableHead>
-                <TableHead className="text-right">Hành động</TableHead>
+                <TableHead className="text-right">Thao tác</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -417,7 +414,7 @@ const ContractDetailOwner = () => {
                 <TableHead>Dịch vụ</TableHead>
                 <TableHead>Giá/Chu kỳ</TableHead>
                 <TableHead>Cách tính</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead className="text-right">Thao tác</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -440,17 +437,23 @@ const ContractDetailOwner = () => {
       {/* ACTIONS */}
       <div className="flex justify-end gap-2">
         {/* DRAFT ACTIONS */}
-        {(contract.status === 0 || contract.status === 1) && (
+        {(contract.status === 0 ||
+          contract.status === 1 ||
+          contract.status === 2 ||
+          contract.status === 3) && (
           <Button variant="secondary" onClick={openCancelDialog}>
             Hủy
           </Button>
         )}
-        {contract.status === 0 && (
+        {(contract.status === 0 || contract.status === 1) && (
+          <Button onClick={openSendEmailDialog}>Gửi mail</Button>
+        )}
+        {contract.status === 2 && (
           <Button onClick={openActivateDialog}>Kích hoạt</Button>
         )}
 
         {/* ACTIVE ACTIONS */}
-        {contract.status === 2 && (
+        {contract.status === 4 && (
           <Button onClick={openExtendDialog} variant="outline">
             Gia hạn
           </Button>
@@ -460,4 +463,4 @@ const ContractDetailOwner = () => {
   );
 };
 
-export default ContractDetailOwner;
+export default ContractDetailByHouse;

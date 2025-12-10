@@ -11,24 +11,56 @@ import {
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useForm, useFieldArray, Controller } from "react-hook-form";
+import React, { useEffect, useMemo, useRef } from "react";
+import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DeclareServiceUsageSchema } from "@/lib/validation/service";
 import { useGetCurrentContractByIdQuery } from "../../store/contractApi";
 import {
   useDeclareServiceUsageMutation,
-  useGetServiceUsagesByRoomIdQuery,
+  useGetLatestReadingQuery,
 } from "../../store/serviceApi";
 import toast from "react-hot-toast";
 import { Loader2 } from "lucide-react";
+
+// Component con để fetch chỉ số tháng trước của từng service
+const PreviousReadingInput = ({ roomId, serviceId, label }) => {
+  const {
+    data: latestReading,
+    isLoading,
+    isFetching,
+  } = useGetLatestReadingQuery(
+    { roomId, serviceId },
+    {
+      skip: !roomId || !serviceId,
+    }
+  );
+
+  // ✅ Đảm bảo lấy giá trị đúng từ response
+  const prevReading =
+    latestReading !== undefined && latestReading !== null ? latestReading : 0;
+
+  console.log(
+    `Service ${serviceId} - Latest Reading:`,
+    latestReading,
+    "Prev:",
+    prevReading
+  );
+
+  return (
+    <Field>
+      <FieldLabel>{label}</FieldLabel>
+      <Input
+        type="number"
+        value={isLoading || isFetching ? "" : prevReading}
+        readOnly
+        className="bg-gray-50"
+        placeholder={isLoading || isFetching ? "Đang tải..." : "0"}
+      />
+      {isLoading && <span className="text-xs text-gray-400">Đang tải...</span>}
+    </Field>
+  );
+};
 
 const ServiceUsageDeclareDialog = ({ open, onOpenChange, roomId }) => {
   const prevRoomIdRef = useRef(null);
@@ -74,10 +106,9 @@ const ServiceUsageDeclareDialog = ({ open, onOpenChange, roomId }) => {
     name: "serviceUsages",
   });
 
-  // ✅ Sửa useEffect - loại bỏ fields khỏi dependency
+  // Reset form khi mở dialog
   useEffect(() => {
     if (open && contract && servicesToDeclare.length > 0) {
-      // Chỉ reset khi roomId thay đổi hoặc lần đầu mở dialog
       if (prevRoomIdRef.current !== roomId) {
         const newServiceUsages = servicesToDeclare.map((service) => ({
           serviceId: service.serviceId,
@@ -104,7 +135,7 @@ const ServiceUsageDeclareDialog = ({ open, onOpenChange, roomId }) => {
     reset,
   ]);
 
-  // ✅ Reset khi dialog đóng
+  // Reset khi dialog đóng
   useEffect(() => {
     if (!open) {
       prevRoomIdRef.current = null;
@@ -165,7 +196,7 @@ const ServiceUsageDeclareDialog = ({ open, onOpenChange, roomId }) => {
 
             <div className="flex justify-between text-sm text-gray-600">
               <span>
-                Tháng/Năm: {currentMonth}/{currentYear}
+                Kỳ: {currentMonth}/{currentYear}
               </span>
               <span>Hợp đồng: {contract?.id}</span>
             </div>
@@ -189,8 +220,9 @@ const ServiceUsageDeclareDialog = ({ open, onOpenChange, roomId }) => {
                   const service = servicesToDeclare.find(
                     (s) => s.serviceId === field.serviceId
                   );
+
                   return (
-                    <div key={field.id} className="py-2">
+                    <div key={field.id} className="grid grid-cols-2 gap-4 py-2">
                       <Field>
                         <FieldLabel>
                           {service?.serviceName} (Giá:{" "}
@@ -210,6 +242,13 @@ const ServiceUsageDeclareDialog = ({ open, onOpenChange, roomId }) => {
                           {errors.serviceUsages?.[index]?.currReading?.message}
                         </FieldError>
                       </Field>
+
+                      <PreviousReadingInput
+                        roomId={roomId}
+                        serviceId={field.serviceId}
+                        label="Chỉ số tháng trước"
+                      />
+
                       <input
                         type="hidden"
                         {...register(`serviceUsages.${index}.serviceId`, {

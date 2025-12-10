@@ -1,7 +1,7 @@
 // File: src/features/owner/components/Contract/TenantCreateForm.jsx
 
 import React from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import toast from "react-hot-toast";
@@ -15,9 +15,16 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
-import { Loader2, Save } from "lucide-react";
+import { CalendarIcon, Loader2, Save } from "lucide-react";
 import { NewTenantSchema } from "@/lib/validation/tenant";
 import { cn } from "@/lib/utils";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { format } from "date-fns/format";
 export default function TenantCreateForm({
   onFormSubmitSuccess, // Hàm này nhận data tenant đã tạo và đóng dialog
 }) {
@@ -27,6 +34,7 @@ export default function TenantCreateForm({
     register,
     handleSubmit,
     formState: { errors },
+    control,
   } = useForm({
     resolver: zodResolver(NewTenantSchema),
     defaultValues: {
@@ -34,21 +42,31 @@ export default function TenantCreateForm({
       idNumber: "",
       phoneNumber: "",
       email: "",
-      password: "",
+      address: "",
+      dob: undefined,
+      // password: "",
     },
   });
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data, event) => {
+    // 🚨 Quan trọng: Ngăn form cha bị submit
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    const formattedDob = data.dob ? format(data.dob, "yyyy-MM-dd") : null;
     const rawPayload = {
       ...data,
       username: data.phoneNumber,
+      password: "123456789",
+      dob: formattedDob,
     };
     const formData = new FormData();
     Object.keys(rawPayload).forEach((key) => {
       formData.append(key, rawPayload[key]);
     });
 
-    console.log("Payload gửi đi (dạng FormData):", formData);
+    console.log("Payload gửi đi", formData);
 
     try {
       const result = await createTenant(formData).unwrap();
@@ -63,9 +81,14 @@ export default function TenantCreateForm({
       console.error("Create Tenant Error:", error);
     }
   };
-
+  // ✅ FIX: Handler riêng để đảm bảo ngăn submit
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    handleSubmit(onSubmit)(e);
+  };
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form onSubmit={handleFormSubmit} className="space-y-4">
       <FieldGroup className="grid gap-4 md:grid-cols-2">
         <Field>
           <FieldLabel>Họ Tên (*)</FieldLabel>
@@ -91,14 +114,43 @@ export default function TenantCreateForm({
           <Input type="email" {...register("email")} disabled={isLoading} />
           <FieldError>{errors.email?.message}</FieldError>
         </Field>
-        <Field>
-          <FieldLabel>Mật khẩu (*)</FieldLabel>
-          <Input
-            type="password"
-            {...register("password")}
-            disabled={isLoading}
+        <Field className="md:col-span-2">
+          <FieldLabel>Địa chỉ (*)</FieldLabel>
+          <Input {...register("address")} disabled={isLoading} />
+          <FieldError>{errors.address?.message}</FieldError>
+        </Field>
+        <Field className="md:col-span-2">
+          <FieldLabel>Ngày sinh (*)</FieldLabel>
+          <Controller
+            name="dob"
+            control={control}
+            render={({ field }) => (
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className={cn("w-full justify-start text-left font-normal")}
+                    disabled={isLoading}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {field.value
+                      ? format(field.value, "PPP")
+                      : "Chọn ngày sinh"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={field.value}
+                    onSelect={field.onChange}
+                    captionLayout="dropdown"
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+            )}
           />
-          <FieldError>{errors.password?.message}</FieldError>
+          <FieldError>{errors.dob?.message}</FieldError>
         </Field>
         {/* Username tự động lấy từ phoneNumber, không cần hiển thị */}
       </FieldGroup>

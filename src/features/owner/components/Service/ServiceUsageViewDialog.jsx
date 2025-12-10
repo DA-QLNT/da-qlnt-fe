@@ -18,8 +18,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { useGetServiceUsagesByRoomIdQuery } from "../../store/serviceApi";
+import {
+  useCreateInvoiceMutation,
+  useGetServiceUsagesByRoomIdQuery,
+} from "../../store/serviceApi";
 import { Loader2 } from "lucide-react";
+import toast from "react-hot-toast";
 
 const ServiceUsageViewDialog = ({ open, onOpenChange, roomId, roomName }) => {
   const {
@@ -35,6 +39,35 @@ const ServiceUsageViewDialog = ({ open, onOpenChange, roomId, roomName }) => {
       return <Badge className="bg-green-500">Đã xác nhận</Badge>;
     }
     return <Badge variant="secondary">Chưa xác nhận</Badge>;
+  };
+
+  // create invoice
+  const [createInvoice, { isLoading: loadingCreatInvoice }] =
+    useCreateInvoiceMutation();
+  const currentMonth = new Date().getMonth() + 1;
+  const currentYear = new Date().getFullYear();
+
+  const handleCreate = async () => {
+    const toastId = toast.loading(
+      `Đang tạo hóa đơn tháng ${currentMonth}/${currentYear}...`
+    );
+    try {
+      await createInvoice({
+        roomId,
+        month: currentMonth,
+        year: currentYear,
+      }).unwrap();
+
+      toast.success(
+        `Hóa đơn tháng ${currentMonth}/${currentYear} đã được tạo thành công!`,
+        { id: toastId }
+      );
+      onOpenChange(false);
+    } catch (error) {
+      toast.error(error.data?.message || "Tạo hóa đơn thất bại.", {
+        id: toastId,
+      });
+    }
   };
 
   return (
@@ -118,7 +151,19 @@ const ServiceUsageViewDialog = ({ open, onOpenChange, roomId, roomName }) => {
           <DialogClose asChild>
             <Button variant="secondary">Đóng</Button>
           </DialogClose>
-          <Button> Tạo Hóa Đơn</Button>
+          <Button
+            onClick={handleCreate}
+            disabled={loadingCreatInvoice}
+            className="bg-primary hover:bg-primary/90"
+          >
+            {loadingCreatInvoice ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Đang tạo...
+              </>
+            ) : (
+              "Tạo Hóa đơn"
+            )}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

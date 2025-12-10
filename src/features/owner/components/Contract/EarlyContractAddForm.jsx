@@ -24,7 +24,6 @@ import {
   Calendar as CalendarIcon,
   Loader2,
   UserPlus,
-  X,
   Search,
   CheckCircle,
   User,
@@ -32,7 +31,7 @@ import {
 } from "lucide-react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ContractAddSchema } from "@/lib/validation/contract";
+import { EarlyContractAddSchema } from "@/lib/validation/contract";
 
 import { useAuth } from "@/features/auth";
 import toast from "react-hot-toast";
@@ -42,51 +41,43 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useGetHouseServicesByHouseIdQuery } from "../../store/serviceApi";
 import { Spinner } from "@/components/ui/spinner";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useGetRoomByIdQuery } from "../../store/roomApi";
+import { useGetRoomsByHouseIdQuery } from "../../store/roomApi";
 import { PAYMENT_CYCLE_OPTIONS } from "@/assets/contract/paymentOptions";
 import { useCreateContractMutation } from "../../store/contractApi";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import useDebounce from "@/hooks/useDebounce";
-import { Card } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-// Import component TenantCreateDialog mới
 import TenantCreateDialog from "../Tenant/TenantCreateDialog";
 import { useSearchTenantByPhoneNumberQuery } from "../../store/tenantApi";
+import ServiceTypeBadge from "../Service/ServiceTypeBadge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useGetHousesByOwnerIdQuery } from "../../store/houseApi";
+import { formatCurrency } from "@/lib/format/currencyFormat";
+import { Card } from "@/components/ui/card";
 
-export default function ContractAddForm({
-  houseId,
-  roomId,
-  onFormSubmitSuccess,
-}) {
+export default function ContractAddForm({ onFormSubmitSuccess }) {
   const { userId: ownerId } = useAuth();
-
   const [createContract, { isLoading: isMutating }] =
     useCreateContractMutation();
 
-  const { data: serviceData, isLoading: loadingServices } =
-    useGetHouseServicesByHouseIdQuery(houseId, { skip: !houseId });
-  const houseServices = serviceData || [];
+  // States UI và Search
+  const [isTenantCreateDialogOpen, setIsTenantCreateDialogOpen] =
+    useState(false);
+  const [phoneSearchTerm, setSearchPhoneNumber] = useState("");
+  const debouncedSearch = useDebounce(phoneSearchTerm, 500);
 
-  const {
-    data: roomData,
-    isLoading: loadingRoom,
-    isFetching,
-    isError,
-  } = useGetRoomByIdQuery(roomId, {
-    skip: !roomId,
-  }); //  RHF SETUP
-
+  // 🚨 RHF SETUP
   const {
     register,
     handleSubmit,
     control,
+    watch,
+    setValue,
     formState: { errors },
     reset,
-    watch, // ✅ Thêm watch để theo dõi giá trị của houseServiceIds
   } = useForm({
-    resolver: zodResolver(ContractAddSchema),
+    resolver: zodResolver(EarlyContractAddSchema),
     defaultValues: {
-      roomId: Number(roomId),
+      roomId: undefined,
       ownerId: ownerId,
       rent: 0,
       deposit: 0,
@@ -95,118 +86,152 @@ export default function ContractAddForm({
       startDate: undefined,
       endDate: undefined,
       houseServiceIds: [],
-      tenants: [], // Khởi tạo mảng tenants rỗng
+      tenants: [],
     },
   });
-  // ✅ Sử dụng useFieldArray cho houseServiceIds
+
+  const selectedHouseId = watch("houseId");
+  const selectedRoomId = watch("roomId");
+
+  // Data Hooks
+  const { data: housesData, isLoading: loadingHouses } =
+    useGetHousesByOwnerIdQuery(
+      { ownerId: ownerId, page: 0, size: 100 },
+      { skip: !ownerId }
+    );
+  const allHouses = housesData?.houses || [];
+
+  const { data: roomsData, isLoading: loadingRooms } =
+    useGetRoomsByHouseIdQuery(
+      { houseId: selectedHouseId, page: 0, size: 100 },
+      { skip: !selectedHouseId }
+    );
+  const roomsByHouse = roomsData?.content || [];
+
+  const { data: serviceData, isLoading: loadingServices } =
+    useGetHouseServicesByHouseIdQuery(selectedHouseId, {
+      skip: !selectedHouseId,
+    });
+  const houseServices = serviceData || [];
+
+  // Search Tenant Query
   const {
-    fields: serviceFields,
-    append: appendService,
-    remove: removeService,
-  } = useFieldArray({
-    control,
-    name: "houseServiceIds",
-    keyName: "uniqueId", // keyName để react-hook-form quản lý field tốt hơn
+    data: searchedTenantData,
+    isFetching: isSearching,
+    refetch: refetchSearch,
+  } = useSearchTenantByPhoneNumberQuery(debouncedSearch, {
+    skip: !debouncedSearch || debouncedSearch.length < 5,
   });
+  const foundTenant = searchedTenantData;
+  const showSearchResults = !isSearching && debouncedSearch.length >= 5;
+
+  const selectedRoom = useMemo(
+    () => roomsByHouse.find((r) => r.id === selectedRoomId),
+    [roomsByHouse, selectedRoomId]
+  );
+
+  // RHF Field Array
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "tenants",
+  });
+
   useEffect(() => {
     if (Object.keys(errors).length > 0) {
       console.log("Form validation errors:", errors);
     }
-  }, [errors]); // ✅ Reset form khi roomData được fetch xong
+  }, [errors]);
+
   useEffect(() => {
-    if (roomData) {
-      reset({
-        roomId: Number(roomId),
-        ownerId: ownerId,
-        rent: roomData.rent || 0,
-        deposit: roomData.rent || 0,
-        penaltyAmount: 50000,
-        paymentCycle: 1,
-        startDate: undefined,
-        endDate: undefined,
-        houseServiceIds: [],
-        tenants: [],
-      });
+    if (selectedRoom) {
+      const rent = selectedRoom.rent || 0;
+      setValue("rent", rent);
+      setValue("deposit", rent * 2);
     }
-  }, [roomData, reset, roomId, ownerId]);
+  }, [selectedRoom, setValue]);
 
-  // QUẢN LÝ MẢNG TENANTS
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "tenants",
-  }); // THÊM: State và Logic tìm kiếm Tenant
+  useEffect(() => {
+    setValue("roomId", undefined);
+    setValue("houseServiceIds", []);
+  }, [selectedHouseId, setValue]);
 
-  const [searchPhoneNumber, setSearchPhoneNumber] = useState("");
-  const debouncedSearch = useDebounce(searchPhoneNumber, 500); // Query API tìm kiếm Tenant
-  const {
-    data: searchedTenantData,
-    isLoading: loadingSearch,
-    refetch: refetchSearch, // Giữ refetch để người dùng có thể kích hoạt tìm kiếm thủ công
-  } = useSearchTenantByPhoneNumberQuery(debouncedSearch, {
-    // Skip khi SĐT chưa đủ 10 ký tự
-    skip: debouncedSearch.length < 10,
-  });
-  const searchedTenant = searchedTenantData; // Logic kiểm tra để hiển thị kết quả chính xác (tránh lỗi cache) // => Chỉ hiển thị kết quả nếu tìm kiếm đã xong VÀ SĐT hiện tại trong input khớp với SĐT đã dùng để query
-  const showSearchResults =
-    !loadingSearch &&
-    debouncedSearch.length >= 10 &&
-    // Điều kiện quan trọng: đảm bảo kết quả cache khớp với input hiện tại
-    searchPhoneNumber === debouncedSearch; // KIỂM TRA ĐÃ CÓ TRONG DANH SÁCH CHƯA
-  const isAlreadyAdded = (tenantId) => fields.some((f) => f.id === tenantId); // Logic thêm Tenant vào form hợp đồng
+  // --- LOGIC TENANT ---
+  const isAlreadyAdded = useCallback(
+    (tenantId) => fields.some((f) => f.id === tenantId),
+    [fields]
+  );
 
   const handleAddTenantToContract = (tenant) => {
     if (isAlreadyAdded(tenant.id)) {
-      toast.error("Tenant này đã được thêm vào hợp đồng.");
-      return;
-    } // Thêm Tenant đã tìm thấy hoặc mới tạo
+      return toast.error(
+        `Khách thuê ${tenant.fullName} đã có trong danh sách.`
+      );
+    }
 
     append({
-      id: tenant.id, // ID của Tenant
+      id: tenant.id,
       fullName: tenant.fullName,
       phoneNumber: tenant.phoneNumber,
       email: tenant.email,
     });
-    setSearchPhoneNumber(""); // Reset ô tìm kiếm
+    setSearchPhoneNumber("");
     toast.success(`Đã thêm ${tenant.fullName} vào hợp đồng.`);
-    // Refetch lại để xóa kết quả tìm kiếm cũ
     refetchSearch();
   };
 
-  // ✅ Xử lý khi checkbox dịch vụ thay đổi
-  const handleServiceCheckboxChange = (checked, service) => {
-    const currentServices = watch("houseServiceIds"); // Lấy giá trị hiện tại của houseServiceIds
+  // LOGIC DỊCH VỤ (Metadata)
+  const allHouseServiceMeta = useMemo(() => {
+    return houseServices.map((hs) => ({
+      serviceId: hs.serviceId,
+      houseServiceId: hs.id,
+      name: hs.serviceName,
+      method: Number(hs.method),
+      price: hs.price,
+      unit: hs.unit,
+    }));
+  }, [houseServices]);
 
-    if (checked) {
-      // Nếu được chọn, thêm dịch vụ vào mảng
-      const newServiceEntry = {
-        serviceId: service.serviceId,
-        houseServiceId: service.id,
-      };
-
-      appendService(newServiceEntry);
-    } else {
-      // Nếu bỏ chọn, xóa dịch vụ khỏi mảng
-      const indexToRemove = currentServices.findIndex(
-        (item) => item.houseServiceId === service.id
-      );
-      if (indexToRemove !== -1) {
-        removeService(indexToRemove);
-      }
-    }
-  };
-
+  // --- SUBMIT ---
   const onSubmit = async (data) => {
-    // 1. Format Dates
+    console.log(data, "abcd");
+
+    if (data.tenants.length === 0) {
+      toast.error("Vui lòng thêm ít nhất một khách thuê.");
+      return;
+    }
+    const finalTenants = data.tenants.filter(
+      (t) => t.fullName && t.phoneNumber
+    );
+
+    if (finalTenants.length === 0) {
+      toast.error("Hợp đồng cần ít nhất một khách thuê hợp lệ.");
+      return;
+    }
+
+    const finalHouseServiceIds = data.houseServiceIds
+      .map((selectedService) => {
+        const serviceMeta = allHouseServiceMeta.find(
+          (meta) => meta.houseServiceId === selectedService.houseServiceId
+        );
+
+        return {
+          serviceId: serviceMeta.serviceId,
+          houseServiceId: selectedService.houseServiceId,
+        };
+      })
+      .filter((s) => s.houseServiceId);
+
+    const { houseId, ...formDataWithoutHouseId } = data;
     const payload = {
-      ...data,
-      ownerId: ownerId,
+      ...formDataWithoutHouseId,
+      houseServiceIds: finalHouseServiceIds,
+      tenants: finalTenants,
       startDate: format(data.startDate, "yyyy-MM-dd"),
       endDate: format(data.endDate, "yyyy-MM-dd"),
     };
     console.log(payload);
 
     try {
-      console.log("Payload gửi đi:", payload);
       await createContract(payload).unwrap();
       toast.success("Hợp đồng được tạo thành bản nháp (DRAFT)!");
       reset();
@@ -217,39 +242,117 @@ export default function ContractAddForm({
     }
   };
 
-  const isDisabled = isMutating || loadingServices;
+  const isDisabled =
+    isMutating || loadingServices || loadingHouses || loadingRooms;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <input type="hidden" {...register("roomId", { valueAsNumber: true })} />
-
       <input type="hidden" {...register("ownerId", { valueAsNumber: true })} />
 
       <FieldGroup>
-        {/* ------------------- THÔNG TIN CƠ BẢN ------------------- */}
-
+        {/* ------------------- CHỌN NHÀ & PHÒNG ------------------- */}
         <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
+          {/* HOUSE SELECT */}
+          <Field>
+            <FieldLabel>Nhà (*)</FieldLabel>
+            <Controller
+              name="houseId"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  onValueChange={(val) => field.onChange(Number(val))}
+                  value={field.value?.toString()}
+                  disabled={isDisabled || loadingHouses}
+                >
+                  <SelectTrigger>
+                    <SelectValue
+                      placeholder={
+                        loadingHouses ? "Loading..." : "Select House"
+                      }
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <ScrollArea className="h-60">
+                      {allHouses.map((house) => (
+                        <SelectItem key={house.id} value={house.id.toString()}>
+                          {house.name || house.code}
+                        </SelectItem>
+                      ))}
+                    </ScrollArea>
+                  </SelectContent>
+                </Select>
+              )}
+            />
+            <FieldError>{errors.houseId?.message}</FieldError>
+          </Field>
+
+          {/* ROOM SELECT */}
+          <Field>
+            <FieldLabel>Phòng (*)</FieldLabel>
+            <Controller
+              name="roomId"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  onValueChange={(val) => field.onChange(Number(val))}
+                  value={field.value?.toString()}
+                  disabled={
+                    isDisabled ||
+                    !selectedHouseId ||
+                    loadingRooms ||
+                    roomsByHouse.length === 0
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue
+                      placeholder={
+                        selectedHouseId
+                          ? loadingRooms
+                            ? "Loading Rooms..."
+                            : "Select Room"
+                          : "Select House first"
+                      }
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {roomsByHouse
+                      .filter((r) => r.status === 0)
+                      .map((room) => (
+                        <SelectItem key={room.id} value={room.id.toString()}>
+                          {room.code} ({room.area}m²)
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+            <FieldError>{errors.roomId?.message}</FieldError>
+          </Field>
+
           {/* Rent & Deposit */}
           <Field>
-            <FieldLabel>Rent (*)</FieldLabel>
+            <FieldLabel>Giá thuê (*)</FieldLabel>
             <Input
               type="number"
               {...register("rent", { valueAsNumber: true })}
-              disabled={isDisabled}
+              disabled={isDisabled || !selectedRoomId}
             />
+            <FieldError>{errors.rent?.message}</FieldError>
           </Field>
-
           <Field>
-            <FieldLabel>Deposit (*)</FieldLabel>
+            <FieldLabel>Tiền cọc (*)</FieldLabel>
             <Input
               type="number"
               {...register("deposit", { valueAsNumber: true })}
-              disabled={isDisabled}
+              disabled={isDisabled || !selectedRoomId}
             />
+            <FieldError>{errors.deposit?.message}</FieldError>
           </Field>
+
           {/* Start/End Date */}
           <Field>
-            <FieldLabel>Start Date (*)</FieldLabel>
+            <FieldLabel>Ngày bắt đầu (*)</FieldLabel>
             <Controller
               name="startDate"
               control={control}
@@ -258,13 +361,11 @@ export default function ContractAddForm({
                   <PopoverTrigger asChild>
                     <Button variant={"outline"} disabled={isDisabled}>
                       <CalendarIcon className="mr-2 h-4 w-4" />
-
                       {field.value
                         ? format(new Date(field.value), "PPP")
                         : "Chọn ngày"}
                     </Button>
                   </PopoverTrigger>
-
                   <PopoverContent className="w-auto p-0">
                     <Calendar
                       mode="single"
@@ -278,9 +379,8 @@ export default function ContractAddForm({
             />
             <FieldError>{errors.startDate?.message}</FieldError>
           </Field>
-
           <Field>
-            <FieldLabel>End Date (*)</FieldLabel>
+            <FieldLabel>Ngày kết thúc (*)</FieldLabel>
             <Controller
               name="endDate"
               control={control}
@@ -289,13 +389,11 @@ export default function ContractAddForm({
                   <PopoverTrigger asChild>
                     <Button variant={"outline"} disabled={isDisabled}>
                       <CalendarIcon className="mr-2 h-4 w-4" />
-
                       {field.value
                         ? format(new Date(field.value), "PPP")
                         : "Chọn ngày"}
                     </Button>
                   </PopoverTrigger>
-
                   <PopoverContent className="w-auto p-0">
                     <Calendar
                       mode="single"
@@ -309,9 +407,10 @@ export default function ContractAddForm({
             />
             <FieldError>{errors.endDate?.message}</FieldError>
           </Field>
+
           {/* Payment Cycle & Penalty */}
           <Field>
-            <FieldLabel>Payment Cycle(*)</FieldLabel>
+            <FieldLabel>Chu kỳ thanh toán(*)</FieldLabel>
             <Controller
               name="paymentCycle"
               control={control}
@@ -324,7 +423,6 @@ export default function ContractAddForm({
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
-
                   <SelectContent>
                     {PAYMENT_CYCLE_OPTIONS.map((val) => (
                       <SelectItem key={val} value={val.toString()}>
@@ -337,92 +435,107 @@ export default function ContractAddForm({
             />
             <FieldError>{errors.paymentCycle?.message}</FieldError>
           </Field>
-
           <Field>
-            <FieldLabel>Penalty Amountn (*)</FieldLabel>
+            <FieldLabel>Tiền phạt (*)</FieldLabel>
             <Input
               type="number"
               {...register("penaltyAmount", { valueAsNumber: true })}
               disabled={isDisabled}
             />
+            <FieldError>{errors.penaltyAmount?.message}</FieldError>
           </Field>
         </div>
 
         {/* ------------------- DỊCH VỤ (MULTI-SELECT CHECKBOX) ------------------- */}
-
         <Field className="pt-4 border-t">
           <FieldLabel>
-            Dịch vụ áp dụng ({houseServices.length} có sẵn):
+            Dịch vụ áp dụng ({allHouseServiceMeta.length} có sẵn):
           </FieldLabel>
-          <ScrollArea className="h-60 border rounded-md p-3">
-            {loadingServices ? (
-              <Spinner />
-            ) : (
-              houseServices.map((service) => {
-                const isChecked = serviceFields.some(
-                  (sf) => sf.houseServiceId === service.id
-                );
-                // Tìm index của dịch vụ trong houseServiceIds array của form
-                const fieldIndex = serviceFields.findIndex(
-                  (sf) => sf.houseServiceId === service.id
-                );
+          <Controller
+            name="houseServiceIds"
+            control={control}
+            render={({ field }) => (
+              <ScrollArea className="h-60 border rounded-md p-3">
+                {loadingServices ? (
+                  <Spinner />
+                ) : (
+                  allHouseServiceMeta.map((service) => {
+                    const fieldIndex = field.value.findIndex(
+                      (s) => s.houseServiceId === service.houseServiceId
+                    );
+                    const isSelected = fieldIndex !== -1;
 
-                return (
-                  <div
-                    key={service.id}
-                    className="flex items-center justify-between space-x-2 py-1"
-                  >
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        checked={isChecked}
-                        onCheckedChange={(checked) =>
-                          handleServiceCheckboxChange(checked, service)
-                        }
-                      />
-                      <label className="text-sm font-medium">
-                        {service.serviceName} (Giá:{" "}
-                        {service.price.toLocaleString()} VNĐ)
-                      </label>
-                    </div>
-                  </div>
-                );
-              })
+                    return (
+                      <div
+                        key={service.houseServiceId}
+                        className="grid grid-cols-12 items-center space-x-2 py-1"
+                      >
+                        <Checkbox
+                          checked={isSelected}
+                          onCheckedChange={(checked) => {
+                            let newArray;
+                            if (checked) {
+                              newArray = [
+                                ...field.value,
+                                {
+                                  houseServiceId: service.houseServiceId,
+                                  serviceId: service.serviceId,
+                                },
+                              ];
+                            } else {
+                              newArray = field.value.filter(
+                                (s) =>
+                                  s.houseServiceId !== service.houseServiceId
+                              );
+                            }
+                            field.onChange(newArray);
+                          }}
+                          className="col-span-1"
+                        />
+                        <label className="col-span-4 text-sm font-medium">
+                          {service.name} ({formatCurrency(service.price)}/
+                          {service.unit})
+                        </label>
+                        <ServiceTypeBadge type={service.method} />
+                      </div>
+                    );
+                  })
+                )}
+              </ScrollArea>
             )}
-          </ScrollArea>
+          />
           <FieldError>{errors.houseServiceIds?.message}</FieldError>
         </Field>
 
         {/* ------------------- KHÁCH THUÊ (DYNAMIC ARRAY) ------------------- */}
-
         <Field className="pt-4 border-t space-y-3">
           <FieldLabel className="font-bold">
             Danh sách Khách thuê (*):
           </FieldLabel>
-          {/* ============= PHẦN TÌM KIẾM/NÚT TẠO MỚI ============= */}
 
+          {/* ============= PHẦN TÌM KIẾM/NÚT TẠO MỚI ============= */}
           <div className="flex gap-2 items-start">
             <div className="flex-grow space-y-2">
               <div className="flex gap-2 justify-end">
                 <Input
                   placeholder="Nhập SĐT để tìm kiếm"
-                  value={searchPhoneNumber}
+                  value={phoneSearchTerm}
                   onChange={(e) => setSearchPhoneNumber(e.target.value)}
                   disabled={isDisabled}
-                  className={"w-50 lg:80"}
+                  className="w-50 lg:w-80"
                 />
-
                 <Button
                   type="button"
                   size="icon"
                   onClick={refetchSearch}
-                  disabled={isDisabled || searchPhoneNumber.length < 10}
+                  disabled={isDisabled || phoneSearchTerm.length < 5}
                 >
                   <Search className="h-4 w-4" />
                 </Button>
               </div>
-              {/* HIỂN THỊ KẾT QUẢ TÌM KIẾM */}
 
-              {loadingSearch && debouncedSearch.length >= 10 && (
+              {/* HIỂN THỊ KẾT QUẢ TÌM KIẾM */}
+              {isSearching && debouncedSearch.length >= 5 && (
                 <div className="flex items-center text-sm">
                   <Loader2 className="h-4 w-4 animate-spin mr-2" /> Đang tìm
                   kiếm Tenant...
@@ -430,50 +543,41 @@ export default function ContractAddForm({
               )}
 
               {showSearchResults &&
-                (searchedTenant ? (
-                  // Tenant ĐƯỢC TÌM THẤY
+                (foundTenant ? (
                   <Card className="flex items-center justify-between w-80 lg:w-90 p-3 border-green-500 bg-green-50 dark:bg-green-900/10">
                     <div className="flex items-center space-x-3">
                       <Avatar>
                         <AvatarImage
-                          src={searchedTenant.avatarUrl || "/userDefault.png"}
+                          src={foundTenant.avatarUrl || "/userDefault.png"}
                         />
-
                         <AvatarFallback>
                           <User className="h-4 w-4" />
                         </AvatarFallback>
                       </Avatar>
-
                       <div>
-                        <p className="font-semibold">
-                          {searchedTenant.fullName}
-                        </p>
-
+                        <p className="font-semibold">{foundTenant.fullName}</p>
                         <p className="text-xs text-muted-foreground">
-                          {searchedTenant.phoneNumber}| {searchedTenant.email}
+                          {foundTenant.phoneNumber} | {foundTenant.email}
                         </p>
                       </div>
                     </div>
-
                     <Button
                       type="button"
                       size="sm"
-                      onClick={() => handleAddTenantToContract(searchedTenant)}
-                      disabled={isDisabled || isAlreadyAdded(searchedTenant.id)}
+                      onClick={() => handleAddTenantToContract(foundTenant)}
+                      disabled={isDisabled || isAlreadyAdded(foundTenant.id)}
                     >
-                      {isAlreadyAdded(searchedTenant.id) ? (
+                      {isAlreadyAdded(foundTenant.id) ? (
                         <CheckCircle className="h-4 w-4 mr-2" />
                       ) : (
                         <UserPlus className="h-4 w-4 mr-2" />
                       )}
-
-                      {isAlreadyAdded(searchedTenant.id)
+                      {isAlreadyAdded(foundTenant.id)
                         ? "Đã thêm"
                         : "Thêm vào Hợp đồng"}
                     </Button>
                   </Card>
                 ) : (
-                  // Tenant KHÔNG TÌM THẤY
                   <Card className="p-3 border-red-500 bg-red-50 dark:bg-red-900/10">
                     <p className="font-medium text-sm">
                       Không tìm thấy Tenant với SĐT *{debouncedSearch}*. Vui
@@ -481,15 +585,15 @@ export default function ContractAddForm({
                     </p>
                   </Card>
                 ))}
-              {/* THÔNG BÁO KHI SĐT CHƯA ĐỦ DÀI */}
 
-              {searchPhoneNumber.length > 0 &&
-                searchPhoneNumber.length < 10 && (
-                  <p className="text-sm text-yellow-600">
-                    Nhập đủ 10 số để tìm kiếm.
-                  </p>
-                )}
+              {/* THÔNG BÁO KHI SĐT CHƯA ĐỦ DÀI */}
+              {phoneSearchTerm.length > 0 && phoneSearchTerm.length < 5 && (
+                <p className="text-sm text-yellow-600">
+                  Nhập đủ 5 số để tìm kiếm.
+                </p>
+              )}
             </div>
+
             {/* NÚT TẠO TENANT MỚI (Mở Dialog) */}
             <TenantCreateDialog onTenantCreated={handleAddTenantToContract} />
           </div>
@@ -508,6 +612,7 @@ export default function ContractAddForm({
                 <span className="text-sm font-medium col-span-1">
                   #{index + 1}
                 </span>
+
                 {/* Full Name (Readonly) */}
                 <Field className="col-span-3">
                   <Input
@@ -516,15 +621,13 @@ export default function ContractAddForm({
                     placeholder="Họ Tên"
                     className="bg-gray-100 dark:bg-gray-700"
                   />
-                  {/* Hidden fields để gửi payload */}
-
                   <input type="hidden" {...register(`tenants.${index}.id`)} />
-
                   <input
                     type="hidden"
                     {...register(`tenants.${index}.fullName`)}
                   />
                 </Field>
+
                 {/* Phone Number (Readonly) */}
                 <Field className="col-span-3">
                   <Input
@@ -533,12 +636,12 @@ export default function ContractAddForm({
                     placeholder="Số điện thoại"
                     className="bg-gray-100 dark:bg-gray-700"
                   />
-
                   <input
                     type="hidden"
                     {...register(`tenants.${index}.phoneNumber`)}
                   />
                 </Field>
+
                 {/* Email (Readonly) */}
                 <Field className="col-span-2">
                   <Input
@@ -547,12 +650,12 @@ export default function ContractAddForm({
                     placeholder="Email"
                     className="bg-gray-100 dark:bg-gray-700"
                   />
-
                   <input
                     type="hidden"
                     {...register(`tenants.${index}.email`)}
                   />
                 </Field>
+
                 {/* Remove Button */}
                 <div className="col-span-1 flex justify-end">
                   <Button
@@ -574,9 +677,11 @@ export default function ContractAddForm({
               Vui lòng tìm kiếm hoặc tạo ít nhất một khách thuê.
             </p>
           )}
+
           <FieldError>{errors.tenants?.message}</FieldError>
         </Field>
       </FieldGroup>
+
       {/* ------------------- SUBMIT ------------------- */}
       <div className="mt-6 flex justify-end">
         <Button

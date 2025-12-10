@@ -103,12 +103,12 @@ const TenantOwner = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead colSpan={1}>No</TableHead>
+              <TableHead colSpan={1}>STT</TableHead>
               <TableHead colSpan={2} className="w-[100px]">
                 Tenant
               </TableHead>
-              <TableHead colSpan={2}>Phone</TableHead>
-              <TableHead className="text-right">Action</TableHead>
+              <TableHead colSpan={2}>SĐT</TableHead>
+              <TableHead className="text-right">Thao tác</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -148,7 +148,7 @@ const TenantOwner = () => {
             ))}
             {sortedTenantByName.length === 0 && (
               <TableRow>
-                <TableCell colSpan={4}>No tenant</TableCell>
+                <TableCell colSpan={4}>Không có khách thuê</TableCell>
               </TableRow>
             )}
           </TableBody>

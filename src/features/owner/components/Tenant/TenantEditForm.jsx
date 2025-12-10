@@ -141,6 +141,16 @@ const TenantEditForm = ({ tenant, onFormSubmitSuccess }) => {
             />
             <FieldError>{errors.email?.message}</FieldError>
           </Field>
+          <Field>
+            <FieldLabel>Address</FieldLabel>
+            <Input
+              id="address"
+              type={"address"}
+              {...register("address")}
+              disabled={isLoading}
+            />
+            <FieldError>{errors.address?.message}</FieldError>
+          </Field>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <Field>

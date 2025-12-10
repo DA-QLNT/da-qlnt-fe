@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-
+import { useTranslation } from "react-i18next";
+import { useGetLatestTenantContractQuery } from "../../store/contractApi";
 import { Spinner } from "@/components/ui/spinner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,17 +12,28 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { FileText, Info, DollarSign, User, MapPin } from "lucide-react";
+import {
+  FileText,
+  Info,
+  DollarSign,
+  User,
+  Check,
+  XCircle,
+  CheckCheck,
+} from "lucide-react";
 import { formatCurrency } from "@/lib/format/currencyFormat";
 import { formatDateTime } from "@/lib/format/dateTimeFormat";
+// Component Badge được dùng chung
 import ContractStatusBadge from "../../../owner/components/Contract/ContractStatusBadge";
 import ServiceTypeBadge from "../../../owner/components/Service/ServiceTypeBadge";
-
-import { useGetLatestTenantContractQuery } from "../../store/contractApi";
-import ContractTenantConfirmDialog from "../../components/ContractTenantConfirmDialog";
+// Dialogs của Tenant
+import ContractTenantConfirmDialog from "./../../components/ContractTenantConfirmDialog";
+import ContractTenantRejectDialog from "./../../components/ContractTenantRejectDialog";
 
 const ContractTenant = () => {
-  // 🚨 FETCH HỢP ĐỒNG MỚI NHẤT
+  const { t } = useTranslation("house");
+
+  // FETCH HỢP ĐỒNG MỚI NHẤT
   const {
     data: contract,
     isLoading,
@@ -32,14 +44,17 @@ const ContractTenant = () => {
   const contractStatus = contract?.status;
 
   // States cho Dialog xác nhận
-  const [confirmDialog, setConfirmDialog] = useState({
-    open: false,
-    action: null,
-  });
+  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
+  const [isRejectDialogOpen, setIsRejectDialogOpen] = useState(false);
 
-  const openConfirmDialog = (actionType) => {
-    setConfirmDialog({ open: true, action: actionType });
-  };
+  const openConfirmDialog = () => setIsConfirmDialogOpen(true);
+  const openRejectDialog = () => setIsRejectDialogOpen(true);
+
+  // Trạng thái cần hành động (DRAFT=0, TENANT_REJECTED=1, TENANT_CONFIRMED=2)
+  // Chỉ khi status là DRAFT (0) hoặc TENANT_REJECTED (1) thì tenant mới có quyền xác nhận lại.
+  const isActionRequired = contractStatus === 0 || contractStatus === 1;
+
+  // ==== UI RENDER ====
 
   if (loading) {
     return (
@@ -57,16 +72,21 @@ const ContractTenant = () => {
     );
   }
 
-  const isActionRequired = contractStatus === 0 || contractStatus === 1; // DRAFT hoặc PENDING
+  const formattedStartDate = formatDateTime(contract.startDate).formattedDate;
+  const formattedEndDate = formatDateTime(contract.endDate).formattedDate;
 
   return (
     <div className="px-4 lg:px-6 space-y-6">
-      {/* 🚨 DIALOG XÁC NHẬN */}
+      {/* 🚨 DIALOGS */}
       <ContractTenantConfirmDialog
         contract={contract}
-        actionType={confirmDialog.action}
-        open={confirmDialog.open}
-        onOpenChange={(open) => setConfirmDialog((prev) => ({ ...prev, open }))}
+        open={isConfirmDialogOpen}
+        onOpenChange={setIsConfirmDialogOpen}
+      />
+      <ContractTenantRejectDialog
+        contractId={contract.id}
+        open={isRejectDialogOpen}
+        onOpenChange={setIsRejectDialogOpen}
       />
 
       <header className="flex justify-between items-center mb-6 border-b pb-4">
@@ -75,16 +95,13 @@ const ContractTenant = () => {
         </h1>
 
         {/* 🚨 ACTIONS CHỦ YẾU */}
-        {(contractStatus === 0 || contractStatus === 1) && (
+        {isActionRequired && (
           <div className="flex gap-3">
-            <Button
-              variant="destructive"
-              onClick={() => openConfirmDialog("reject")}
-            >
-              Từ Chối
+            <Button variant="destructive" onClick={openRejectDialog}>
+              <XCircle className="w-4 h-4 mr-2" /> Từ Chối
             </Button>
-            <Button onClick={() => openConfirmDialog("confirm")}>
-              Xác Nhận Hợp Đồng
+            <Button onClick={openConfirmDialog}>
+              <CheckCheck className="w-4 h-4 mr-2" /> Xác Nhận Hợp Đồng
             </Button>
           </div>
         )}
@@ -109,7 +126,7 @@ const ContractTenant = () => {
               <TableRow>
                 <TableCell className="w-1/4 font-medium">Nhà thuê</TableCell>
                 <TableCell>
-                  {contract.roomName} ({contract.houseName})
+                  {contract.roomName} (Nhà: {contract.houseName})
                 </TableCell>
               </TableRow>
               <TableRow>
@@ -119,8 +136,7 @@ const ContractTenant = () => {
               <TableRow>
                 <TableCell className="font-medium">Ngày hiệu lực</TableCell>
                 <TableCell>
-                  {formatDateTime(contract.startDate).formattedDate} -{" "}
-                  {formatDateTime(contract.endDate).formattedDate}
+                  {formattedStartDate} - {formattedEndDate}
                 </TableCell>
               </TableRow>
               <TableRow>
@@ -204,6 +220,33 @@ const ContractTenant = () => {
           </Table>
         </CardContent>
       </Card>
+
+      {/* --------------------- ACTIONS FOOTER --------------------- */}
+      <div className="flex justify-end gap-2">
+        {contractStatus === 0 && (
+          <Button onClick={openConfirmDialog} variant="default">
+            <CheckCheck className="w-4 h-4 mr-2" /> Xác nhận (DRAFT)
+          </Button>
+        )}
+
+        {contractStatus === 1 && (
+          <Button onClick={openConfirmDialog} variant="default">
+            <CheckCheck className="w-4 h-4 mr-2" /> Xác nhận lại (PENDING)
+          </Button>
+        )}
+
+        {(contractStatus === 0 || contractStatus === 1) && (
+          <Button onClick={openRejectDialog} variant="destructive">
+            <XCircle className="w-4 h-4 mr-2" /> Từ Chối
+          </Button>
+        )}
+
+        {contractStatus === 2 && (
+          <Button variant="outline" disabled>
+            ACTIVE - Đã xác nhận
+          </Button>
+        )}
+      </div>
     </div>
   );
 };

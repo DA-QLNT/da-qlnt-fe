@@ -9,7 +9,8 @@ import {
 import {
   useGetInvoiceByIdQuery,
   useCreateInvoiceMutation,
-} from "../../store/serviceApi"; // 🚨 Import createInvoice
+  useExportInvoiceExcelMutation,
+} from "../../store/serviceApi";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -20,12 +21,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { formatCurrency } from "@/lib/format/currencyFormat";
-import { FileText, Info, DollarSign, Loader2 } from "lucide-react";
+import { FileText, Info, DollarSign, Loader2, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatDateTime } from "@/lib/format/dateTimeFormat";
 import { Badge } from "@/components/ui/badge";
 import React, { useState } from "react";
 import InvoiceCreateConfirmDialog from "./InvoiceCreateConfirmDialog";
+import toast from "react-hot-toast";
+import ServiceTypeBadge from "./ServiceTypeBadge";
 
 const INVOICE_STATUS_MAP = {
   0: "Chưa thanh toán",
@@ -42,11 +45,50 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
   } = useGetInvoiceByIdQuery(invoiceId, { skip: !invoiceId || !open });
   const loading = isLoading || isFetching;
 
-  // 🚨 LOGIC TẠO HÓA ĐƠN TRONG FOOTER
   const [isCreateConfirmOpen, setIsCreateConfirmOpen] = useState(false);
+
+  // ✅ Sử dụng RTK Query để export Excel
+  const [triggerExport, { isLoading: isExporting }] =
+    useExportInvoiceExcelMutation();
 
   const handleOpenCreateConfirm = () => {
     setIsCreateConfirmOpen(true);
+  };
+
+  // ✅ HÀM XUẤT EXCEL với RTK Query
+  const handleExportExcel = async () => {
+    if (!invoice) {
+      toast.error("Không có dữ liệu hóa đơn để xuất");
+      return;
+    }
+
+    try {
+      const result = await triggerExport({
+        roomId: invoice.roomId,
+        month: invoice.month,
+        year: invoice.year,
+      }).unwrap();
+
+      // result là blob
+      const blob = result;
+
+      // Tạo URL để download
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = `HoaDon_${invoice.roomCode}_${invoice.month}_${invoice.year}.xlsx`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // Giải phóng URL
+      window.URL.revokeObjectURL(downloadUrl);
+
+      toast.success("Xuất Excel thành công!");
+    } catch (error) {
+      console.error("Export Excel error:", error);
+      toast.error("Xuất Excel thất bại");
+    }
   };
 
   if (isError)
@@ -58,7 +100,6 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      {/* RENDER CONFIRM DIALOG CON */}
       <InvoiceCreateConfirmDialog
         roomId={invoice?.roomId}
         open={isCreateConfirmOpen}
@@ -67,9 +108,28 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
 
       <DialogContent className="sm:max-w-4xl max-h-[95vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <FileText className="h-6 w-6" /> Chi tiết Hóa đơn {invoice?.month}/
-            {invoice?.year}
+          <DialogTitle className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <FileText className="h-6 w-6" /> Chi tiết Hóa đơn {invoice?.month}
+              /{invoice?.year}
+            </div>
+            <Button
+              className="mr-8"
+              onClick={handleExportExcel}
+              disabled={isExporting || loading}
+            >
+              {isExporting ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  Đang xuất...
+                </>
+              ) : (
+                <>
+                  <Download className="h-4 w-4 mr-2" />
+                  Xuất Excel
+                </>
+              )}
+            </Button>
           </DialogTitle>
         </DialogHeader>
 
@@ -91,9 +151,7 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
                   <TableBody>
                     <TableRow>
                       <TableCell className="font-medium w-1/4">Phòng</TableCell>
-                      <TableCell>
-                        {invoice.roomCode} ({invoice.houseName})
-                      </TableCell>
+                      <TableCell>{invoice.roomCode}</TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell className="font-medium">Khách thuê</TableCell>
@@ -158,14 +216,14 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
                       <TableRow key={detail.id} className="text-sm">
                         <TableCell>{detail.houseService.serviceName}</TableCell>
                         <TableCell>
-                          {detail.method === "0" ? "Công tơ" : "Khác"}
+                          <ServiceTypeBadge type={detail.method} />
                         </TableCell>
                         <TableCell>
                           {formatCurrency(detail.unitPrice)}
                         </TableCell>
                         <TableCell>
                           {detail.quantity}{" "}
-                          {detail.method === "0" ? "đơn vị" : "người/lần"}
+                          {detail.method === "0" ? "số" : "người/lần"}
                         </TableCell>
                         <TableCell className="text-right">
                           {formatCurrency(detail.amount)}
@@ -197,7 +255,6 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
           <Button variant="secondary" onClick={() => onOpenChange(false)}>
             Đóng
           </Button>
-          {/* 🚨 Chức năng xuất PDF/In (Nếu cần) */}
         </DialogFooter>
       </DialogContent>
     </Dialog>

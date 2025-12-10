@@ -1,7 +1,11 @@
 import { email, z } from "zod";
 
 const requiredNumber = z.coerce.number().min(0, "Phải là số dương.");
-
+// 🚨 Helper cho Select: Chấp nhận number, hoặc undefined (tức là chưa chọn)
+const requiredSelectNumber = z
+  .union([z.number(), z.undefined()])
+  .refine((val) => val !== undefined && val !== null, "Trường này là bắt buộc.")
+  .pipe(z.coerce.number()); // Ép kiểu sau khi đảm bảo không phải undefined
 // Schema cho mỗi khách thuê
 export const TenantSchema = z.object({
   id: z.number({ required_error: "ID khách thuê là bắt buộc." }),
@@ -32,10 +36,33 @@ export const ContractAddSchema = z.object({
       z.object({
         serviceId: z.number(),
         houseServiceId: z.number(),
-        lastMeterReading: z.number().optional(), // lastMeterReading là tùy chọn
+        // lastMeterReading: z.number().optional(), // lastMeterReading là tùy chọn
       })
     )
     .min(0, "Ít nhất một dịch vụ cần được chọn nếu có."), // Có thể là 0 nếu không có dịch vụ nào
+  tenants: z.array(TenantSchema).min(1, "Hợp đồng cần ít nhất một khách thuê."),
+});
+// 🚨 SCHEMA CỦA FORM TẠO NHANH (EarlyContractAddSchema)
+export const EarlyContractAddSchema = z.object({
+  // 🚨 Dùng requiredSelectNumber cho House/Room
+  houseId: requiredSelectNumber,
+  roomId: requiredSelectNumber,
+  ownerId: z.number(),
+
+  // Thông tin cơ bản
+  startDate: z.date({ required_error: "Ngày bắt đầu là bắt buộc." }),
+  endDate: z.date({ required_error: "Ngày kết thúc là bắt buộc." }),
+  rent: requiredNumber.min(1000, "Giá thuê phải lớn hơn 1,000 VNĐ."),
+  deposit: requiredNumber.min(1000, "Giá cọc phải lớn hơn 1,000 VNĐ."),
+  penaltyAmount: requiredNumber.min(1000, "Phí phạt phải lớn hơn 1,000 VNĐ."),
+  paymentCycle: z.coerce
+    .number()
+    .min(1, "Chu kỳ thanh toán tối thiểu là 1 tháng."),
+
+  // Danh sách dịch vụ và khách thuê
+  houseServiceIds: z
+    .array(z.object({ serviceId: z.number(), houseServiceId: z.number() }))
+    .min(0, "Ít nhất một dịch vụ cần được chọn nếu có."),
   tenants: z.array(TenantSchema).min(1, "Hợp đồng cần ít nhất một khách thuê."),
 });
 

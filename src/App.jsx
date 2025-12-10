@@ -35,6 +35,9 @@ import RoomTenant from "./features/Tenant/pages/Room/RoomTenant";
 import DashboardTenant from "./features/Tenant/pages/Dashboard/DashboardTenant";
 import InvoiceTenant from "./features/Tenant/pages/Invoice/InvoiceTenant";
 import ContractTenant from "./features/Tenant/pages/Contract/ContractTenant";
+import HouseList from "./features/owner/pages/Contract/HouseList";
+import ContractListByHouse from "./features/owner/pages/Contract/ContractListByHouse";
+import ContractDetailByHouse from "./features/owner/pages/Contract/ContractDetailByHouse";
 function App() {
   return (
     <div className="min-h-screen flex flex-col">
@@ -88,6 +91,17 @@ function App() {
               {/* house */}
 
               <Route path="tenants" element={<TenantOwner />} />
+              {/* contract */}
+              <Route path="contracts/houses" element={<HouseList />} />
+              <Route
+                path="contracts/houses/:houseId/contracts"
+                element={<ContractListByHouse />}
+              />
+              <Route
+                path="contracts/houses/:houseId/contracts/:contractId"
+                element={<ContractDetailByHouse />}
+              />
+              {/* contract */}
               <Route path="users" element={<UserOwner />} />
               <Route path="rules" element={<RuleOwner />} />
               <Route path="assets" element={<AssetOwner />} />

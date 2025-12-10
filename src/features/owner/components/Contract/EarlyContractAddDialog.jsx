@@ -5,10 +5,11 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import ContractAddForm from "./ContractAddForm";
 import { FileText } from "lucide-react";
+import { formatCurrency } from "@/lib/format/currencyFormat";
+import EarlyContractAddForm from "./EarlyContractAddForm";
 
-export default function ContractAddDialog({
+export default function EarlyContractAddDialog({
   houseId,
   roomId,
   open,
@@ -28,11 +29,7 @@ export default function ContractAddDialog({
           </DialogTitle>
         </DialogHeader>
 
-        <ContractAddForm
-          houseId={houseId}
-          roomId={roomId}
-          onFormSubmitSuccess={handleSuccess}
-        />
+        <EarlyContractAddForm onFormSubmitSuccess={handleSuccess} />
       </DialogContent>
     </Dialog>
   );
