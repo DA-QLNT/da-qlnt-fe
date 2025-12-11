@@ -102,7 +102,9 @@ export default function ContractExtendForm({ contract, onFormSubmitSuccess }) {
                     disabled={isLoading}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {field.value ? format(field.value, "PPP") : "Chọn ngày"}
+                    {field.value
+                      ? format(field.value, "dd/MM/yyyy")
+                      : "Chọn ngày"}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0">

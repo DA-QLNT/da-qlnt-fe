@@ -232,7 +232,7 @@ export default function AssetItemAddForm({ roomId, onFormSubmitSuccess }) {
                       >
                         <CalendarIcon className="mr-2 h-4 w-4" />
                         {field.value ? (
-                          format(field.value, "PPP")
+                          format(field.value, "dd/MM/yyyy")
                         ) : (
                           <span>{t("EnterDateBought")}</span>
                         )}

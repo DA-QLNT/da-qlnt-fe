@@ -36,7 +36,7 @@ const defaultValues = {
 };
 
 const UserAddForm = ({ onFormSubmitSuccess }) => {
-  const {t} = useTranslation("usercontent")
+  const { t } = useTranslation("usercontent");
   const [createUser, { isLoading }] = useCreateUserMutation();
   const {
     register,
@@ -153,7 +153,7 @@ const UserAddForm = ({ onFormSubmitSuccess }) => {
                     >
                       <Calendar1 className="mr-2 h-4 w-4" />
                       {field.value ? (
-                        format(field.value, "PPP")
+                        format(field.value, "dd/MM/yyyy")
                       ) : (
                         <span>Select dob</span>
                       )}
