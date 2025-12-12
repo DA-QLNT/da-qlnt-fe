@@ -49,7 +49,7 @@ export default function TenantCreateForm({
   });
 
   const onSubmit = async (data, event) => {
-    // 🚨 Quan trọng: Ngăn form cha bị submit
+    //  Quan trọng: Ngăn form cha bị submit
     if (event) {
       event.preventDefault();
       event.stopPropagation();

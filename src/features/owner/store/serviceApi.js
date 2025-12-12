@@ -144,7 +144,7 @@ export const serviceApi = baseApi.injectEndpoints({
       invalidatesTags: ["ServiceUsage", "Contract"],
     }),
     // ================HÓA ĐƠN=============
-    // 🚨 QUERY LẤY DANH SÁCH HÓA ĐƠN THEO ROOM ID
+    //  QUERY LẤY DANH SÁCH HÓA ĐƠN THEO ROOM ID
     getInvoicesByRoomId: builder.query({
       query: (roomId) => ({
         url: `/invoices/all/${roomId}`, // Endpoint: /invoices/all/{roomId}
@@ -154,7 +154,7 @@ export const serviceApi = baseApi.injectEndpoints({
       providesTags: ["Invoice"],
     }),
 
-    // 🚨 QUERY LẤY CHI TIẾT HÓA ĐƠN
+    //  QUERY LẤY CHI TIẾT HÓA ĐƠN
     getInvoiceById: builder.query({
       query: (invoiceId) => ({
         url: `/invoices/${invoiceId}`, // Endpoint: /invoices/{id}
@@ -164,7 +164,7 @@ export const serviceApi = baseApi.injectEndpoints({
       providesTags: (result, error, id) => [{ type: "Invoice", id }],
     }),
 
-    // 🚨 MUTATION TẠO HÓA ĐƠN
+    //  MUTATION TẠO HÓA ĐƠN
     createInvoice: builder.mutation({
       query: ({ roomId, month, year }) => ({
         url: `/invoices/generate-invoice?roomId=${roomId}&month=${month}&year=${year}`,

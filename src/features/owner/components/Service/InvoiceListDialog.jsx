@@ -22,7 +22,7 @@ import { formatDateTime } from "@/lib/format/dateTimeFormat";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import React, { useMemo, useState } from "react";
-import InvoiceDetailDialog from "./InvoiceDetailDialog"; // 🚨 Import Detail Dialog
+import InvoiceDetailDialog from "./InvoiceDetailDialog"; //  Import Detail Dialog
 
 const INVOICE_STATUS_MAP = {
   0: "Chưa thanh toán",
@@ -44,7 +44,7 @@ export default function InvoiceListDialog({ roomId, open, onOpenChange }) {
 
   const assignedInvoices = invoices || [];
 
-  // 🚨 Sắp xếp theo Năm (DESC) và Tháng (DESC)
+  //  Sắp xếp theo Năm (DESC) và Tháng (DESC)
   const sortedInvoices = useMemo(() => {
     return [...assignedInvoices].sort((a, b) => {
       if (a.year !== b.year) return b.year - a.year;

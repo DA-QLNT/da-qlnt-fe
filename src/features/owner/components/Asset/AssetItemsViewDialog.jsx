@@ -26,14 +26,11 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"; 
+} from "@/components/ui/popover";
 import { AssetImageViewer } from "./../../../../components/common/ImageViewer";
-import { formatCurrency } from './../../../../lib/format/currencyFormat';
-
-
+import { formatCurrency } from "./../../../../lib/format/currencyFormat";
 
 export default function AssetItemsViewDialog({ assetId, open, onOpenChange }) {
-
   const {
     data: asset,
     isLoading,
@@ -58,7 +55,7 @@ export default function AssetItemsViewDialog({ assetId, open, onOpenChange }) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      {/* 🚨 Tăng sm:max-w để có không gian cho bảng */}
+      {/*  Tăng sm:max-w để có không gian cho bảng */}
       <DialogContent className="sm:max-w-5xl max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
@@ -67,7 +64,7 @@ export default function AssetItemsViewDialog({ assetId, open, onOpenChange }) {
           </DialogTitle>
         </DialogHeader>
 
-        {/* 🚨 BẢNG ASSET ITEMS (W-FULL) */}
+        {/*  BẢNG ASSET ITEMS (W-FULL) */}
         <div className="flex flex-col border rounded-lg overflow-hidden flex-1">
           <ScrollArea className="flex-1 h-full min-h-[300px]">
             <div className="overflow-x-auto">

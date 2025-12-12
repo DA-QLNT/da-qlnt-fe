@@ -52,7 +52,7 @@ export default function ContractServiceAddForm({
     resolver: zodResolver(ServiceIdsSchema),
     defaultValues: { houseServiceIds: existingServiceIds },
   });
-  // 🚨 2. PRELOAD TRẠNG THÁI CHECKBOX KHI DỮ LIỆU SERVICES ĐÃ CÓ
+  //  2. PRELOAD TRẠNG THÁI CHECKBOX KHI DỮ LIỆU SERVICES ĐÃ CÓ
   const isServiceDataReady = !loadingServices && allHouseServices.length > 0;
   const isFormPreloadedRef = useRef(false); // Dùng để tránh reset khi user tương tác
 

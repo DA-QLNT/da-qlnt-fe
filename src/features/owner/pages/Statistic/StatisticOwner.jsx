@@ -2,6 +2,7 @@ import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import RevenueReportTab from "../../components/Report/RevenueReportTab";
 import RoomReportTab from "../../components/Report/RoomReportTab";
+import InvoiceReportTab from "../../components/Report/InvoiceReportTab";
 
 const StatisticOwner = () => {
   return (
@@ -19,8 +20,9 @@ const StatisticOwner = () => {
         <TabsContent value="Room">
           <RoomReportTab />
         </TabsContent>
-        {/* Danh sách dịch vụ */}
-        <TabsContent value="Invoice"></TabsContent>
+        <TabsContent value="Invoice">
+          <InvoiceReportTab />
+        </TabsContent>
       </Tabs>
     </div>
   );

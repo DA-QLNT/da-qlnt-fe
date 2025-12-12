@@ -76,7 +76,7 @@ const RoomReportTab = () => {
     key: "occupancyRate",
     direction: "desc",
   });
-  // 🚨 LOGIC SẮP XẾP BẢNG
+  //  LOGIC SẮP XẾP BẢNG
   const sortedDetails = useMemo(() => {
     if (!reportData || !reportData.houseRoomDetails) return [];
     const sortableItems = [...reportData.houseRoomDetails];
@@ -93,7 +93,7 @@ const RoomReportTab = () => {
       return 0;
     });
     return sortableItems;
-  }, [reportData, sortConfig]); // 🚨 HÀM THAY ĐỔI CẤU HÌNH SẮP XẾP
+  }, [reportData, sortConfig]); //  HÀM THAY ĐỔI CẤU HÌNH SẮP XẾP
 
   const requestSort = (key) => {
     let direction = "desc";
@@ -128,7 +128,7 @@ const RoomReportTab = () => {
     }));
   }, [reportData]);
 
-  // 🚨 HÀM SUBMIT FORM LỌC
+  //  HÀM SUBMIT FORM LỌC
   const onSubmit = async (data) => {
     if (data.houseIds.length === 0) {
       return toast.error("Vui lòng chọn ít nhất một Nhà trọ.");
@@ -407,7 +407,7 @@ const RoomReportTab = () => {
                 <TableHead>Trống</TableHead>
                 <TableHead
                   className="text-right cursor-pointer select-none group flex items-center justify-end"
-                  onClick={() => requestSort("occupancyRate")} // 🚨 Kích hoạt sắp xếp
+                  onClick={() => requestSort("occupancyRate")} //  Kích hoạt sắp xếp
                 >
                   Tỷ lệ Lấp đầy
                   {sortConfig.key === "occupancyRate" ? (

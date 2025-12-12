@@ -77,7 +77,7 @@ const ContractTenant = () => {
 
   return (
     <div className="px-4 lg:px-6 space-y-6">
-      {/* 🚨 DIALOGS */}
+      {/*  DIALOGS */}
       <ContractTenantConfirmDialog
         contract={contract}
         open={isConfirmDialogOpen}
@@ -94,7 +94,7 @@ const ContractTenant = () => {
           <FileText className="w-6 h-6" /> Hợp đồng thuê hiện tại
         </h1>
 
-        {/* 🚨 ACTIONS CHỦ YẾU */}
+        {/*  ACTIONS CHỦ YẾU */}
         {isActionRequired && (
           <div className="flex gap-3">
             <Button variant="destructive" onClick={openRejectDialog}>

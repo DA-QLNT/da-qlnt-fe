@@ -67,7 +67,7 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
         roomId: invoice.roomId,
         month: invoice.month,
         year: invoice.year,
-      }).unwrap(); // 🚨 Nếu thành công, blobResult là đối tượng Blob
+      }).unwrap(); //  Nếu thành công, blobResult là đối tượng Blob
 
       // Tạo Blob mới từ kết quả để ép kiểu (quan trọng để khắc phục lỗi trình duyệt)
       const excelBlob = new Blob([blobResult], {
@@ -86,7 +86,7 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
       window.URL.revokeObjectURL(downloadUrl);
       toast.success("Xuất Excel thành công!");
     } catch (error) {
-      // 🚨 Bắt lỗi JSON từ server (do responseHandler ném ra)
+      //  Bắt lỗi JSON từ server (do responseHandler ném ra)
       console.error("Export Excel error:", error);
       // Hiển thị message lỗi chi tiết từ server nếu có
       const errorMessage =

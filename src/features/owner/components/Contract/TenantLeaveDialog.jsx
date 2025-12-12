@@ -86,7 +86,7 @@ export default function TenantLeaveDialog({
     }
   };
 
-  // 🚨 RESET STATE KHI DIALOG ĐÓNG
+  //  RESET STATE KHI DIALOG ĐÓNG
   const handleOpenChange = (open) => {
     if (!open) {
       setStep("SUCCESS");
@@ -187,7 +187,7 @@ export default function TenantLeaveDialog({
         <Button variant="outline" onClick={() => onOpenChange(false)}>
           Đóng
         </Button>
-        {/* 🚨 Nút chuyển sang luồng thanh lý sẽ được tích hợp ở đây sau */}
+        {/*  Nút chuyển sang luồng thanh lý sẽ được tích hợp ở đây sau */}
       </AlertDialogFooter>
     </>
   );

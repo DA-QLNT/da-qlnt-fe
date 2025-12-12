@@ -30,13 +30,13 @@ const axiosBaseQuery =
     }
 
     const finalHeaders = { ...defaultHeaders, ...headers };
-    // // 🚨 Nếu dữ liệu KHÔNG phải là FormData, ta MỚI thêm Content-Type: application/json
+    // //  Nếu dữ liệu KHÔNG phải là FormData, ta MỚI thêm Content-Type: application/json
     // if (!(data instanceof FormData)) {
     //   finalHeaders["Content-Type"] =
     //     finalHeaders["Content-Type"] || "application/json";
     // }
     // // Nếu là FormData, Axios sẽ tự lo Content-Type: multipart/form-data với boundary.
-    // 🚨 LOGIC CHÍNH XÁC ĐỂ XỬ LÝ FormData
+    //  LOGIC CHÍNH XÁC ĐỂ XỬ LÝ FormData
     if (data instanceof FormData) {
       // Axios/Browser tự đặt Content-Type: multipart/form-data với boundary.
       // Nếu ta đặt Content-Type: application/json, nó sẽ thất bại.

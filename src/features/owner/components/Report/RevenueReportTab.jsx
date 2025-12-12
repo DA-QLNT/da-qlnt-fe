@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { format, subMonths, startOfMonth, endOfMonth } from "date-fns";
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import {
   TrendingUp,
   FileText,
@@ -94,7 +94,7 @@ const RevenueReportTab = () => {
     }));
   }, [reportData]);
 
-  // 🚨 HÀM SUBMIT FORM LỌC
+  //  HÀM SUBMIT FORM LỌC
   const onSubmit = async (data) => {
     if (data.houseIds.length === 0) {
       return toast.error("Vui lòng chọn ít nhất một Nhà trọ.");
@@ -225,7 +225,7 @@ const RevenueReportTab = () => {
                   name="houseIds"
                   control={control}
                   render={
-                    ({ field }) => renderHouseMultiSelect(field) // 🚨 Dùng component tùy chỉnh
+                    ({ field }) => renderHouseMultiSelect(field) //  Dùng component tùy chỉnh
                   }
                 />
               </Field>
@@ -397,6 +397,7 @@ const RevenueReportTab = () => {
                     tickMargin={10}
                     axisLine={false}
                   />
+                  <YAxis />
                   <ChartTooltip
                     cursor={false}
                     content={
@@ -424,7 +425,7 @@ const RevenueReportTab = () => {
 
           {/* --------------------- 4. CHI TIẾT THEO NHÀ --------------------- */}
           {/* <h3 className="text-xl font-bold pt-4">Chi tiết theo Nhà trọ</h3> */}
-          {/* 🚨 TÍCH HỢP BẢNG CHI TIẾT TẠI ĐÂY */}
+          {/*  TÍCH HỢP BẢNG CHI TIẾT TẠI ĐÂY */}
           {/* ... */}
         </div>
       ) : (

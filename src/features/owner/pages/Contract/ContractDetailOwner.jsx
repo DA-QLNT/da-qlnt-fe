@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   useGetContractByIdQuery,
   useSetNewRepresentativeMutation,
-} from "../../store/contractApi"; // 🚨 Import hook
+} from "../../store/contractApi"; //  Import hook
 import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
 import {
@@ -50,7 +50,7 @@ export const CONTRACT_STATUS_MAP_Dev = {
 
 const ContractDetailOwner = () => {
   const navigate = useNavigate();
-  // 🚨 LẤY contractId TỪ URL
+  //  LẤY contractId TỪ URL
   const { houseId, roomId, contractId } = useParams();
   const id = Number(contractId);
   const houseID = Number(houseId);
@@ -107,7 +107,7 @@ const ContractDetailOwner = () => {
       return toast.error("Chỉ có thể thay đổi đại diện khi hợp đồng ACTIVE.");
     }
 
-    // 🚨 CHỈ THỰC HIỆN KHI UNCHECKING (để chuyển sang người khác)
+    //  CHỈ THỰC HIỆN KHI UNCHECKING (để chuyển sang người khác)
     // Nếu người dùng cố gắng check một người đã là đại diện, ta bỏ qua
     const tenant = contract.tenants.find((t) => t.id === tenantId);
     if (tenant.representative) return; // Đã là đại diện, không làm gì.
@@ -365,7 +365,7 @@ const ContractDetailOwner = () => {
                   <TableCell>{tenant.fullName}</TableCell>
                   <TableCell>{tenant.phoneNumber}</TableCell>
 
-                  {/* 🚨 CHỌN ĐẠI DIỆN BẰNG CHECKBOX */}
+                  {/*  CHỌN ĐẠI DIỆN BẰNG CHECKBOX */}
                   <TableCell>
                     <Checkbox
                       checked={tenant.representative}
