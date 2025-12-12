@@ -12,7 +12,16 @@ export const reportApi = baseApi.injectEndpoints({
       transformResponse: (response) => response.result,
       // Không cần providesTags vì đây là báo cáo tạm thời
     }),
+    getRoomReport: builder.mutation({
+      query: (reportFilters) => ({
+        url: `/reports/room`, // Endpoint: /reports/room
+        method: "POST",
+        data: reportFilters, // { houseIds }
+      }),
+      transformResponse: (response) => response.result,
+    }),
   }),
 });
 
-export const { useGetRevenueReportMutation } = reportApi;
+export const { useGetRevenueReportMutation, useGetRoomReportMutation } =
+  reportApi;

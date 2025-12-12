@@ -1,23 +1,25 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { format, subMonths, startOfMonth, endOfMonth } from "date-fns";
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import {
-  TrendingUp,
-  FileText,
-  DollarSign,
   Bed,
-  Calendar as CalendarIcon,
+  Home,
+  TrendingUp,
   Loader2,
-  Check,
-} from "lucide-react"; // Import Check
+  Maximize2,
+  FileText,
+  ChevronDown,
+  ChevronUp,
+  ArrowDownAZ,
+  ArrowDownZA,
+} from "lucide-react";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
+  CardFooter,
 } from "@/components/ui/card";
 import {
   ChartContainer,
@@ -25,45 +27,81 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { Button } from "@/components/ui/button";
-import { Field, FieldLabel, FieldError } from "@/components/ui/field";
-import { FieldGroup } from "@/components/ui/field";
-
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { useGetHousesByOwnerIdQuery } from "../../store/houseApi";
+import { useGetRoomReportMutation } from "../../store/reportApi"; // Mutation báo cáo
+import { useAuth } from "@/features/auth";
+import toast from "react-hot-toast";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { formatCurrency } from "@/lib/format/currencyFormat"; // Để format giá (nếu có)
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { cn } from "@/lib/utils";
-import { useGetHousesByOwnerIdQuery } from "../../store/houseApi";
-import { useGetRevenueReportMutation } from "../../store/reportApi";
-import { useAuth } from "@/features/auth";
-import { formatCurrency } from "@/lib/format/currencyFormat";
-import toast from "react-hot-toast";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Checkbox } from "@/components/ui/checkbox";
 
-// Định nghĩa Chart Config
-const chartConfig = {
-  revenue: {
-    label: "Doanh thu (VNĐ)",
-    color: "var(--chart-2)",
+// Định nghĩa Chart Config cho biểu đồ Bar Chart Nhóm
+const roomChartConfig = {
+  occupied: {
+    label: "Đang thuê",
+    color: "hsl(var(--primary))",
+  },
+  vacant: {
+    label: "Phòng trống",
+    color: "hsl(var(--muted-foreground))",
   },
 };
 
 const defaultFilter = {
-  fromDate: startOfMonth(subMonths(new Date(), 2)),
-  toDate: endOfMonth(new Date()),
   houseIds: [],
 };
 
-const RevenueReportTab = () => {
+const RoomReportTab = () => {
   const { userId: ownerId } = useAuth();
 
   const [reportData, setReportData] = useState(null);
   const [triggerReport, { isLoading: isReportLoading }] =
-    useGetRevenueReportMutation();
+    useGetRoomReportMutation();
+  // sort occupancyRate
+  const [sortConfig, setSortConfig] = useState({
+    key: "occupancyRate",
+    direction: "desc",
+  });
+  // 🚨 LOGIC SẮP XẾP BẢNG
+  const sortedDetails = useMemo(() => {
+    if (!reportData || !reportData.houseRoomDetails) return [];
+    const sortableItems = [...reportData.houseRoomDetails];
+    sortableItems.sort((a, b) => {
+      const aValue = a[sortConfig.key];
+      const bValue = b[sortConfig.key];
 
+      if (aValue < bValue) {
+        return sortConfig.direction === "asc" ? -1 : 1;
+      }
+      if (aValue > bValue) {
+        return sortConfig.direction === "asc" ? 1 : -1;
+      }
+      return 0;
+    });
+    return sortableItems;
+  }, [reportData, sortConfig]); // 🚨 HÀM THAY ĐỔI CẤU HÌNH SẮP XẾP
+
+  const requestSort = (key) => {
+    let direction = "desc";
+    if (sortConfig.key === key && sortConfig.direction === "desc") {
+      direction = "asc";
+    }
+    setSortConfig({ key, direction });
+  };
   const { data: housesData, isLoading: loadingHouses } =
     useGetHousesByOwnerIdQuery(
       { ownerId, page: 0, size: 100 },
@@ -72,25 +110,21 @@ const RevenueReportTab = () => {
   const allHouses = housesData?.houses || [];
 
   // RHF Setup
-  const {
-    control,
-    handleSubmit,
-    watch,
-    setValue,
-    formState: { errors },
-  } = useForm({
+  const { control, handleSubmit, watch, setValue } = useForm({
     defaultValues: defaultFilter,
   });
 
   const watchHouseIds = watch("houseIds");
 
   // LOGIC CHUYỂN ĐỔI DỮ LIỆU CHART
-  const revenueChartData = useMemo(() => {
-    if (!reportData || !reportData.revenueMonthChart) return [];
+  const roomChartData = useMemo(() => {
+    if (!reportData || !reportData.roomStatusChart) return [];
 
-    return reportData.revenueMonthChart.map((item) => ({
-      month: format(new Date(item.month), "MM/yyyy"),
-      revenue: item.amount,
+    // Dữ liệu API đã chuẩn: [{ houseName, occupied, vacant }]
+    return reportData.roomStatusChart.map((item) => ({
+      name: item.houseName,
+      occupied: item.occupied,
+      vacant: item.vacant,
     }));
   }, [reportData]);
 
@@ -100,22 +134,20 @@ const RevenueReportTab = () => {
       return toast.error("Vui lòng chọn ít nhất một Nhà trọ.");
     }
     const payload = {
-      houseIds: data.houseIds, // API mong đợi list number
-      fromDate: format(data.fromDate, "yyyy-MM-dd"),
-      toDate: format(data.toDate, "yyyy-MM-dd"),
+      houseIds: data.houseIds, // List ID
     };
 
     try {
       const result = await triggerReport(payload).unwrap();
       setReportData(result);
-      toast.success("Đã tải báo cáo doanh thu mới.");
+      toast.success("Đã tải báo cáo phòng mới.");
     } catch (error) {
       toast.error(error.data?.message || "Lỗi tải báo cáo.");
       setReportData(null);
     }
   };
 
-  // Chạy báo cáo lần đầu tiên khi component mount
+  // Chạy báo cáo lần đầu tiên khi component mount (dùng filters mặc định)
   useEffect(() => {
     if (ownerId && allHouses.length > 0 && !reportData) {
       const defaultHouseIds = allHouses.map((h) => h.id);
@@ -126,7 +158,7 @@ const RevenueReportTab = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ownerId, allHouses.length]);
 
-  // Hàm render MultiSelect (Popover + Checkbox)
+  // Hàm render MultiSelect (Tái sử dụng logic từ RevenueTab)
   const renderHouseMultiSelect = (field) => {
     const selectedCount = field.value.length;
     const allSelected =
@@ -211,89 +243,21 @@ const RevenueReportTab = () => {
   return (
     <div className="space-y-6">
       {/* --------------------- 1. FORM LỌC --------------------- */}
-      <Card>
+      <Card className={"w-full sm:max-w-xl"}>
         <CardHeader>
-          <CardTitle>Bộ lọc Báo cáo</CardTitle>
+          <CardTitle>Bộ lọc Báo cáo Phòng</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <FieldGroup className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* House Select (Multi) */}
-              <Field>
+              <Field className="md:col-span-3">
                 <FieldLabel>Chọn Nhà trọ</FieldLabel>
                 <Controller
                   name="houseIds"
                   control={control}
-                  render={
-                    ({ field }) => renderHouseMultiSelect(field) // 🚨 Dùng component tùy chỉnh
-                  }
+                  render={({ field }) => renderHouseMultiSelect(field)}
                 />
-              </Field>
-
-              {/* From Date */}
-              <Field>
-                <FieldLabel>Từ ngày</FieldLabel>
-                <Controller
-                  name="fromDate"
-                  control={control}
-                  render={({ field }) => (
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant={"outline"}
-                          className={cn("w-full justify-start text-left")}
-                          disabled={isReportLoading}
-                        >
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          {field.value
-                            ? format(field.value, "dd/MM/yyyy")
-                            : "Chọn ngày"}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                        />
-                      </PopoverContent>
-                    </Popover>
-                  )}
-                />
-                <FieldError>{errors.fromDate?.message}</FieldError>
-              </Field>
-
-              {/* To Date */}
-              <Field>
-                <FieldLabel>Đến ngày</FieldLabel>
-                <Controller
-                  name="toDate"
-                  control={control}
-                  render={({ field }) => (
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant={"outline"}
-                          className={cn("w-full justify-start text-left")}
-                          disabled={isReportLoading}
-                        >
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          {field.value
-                            ? format(field.value, "dd/MM/yyyy")
-                            : "Chọn ngày"}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                        />
-                      </PopoverContent>
-                    </Popover>
-                  )}
-                />
-                <FieldError>{errors.toDate?.message}</FieldError>
               </Field>
             </FieldGroup>
             <div className="flex justify-end pt-2">
@@ -313,127 +277,179 @@ const RevenueReportTab = () => {
         </CardContent>
       </Card>
 
-      {/* --------------------- 2. HIỂN THỊ CHỈ SỐ TỔNG QUAN --------------------- */}
+      {/* --------------------- 2. HIỂN THỊ CHỈ SỐ TỔNG QUAN & BIỂU ĐỒ --------------------- */}
       {isReportLoading && !reportData ? (
         <div className="text-center py-10">
           <Loader2 className="h-8 w-8 animate-spin mx-auto" />
         </div>
       ) : reportData ? (
         <div className="space-y-6">
-          <h3 className="text-xl font-bold">Tổng quan Doanh thu</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* ... (Cards tổng quan giữ nguyên) */}
-            <Card className={" overflow-auto"}>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Tổng Doanh thu
-                </CardTitle>
-                <DollarSign className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-green-600">
-                  {formatCurrency(reportData.totalRevenue)}
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  Đã thu: {formatCurrency(reportData.totalPaid)}
-                </p>
-              </CardContent>
-            </Card>
+          <h3 className="text-xl font-bold">Tổng quan Tình trạng Phòng</h3>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Tổng Công nợ
-                </CardTitle>
-                <FileText className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-red-600">
-                  {formatCurrency(reportData.totalDebt)}
-                </div>
-                <p className="text-xs text-muted-foreground">Cần phải thu</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Tỷ lệ lấp đầy phòng
+                  Tổng số Phòng
                 </CardTitle>
                 <Bed className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
+                  {reportData.totalRooms}
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Đang cho Thuê
+                </CardTitle>
+                <Home className="h-4 w-4 text-green-600" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-green-600">
+                  {reportData.totalRoomsOccupied}
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Phòng Trống
+                </CardTitle>
+                <Home className="h-4 w-4 text-red-600" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-red-600">
+                  {reportData.vacantRooms}
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Tỷ lệ Lấp đầy
+                </CardTitle>
+                <TrendingUp className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
                   {reportData.occupancyRate.toFixed(1)}%
                 </div>
-                <p className="text-xs text-muted-foreground">
-                  {reportData.totalRoomsOccupied} / {reportData.totalRooms}{" "}
-                  phòng
-                </p>
               </CardContent>
             </Card>
           </div>
 
-          {/* --------------------- 3. BIỂU ĐỒ DOANH THU --------------------- */}
+          {/* --------------------- 3. BIỂU ĐỒ TRẠNG THÁI PHÒNG (GROUPED BAR CHART) --------------------- */}
           <Card>
             <CardHeader>
-              <CardTitle>Biểu đồ Doanh thu</CardTitle>
+              <CardTitle>Phòng Đang thuê vs Phòng Trống</CardTitle>
               <CardDescription>
-                Doanh thu đã thu theo tháng (Tổng công nợ chưa hiển thị)
+                So sánh tình trạng phòng theo từng nhà trọ
               </CardDescription>
             </CardHeader>
             <CardContent>
               <ChartContainer
-                config={chartConfig}
+                config={roomChartConfig}
                 className="max-h-[300px] w-full"
               >
                 <BarChart
                   accessibilityLayer
-                  data={revenueChartData}
+                  data={roomChartData}
                   margin={{ top: 20 }}
                 >
                   <CartesianGrid vertical={false} />
                   <XAxis
-                    dataKey="month"
+                    dataKey="name" // Tên nhà
                     tickLine={false}
                     tickMargin={10}
                     axisLine={false}
                   />
+                  <YAxis />
                   <ChartTooltip
-                    cursor={false}
-                    content={
-                      <ChartTooltipContent
-                        indicator="dashed"
-                        valueFormatter={(value) => formatCurrency(value)}
-                      />
-                    }
+                    cursor={{ fill: "var(--muted)", opacity: 0.5 }}
+                    content={<ChartTooltipContent indicator="dashed" />}
                   />
+                  {/* Bar Đang thuê */}
                   <Bar
-                    dataKey="revenue"
+                    dataKey="occupied"
                     fill="var(--color-chart-2)"
                     radius={4}
-                    barSize={40}
+                    barSize={30}
+                  />
+                  {/* Bar Phòng trống */}
+                  <Bar
+                    dataKey="vacant"
+                    fill="var(--color-destructive)"
+                    radius={4}
+                    barSize={30}
                   />
                 </BarChart>
               </ChartContainer>
             </CardContent>
             <CardFooter className="flex-col items-start gap-2 text-sm">
-              <div className="flex gap-2 leading-none font-medium text-green-600">
-                Tổng doanh thu: {formatCurrency(reportData.totalRevenue)}
+              <div className="text-muted-foreground leading-none">
+                Số lượng phòng trống và đang thuê theo nhà trọ.
               </div>
             </CardFooter>
           </Card>
 
-          {/* --------------------- 4. CHI TIẾT THEO NHÀ --------------------- */}
-          {/* <h3 className="text-xl font-bold pt-4">Chi tiết theo Nhà trọ</h3> */}
-          {/* 🚨 TÍCH HỢP BẢNG CHI TIẾT TẠI ĐÂY */}
-          {/* ... */}
+          {/* --------------------- 4. CHI TIẾT THEO NHÀ (Bảng) --------------------- */}
+          <h3 className="text-xl font-bold pt-4">
+            Chi tiết Tỷ lệ Lấp đầy theo Nhà
+          </h3>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Nhà trọ</TableHead>
+                <TableHead>Tổng phòng</TableHead>
+                <TableHead>Đang thuê</TableHead>
+                <TableHead>Trống</TableHead>
+                <TableHead
+                  className="text-right cursor-pointer select-none group flex items-center justify-end"
+                  onClick={() => requestSort("occupancyRate")} // 🚨 Kích hoạt sắp xếp
+                >
+                  Tỷ lệ Lấp đầy
+                  {sortConfig.key === "occupancyRate" ? (
+                    sortConfig.direction === "asc" ? (
+                      <ArrowDownZA className="h-4 w-4 ml-1" />
+                    ) : (
+                      <ArrowDownAZ className="h-4 w-4 ml-1" />
+                    )
+                  ) : (
+                    <ArrowDownAZ className="h-4 w-4 ml-1 text-muted opacity-50 group-hover:opacity-100" />
+                  )}
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {sortedDetails.map((house, index) => (
+                <TableRow key={house.houseId}>
+                  <TableCell className="font-medium">
+                    {house.houseName}
+                  </TableCell>
+                  <TableCell>{house.totalRooms}</TableCell>
+                  <TableCell className="text-green-600 font-semibold">
+                    {house.totalRoomsOccupied}
+                  </TableCell>
+                  <TableCell className="text-red-600 font-semibold">
+                    {house.vacantRooms}
+                  </TableCell>
+                  <TableCell className="text-right font-bold">
+                    {house.occupancyRate.toFixed(1)}%
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </div>
       ) : (
         <p className="text-center text-muted-foreground py-10">
-          Vui lòng chọn nhà trọ và khoảng thời gian để xem báo cáo.
+          Vui lòng chọn nhà trọ để xem báo cáo.
         </p>
       )}
     </div>
   );
 };
 
-export default RevenueReportTab;
+export default RoomReportTab;
