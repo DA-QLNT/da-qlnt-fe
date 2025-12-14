@@ -174,7 +174,7 @@ const AssetOwner = () => {
           Quản lý Tài Sản ({totalElements} Loại)
         </h1>
       </header>
-      <div className="w-full lg:w-2/3 p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
+      <div className="w-full  p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
         <Table>
           <TableHeader className={"bg-sidebar"}>
             <TableRow>

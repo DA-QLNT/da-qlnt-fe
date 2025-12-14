@@ -19,3 +19,9 @@ export const RepairRequestSchema = z.object({
 
   existingImageUrls: z.array(z.string()).optional(),
 });
+
+// owner
+export const RepairCompletionSchema = z.object({
+  note: z.string().min(5, "Ghi chú phải có ít nhất 5 ký tự."),
+  cost: z.coerce.number().min(0, "Chi phí phải là số dương."), // Dùng coerce để handle input number
+});

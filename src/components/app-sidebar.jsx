@@ -102,6 +102,11 @@ const data = {
       icon: IconDeviceDesktopDollar,
     },
     {
+      title: "Repairs",
+      url: "/owner/repairs",
+      icon: IconHammer,
+    },
+    {
       title: "Users",
       url: "/owner/users",
       icon: IconUsers,

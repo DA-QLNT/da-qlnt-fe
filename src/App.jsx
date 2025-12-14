@@ -40,6 +40,8 @@ import ContractDetailByHouse from "./features/owner/pages/Contract/ContractDetai
 import RecordMeterOwner from "./features/owner/pages/RecordMeter/RecordMeterOwner";
 import StatisticOwner from "./features/owner/pages/Statistic/StatisticOwner";
 import RepairTenant from "./features/Tenant/pages/Repair/RepairTenant";
+import RepairOwner from "./features/owner/pages/Repair/RepairOwner";
+import RepairByHouse from "./features/owner/pages/Repair/RepairByHouse";
 function App() {
   return (
     <div className="min-h-screen flex flex-col">
@@ -107,6 +109,13 @@ function App() {
               <Route path="users" element={<UserOwner />} />
               <Route path="rules" element={<RuleOwner />} />
               <Route path="assets" element={<AssetOwner />} />
+              {/* repair */}
+              <Route path="repairs" element={<RepairOwner />} />
+              <Route
+                path="repairs/houses/:houseId"
+                element={<RepairByHouse />}
+              />
+              {/* repair */}
 
               {/* services */}
               <Route path="services" element={<ServiceOwner />} />
