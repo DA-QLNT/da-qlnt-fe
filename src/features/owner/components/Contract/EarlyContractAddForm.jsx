@@ -65,7 +65,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
   const [phoneSearchTerm, setSearchPhoneNumber] = useState("");
   const debouncedSearch = useDebounce(phoneSearchTerm, 500);
 
-  // 🚨 RHF SETUP
+  //  RHF SETUP
   const {
     register,
     handleSubmit,
@@ -362,7 +362,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
                     <Button variant={"outline"} disabled={isDisabled}>
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {field.value
-                        ? format(new Date(field.value), "PPP")
+                        ? format(new Date(field.value), "dd/MM/yyyy")
                         : "Chọn ngày"}
                     </Button>
                   </PopoverTrigger>
@@ -390,7 +390,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
                     <Button variant={"outline"} disabled={isDisabled}>
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {field.value
-                        ? format(new Date(field.value), "PPP")
+                        ? format(new Date(field.value), "dd/MM/yyyy")
                         : "Chọn ngày"}
                     </Button>
                   </PopoverTrigger>

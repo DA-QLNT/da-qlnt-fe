@@ -29,13 +29,13 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import PermissionDeleteConfirm from "../../components/permissions/PermissionDeleteConfirm";
-import MatrixHooksWrapper from "../../components/permissions/MatrixHooksWrapper"; // 🚨 Đã sửa
+import MatrixHooksWrapper from "../../components/permissions/MatrixHooksWrapper"; //  Đã sửa
 import PermissionAddOrCreateDialog from "../../components/permissions/PermissionAddOrCreateDialog";
 import { useTranslation } from "react-i18next";
 
 const PermissionContent = () => {
-      const {t} = useTranslation('permissioncontent')
-  
+  const { t } = useTranslation("permissioncontent");
+
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);

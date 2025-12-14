@@ -144,7 +144,7 @@ export const serviceApi = baseApi.injectEndpoints({
       invalidatesTags: ["ServiceUsage", "Contract"],
     }),
     // ================HÓA ĐƠN=============
-    // 🚨 QUERY LẤY DANH SÁCH HÓA ĐƠN THEO ROOM ID
+    //  QUERY LẤY DANH SÁCH HÓA ĐƠN THEO ROOM ID
     getInvoicesByRoomId: builder.query({
       query: (roomId) => ({
         url: `/invoices/all/${roomId}`, // Endpoint: /invoices/all/{roomId}
@@ -154,7 +154,7 @@ export const serviceApi = baseApi.injectEndpoints({
       providesTags: ["Invoice"],
     }),
 
-    // 🚨 QUERY LẤY CHI TIẾT HÓA ĐƠN
+    //  QUERY LẤY CHI TIẾT HÓA ĐƠN
     getInvoiceById: builder.query({
       query: (invoiceId) => ({
         url: `/invoices/${invoiceId}`, // Endpoint: /invoices/{id}
@@ -164,7 +164,7 @@ export const serviceApi = baseApi.injectEndpoints({
       providesTags: (result, error, id) => [{ type: "Invoice", id }],
     }),
 
-    // 🚨 MUTATION TẠO HÓA ĐƠN
+    //  MUTATION TẠO HÓA ĐƠN
     createInvoice: builder.mutation({
       query: ({ roomId, month, year }) => ({
         url: `/invoices/generate-invoice?roomId=${roomId}&month=${month}&year=${year}`,
@@ -178,9 +178,29 @@ export const serviceApi = baseApi.injectEndpoints({
         url: `/excel/invoices/month-year`,
         method: "POST",
         params: { roomId, month, year },
+        headers: {
+          Accept:
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        },
         responseHandler: async (response) => {
-          // Xử lý response dạng blob
-          return response.blob();
+          // Nếu response thành công (2xx), trả về Blob
+          if (response.ok) {
+            return response.blob();
+          }
+
+          // Nếu response là lỗi (4xx, 5xx):
+          try {
+            // Cố gắng đọc body dưới dạng JSON (chứa lỗi server)
+            const error = await response.json();
+            // Ném lỗi để .unwrap() bắt được
+            return Promise.reject(error);
+          } catch (e) {
+            // Trường hợp response không phải JSON (ví dụ: lỗi mạng/text đơn giản)
+            const errorText = await response.text();
+            return Promise.reject({
+              message: errorText || "Lỗi không xác định khi xuất file.",
+            });
+          }
         },
         cache: "no-cache",
       }),

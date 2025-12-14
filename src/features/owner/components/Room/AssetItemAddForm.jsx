@@ -23,7 +23,7 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCreateAssetItemMutation } from "../../store/roomApi";
-import { useGetAssetsQuery } from "../../store/assetApi"; // 🚨 Import hook Asset Types
+import { useGetAssetsQuery } from "../../store/assetApi"; //  Import hook Asset Types
 import toast from "react-hot-toast";
 import { format } from "date-fns/format";
 import {
@@ -232,7 +232,7 @@ export default function AssetItemAddForm({ roomId, onFormSubmitSuccess }) {
                       >
                         <CalendarIcon className="mr-2 h-4 w-4" />
                         {field.value ? (
-                          format(field.value, "PPP")
+                          format(field.value, "dd/MM/yyyy")
                         ) : (
                           <span>{t("EnterDateBought")}</span>
                         )}

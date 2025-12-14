@@ -41,13 +41,13 @@ const ServiceListRoomRent = () => {
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [selectedRoomForView, setSelectedRoomForView] = useState(null);
 
-  // 🚨 STATE CHO INVOICE LIST
+  //  STATE CHO INVOICE LIST
   const [invoiceListDialog, setInvoiceListDialog] = useState({
     open: false,
     roomId: null,
   });
 
-  // 🚨 STATE CHO INVOICE CREATE CONFIRM
+  //  STATE CHO INVOICE CREATE CONFIRM
   const [isInvoiceCreateConfirmOpen, setIsInvoiceCreateConfirmOpen] =
     useState(false);
   const [roomIdForInvoice, setRoomIdForInvoice] = useState(null);
@@ -124,7 +124,7 @@ const ServiceListRoomRent = () => {
         onOpenChange={setIsInvoiceCreateConfirmOpen}
       />
 
-      {/* 🚨 RENDER INVOICE LIST DIALOG */}
+      {/*  RENDER INVOICE LIST DIALOG */}
       <InvoiceListDialog
         roomId={invoiceListDialog.roomId}
         open={invoiceListDialog.open}

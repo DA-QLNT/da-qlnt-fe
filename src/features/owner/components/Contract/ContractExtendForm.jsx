@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/popover";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ContractExtendSchema } from "@/lib/validation/contract"; // 🚨 Import Schema
+import { ContractExtendSchema } from "@/lib/validation/contract"; //  Import Schema
 import { useExtendContractMutation } from "../../store/contractApi";
 import toast from "react-hot-toast";
 import { format, addMonths } from "date-fns";
@@ -38,7 +38,7 @@ export default function ContractExtendForm({ contract, onFormSubmitSuccess }) {
     [currentEndDate]
   );
 
-  // 🚨 SETUP RHF
+  //  SETUP RHF
   const {
     register,
     handleSubmit,
@@ -102,7 +102,9 @@ export default function ContractExtendForm({ contract, onFormSubmitSuccess }) {
                     disabled={isLoading}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {field.value ? format(field.value, "PPP") : "Chọn ngày"}
+                    {field.value
+                      ? format(field.value, "dd/MM/yyyy")
+                      : "Chọn ngày"}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0">

@@ -1,7 +1,7 @@
 import { email, z } from "zod";
 
 const requiredNumber = z.coerce.number().min(0, "Phải là số dương.");
-// 🚨 Helper cho Select: Chấp nhận number, hoặc undefined (tức là chưa chọn)
+//  Helper cho Select: Chấp nhận number, hoặc undefined (tức là chưa chọn)
 const requiredSelectNumber = z
   .union([z.number(), z.undefined()])
   .refine((val) => val !== undefined && val !== null, "Trường này là bắt buộc.")
@@ -42,9 +42,9 @@ export const ContractAddSchema = z.object({
     .min(0, "Ít nhất một dịch vụ cần được chọn nếu có."), // Có thể là 0 nếu không có dịch vụ nào
   tenants: z.array(TenantSchema).min(1, "Hợp đồng cần ít nhất một khách thuê."),
 });
-// 🚨 SCHEMA CỦA FORM TẠO NHANH (EarlyContractAddSchema)
+//  SCHEMA CỦA FORM TẠO NHANH (EarlyContractAddSchema)
 export const EarlyContractAddSchema = z.object({
-  // 🚨 Dùng requiredSelectNumber cho House/Room
+  //  Dùng requiredSelectNumber cho House/Room
   houseId: requiredSelectNumber,
   roomId: requiredSelectNumber,
   ownerId: z.number(),

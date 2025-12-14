@@ -49,7 +49,7 @@ export default function TenantCreateForm({
   });
 
   const onSubmit = async (data, event) => {
-    // 🚨 Quan trọng: Ngăn form cha bị submit
+    //  Quan trọng: Ngăn form cha bị submit
     if (event) {
       event.preventDefault();
       event.stopPropagation();
@@ -134,7 +134,7 @@ export default function TenantCreateForm({
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
                     {field.value
-                      ? format(field.value, "PPP")
+                      ? format(field.value, "dd/MM/yyyy")
                       : "Chọn ngày sinh"}
                   </Button>
                 </PopoverTrigger>

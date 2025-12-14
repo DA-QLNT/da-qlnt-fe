@@ -25,7 +25,7 @@ export const contractApi = baseApi.injectEndpoints({
       transformResponse: (response) => response.result,
       providesTags: (result, error, id) => [{ type: "Contract", id }],
     }),
-    // 🚨 QUERY LẤY TẤT CẢ HỢP ĐỒNG THEO HOUSE ID
+    //  QUERY LẤY TẤT CẢ HỢP ĐỒNG THEO HOUSE ID
     getContractsByHouseId: builder.query({
       query: ({ houseId, page = 0, size = 10 }) => ({
         url: `/contracts/houses/${houseId}`,

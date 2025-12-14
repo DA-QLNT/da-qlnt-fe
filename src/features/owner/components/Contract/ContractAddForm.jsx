@@ -260,7 +260,7 @@ export default function ContractAddForm({
                       <CalendarIcon className="mr-2 h-4 w-4" />
 
                       {field.value
-                        ? format(new Date(field.value), "PPP")
+                        ? format(new Date(field.value), "dd/MM/yyyy")
                         : "Chọn ngày"}
                     </Button>
                   </PopoverTrigger>
@@ -291,7 +291,7 @@ export default function ContractAddForm({
                       <CalendarIcon className="mr-2 h-4 w-4" />
 
                       {field.value
-                        ? format(new Date(field.value), "PPP")
+                        ? format(new Date(field.value), "dd/MM/yyyy")
                         : "Chọn ngày"}
                     </Button>
                   </PopoverTrigger>

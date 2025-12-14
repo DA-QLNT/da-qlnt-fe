@@ -8,7 +8,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { useSendContractEmailMutation } from "../../store/contractApi"; // 🚨 Import hook
+import { useSendContractEmailMutation } from "../../store/contractApi"; //  Import hook
 import { Mail, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import React from "react";

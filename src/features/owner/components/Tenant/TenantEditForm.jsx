@@ -181,7 +181,7 @@ const TenantEditForm = ({ tenant, onFormSubmitSuccess }) => {
                     >
                       <Calendar1 />
                       {field.value ? (
-                        format(field.value, "PPP")
+                        format(field.value, "dd/MM/yyyy")
                       ) : (
                         <span>{t("SelectDob")}</span>
                       )}

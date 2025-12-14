@@ -13,7 +13,7 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      // 🚨 Khi frontend gọi '/address-api/', Vite sẽ chuyển hướng request này đến API thật
+      //  Khi frontend gọi '/address-api/', Vite sẽ chuyển hướng request này đến API thật
       "/address-api": {
         target: "https://production.cas.so/address-kit",
         changeOrigin: true,

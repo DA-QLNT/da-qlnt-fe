@@ -83,7 +83,7 @@ const ContractDetailByHouse = () => {
       return toast.error("Chỉ có thể thay đổi đại diện khi hợp đồng ACTIVE.");
     }
 
-    // 🚨 CHỈ THỰC HIỆN KHI UNCHECKING (để chuyển sang người khác)
+    //  CHỈ THỰC HIỆN KHI UNCHECKING (để chuyển sang người khác)
     // Nếu người dùng cố gắng check một người đã là đại diện, ta bỏ qua
     const tenant = contract.tenants.find((t) => t.id === tenantId);
     if (tenant.representative) return; // Đã là đại diện, không làm gì.
@@ -362,7 +362,7 @@ const ContractDetailByHouse = () => {
                   <TableCell>{tenant.fullName}</TableCell>
                   <TableCell>{tenant.phoneNumber}</TableCell>
 
-                  {/* 🚨 CHỌN ĐẠI DIỆN BẰNG CHECKBOX */}
+                  {/*  CHỌN ĐẠI DIỆN BẰNG CHECKBOX */}
                   <TableCell>
                     <Checkbox
                       checked={tenant.representative}

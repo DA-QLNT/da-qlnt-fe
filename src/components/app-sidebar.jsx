@@ -86,8 +86,8 @@ const data = {
       icon: IconSettings,
     },
     {
-      title: "LogMeters",
-      url: "/owner/logmeters",
+      title: "RecordMeters",
+      url: "/owner/recordmeters",
       icon: IconDashboard,
     },
     {

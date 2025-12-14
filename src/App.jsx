@@ -6,7 +6,6 @@ import MainLayout from "./components/layout/MainLayout";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/layout/ProtectedRoute";
 import AdminLayout from "./features/admin/pages/AdminLayout";
-import DashboardContent from "./features/admin/pages/Dashboard/DashboardAdmin";
 import HouseContent from "./features/admin/pages/House/HouseContent";
 import UserContent from "./features/admin/pages/User/UserContent";
 import AnalyticContent from "./features/admin/pages/Analytic/AnalyticContent";
@@ -38,6 +37,8 @@ import ContractTenant from "./features/Tenant/pages/Contract/ContractTenant";
 import HouseList from "./features/owner/pages/Contract/HouseList";
 import ContractListByHouse from "./features/owner/pages/Contract/ContractListByHouse";
 import ContractDetailByHouse from "./features/owner/pages/Contract/ContractDetailByHouse";
+import RecordMeterOwner from "./features/owner/pages/RecordMeter/RecordMeterOwner";
+import StatisticOwner from "./features/owner/pages/Statistic/StatisticOwner";
 function App() {
   return (
     <div className="min-h-screen flex flex-col">
@@ -113,6 +114,18 @@ function App() {
                 element={<ServiceListRoomRent />}
               />
               {/* services */}
+
+              {/* statistics */}
+              <Route path="statistics" element={<StatisticOwner />} />
+              {/* statistics */}
+
+              {/* log meter */}
+              <Route path="recordmeters" element={<RecordMeterOwner />} />
+              <Route
+                path="recordmeters/houses/:houseId/rooms"
+                element={<ServiceListRoomRent />}
+              />
+              {/* log meter */}
             </Route>
           </Route>
 

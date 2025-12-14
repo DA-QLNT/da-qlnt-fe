@@ -195,7 +195,7 @@ const ServiceHouseAddForm = ({ serviceId, onFormSubmitSuccess }) => {
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {field.value
-                        ? format(field.value, "PPP")
+                        ? format(field.value, "dd/MM/yyyy")
                         : "Chọn ngày hiệu lực"}
                     </Button>
                   </PopoverTrigger>
@@ -256,21 +256,21 @@ const ServiceHouseAddForm = ({ serviceId, onFormSubmitSuccess }) => {
           <FieldError>{errors.houseIds?.message}</FieldError>
         </div>
       </FieldGroup>
-       
-        <Button
-          type="submit"
-          disabled={isDisabled || !isValid}
-          className={"w-full sm:w-auto flex justify-self-end"}
-        >
-          {isMutating ? (
-            <Spinner />
-          ) : (
-            <>
-              <Save className="mr-2 h-4 w-4" />
-              Thêm 
-            </>
-          )}
-        </Button>
+
+      <Button
+        type="submit"
+        disabled={isDisabled || !isValid}
+        className={"w-full sm:w-auto flex justify-self-end"}
+      >
+        {isMutating ? (
+          <Spinner />
+        ) : (
+          <>
+            <Save className="mr-2 h-4 w-4" />
+            Thêm
+          </>
+        )}
+      </Button>
     </form>
   );
 };

@@ -50,7 +50,7 @@ export default function ContractTenantRejectDialog({
     );
 
     try {
-      // 🚨 GỌI MUTATION VỚI BODY CHỨA NOTE
+      //  GỌI MUTATION VỚI BODY CHỨA NOTE
       await rejectContract({ contractId, note: data.note }).unwrap();
       toast.success("Đã từ chối hợp đồng. Chủ trọ đã nhận được thông báo.", {
         id: toastId,
