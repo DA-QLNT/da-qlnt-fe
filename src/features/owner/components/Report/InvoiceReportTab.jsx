@@ -359,7 +359,7 @@ const InvoiceReportTab = () => {
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />
                           {field.value
-                            ? format(field.value, "PPP")
+                            ? format(field.value, "dd/MM/yyyy")
                             : "Chọn ngày"}
                         </Button>
                       </PopoverTrigger>
@@ -392,7 +392,7 @@ const InvoiceReportTab = () => {
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />
                           {field.value
-                            ? format(field.value, "PPP")
+                            ? format(field.value, "dd/MM/yyyy")
                             : "Chọn ngày"}
                         </Button>
                       </PopoverTrigger>
@@ -510,7 +510,7 @@ const InvoiceReportTab = () => {
       ) : reportData ? (
         <div className="space-y-6">
           <h3 className="text-xl font-bold">Tổng quan Hóa đơn</h3>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium">
@@ -523,7 +523,7 @@ const InvoiceReportTab = () => {
                 </div>
               </CardContent>
             </Card>
-            <Card>
+            {/* <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium">Tổng Thu</CardTitle>
               </CardHeader>
@@ -532,7 +532,7 @@ const InvoiceReportTab = () => {
                   {formatCurrency(reportData.totalPaid)}
                 </div>
               </CardContent>
-            </Card>
+            </Card> */}
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium">
@@ -589,18 +589,9 @@ const InvoiceReportTab = () => {
                           />
                         }
                       />
-                      <Pie
-                        data={pieChartData}
-                        dataKey="value"
-                        nameKey="name"
-                        innerRadius={60}
-                        outerRadius={100}
-                      >
+                      <Pie data={pieChartData} dataKey="value" nameKey="name">
                         {pieChartData.map((entry, index) => (
-                          <Cell
-                            key={`cell-${index}`}
-                            fill={PIE_COLORS[index % PIE_COLORS.length]}
-                          />
+                          <Cell key={`cell-${index}`} fill={entry.fill} />
                         ))}
                       </Pie>
                     </PieChart>
@@ -611,9 +602,25 @@ const InvoiceReportTab = () => {
                   </div>
                 )}
               </CardContent>
+              {/* 🚨 PHẦN CHÚ THÍCH MÀU */}
+              <CardFooter className="flex-col items-start gap-2 text-sm">
+                <div className="flex flex-wrap gap-x-4 gap-y-2">
+                  {pieChartData.map((entry) => (
+                    <div key={entry.name} className="flex items-center gap-1">
+                      <span
+                        className="h-3 w-3 rounded-full"
+                        style={{ backgroundColor: entry.fill }}
+                      ></span>
+                      <span className="text-xs text-muted-foreground">
+                        {entry.name} ({entry.value})
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </CardFooter>
             </Card>
 
-            {/* Chi tiết Trạng thái */}
+            {/* Chi tiết thanh toán */}
             <Card>
               <CardHeader>
                 <CardTitle>Chi tiết Thanh toán</CardTitle>

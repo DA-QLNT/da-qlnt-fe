@@ -84,7 +84,7 @@ const TenantOwner = () => {
   if (isLoadingTenant) {
     return (
       <div className="absoulute inset-0 flex items-center justify-center">
-        <Spinner />
+        <Spinner className={"size-20 text-primary"} />
       </div>
     );
   }
