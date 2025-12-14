@@ -39,6 +39,7 @@ import ContractListByHouse from "./features/owner/pages/Contract/ContractListByH
 import ContractDetailByHouse from "./features/owner/pages/Contract/ContractDetailByHouse";
 import RecordMeterOwner from "./features/owner/pages/RecordMeter/RecordMeterOwner";
 import StatisticOwner from "./features/owner/pages/Statistic/StatisticOwner";
+import RepairTenant from "./features/Tenant/pages/Repair/RepairTenant";
 function App() {
   return (
     <div className="min-h-screen flex flex-col">
@@ -136,6 +137,7 @@ function App() {
               <Route path="rooms" element={<RoomTenant />} />
               <Route path="invoices" element={<InvoiceTenant />} />
               <Route path="contracts" element={<ContractTenant />} />
+              <Route path="repairs" element={<RepairTenant />} />
             </Route>
           </Route>
 
