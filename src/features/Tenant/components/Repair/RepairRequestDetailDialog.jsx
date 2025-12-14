@@ -16,13 +16,16 @@ import {
   XCircle,
   ImageIcon as IconImage,
   FileText,
+  Loader2,
+  Send,
 } from "lucide-react";
 import { formatDateTime } from "@/lib/format/dateTimeFormat";
 import { formatCurrency } from "@/lib/format/currencyFormat";
 import { REPAIR_STATUS_MAP } from "@/assets/repair/repairStatus"; // Giả định import
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { useSubmitRepairRequestMutation } from "../../store/repairApi";
+import toast from "react-hot-toast";
 
 // Component Badge cho Trạng thái
 const RepairStatusBadge = ({ status }) => {
@@ -31,16 +34,34 @@ const RepairStatusBadge = ({ status }) => {
   return <Badge className={`uppercase ${color}`}>{label}</Badge>;
 };
 
-/**
- * Dialog hiển thị chi tiết yêu cầu sửa chữa (Read-only)
- * @param {object} request - Dữ liệu yêu cầu sửa chữa
- */
 export default function RepairRequestDetailDialog({
   request,
   open,
   onOpenChange,
 }) {
   if (!request) return null;
+  // 🚨 HOOK SUBMIT
+  const [submitRequest, { isLoading: isSubmitting }] =
+    useSubmitRepairRequestMutation();
+
+  // 🚨 HÀM XỬ LÝ GỬI YÊU CẦU
+  const handleSubmitRequest = async () => {
+    const repairId = request.id;
+    const toastId = toast.loading(`Đang gửi yêu cầu đến Chủ trọ...`);
+
+    try {
+      await submitRequest(repairId).unwrap();
+      toast.success(`Yêu cầu đã được gửi thành công!`, {
+        id: toastId,
+      });
+      onOpenChange(false);
+    } catch (error) {
+      toast.error(error.data?.message || "Gửi yêu cầu thất bại.", {
+        id: toastId,
+      });
+      console.error("Submit repair error:", error);
+    }
+  };
 
   const formattedDate = request.completedDate
     ? formatDateTime(request.completedDate).formattedDate
@@ -51,8 +72,7 @@ export default function RepairRequestDetailDialog({
       <DialogContent className="sm:max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Wrench className="h-6 w-6 text-primary" /> Chi tiết Yêu cầu #
-            {request.id}
+            <Wrench className="h-6 w-6 text-primary" /> Chi tiết Yêu cầu
           </DialogTitle>
           <DialogDescription className="text-lg font-medium pt-1">
             {request.title}
@@ -128,7 +148,6 @@ export default function RepairRequestDetailDialog({
                       src={url}
                       alt={`Repair Image ${index + 1}`}
                       className="w-24 h-24 object-cover border rounded-md shadow-sm cursor-pointer hover:shadow-lg transition-shadow"
-                      // 🚨 Thêm logic mở ảnh lớn hơn nếu cần
                     />
                   ))}
                 </div>
@@ -141,6 +160,16 @@ export default function RepairRequestDetailDialog({
           <Button variant="secondary" onClick={() => onOpenChange(false)}>
             Đóng
           </Button>
+          {request.status === 0 && (
+            <Button onClick={handleSubmitRequest} disabled={isSubmitting}>
+              {isSubmitting ? (
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              ) : (
+                <Send className="h-4 w-4 mr-2" />
+              )}
+              Gửi cho Chủ trọ
+            </Button>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -47,6 +47,18 @@ export const repairApi = baseApi.injectEndpoints({
         { type: "Repair", id: repairId },
       ],
     }),
+    // 🚨 MUTATION GỬI YÊU CẦU SỬA CHỮA (SUBMIT)
+    submitRepairRequest: builder.mutation({
+      query: (repairId) => ({
+        url: `/repairs/${repairId}/submit`,
+        method: "PUT",
+      }),
+
+      invalidatesTags: (result, error, repairId) => [
+        "Repair",
+        { type: "Repair", id: repairId },
+      ],
+    }),
   }),
 });
 
@@ -55,4 +67,5 @@ export const {
   useCreateRepairRequestMutation,
   useUpdateRepairRequestMutation,
   useDeleteRepairRequestMutation,
+  useSubmitRepairRequestMutation,
 } = repairApi;
