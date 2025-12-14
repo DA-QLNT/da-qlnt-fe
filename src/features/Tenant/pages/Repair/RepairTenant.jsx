@@ -31,6 +31,7 @@ import { Badge } from "@/components/ui/badge";
 import { formatDateTime } from "@/lib/format/dateTimeFormat";
 import RepairRequestFormDialog from "../../components/Repair/RepairRequestFormDialog";
 import RepairRequestDetailDialog from "../../components/Repair/RepairRequestDetailDialog";
+import RepairRequestDeleteConfirmDialog from "../../components/Repair/RepairRequestDeleteConfirmDialog";
 
 // Component Badge cho Trạng thái
 const RepairStatusBadge = ({ status }) => {
@@ -52,6 +53,11 @@ export default function RepairTenant() {
   const [detailDialogData, setDetailDialogData] = useState({
     open: false,
     request: null,
+  });
+  // 🚨 STATE CHO DIALOG DELETE
+  const [deleteDialogData, setDeleteDialogData] = useState({
+    open: false,
+    repairId: null,
   });
   const {
     data: repairData,
@@ -80,6 +86,15 @@ export default function RepairTenant() {
     }
     setDialogData({ open: true, request });
   };
+  // 🚨 HÀM MỞ DIALOG XÓA
+  const handleDeleteRequest = (request) => {
+    if (request.status !== 0) {
+      return toast.error(
+        "Chỉ có thể xóa yêu cầu khi đang ở trạng thái 'Chờ xử lý'."
+      );
+    }
+    setDeleteDialogData({ open: true, repairId: request.id });
+  };
 
   // Logic xử lý khi không có dữ liệu
   if (isError) {
@@ -104,6 +119,14 @@ export default function RepairTenant() {
         open={detailDialogData.open}
         onOpenChange={(open) =>
           setDetailDialogData((prev) => ({ ...prev, open }))
+        }
+      />
+      {/* 🚨 DIALOG XÁC NHẬN XÓA */}
+      <RepairRequestDeleteConfirmDialog
+        repairId={deleteDialogData.repairId}
+        open={deleteDialogData.open}
+        onOpenChange={(open) =>
+          setDeleteDialogData((prev) => ({ ...prev, open }))
         }
       />
       <header className="flex justify-between items-center border-b pb-4">
@@ -175,7 +198,11 @@ export default function RepairTenant() {
                           >
                             Sửa
                           </Button>
-                          <Button size="icon" variant="destructive">
+                          <Button
+                            size="icon"
+                            variant="destructive"
+                            onClick={() => handleDeleteRequest(request)}
+                          >
                             <Trash className="w-4 h-4" />
                           </Button>
                         </>

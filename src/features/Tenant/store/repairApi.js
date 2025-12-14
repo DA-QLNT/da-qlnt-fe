@@ -36,6 +36,17 @@ export const repairApi = baseApi.injectEndpoints({
         { type: "Repair", id: repairId },
       ],
     }),
+    // 🚨 MUTATION XÓA YÊU CẦU (DELETE)
+    deleteRepairRequest: builder.mutation({
+      query: (repairId) => ({
+        url: `/repairs/${repairId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (result, error, repairId) => [
+        "Repair",
+        { type: "Repair", id: repairId },
+      ],
+    }),
   }),
 });
 
@@ -43,4 +54,5 @@ export const {
   useGetTenantRepairRequestsQuery,
   useCreateRepairRequestMutation,
   useUpdateRepairRequestMutation,
+  useDeleteRepairRequestMutation,
 } = repairApi;
