@@ -15,6 +15,7 @@ import {
   IconReceipt,
   IconContract,
   IconWritingFilled,
+  IconHammer,
 } from "@tabler/icons-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -101,6 +102,11 @@ const data = {
       icon: IconDeviceDesktopDollar,
     },
     {
+      title: "Repairs",
+      url: "/owner/repairs",
+      icon: IconHammer,
+    },
+    {
       title: "Users",
       url: "/owner/users",
       icon: IconUsers,
@@ -118,19 +124,24 @@ const data = {
       icon: IconDashboard,
     },
     {
-      title: "Room",
+      title: "Phòng",
       url: "/tenant/rooms",
       icon: IconHome,
     },
     {
-      title: "Invoice",
+      title: "Hóa đơn",
       url: "/tenant/invoices",
       icon: IconReceipt2,
     },
     {
-      title: "Contract",
+      title: "Hợp đồng",
       url: "/tenant/contracts",
       icon: IconReceipt,
+    },
+    {
+      title: "Sửa chữa",
+      url: "/tenant/repairs",
+      icon: IconHammer,
     },
   ],
   navSecondary: [
