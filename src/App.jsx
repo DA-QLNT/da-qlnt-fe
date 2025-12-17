@@ -42,6 +42,7 @@ import StatisticOwner from "./features/owner/pages/Statistic/StatisticOwner";
 import RepairTenant from "./features/Tenant/pages/Repair/RepairTenant";
 import RepairOwner from "./features/owner/pages/Repair/RepairOwner";
 import RepairByHouse from "./features/owner/pages/Repair/RepairByHouse";
+import ContractHistoryTenant from "./features/Tenant/pages/Contract/ContractHistoryTenant";
 function App() {
   return (
     <div className="min-h-screen flex flex-col">
@@ -145,7 +146,15 @@ function App() {
               <Route index element={<DashboardTenant />} />
               <Route path="rooms" element={<RoomTenant />} />
               <Route path="invoices" element={<InvoiceTenant />} />
+
+              {/* Contract */}
               <Route path="contracts" element={<ContractTenant />} />
+              <Route
+                path="contracts/history"
+                element={<ContractHistoryTenant />}
+              />
+
+              {/* Contract */}
               <Route path="repairs" element={<RepairTenant />} />
             </Route>
           </Route>
