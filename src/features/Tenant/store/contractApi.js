@@ -3,10 +3,10 @@ import { baseApi } from "@/store/api/baseApi";
 export const contractApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     // 1. QUERY LẤY HỢP ĐỒNG MỚI NHẤT CỦA TENANT
-    // Endpoint: /contracts/tenants/latest
-    getLatestTenantContract: builder.query({
+    // Endpoint: /contracts/tenants/current
+    getCurrentTenantContract: builder.query({
       query: () => ({
-        url: "/contracts/tenants/latest",
+        url: "/contracts/tenants/current",
         method: "GET",
       }),
       transformResponse: (response) => response.result,
@@ -69,14 +69,25 @@ export const contractApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["ServiceUsage", "Contract"],
     }),
+    // Thêm vào endpoints trong contractApi.js
+    getTenantContractHistory: builder.query({
+      query: ({ page = 0, size = 10 }) => ({
+        url: "/contracts/tenants/history",
+        method: "GET",
+        params: { page, size },
+      }),
+      transformResponse: (response) => response.result,
+      providesTags: ["Contract"],
+    }),
   }),
 });
 
 export const {
-  useGetLatestTenantContractQuery,
+  useGetCurrentTenantContractQuery,
   useConfirmTenantContractMutation,
   useRejectTenantContractMutation,
   useGetInvoicesByRoomIdQuery,
   useGetInvoiceByIdQuery,
   useDeclareServiceUsageMutation, // Tùy chọn nếu Tenant được phép khai báo
+  useGetTenantContractHistoryQuery,
 } = contractApi;

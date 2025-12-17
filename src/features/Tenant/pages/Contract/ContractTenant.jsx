@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useGetLatestTenantContractQuery } from "../../store/contractApi";
+import { useGetCurrentTenantContractQuery } from "../../store/contractApi";
 import { Spinner } from "@/components/ui/spinner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -29,9 +29,11 @@ import ServiceTypeBadge from "../../../owner/components/Service/ServiceTypeBadge
 // Dialogs của Tenant
 import ContractTenantConfirmDialog from "./../../components/ContractTenantConfirmDialog";
 import ContractTenantRejectDialog from "./../../components/ContractTenantRejectDialog";
+import { useNavigate } from "react-router-dom";
 
 const ContractTenant = () => {
   const { t } = useTranslation("house");
+  const navigate = useNavigate();
 
   // FETCH HỢP ĐỒNG MỚI NHẤT
   const {
@@ -39,7 +41,7 @@ const ContractTenant = () => {
     isLoading,
     isFetching,
     isError,
-  } = useGetLatestTenantContractQuery();
+  } = useGetCurrentTenantContractQuery();
   const loading = isLoading || isFetching;
   const contractStatus = contract?.status;
 
@@ -163,7 +165,7 @@ const ContractTenant = () => {
       <Card>
         <CardHeader>
           <CardTitle className="text-xl flex items-center gap-2">
-            <DollarSign className="h-5 w-5" /> Dịch vụ áp dụng
+            Dịch vụ áp dụng
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -222,7 +224,24 @@ const ContractTenant = () => {
       </Card>
 
       {/* --------------------- ACTIONS FOOTER --------------------- */}
-      <div className="flex justify-end gap-2">
+      <div className="flex justify-between items-center">
+        <div className="flex items-center gap-8">
+          <Button
+            variant={"outline"}
+            className={
+              "border-purple-400 dark:border-purple-400 hover:border-amber-500 hover:text-amber-500"
+            }
+            onClick={() => navigate("/tenant/contracts/history")}
+          >
+            Lịch sử hợp đồng
+          </Button>
+          <Button
+            variant={"outline"}
+            onClick={() => navigate("/tenant/contracts/pending-renewal")}
+          >
+            Hợp đồng chờ gia hạn, chờ xác nhận
+          </Button>
+        </div>
         {contractStatus === 0 && (
           <Button onClick={openConfirmDialog} variant="default">
             <CheckCheck className="w-4 h-4 mr-2" /> Xác nhận (DRAFT)
