@@ -46,8 +46,8 @@ const ContractHistoryTenant = () => {
 
   if (isLoading || isFetching) {
     return (
-      <div className="flex justify-center items-center min-h-[400px]">
-        <Spinner className="size-12" />
+      <div className="flex justify-center items-center min-h-100">
+        <Spinner className="size-12 text-primary" />
       </div>
     );
   }
@@ -99,9 +99,11 @@ const ContractHistoryTenant = () => {
                     </TableCell>
                     <TableCell className="text-sm">
                       <div>
-                        T: {formatDateTime(item.startDate).formattedDate}
+                        Từ: {formatDateTime(item.startDate).formattedDate}
                       </div>
-                      <div>Đ: {formatDateTime(item.endDate).formattedDate}</div>
+                      <div>
+                        Đến: {formatDateTime(item.endDate).formattedDate}
+                      </div>
                     </TableCell>
                     <TableCell>{formatCurrency(item.rent)}</TableCell>
                     <TableCell>
@@ -153,8 +155,7 @@ const ContractHistoryTenant = () => {
         <DialogContent className="sm:max-w-4xl p-0">
           <DialogHeader className="p-6 pb-0">
             <DialogTitle className="text-2xl flex items-center gap-2">
-              <FileClock className="h-6 w-6" /> Chi tiết hợp đồng #
-              {selectedContract?.id}
+              <FileClock className="h-6 w-6" /> Chi tiết hợp đồng
             </DialogTitle>
           </DialogHeader>
           <ScrollArea className="max-h-[calc(90vh-120px)] p-6">

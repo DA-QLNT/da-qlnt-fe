@@ -43,6 +43,7 @@ import RepairTenant from "./features/Tenant/pages/Repair/RepairTenant";
 import RepairOwner from "./features/owner/pages/Repair/RepairOwner";
 import RepairByHouse from "./features/owner/pages/Repair/RepairByHouse";
 import ContractHistoryTenant from "./features/Tenant/pages/Contract/ContractHistoryTenant";
+import ContractPendingRenewal from "./features/Tenant/pages/Contract/ContractPendingRenewal";
 function App() {
   return (
     <div className="min-h-screen flex flex-col">
@@ -152,6 +153,10 @@ function App() {
               <Route
                 path="contracts/history"
                 element={<ContractHistoryTenant />}
+              />
+              <Route
+                path="contracts/pending-renewal"
+                element={<ContractPendingRenewal />}
               />
 
               {/* Contract */}

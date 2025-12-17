@@ -76,7 +76,7 @@ const ContractDetailView = ({ contract }) => {
       <Card>
         <CardHeader>
           <CardTitle className="text-xl flex items-center gap-2">
-            <DollarSign className="h-5 w-5" /> Dịch vụ áp dụng
+            Dịch vụ áp dụng
           </CardTitle>
         </CardHeader>
         <CardContent>

@@ -225,12 +225,23 @@ const ContractTenant = () => {
 
       {/* --------------------- ACTIONS FOOTER --------------------- */}
       <div className="flex justify-between items-center">
-        <Button
-          variant="outline"
-          onClick={() => navigate("/tenant/contracts/history")}
-        >
-          Lịch sử hợp đồng
-        </Button>
+        <div className="flex items-center gap-8">
+          <Button
+            variant={"outline"}
+            className={
+              "border-purple-400 dark:border-purple-400 hover:border-amber-500 hover:text-amber-500"
+            }
+            onClick={() => navigate("/tenant/contracts/history")}
+          >
+            Lịch sử hợp đồng
+          </Button>
+          <Button
+            variant={"outline"}
+            onClick={() => navigate("/tenant/contracts/pending-renewal")}
+          >
+            Hợp đồng chờ gia hạn, chờ xác nhận
+          </Button>
+        </div>
         {contractStatus === 0 && (
           <Button onClick={openConfirmDialog} variant="default">
             <CheckCheck className="w-4 h-4 mr-2" /> Xác nhận (DRAFT)
