@@ -29,6 +29,16 @@ export const reportApi = baseApi.injectEndpoints({
       }),
       transformResponse: (response) => response.result,
     }),
+    // 🚨 MUTATION XUẤT CHI TIẾT HÓA ĐƠN EXCEL
+    exportInvoiceDetail: builder.mutation({
+      query: (invoiceId) => ({
+        url: `/excel/invoice-detail`,
+        method: "POST",
+        params: { invoiceId },
+        responseHandler: async (response) => response.blob(), // Quan trọng: xử lý dữ liệu nhị phân
+        cache: "no-cache",
+      }),
+    }),
   }),
 });
 
@@ -36,4 +46,5 @@ export const {
   useGetRevenueReportMutation,
   useGetRoomReportMutation,
   useGetInvoiceReportMutation,
+  useExportInvoiceDetailMutation,
 } = reportApi;

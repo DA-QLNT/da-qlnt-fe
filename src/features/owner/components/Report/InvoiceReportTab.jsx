@@ -40,7 +40,10 @@ import { Calendar } from "@/components/ui/calendar";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useGetHousesByOwnerIdQuery } from "../../store/houseApi";
-import { useGetInvoiceReportMutation } from "../../store/reportApi";
+import {
+  useExportInvoiceDetailMutation,
+  useGetInvoiceReportMutation,
+} from "../../store/reportApi";
 import { useAuth } from "@/features/auth";
 import { formatCurrency } from "@/lib/format/currencyFormat";
 import toast from "react-hot-toast";
@@ -110,6 +113,45 @@ const InvoiceReportTab = () => {
   const [triggerReport, { isLoading: isReportLoading }] =
     useGetInvoiceReportMutation();
   const [currentFilters, setCurrentFilters] = useState(defaultFilter); // Lưu trữ filter đã submit
+
+  // excel
+  const [triggerExport, { isLoading: isExporting }] =
+    useExportInvoiceDetailMutation();
+  const [exportingId, setExportingId] = useState(null);
+
+  // 🚨 HÀM XỬ LÝ TẢI FILE
+  const handleExportInvoice = async (invoice) => {
+    setExportingId(invoice.id);
+    const toastId = toast.loading(
+      `Đang khởi tạo file cho hóa đơn ${invoice.code}...`
+    );
+    try {
+      const blobResult = await triggerExport(invoice.id).unwrap();
+
+      // Đảm bảo kiểu dữ liệu Excel chính xác
+      const excelBlob = new Blob([blobResult], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+
+      const downloadUrl = window.URL.createObjectURL(excelBlob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = `ChiTiet_HoaDon_${invoice.code}.xlsx`;
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      window.URL.revokeObjectURL(downloadUrl);
+      toast.success("Xuất hóa đơn thành công!", { id: toastId });
+    } catch (error) {
+      console.error("Export Error:", error);
+      toast.error("Không thể xuất hóa đơn. Vui lòng thử lại.", { id: toastId });
+    } finally {
+      setExportingId(null);
+    }
+  };
+  // excel
 
   // Sắp xếp bảng
   const [sortConfig, setSortConfig] = useState({
@@ -287,8 +329,8 @@ const InvoiceReportTab = () => {
             )}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[200px] p-0" align="start">
-          <ScrollArea className="h-[200px]">
+        <PopoverContent className="w-50 p-0" align="start">
+          <ScrollArea className="h-50">
             <div className="p-1">
               <div
                 className="flex items-center space-x-2 p-2 border-b cursor-pointer hover:bg-muted"
@@ -714,6 +756,7 @@ const InvoiceReportTab = () => {
                 </TableHead>
                 <TableHead>Trạng thái</TableHead>
                 <TableHead>Hạn TT</TableHead>
+                <TableHead>Xuất hóa đơn</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -757,6 +800,19 @@ const InvoiceReportTab = () => {
                     }
                   >
                     {formatDateTime(invoice.dueDate).formattedDate}
+                  </TableCell>
+                  <TableCell className="text-center">
+                    <Button
+                      size="icon"
+                      onClick={() => handleExportInvoice(invoice)}
+                      disabled={exportingId !== null}
+                    >
+                      {exportingId === invoice.id ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <FileText className="h-4 w-4" />
+                      )}
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}
