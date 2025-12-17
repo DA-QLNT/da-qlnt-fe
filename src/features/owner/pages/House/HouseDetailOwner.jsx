@@ -107,8 +107,8 @@ const HouseDetailOwner = () => {
           <ArrowLeft /> {t("Back")}
         </Button>
       </div>
-      <div className="flex flex-col gap-4  md:flex-row">
-        <div className="w-full lg:w-2/3 order-2 md:order-0 rounded-lg border border-purple-300 p-1 shadow-md shadow-secondary">
+      <div className="flex flex-col gap-4 ">
+        <div className="w-full  order-2  rounded-lg border border-purple-300 p-1 shadow-md shadow-secondary">
           <Table>
             <TableHeader className={"bg-sidebar"}>
               <TableRow>
@@ -144,8 +144,8 @@ const HouseDetailOwner = () => {
             </TableBody>
           </Table>
         </div>
-        <div className="flex gap-x-2 w-full md:justify-center lg:w-1/3 order-1">
-          <div className="w-full flex justify-end gap-x-4 md:flex-col md:justify-center md:items-center sm:flex-row md:gap-8">
+        <div className="flex gap-x-2 w-full md:justify-center  order-1">
+          <div className="w-full flex justify-end gap-x-4 ">
             <Button
               variant="outline"
               className={
