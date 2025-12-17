@@ -25,9 +25,10 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns/format";
-export default function TenantCreateForm({
-  onFormSubmitSuccess, // Hàm này nhận data tenant đã tạo và đóng dialog
-}) {
+import { useTranslation } from "react-i18next";
+export default function TenantCreateForm({ onFormSubmitSuccess }) {
+  const { t } = useTranslation("usercontent");
+
   const [createTenant, { isLoading }] = useCreateTenantMutation();
 
   const {
@@ -71,11 +72,11 @@ export default function TenantCreateForm({
     try {
       const result = await createTenant(formData).unwrap();
       if (result.code === 1000 && result.result) {
-        toast.success("Tạo Tenant thành công!");
+        toast.success(`${t("CreateSuccess")}`);
         // Gọi callback với thông tin tenant đã tạo (bao gồm id nếu API trả về)
         onFormSubmitSuccess(result.result);
       } else {
-        toast.error(result.message || "Tạo Tenant thất bại.");
+        toast.error(result.message || `${t("CreateFail")}`);
       }
     } catch (error) {
       console.error("Create Tenant Error:", error);
@@ -91,17 +92,17 @@ export default function TenantCreateForm({
     <form onSubmit={handleFormSubmit} className="space-y-4">
       <FieldGroup className="grid gap-4 md:grid-cols-2">
         <Field>
-          <FieldLabel>Họ Tên (*)</FieldLabel>
+          <FieldLabel>{t("FullName")}*</FieldLabel>
           <Input {...register("fullName")} disabled={isLoading} />
           <FieldError>{errors.fullName?.message}</FieldError>
         </Field>
         <Field>
-          <FieldLabel>CCCD (*)</FieldLabel>
+          <FieldLabel>{t("IdPerson")}*</FieldLabel>
           <Input {...register("idNumber")} disabled={isLoading} />
           <FieldError>{errors.idNumber?.message}</FieldError>
         </Field>
         <Field>
-          <FieldLabel>Số điện thoại (*)</FieldLabel>
+          <FieldLabel>{t("PhoneNumber")}*</FieldLabel>
           <Input
             {...register("phoneNumber")}
             disabled={isLoading}
@@ -110,17 +111,17 @@ export default function TenantCreateForm({
           <FieldError>{errors.phoneNumber?.message}</FieldError>
         </Field>
         <Field>
-          <FieldLabel>Email (*)</FieldLabel>
+          <FieldLabel>Email*</FieldLabel>
           <Input type="email" {...register("email")} disabled={isLoading} />
           <FieldError>{errors.email?.message}</FieldError>
         </Field>
         <Field className="md:col-span-2">
-          <FieldLabel>Địa chỉ (*)</FieldLabel>
+          <FieldLabel>{t("Address")}*</FieldLabel>
           <Input {...register("address")} disabled={isLoading} />
           <FieldError>{errors.address?.message}</FieldError>
         </Field>
         <Field className="md:col-span-2">
-          <FieldLabel>Ngày sinh (*)</FieldLabel>
+          <FieldLabel>{t("Dob")}*</FieldLabel>
           <Controller
             name="dob"
             control={control}
@@ -135,7 +136,7 @@ export default function TenantCreateForm({
                     <CalendarIcon className="mr-2 h-4 w-4" />
                     {field.value
                       ? format(field.value, "dd/MM/yyyy")
-                      : "Chọn ngày sinh"}
+                      : `${t("SelectDob")}`}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0">
@@ -161,7 +162,7 @@ export default function TenantCreateForm({
           ) : (
             <Save className="h-4 w-4 mr-2" />
           )}
-          Tạo Tenant
+          {t("Create")}
         </Button>
       </div>
     </form>

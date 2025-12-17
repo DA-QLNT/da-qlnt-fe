@@ -12,7 +12,9 @@ import {
 } from "@/components/ui/table";
 import { SquarePen } from "lucide-react";
 import TenantEditDialog from "../../components/Tenant/TenantEditDialog";
+import { useTranslation } from "react-i18next";
 const TenantOwner = () => {
+  const { t } = useTranslation("usercontent");
   const { userId: ownerId, isLoadingMe } = useAuth();
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(20);
@@ -103,12 +105,12 @@ const TenantOwner = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead colSpan={1}>STT</TableHead>
+              <TableHead colSpan={1}>{t("No")}</TableHead>
               <TableHead colSpan={2} className="w-[100px]">
-                Tenant
+                {t("Tenant")}
               </TableHead>
-              <TableHead colSpan={2}>SĐT</TableHead>
-              <TableHead className="text-right">Thao tác</TableHead>
+              <TableHead colSpan={2}>{t("PhoneNumber")}</TableHead>
+              <TableHead className="text-right">{t("Action")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
