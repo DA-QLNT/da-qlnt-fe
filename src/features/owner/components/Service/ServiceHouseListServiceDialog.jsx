@@ -6,12 +6,14 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import ServiceHouseListServiceTable from "./ServiceHouseListServiceTable";
+import { useTranslation } from "react-i18next";
 const ServiceHouseListServiceDialog = ({
   open,
   onOpenChange,
   houseId,
   houseName,
 }) => {
+  const { t } = useTranslation("service");
   const handleSuccess = () => {
     onOpenChange(false);
   };
@@ -20,7 +22,8 @@ const ServiceHouseListServiceDialog = ({
       <DialogContent className={"w-full sm:w-[90vw] h-[80vh] sm:max-w-4xl"}>
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 mb-4">
-            Sửa dịch vụ - nhà {houseName}
+            {t("EditServiceHouse")}
+            {houseName}
           </DialogTitle>
           <ServiceHouseListServiceTable
             houseId={houseId}

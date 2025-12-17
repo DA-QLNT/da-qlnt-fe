@@ -24,8 +24,10 @@ import {
 } from "../../store/serviceApi";
 import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 
 const ServiceUsageViewDialog = ({ open, onOpenChange, roomId, roomName }) => {
+  const { t } = useTranslation("service");
   const {
     data: serviceUsages,
     isLoading,
@@ -36,9 +38,9 @@ const ServiceUsageViewDialog = ({ open, onOpenChange, roomId, roomName }) => {
 
   const getApprovalBadge = (isApproved) => {
     if (isApproved === 1) {
-      return <Badge className="bg-green-500">Đã xác nhận</Badge>;
+      return <Badge className="bg-green-500">{t("Confirmed")}</Badge>;
     }
-    return <Badge variant="secondary">Chưa xác nhận</Badge>;
+    return <Badge variant="secondary">{t("NoConfirmYet")}</Badge>;
   };
 
   // create invoice
@@ -49,7 +51,7 @@ const ServiceUsageViewDialog = ({ open, onOpenChange, roomId, roomName }) => {
 
   const handleCreate = async () => {
     const toastId = toast.loading(
-      `Đang tạo hóa đơn tháng ${currentMonth}/${currentYear}...`
+      `${t("CreatingInvoice")} ${currentMonth}/${currentYear}...`
     );
     try {
       await createInvoice({
@@ -58,13 +60,10 @@ const ServiceUsageViewDialog = ({ open, onOpenChange, roomId, roomName }) => {
         year: currentYear,
       }).unwrap();
 
-      toast.success(
-        `Hóa đơn tháng ${currentMonth}/${currentYear} đã được tạo thành công!`,
-        { id: toastId }
-      );
+      toast.success(t("CreateSuccess"));
       onOpenChange(false);
     } catch (error) {
-      toast.error(error.data?.message || "Tạo hóa đơn thất bại.", {
+      toast.error(error.data?.message || t("CreateFail"), {
         id: toastId,
       });
     }
@@ -80,34 +79,38 @@ const ServiceUsageViewDialog = ({ open, onOpenChange, roomId, roomName }) => {
   "
       >
         <DialogHeader>
-          <DialogTitle>Chỉ số dịch vụ phòng {roomName}</DialogTitle>
+          <DialogTitle>
+            {t("ServiceRecord")} {t("Room")}: {roomName}
+          </DialogTitle>
         </DialogHeader>
 
         <div className="py-4">
           {isLoading ? (
             <div className="flex items-center justify-center h-32">
               <Loader2 className="h-6 w-6 animate-spin mr-2" />
-              Đang tải dữ liệu...
+              {t("Loading")}
             </div>
           ) : isError ? (
             <div className="text-red-500 text-center">
-              Không thể tải thông tin chỉ số dịch vụ.
+              {t("ErrorLoadingData")}
             </div>
           ) : !serviceUsages || serviceUsages.length === 0 ? (
             <div className="text-gray-500 text-center py-8">
-              Phòng này chưa có chỉ số dịch vụ nào.
+              {t("ThisRoomNoServiceRecord")}
             </div>
           ) : (
             <ScrollArea className="h-80">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Dịch vụ</TableHead>
-                    <TableHead>Tháng/Năm</TableHead>
+                    <TableHead>{t("ServiceName")}:</TableHead>
+                    <TableHead>{t("Month/Year")}</TableHead>
                     <TableHead className="text-right">Chỉ số đầu</TableHead>
                     <TableHead className="text-right">Chỉ số cuối</TableHead>
-                    <TableHead className="text-right">Tiêu thụ</TableHead>
-                    <TableHead>Trạng thái</TableHead>
+                    <TableHead className="text-right">
+                      {t("Consumed")}
+                    </TableHead>
+                    <TableHead>{t("Status")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -149,7 +152,7 @@ const ServiceUsageViewDialog = ({ open, onOpenChange, roomId, roomName }) => {
 
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="secondary">Đóng</Button>
+            <Button variant="secondary">{t("Close")}</Button>
           </DialogClose>
           <Button
             onClick={handleCreate}
@@ -158,10 +161,11 @@ const ServiceUsageViewDialog = ({ open, onOpenChange, roomId, roomName }) => {
           >
             {loadingCreatInvoice ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Đang tạo...
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />{" "}
+                {t("CreatingInvoice")}
               </>
             ) : (
-              "Tạo Hóa đơn"
+              t("CreateInvoice")
             )}
           </Button>
         </DialogFooter>

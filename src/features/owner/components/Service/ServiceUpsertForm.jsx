@@ -20,10 +20,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { TYPE_OPTIONS } from './../../../../assets/service/typeOptions';
-
+import { TYPE_OPTIONS } from "./../../../../assets/service/typeOptions";
+import { useTranslation } from "react-i18next";
 
 const ServiceUpsertForm = ({ initialData = null, onFormSubmitSuccess }) => {
+  const { t } = useTranslation("service");
   const [createOrUpdateService, { isLoading }] =
     useCreateOrUpdateServiceMutation();
 

@@ -30,6 +30,7 @@ import { format, parseISO } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import ServiceHouseDeleteConfirm from "./ServiceHouseDeleteConfirm";
+import { useTranslation } from "react-i18next";
 
 const HouseServiceRow = ({
   houseService,
@@ -38,6 +39,7 @@ const HouseServiceRow = ({
   startEditing,
   stopEditing,
 }) => {
+  const { t } = useTranslation("service");
   const [isEditing, setIsEditing] = useState(false);
   const [updateService, { isLoading: isMutating }] =
     useUpdateHouseServiceMutation();
@@ -75,7 +77,7 @@ const HouseServiceRow = ({
         houseServiceId: houseService.id,
         data: payload,
       }).unwrap();
-      toast.success("Cập nhật thành công");
+      toast.success(`${t("UpdateSuccess")}`);
       setIsEditing(false);
       //   stopEditing();
     } catch (error) {
@@ -84,7 +86,7 @@ const HouseServiceRow = ({
   };
   const startEdit = () => {
     if (disabledEdit) {
-      toast.error("Please complete edit another row");
+      toast.error(t("PleaseCompleteAnotherRow"));
       return;
     }
     setIsEditing(true);
@@ -195,7 +197,7 @@ const HouseServiceRow = ({
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {field.value
                         ? format(new Date(field.value), "dd/MM/yyyy")
-                        : "Chọn ngày hiệu lực"}
+                        : `${t("SelectEffectiveDate")}`}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className={"w-auto p-0"}>
@@ -219,7 +221,7 @@ const HouseServiceRow = ({
                 size="icon"
                 onClick={handleSubmit(handleSave)}
                 disabled={isMutating || !isDirty}
-                title="Lưu"
+                title={t("Save")}
               >
                 {isMutating ? <Spinner /> : <Save className="h-4 w-4" />}
               </Button>
@@ -228,7 +230,7 @@ const HouseServiceRow = ({
                 variant="outline"
                 onClick={cancelEditing}
                 disabled={isMutating}
-                title="Hủy"
+                title={t("Cancel")}
               >
                 <X className="h-4 w-4" />
               </Button>
@@ -243,7 +245,7 @@ const HouseServiceRow = ({
                 variant="ghost"
                 onClick={openDeleteDialog}
                 disabled={isDisabledActions} // Vô hiệu hóa khi đang xóa/mutate
-                title="Xóa"
+                title={t("Delete")}
               >
                 <Trash className="h-4 w-4 text-red-500" />
               </Button>

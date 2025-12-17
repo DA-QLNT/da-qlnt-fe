@@ -43,8 +43,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ServiceHouseAssignmentSchema } from "@/lib/validation/service";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import { useTranslation } from "react-i18next";
 
 const ServiceHouseAddForm = ({ serviceId, onFormSubmitSuccess }) => {
+  const { t } = useTranslation("service");
   const { userId: ownerId, isLoadingMe } = useAuth();
   const [assignService, { isLoading: isMutating }] =
     useAssignServiceToHousesMutation();
@@ -108,7 +110,7 @@ const ServiceHouseAddForm = ({ serviceId, onFormSubmitSuccess }) => {
   };
   const onSubmit = async (data) => {
     if (data.houseIds.length === 0) {
-      toast.error("Vui lòng chọn ít nhất một nhà trọ.");
+      toast.error(t("PleaseSelectHouse"));
       return;
     }
     const formattedDate = data.effectiveDate
@@ -124,12 +126,10 @@ const ServiceHouseAddForm = ({ serviceId, onFormSubmitSuccess }) => {
     };
     try {
       await assignService(payload).unwrap();
-      toast.success(
-        `Đã gán dịch vụ cho ${data.houseIds.length} nhà trọ thành công!`
-      );
+      toast.success(t("AssignSuccess"));
       onFormSubmitSuccess();
     } catch (error) {
-      toast.error(error.data?.message || "Gán dịch vụ thất bại.");
+      toast.error(error.data?.message || `${t("AssignFail")}`);
     }
   };
   const loading = houseLoading || houseFetching || isLoadingMe;
@@ -143,7 +143,7 @@ const ServiceHouseAddForm = ({ serviceId, onFormSubmitSuccess }) => {
       <FieldGroup>
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-y-2 gap-x-2">
           <Field>
-            <FieldLabel>Method</FieldLabel>
+            <FieldLabel>{t("Method")}</FieldLabel>
             {/* <Controller/> */}
             <Controller
               name="method"
@@ -155,7 +155,7 @@ const ServiceHouseAddForm = ({ serviceId, onFormSubmitSuccess }) => {
                   disabled={isDisabled}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Chọn cách tính" />
+                    <SelectValue placeholder={t("SelectMethod")} />
                   </SelectTrigger>
                   <SelectContent>
                     {METHOD_OPTIONS.map((opt) => (
@@ -169,16 +169,16 @@ const ServiceHouseAddForm = ({ serviceId, onFormSubmitSuccess }) => {
             />
           </Field>
           <Field>
-            <FieldLabel>Price</FieldLabel>
+            <FieldLabel>{t("Price")}</FieldLabel>
             <Input
               type="number"
               {...register("price", { valueAsNumber: true })}
-              placeholder="enter price"
+              placeholder={t("Price")}
             />
             <FieldError>{errors.price?.message}</FieldError>
           </Field>
           <Field>
-            <FieldLabel>Effective Date (*)</FieldLabel>
+            <FieldLabel>{t("EffectiveDate")}*</FieldLabel>
             <Controller
               name="effectiveDate"
               control={control}
@@ -196,7 +196,7 @@ const ServiceHouseAddForm = ({ serviceId, onFormSubmitSuccess }) => {
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {field.value
                         ? format(field.value, "dd/MM/yyyy")
-                        : "Chọn ngày hiệu lực"}
+                        : `${t("SelectEffectiveDate")}`}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
@@ -229,12 +229,12 @@ const ServiceHouseAddForm = ({ serviceId, onFormSubmitSuccess }) => {
                       indeterminate={isIndeterminate}
                       onCheckedChange={toggleAllHouses}
                       disabled={isDisabled}
-                      title="Select All"
+                      title={t("SelectAll")}
                     />
                   </TableHead>
-                  <TableHead>House</TableHead>
-                  <TableHead>Price/Month</TableHead>
-                  <TableHead>EffectiveDate</TableHead>
+                  <TableHead>{t("House")}</TableHead>
+                  <TableHead>{t("Price/Month")}</TableHead>
+                  <TableHead>{t("EffectiveDate")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -267,7 +267,7 @@ const ServiceHouseAddForm = ({ serviceId, onFormSubmitSuccess }) => {
         ) : (
           <>
             <Save className="mr-2 h-4 w-4" />
-            Thêm
+            {t("Add")}
           </>
         )}
       </Button>

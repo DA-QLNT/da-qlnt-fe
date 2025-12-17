@@ -13,6 +13,7 @@ import { Trash, AlertTriangle, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import React from "react";
 import { Spinner } from "@/components/ui/spinner";
+import { useTranslation } from "react-i18next";
 
 // Component nhận serviceId, serviceName và các props điều khiển Dialog
 export default function ServiceDeleteConfirm({
@@ -21,16 +22,17 @@ export default function ServiceDeleteConfirm({
   open,
   onOpenChange,
 }) {
+  const { t } = useTranslation("service");
   const [deleteService, { isLoading }] = useDeleteServiceMutation();
 
   const handleDelete = async () => {
     try {
       await deleteService(serviceId).unwrap();
 
-      toast.success(`Đã xóa thành công.`);
-      onOpenChange(false); 
+      toast.success(t("DeleteSuccess"));
+      onOpenChange(false);
     } catch (error) {
-      toast.error(`Xóa thất bại.`);
+      toast.error(t("DeleteFail"));
       console.error("Lỗi xóa Service:", error);
     }
   };
@@ -41,25 +43,19 @@ export default function ServiceDeleteConfirm({
         <AlertDialogHeader>
           <AlertDialogTitle className="flex items-center gap-2 text-red-600">
             <AlertTriangle className="w-6 h-6" />
-            Xác nhận xóa Dịch vụ
+            {t("DeleteConfirm")}:{serviceName}
           </AlertDialogTitle>
-          <AlertDialogDescription>
-            Anh có chắc chắn muốn xóa vĩnh viễn dịch vụ {serviceName} không?
-            Thao tác này không thể hoàn tác.
-          </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isLoading}>Hủy bỏ</AlertDialogCancel>
+          <AlertDialogCancel disabled={isLoading}>
+            {t("Cancel")}
+          </AlertDialogCancel>
           <AlertDialogAction
             onClick={handleDelete}
             disabled={isLoading}
             className="bg-red-600 hover:bg-red-700"
           >
-            {isLoading ? (
-              <Spinner/>
-            ) : (
-              "Đồng ý xóa"
-            )}
+            {isLoading ? <Spinner /> : `${t("Delete")}`}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

@@ -65,6 +65,12 @@ const InvoiceTenant = () => {
 
   const getStatusBadge = (status) => {
     switch (status) {
+      case 0:
+        return (
+          <Badge className="bg-yellow-100 text-yellow-700 hover:bg-yellow-100 border-none">
+            Chưa thanh toán
+          </Badge>
+        );
       case 1:
         return (
           <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-none">
@@ -77,12 +83,14 @@ const InvoiceTenant = () => {
             Quá hạn
           </Badge>
         );
-      default:
+      case 3:
         return (
           <Badge variant="secondary" className="border-none">
-            Chưa thanh toán
+            Đã thanh toán (quá hạn)
           </Badge>
         );
+      default:
+        return null;
     }
   };
 

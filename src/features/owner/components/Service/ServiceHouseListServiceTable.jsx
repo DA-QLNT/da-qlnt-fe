@@ -12,7 +12,9 @@ import { Spinner } from "@/components/ui/spinner";
 
 import { useState } from "react";
 import HouseServiceRow from "./HouseServiceRow";
+import { useTranslation } from "react-i18next";
 const ServiceHouseListServiceTable = ({ houseId, onFormSubmitSuccess }) => {
+  const { t } = useTranslation("service");
   const {
     data: houseServices,
     isLoading,
@@ -35,19 +37,21 @@ const ServiceHouseListServiceTable = ({ houseId, onFormSubmitSuccess }) => {
       <Table>
         <TableHeader className={"bg-sidebar"}>
           <TableRow>
-            <TableHead className="w-[50px]">No</TableHead>
-            <TableHead>Service</TableHead>
-            <TableHead>Method</TableHead>
-            <TableHead>Price</TableHead>
-            <TableHead>EffectiveDate</TableHead>
-            <TableHead className="text-right w-[100px]">Action</TableHead>
+            <TableHead className="w-[50px]">{t("No")}</TableHead>
+            <TableHead>{t("ServiceName")}</TableHead>
+            <TableHead>{t("Method")}</TableHead>
+            <TableHead>{t("Price")}</TableHead>
+            <TableHead>{t("EffectiveDate")}</TableHead>
+            <TableHead className="text-right w-[100px]">
+              {t("Action")}
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {assignedServices.length === 0 ? (
             <TableRow>
               <TableCell colSpan={3} className={"text-center"} />
-              No services
+              {t("NoService")}
             </TableRow>
           ) : (
             assignedServices.map((houseService, index) => (

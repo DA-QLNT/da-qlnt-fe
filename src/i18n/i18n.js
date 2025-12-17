@@ -13,6 +13,8 @@ import PERMISSIONCONTENT_EN from "../locales/en/permissioncontent.json";
 import PERMISSIONCONTENT_VI from "../locales/vi/permissioncontent.json";
 import HOUSE_EN from "../locales/en/house.json";
 import HOUSE_VI from "../locales/vi/house.json";
+import SERVICE_EN from "../locales/en/service.json";
+import SERVICE_VI from "../locales/vi/service.json";
 
 // import { locales } from "@/i18n/i18n";
 export const locales = {
@@ -28,6 +30,7 @@ const resources = {
     rolecontent: ROLECONTENT_EN,
     permissioncontent: PERMISSIONCONTENT_EN,
     house: HOUSE_EN,
+    service: SERVICE_EN,
   },
   vi: {
     login: LOGIN_VI,
@@ -36,6 +39,7 @@ const resources = {
     rolecontent: ROLECONTENT_VI,
     permissioncontent: PERMISSIONCONTENT_VI,
     house: HOUSE_VI,
+    service: SERVICE_VI,
   },
 };
 
@@ -48,8 +52,16 @@ i18n
       order: ["localStorage", "navigator"],
       caches: ["localStorage"],
     },
-    // lng: "en",
-    ns: ["login", "sidebar", "usercontent", "rolecontent", "permissioncontent"],
+    // lng: "vi",
+    ns: [
+      "login",
+      "sidebar",
+      "usercontent",
+      "rolecontent",
+      "permissioncontent",
+      "house",
+      "service",
+    ],
     fallbackLng: "en",
     interpolation: {
       escapeValue: false,

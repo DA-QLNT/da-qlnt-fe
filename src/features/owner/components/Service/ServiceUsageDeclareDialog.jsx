@@ -22,9 +22,11 @@ import {
 } from "../../store/serviceApi";
 import toast from "react-hot-toast";
 import { Loader2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 // Component con để fetch chỉ số tháng trước của từng service
 const PreviousReadingInput = ({ roomId, serviceId, label }) => {
+  const { t } = useTranslation("service");
   const {
     data: latestReading,
     isLoading,
@@ -55,9 +57,11 @@ const PreviousReadingInput = ({ roomId, serviceId, label }) => {
         value={isLoading || isFetching ? "" : prevReading}
         readOnly
         className="bg-gray-50"
-        placeholder={isLoading || isFetching ? "Đang tải..." : "0"}
+        placeholder={isLoading || isFetching ? t("Loading...") : "0"}
       />
-      {isLoading && <span className="text-xs text-gray-400">Đang tải...</span>}
+      {isLoading && (
+        <span className="text-xs text-gray-400">{t("Loading")}</span>
+      )}
     </Field>
   );
 };
@@ -149,7 +153,7 @@ const ServiceUsageDeclareDialog = ({ open, onOpenChange, roomId }) => {
       );
 
       if (validServiceUsages.length === 0) {
-        toast.error("Vui lòng nhập ít nhất một chỉ số dịch vụ.");
+        toast.error(t("PleaseSelectServiceRecord"));
         return;
       }
 
@@ -160,10 +164,10 @@ const ServiceUsageDeclareDialog = ({ open, onOpenChange, roomId }) => {
 
       console.log("Payload khai báo chỉ số:", payload);
       await declareServiceUsage(payload).unwrap();
-      toast.success("Khai báo chỉ số thành công!");
+      toast.success(t("DeclareSuccess"));
       onOpenChange(false);
     } catch (error) {
-      toast.error(error.data?.message || "Khai báo chỉ số thất bại.");
+      toast.error(error.data?.message || t("DeclareFail"));
       console.error("Declare service usage error:", error);
     }
   };
@@ -176,7 +180,7 @@ const ServiceUsageDeclareDialog = ({ open, onOpenChange, roomId }) => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader>
             <DialogTitle>
-              Khai báo chỉ số dịch vụ cho phòng {contract?.roomName}
+              {t("DeclareServiceRecord")} {t("Room")}: {contract?.roomName}
             </DialogTitle>
           </DialogHeader>
 
@@ -196,23 +200,22 @@ const ServiceUsageDeclareDialog = ({ open, onOpenChange, roomId }) => {
 
             <div className="flex justify-between text-sm text-gray-600">
               <span>
-                Kỳ: {currentMonth}/{currentYear}
+                {t("Term")}: {currentMonth}/{currentYear}
               </span>
-              <span>Hợp đồng: {contract?.id}</span>
+              <span>
+                {t("Contract")}: {contract?.id}
+              </span>
             </div>
 
             {loadingContract ? (
               <div className="flex items-center justify-center h-24">
-                <Loader2 className="h-6 w-6 animate-spin mr-2" /> Đang tải dịch
-                vụ...
+                <Loader2 className="h-6 w-6 animate-spin mr-2" /> {t("Loading")}
               </div>
             ) : contractError ? (
-              <div className="text-red-500">
-                Không thể tải thông tin hợp đồng.
-              </div>
+              <div className="text-red-500">{t("ErrorLoadingData")}</div>
             ) : servicesToDeclare.length === 0 ? (
               <div className="text-gray-500">
-                Phòng này không có dịch vụ nào tính theo chỉ số.
+                {t("ThisRoomNoServiceByMeter")}
               </div>
             ) : (
               <ScrollArea className="h-60 border rounded-md p-3">
@@ -231,7 +234,7 @@ const ServiceUsageDeclareDialog = ({ open, onOpenChange, roomId }) => {
                         <Input
                           type="number"
                           step="0.01"
-                          placeholder="Chỉ số tháng này"
+                          placeholder={t("ThisMonthRecord")}
                           {...register(`serviceUsages.${index}.currReading`, {
                             valueAsNumber: true,
                           })}
@@ -266,7 +269,7 @@ const ServiceUsageDeclareDialog = ({ open, onOpenChange, roomId }) => {
           <DialogFooter>
             <DialogClose asChild>
               <Button type="button" variant="secondary" disabled={isDeclaring}>
-                Hủy
+                {t("Cancel")}
               </Button>
             </DialogClose>
             <Button
@@ -274,7 +277,7 @@ const ServiceUsageDeclareDialog = ({ open, onOpenChange, roomId }) => {
               disabled={isDisabled || servicesToDeclare.length === 0}
             >
               {isDeclaring && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
-              Khai báo
+              {t("Declare")}
             </Button>
           </DialogFooter>
         </form>
