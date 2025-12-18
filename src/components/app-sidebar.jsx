@@ -87,7 +87,7 @@ const data = {
       icon: IconSettings,
     },
     {
-      title: "RecordMeters",
+      title: "RecordMeters & Invoices",
       url: "/owner/recordmeters",
       icon: IconDashboard,
     },
@@ -105,11 +105,6 @@ const data = {
       title: "Repairs",
       url: "/owner/repairs",
       icon: IconHammer,
-    },
-    {
-      title: "Users",
-      url: "/owner/users",
-      icon: IconUsers,
     },
     {
       title: "Rules",

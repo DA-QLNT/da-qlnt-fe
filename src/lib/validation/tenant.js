@@ -29,14 +29,14 @@ const optionalFileSchema = z
 export const TenantEditSchema = z.object({
   id: z.number(),
   username: z.string(),
-  fullName: z.string().min(1, "Full name is required"),
-  email: z.email("Email is invalid").min(1, "Email is required"),
-  address: z.string().min(1, "Address is required"),
+  fullName: z.string().min(1, "Yê cầu tên đầy đủ"),
+  email: z.email("Email is invalid").min(1, "Yêu cầu nhập email"),
+  address: z.string().min(1, "Yêu cầu nhập địa chỉ"),
   phoneNumber: z
     .string()
-    .min(10, "Phone number must be at least 10 characters long")
-    .max(11, "Phone number must be at most 11 characters long"),
-  dob: z.date({ required_error: "Date of Birth is required." }),
+    .min(10, "Số điện thoại phải có ít nhất 10 số")
+    .max(11, "Số điện thoại không quá 11 số"),
+  dob: z.date({ required_error: "Ngày sinh là bắt buộc." }),
   avatar: optionalFileSchema.optional(),
 });
 

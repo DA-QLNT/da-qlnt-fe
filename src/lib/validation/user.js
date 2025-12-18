@@ -1,18 +1,23 @@
 import { z } from "zod";
 const fileSchema = z
   .instanceof(FileList)
-  .refine((files) => files.length > 0, { message: "Avatar is required." });
+  .refine((files) => files.length > 0, {
+    message: "Ảnh đại diện là bắt buộc.",
+  });
 export const UserAddSchema = z.object({
-  username: z.string().min(3, "Username must be at least 3 characters long"),
-  password: z.string().min(4, "Password must be at least 4 characters long"),
-  email: z.string().email("Invalid email address").min(1, "Email is required"),
-  address: z.string().min(1, "Address is required"),
+  username: z.string().min(3, "Tên người dùng phải có ít nhất 3 ký tự"),
+  password: z.string().min(4, "Mật khẩu phải có ít nhất 4 ký tự"),
+  email: z
+    .string()
+    .email("Địa chỉ email không hợp lệ")
+    .min(1, "Yêu cầu nhập email"),
+  address: z.string().min(1, "Địa chỉ là bắt buộc."),
   phoneNumber: z
     .string()
-    .min(10, "Phone number must be at least 10 characters long")
-    .max(11, "Phone number must be at most 11 characters long"),
+    .min(10, "Số điện thoại phải có ít nhất 10 số")
+    .max(11, "Số điện thoại không quá 11 số"),
   dob: z.date({
-    required_error: "Date of Birth is required.",
+    required_error: "Ngày sinh là bắt buộc.",
   }),
   avatar: fileSchema,
 });
@@ -21,18 +26,18 @@ const optionalFileSchema = z
   .instanceof(FileList)
   .refine(
     (files) => files.length === 0 || files.length === 1,
-    "Choose only one file"
+    "Chỉ chọn một ảnh."
   )
   .optional();
 export const UserEditSchema = z.object({
   id: z.number(),
   username: z.string(),
-  email: z.email("Email is invalid").min(1, "Email is required"),
-  address: z.string().min(1, "Address is required"),
+  email: z.email("Email không hợp lệ").min(1, "Yêu cầu nhập email"),
+  address: z.string().min(1, "Địa chỉ là bắt buộc."),
   phoneNumber: z
     .string()
-    .min(10, "Phone number must be at least 10 characters long")
-    .max(11, "Phone number must be at most 11 characters long"),
-  dob: z.date({ required_error: "Date of Birth is required." }),
+    .min(10, "Số điện thoại phải có ít nhất 10 số")
+    .max(11, "Số điện thoại không quá 11 số"),
+  dob: z.date({ required_error: "Ngày sinh là bắt buộc." }),
   avatar: optionalFileSchema.optional(),
 });
