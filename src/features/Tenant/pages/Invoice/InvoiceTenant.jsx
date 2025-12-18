@@ -21,6 +21,7 @@ import { formatCurrency } from "@/lib/format/currencyFormat";
 import { formatDateTime } from "@/lib/format/dateTimeFormat";
 import InvoiceDetailDialog from "../../components/Invoice/InvoiceDetailDialog"; // Sẽ tạo ở bước dưới
 import VNPayLinkDialog from "../../components/Invoice/VNPayLinkDialog";
+import { useTranslation } from "react-i18next";
 
 const InvoiceTenant = () => {
   const { t } = useTranslation("service");

@@ -44,6 +44,8 @@ const RepairStatusBadge = ({ status }) => {
 };
 
 export default function RepairTenant() {
+  const { t } = useTranslation("repairreportrule");
+
   const [page, setPage] = useState(0);
   const pageSize = 10;
 
