@@ -30,6 +30,8 @@ import { useTranslation } from "react-i18next";
 
 // Component Badge cho Trạng thái
 const RepairStatusBadge = ({ status }) => {
+  const { t } = useTranslation("repairreportrule");
+
   const statusInfo = REPAIR_STATUS_MAP[status] || REPAIR_STATUS_MAP[0];
   const { label, color } = statusInfo;
   return <Badge className={`uppercase ${color}`}>{t(`${label}`)}</Badge>;

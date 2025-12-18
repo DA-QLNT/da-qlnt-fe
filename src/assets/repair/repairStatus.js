@@ -1,7 +1,7 @@
 export const REPAIR_STATUS_MAP = {
   // 0: Khởi tạo/Bản nháp/Chờ xử lý
   0: {
-    label: "HandelWait",
+    label: "HandleWait",
     color: "bg-yellow-500 hover:bg-yellow-600 text-white",
   },
   // 1: Đang thực hiện
