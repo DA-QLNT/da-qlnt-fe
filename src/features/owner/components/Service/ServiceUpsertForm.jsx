@@ -20,10 +20,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { TYPE_OPTIONS } from './../../../../assets/service/typeOptions';
-
+import { TYPE_OPTIONS } from "./../../../../assets/service/typeOptions";
+import { useTranslation } from "react-i18next";
 
 const ServiceUpsertForm = ({ initialData = null, onFormSubmitSuccess }) => {
+  const { t } = useTranslation("service");
   const [createOrUpdateService, { isLoading }] =
     useCreateOrUpdateServiceMutation();
 
@@ -51,14 +52,15 @@ const ServiceUpsertForm = ({ initialData = null, onFormSubmitSuccess }) => {
     const payload = { ...data };
     try {
       await createOrUpdateService(payload).unwrap();
-      const action = isEditMode ? "Cập nhật" : "Thêm mới";
+      const action = isEditMode ? t("Update") : t("Add");
       toast.success(`${action} thành công!`);
+      toast.success(`${t(action)} ${t("Success")}`);
       if (!isEditMode) {
         reset();
       }
       onFormSubmitSuccess();
     } catch (error) {
-      toast.error(isEditMode ? "Cập nhật thất bại!" : "Thêm mới thất bại!");
+      toast.error(isEditMode ? t("UpdateFailed") : t("UpdateFailed"));
       console.error(error);
     }
   };
@@ -69,12 +71,12 @@ const ServiceUpsertForm = ({ initialData = null, onFormSubmitSuccess }) => {
       )}
       <FieldGroup>
         <Field>
-          <FieldLabel htmlFor="name">Tên dịch vụ</FieldLabel>
+          <FieldLabel htmlFor="name">{t("ServiceName")}</FieldLabel>
           <Input id="name" {...register("name")} placeholder="điện, nước.." />
           <FieldError>{errors.name?.message} </FieldError>
         </Field>
         <Field>
-          <FieldLabel htmlFor="unit">Đơn Vị Tính (*)</FieldLabel>
+          <FieldLabel htmlFor="unit">{t("Unit")}</FieldLabel>
           <Input
             id="unit"
             {...register("unit")}
@@ -85,7 +87,7 @@ const ServiceUpsertForm = ({ initialData = null, onFormSubmitSuccess }) => {
         </Field>
         {/* Type Select */}
         <Field>
-          <FieldLabel htmlFor="type">Loại dịch vụ (*)</FieldLabel>
+          <FieldLabel htmlFor="type">{t("Method")}</FieldLabel>
           <Controller
             name="type"
             control={control}
@@ -96,7 +98,7 @@ const ServiceUpsertForm = ({ initialData = null, onFormSubmitSuccess }) => {
                 disabled={isLoading}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Chọn loại tính tiền" />
+                  <SelectValue placeholder={t("SelectMethod")} />
                 </SelectTrigger>
                 <SelectContent>
                   {TYPE_OPTIONS.map((option) => (
@@ -115,7 +117,7 @@ const ServiceUpsertForm = ({ initialData = null, onFormSubmitSuccess }) => {
         </Field>
       </FieldGroup>
       <Button type="submit" className={"w-full"} disabled={isLoading}>
-        {isLoading ? <Spinner /> : isEditMode ? "Cập nhật" : "Thêm mới"}
+        {isLoading ? <Spinner /> : isEditMode ? t("Update") : t("Add")}
       </Button>
     </form>
   );

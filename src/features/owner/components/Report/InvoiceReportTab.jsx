@@ -65,6 +65,7 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { formatDateTime } from "@/lib/format/dateTimeFormat";
+import { useTranslation } from "react-i18next";
 
 // Định nghĩa Chart Config và Colors
 const PIE_COLORS = ["#10b981", "#f59e0b", "#ef4444", "#3b82f6"]; // Paid, Unpaid, Overdue, Paid Overdue
@@ -76,22 +77,19 @@ const PIE_LABELS = [
 ];
 
 const INVOICE_STATUS_SELECT = [
-  { label: "Tất cả", value: null },
-  { label: "Đã thanh toán", value: 1 },
-  { label: "Chưa thanh toán", value: 0 },
-  { label: "Quá hạn", value: 2 },
+  { label: "All", value: null },
+  { label: "Paid", value: 1 },
+  { label: "Unpaid", value: 0 },
+  { label: "Overdue", value: 2 },
+  { label: "OverduePaid", value: 3 },
 ];
 const PAYMENT_METHOD_SELECT = [
-  { label: "Tất cả", value: null },
-  { label: "Tiền mặt", value: 0 },
-  { label: "Chuyển khoản", value: 1 },
+  { label: "All", value: null },
+  { label: "Cash", value: 0 },
+  { label: "BankTransfer", value: 1 },
 ];
-const OVERDUE_STATUS_MAP = {
-  0: "Bình thường",
-  1: "Sắp quá hạn",
-  2: "Đã quá hạn",
-};
-const STATUS_MAP = { 0: "Chưa TT", 1: "Đã TT", 2: "Quá hạn" };
+
+const STATUS_MAP = { 0: "Unpaid", 1: "Paid", 2: "Overdue", 3: "OverduePaid" };
 
 const defaultFilter = {
   houseIds: [],
@@ -105,6 +103,7 @@ const defaultFilter = {
 };
 
 const InvoiceReportTab = () => {
+  const { t } = useTranslation("repairreportrule");
   const { userId: ownerId } = useAuth();
 
   const [reportData, setReportData] = useState(null);
@@ -122,9 +121,7 @@ const InvoiceReportTab = () => {
   // 🚨 HÀM XỬ LÝ TẢI FILE
   const handleExportInvoice = async (invoice) => {
     setExportingId(invoice.id);
-    const toastId = toast.loading(
-      `Đang khởi tạo file cho hóa đơn ${invoice.code}...`
-    );
+    const toastId = toast.loading(`${t("ExportInvice")} ...`);
     try {
       const blobResult = await triggerExport(invoice.id).unwrap();
 
@@ -143,10 +140,10 @@ const InvoiceReportTab = () => {
       document.body.removeChild(link);
 
       window.URL.revokeObjectURL(downloadUrl);
-      toast.success("Xuất hóa đơn thành công!", { id: toastId });
+      toast.success(t("ExportSuccess"), { id: toastId });
     } catch (error) {
       console.error("Export Error:", error);
-      toast.error("Không thể xuất hóa đơn. Vui lòng thử lại.", { id: toastId });
+      toast.error(t("ExportFailed"), { id: toastId });
     } finally {
       setExportingId(null);
     }
@@ -216,7 +213,7 @@ const InvoiceReportTab = () => {
         }).unwrap();
         setReportData(result);
       } catch (error) {
-        toast.error(error.data?.message || "Lỗi tải báo cáo hóa đơn.");
+        toast.error(t("ErrorLoadData"));
         setReportData(null);
       }
     },
@@ -226,7 +223,7 @@ const InvoiceReportTab = () => {
   // HÀM SUBMIT FORM LỌC
   const onSubmitFilters = (data) => {
     if (data.houseIds.length === 0) {
-      return toast.error("Vui lòng chọn ít nhất một Nhà trọ.");
+      return toast.error(t("PleaseSelectHouse"));
     }
     setCurrentFilters(data);
     setPage(0); // Reset về trang đầu tiên khi lọc mới
@@ -297,10 +294,10 @@ const InvoiceReportTab = () => {
       allHouses.length > 0 && selectedCount === allHouses.length;
     const displayText =
       selectedCount === 0
-        ? "Chọn Nhà trọ..."
+        ? t("SelectHouse")
         : allSelected
-        ? "Tất cả Nhà trọ"
-        : `${selectedCount} Nhà đã chọn`;
+        ? t("AllHouse")
+        : `${selectedCount} ${t("SelectedHouse")}`;
 
     const toggleHouse = (houseId, isChecked) => {
       const newIds = isChecked
@@ -338,7 +335,7 @@ const InvoiceReportTab = () => {
               >
                 <Checkbox checked={allSelected} onCheckedChange={toggleAll} />
                 <span className="font-semibold text-sm">
-                  Chọn tất cả ({allHouses.length})
+                  {t("SelectAll")} ({allHouses.length})
                 </span>
               </div>
               {allHouses.map((house) => {
@@ -369,14 +366,14 @@ const InvoiceReportTab = () => {
       {/* --------------------- 1. FORM LỌC --------------------- */}
       <Card>
         <CardHeader>
-          <CardTitle>Bộ lọc Hóa đơn</CardTitle>
+          <CardTitle>{t("FilterInvoice")}</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmitFilters)} className="space-y-4">
             <FieldGroup className="grid grid-cols-2 md:grid-cols-5 gap-4">
               {/* House Select (Multi) */}
               <Field className="md:col-span-1">
-                <FieldLabel>Chọn Nhà trọ</FieldLabel>
+                <FieldLabel>{t("SelectHouse")}</FieldLabel>
                 <Controller
                   name="houseIds"
                   control={control}
@@ -387,7 +384,7 @@ const InvoiceReportTab = () => {
 
               {/* From Date */}
               <Field className="md:col-span-1">
-                <FieldLabel>Từ ngày</FieldLabel>
+                <FieldLabel>{t("FromDate")}</FieldLabel>
                 <Controller
                   name="fromDate"
                   control={control}
@@ -402,7 +399,7 @@ const InvoiceReportTab = () => {
                           <CalendarIcon className="mr-2 h-4 w-4" />
                           {field.value
                             ? format(field.value, "dd/MM/yyyy")
-                            : "Chọn ngày"}
+                            : t("SelectDate")}
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0">
@@ -420,7 +417,7 @@ const InvoiceReportTab = () => {
 
               {/* To Date */}
               <Field className="md:col-span-1">
-                <FieldLabel>Đến ngày</FieldLabel>
+                <FieldLabel>{t("ToDate")}</FieldLabel>
                 <Controller
                   name="toDate"
                   control={control}
@@ -435,7 +432,7 @@ const InvoiceReportTab = () => {
                           <CalendarIcon className="mr-2 h-4 w-4" />
                           {field.value
                             ? format(field.value, "dd/MM/yyyy")
-                            : "Chọn ngày"}
+                            : t("SelectDate")}
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0">
@@ -453,7 +450,7 @@ const InvoiceReportTab = () => {
 
               {/* Status Select */}
               <Field className="md:col-span-1">
-                <FieldLabel>Trạng thái TT</FieldLabel>
+                <FieldLabel>{t("Status")}</FieldLabel>
                 <Controller
                   name="status"
                   control={control}
@@ -480,7 +477,7 @@ const InvoiceReportTab = () => {
                                 : option.value.toString()
                             }
                           >
-                            {option.label}
+                            {t(`${option.label}`)}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -491,7 +488,7 @@ const InvoiceReportTab = () => {
 
               {/* Payment Method Select */}
               <Field className="md:col-span-1">
-                <FieldLabel>P.Thức TT</FieldLabel>
+                <FieldLabel>{t("PaymentMethod")}</FieldLabel>
                 <Controller
                   name="paymentMethod"
                   control={control}
@@ -506,7 +503,7 @@ const InvoiceReportTab = () => {
                       disabled={isReportLoading}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Chọn phương thức" />
+                        <SelectValue placeholder={t("SelectMethod")} />
                       </SelectTrigger>
                       <SelectContent>
                         {PAYMENT_METHOD_SELECT.map((option) => (
@@ -518,7 +515,7 @@ const InvoiceReportTab = () => {
                                 : option.value.toString()
                             }
                           >
-                            {option.label}
+                            {t(`${option.label}`)}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -537,7 +534,7 @@ const InvoiceReportTab = () => {
                 ) : (
                   <FileText className="h-4 w-4 mr-2" />
                 )}
-                Xem Báo cáo
+                {t("ViewReport")}
               </Button>
             </div>
           </form>
@@ -551,12 +548,12 @@ const InvoiceReportTab = () => {
         </div>
       ) : reportData ? (
         <div className="space-y-6">
-          <h3 className="text-xl font-bold">Tổng quan Hóa đơn</h3>
+          <h3 className="text-xl font-bold">{t("GeneralInvoice")}</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Tổng Hóa đơn
+                  {t("Total")}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -578,7 +575,7 @@ const InvoiceReportTab = () => {
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Tổng Công nợ
+                  {t("TotalDebt")}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -592,7 +589,7 @@ const InvoiceReportTab = () => {
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Hóa đơn Quá hạn
+                  {t("OverdueInvoice")}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -603,7 +600,9 @@ const InvoiceReportTab = () => {
             </Card>
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium">Tổng Tiền</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  {t("TotalCost")}
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-xl font-bold">
@@ -617,7 +616,7 @@ const InvoiceReportTab = () => {
             {/* Biểu đồ tròn */}
             <Card>
               <CardHeader>
-                <CardTitle>Phân bổ Trạng thái Hóa đơn</CardTitle>
+                <CardTitle>{t("InvoiceStatus")}</CardTitle>
               </CardHeader>
               <CardContent className="h-72">
                 {pieChartData.length > 0 ? (
@@ -640,7 +639,7 @@ const InvoiceReportTab = () => {
                   </ChartContainer>
                 ) : (
                   <div className="text-center text-muted-foreground py-10">
-                    Không có hóa đơn nào trong khoảng thời gian này.
+                    {t("NoInvoice")}
                   </div>
                 )}
               </CardContent>
@@ -665,12 +664,12 @@ const InvoiceReportTab = () => {
             {/* Chi tiết thanh toán */}
             <Card>
               <CardHeader>
-                <CardTitle>Chi tiết Thanh toán</CardTitle>
+                <CardTitle>{t("DetailPayment")}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="flex justify-between items-center border-b pb-2">
                   <span className="font-medium">
-                    Đã thanh toán ({reportData.paidCount})
+                    {t("Paid")} ({reportData.paidCount})
                   </span>{" "}
                   <span className="font-bold text-green-600">
                     {formatCurrency(reportData.paidAmount)}
@@ -678,7 +677,7 @@ const InvoiceReportTab = () => {
                 </div>
                 <div className="flex justify-between items-center border-b pb-2">
                   <span className="font-medium">
-                    Chưa thanh toán ({reportData.unpaidCount})
+                    {t("Unpaid")} ({reportData.unpaidCount})
                   </span>{" "}
                   <span className="font-bold text-red-600">
                     {formatCurrency(reportData.unpaidAmount)}
@@ -686,7 +685,7 @@ const InvoiceReportTab = () => {
                 </div>
                 <div className="flex justify-between items-center border-b pb-2">
                   <span className="font-medium">
-                    Quá hạn ({reportData.overdueCount})
+                    {t("Overdue")} ({reportData.overdueCount})
                   </span>{" "}
                   <span className="font-bold text-red-700">
                     {formatCurrency(reportData.overdueAmount)}
@@ -694,7 +693,7 @@ const InvoiceReportTab = () => {
                 </div>
                 <div className="flex justify-between items-center border-b pb-2">
                   <span className="font-medium">
-                    Đã TT Quá hạn ({reportData.paidOverdueCount})
+                    {t("OverduePaid")} ({reportData.paidOverdueCount})
                   </span>{" "}
                   <span className="font-bold text-blue-600">
                     {formatCurrency(reportData.paidOverdueAmount)}
@@ -705,19 +704,19 @@ const InvoiceReportTab = () => {
           </div>
 
           {/* --------------------- 3. DANH SÁCH HÓA ĐƠN (BẢNG) --------------------- */}
-          <h3 className="text-xl font-bold pt-4">Danh sách Hóa đơn</h3>
+          <h3 className="text-xl font-bold pt-4">{t("ListInvoice")}</h3>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[50px]">Kỳ</TableHead>
-                <TableHead>Mã HĐ / Phòng</TableHead>
-                <TableHead>Khách thuê</TableHead>
+                <TableHead className="w-[50px]">{t("Term")}</TableHead>
+                <TableHead>{t("ContractCode/Room")}</TableHead>
+                <TableHead>{t("Tenant")}</TableHead>
                 <TableHead className="text-right">
                   <span
                     onClick={() => requestSort("rentAmount")}
                     className="cursor-pointer select-none flex items-center justify-end"
                   >
-                    Tiền Phòng
+                    {t("RentCost")}
                     {sortConfig.key === "rentAmount" &&
                       (sortConfig.direction === "asc" ? (
                         <ChevronUp className="h-3 w-3 ml-1" />
@@ -731,7 +730,7 @@ const InvoiceReportTab = () => {
                     onClick={() => requestSort("serviceAmount")}
                     className="cursor-pointer select-none flex items-center justify-end"
                   >
-                    Tiền DV
+                    {t("ServiceCost")}
                     {sortConfig.key === "serviceAmount" &&
                       (sortConfig.direction === "asc" ? (
                         <ChevronUp className="h-3 w-3 ml-1" />
@@ -745,7 +744,7 @@ const InvoiceReportTab = () => {
                     onClick={() => requestSort("totalAmount")}
                     className="cursor-pointer select-none flex items-center justify-end"
                   >
-                    Tổng tiền
+                    {t("TotalCost")}
                     {sortConfig.key === "totalAmount" &&
                       (sortConfig.direction === "asc" ? (
                         <ChevronUp className="h-3 w-3 ml-1" />
@@ -754,9 +753,9 @@ const InvoiceReportTab = () => {
                       ))}
                   </span>
                 </TableHead>
-                <TableHead>Trạng thái</TableHead>
-                <TableHead>Hạn TT</TableHead>
-                <TableHead>Xuất hóa đơn</TableHead>
+                <TableHead>{t("Status")}</TableHead>
+                <TableHead>{t("PaymentDealine")}</TableHead>
+                <TableHead>{t("ExportInvoice")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -789,7 +788,7 @@ const InvoiceReportTab = () => {
                           : "secondary"
                       }
                     >
-                      {STATUS_MAP[invoice.status]}
+                      {t(`${STATUS_MAP[invoice.status]}`)}
                     </Badge>
                   </TableCell>
                   <TableCell
@@ -826,20 +825,20 @@ const InvoiceReportTab = () => {
               onClick={() => handlePageChange(page - 1)}
               disabled={page === 0 || isReportLoading}
             >
-              Trang trước
+              {t("PreviousPage")}
             </Button>
             <Button
               variant="outline"
               onClick={() => handlePageChange(page + 1)}
               disabled={reportData.invoices.last || isReportLoading}
             >
-              Trang sau
+              {t("NextPage")}
             </Button>
           </CardFooter>
         </div>
       ) : (
         <p className="text-center text-muted-foreground py-10">
-          Vui lòng chọn bộ lọc và xem báo cáo.
+          {t("PleaseSelectFilter")}
         </p>
       )}
     </div>

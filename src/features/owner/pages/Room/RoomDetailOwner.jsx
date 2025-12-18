@@ -65,21 +65,21 @@ const RoomDetailOwner = () => {
     useUpdateRoomStatusMutation();
   const currentStatus = room?.status;
   const isAvailable = currentStatus === 0;
-  const handleStatusToggle = async (checked) => {
-    const newStatus = checked ? 1 : 0;
-    const toastId = toast.loading(t("UpdatingStatus"));
+  // const handleStatusToggle = async (checked) => {
+  //   const newStatus = checked ? 1 : 0;
+  //   const toastId = toast.loading(t("UpdatingStatus"));
 
-    try {
-      await updateStatus({
-        roomId: room.id,
-        status: newStatus,
-      }).unwrap();
-      toast.success(t("UpdateSuccess"), { id: toastId });
-    } catch (error) {
-      toast.error(t("UpdateFail"), { id: toastId });
-      console.error(error);
-    }
-  };
+  //   try {
+  //     await updateStatus({
+  //       roomId: room.id,
+  //       status: newStatus,
+  //     }).unwrap();
+  //     toast.success(t("UpdateSuccess"), { id: toastId });
+  //   } catch (error) {
+  //     toast.error(t("UpdateFail"), { id: toastId });
+  //     console.error(error);
+  //   }
+  // };
 
   // delete
   const [deleteDialog, setDeleteDialog] = useState({
@@ -309,13 +309,6 @@ const RoomDetailOwner = () => {
                   <TableCell className={"flex items-center justify-between"}>
                     <RoomStatusBadge status={room.status} />
                   </TableCell>
-                  <TableCell className={"text-right"}>
-                    <Switch
-                      checked={!isAvailable}
-                      onCheckedChange={handleStatusToggle}
-                      disabled={isStatusUpdating}
-                    />
-                  </TableCell>
                 </TableRow>
 
                 <TableRow>
@@ -326,15 +319,11 @@ const RoomDetailOwner = () => {
                   <TableCell className={"text-right"}>
                     <Popover>
                       <PopoverTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          disabled={!allRoomImages}
-                        >
+                        <Button size="icon" disabled={!allRoomImages}>
                           <Eye
                             className={`w-4 h-4 ${
                               allRoomImages.length > 0
-                                ? "text-primary"
+                                ? "text-background"
                                 : "text-muted-foreground"
                             }`}
                           />
@@ -402,7 +391,7 @@ const RoomDetailOwner = () => {
                       onClick={openAddAssetItemDialog}
                     >
                       <Plus />
-                      {t("Add")}
+                      {t("AddItem")}
                     </Button>
                   </TableHead>
                 </TableRow>

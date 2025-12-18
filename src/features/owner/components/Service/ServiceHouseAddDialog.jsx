@@ -6,6 +6,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import ServiceHouseAddForm from "./ServiceHouseAddForm";
+import { useTranslation } from "react-i18next";
 
 const ServiceHouseAddDialog = ({
   open,
@@ -13,6 +14,7 @@ const ServiceHouseAddDialog = ({
   serviceId,
   serviceName,
 }) => {
+  const { t } = useTranslation("service");
   const handleSuccess = () => {
     onOpenChange(false);
   };
@@ -21,7 +23,7 @@ const ServiceHouseAddDialog = ({
       <DialogContent className={"w-[90vw] sm:max-w-4xl"}>
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            Thêm dịch vụ {serviceName} vào nhà
+            {t("AddServiceToHouse")}: {serviceName}
           </DialogTitle>
         </DialogHeader>
         <ServiceHouseAddForm

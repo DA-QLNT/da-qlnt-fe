@@ -65,7 +65,7 @@ export default function ContractExtendForm({ contract, onFormSubmitSuccess }) {
       note: data.note || null,
     };
 
-    const toastId = toast.loading(`Đang gia hạn hợp đồng #${contract.id}...`);
+    const toastId = toast.loading(`Đang gia hạn hợp đồng ${contract.id}...`);
 
     try {
       await extendContract({ contractId: contract.id, data: payload }).unwrap();

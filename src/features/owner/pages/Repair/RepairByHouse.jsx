@@ -37,29 +37,34 @@ import {
 } from "@/components/ui/select";
 import { REPAIR_STATUS_MAP } from "@/assets/repair/repairStatus";
 import RepairProcessDialog from "../../components/Repair/RepairProcessDialog";
+import { useTranslation } from "react-i18next";
 
 // Component Badge cho Trạng thái (Giữ nguyên)
 const RepairStatusBadge = ({ status }) => {
+  const { t } = useTranslation("repairreportrule");
+
   const statusInfo = REPAIR_STATUS_MAP[status] || REPAIR_STATUS_MAP[0];
   const { label, color } = statusInfo;
-  return <Badge className={`uppercase ${color}`}>{label}</Badge>;
+  return <Badge className={`uppercase ${color}`}>{t(`${label}`)}</Badge>;
 };
 
 // Map Trạng thái cho bộ lọc Select
 const STATUS_FILTER_OPTIONS = [
-  { label: "Tất cả trạng thái", value: "all" },
+  { label: "AllStatus", value: "all" },
   { label: REPAIR_STATUS_MAP[1].label, value: "1" },
   { label: REPAIR_STATUS_MAP[2].label, value: "2" },
 ];
 
 // Map trường cho Sắp xếp (Chỉ dùng Title, RoomName, Status)
 const SORT_FIELD_OPTIONS = [
-  { label: "Tiêu đề", value: "title" },
-  { label: "Phòng", value: "roomName" },
-  { label: "Trạng thái", value: "status" },
+  { label: "Title", value: "title" },
+  { label: "Room", value: "roomName" },
+  { label: "Status", value: "status" },
 ];
 
 export default function RepairByHouse() {
+  const { t } = useTranslation("repairreportrule");
+
   const { houseId } = useParams();
   const houseIdNumber = parseInt(houseId);
   const navigate = useNavigate();
@@ -143,9 +148,7 @@ export default function RepairByHouse() {
 
   if (isError) {
     return (
-      <div className="p-6 text-center text-red-500">
-        Lỗi tải danh sách yêu cầu sửa chữa.
-      </div>
+      <div className="p-6 text-center text-red-500">{t("ErrorLoadData")}</div>
     );
   }
 
@@ -166,14 +169,14 @@ export default function RepairByHouse() {
       <header className="flex justify-between items-center border-b pb-4">
         <Button onClick={() => navigate("/owner/repairs")} variant="outline">
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Quay lại danh sách nhà
+          {t("Back")}
         </Button>
       </header>
 
       <Card>
         <CardHeader>
           <CardTitle className="text-xl">
-            Danh sách Yêu cầu ({repairData?.totalElements || 0})
+            {t("ListRequest")} ({repairData?.totalElements || 0})
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -182,7 +185,7 @@ export default function RepairByHouse() {
             {/* 1. Lọc theo Status (Dùng Select) */}
             <div className="w-[200px]">
               <label className="text-xs font-medium text-muted-foreground block mb-1">
-                Lọc theo Trạng thái
+                {t("FilterStatus")}
               </label>
               <Select
                 value={filterStatus}
@@ -190,12 +193,12 @@ export default function RepairByHouse() {
                 disabled={loading}
               >
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Chọn trạng thái" />
+                  <SelectValue placeholder={t("SelectStatus")} />
                 </SelectTrigger>
                 <SelectContent>
                   {STATUS_FILTER_OPTIONS.map((opt) => (
                     <SelectItem key={opt.value} value={opt.value}>
-                      {opt.label}
+                      {t(`${opt.label}`)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -221,7 +224,7 @@ export default function RepairByHouse() {
                   <SelectContent>
                     {SORT_FIELD_OPTIONS.map((opt) => (
                       <SelectItem key={opt.value} value={opt.value}>
-                        {opt.label}
+                        {t(`${opt.label}`)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -245,17 +248,17 @@ export default function RepairByHouse() {
 
           {filteredAndSortedRequests.length === 0 ? (
             <p className="text-center text-muted-foreground py-10">
-              Không tìm thấy yêu cầu sửa chữa nào khớp với bộ lọc.
+              {t("NoRequestRepair")}
             </p>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[80px]">STT</TableHead>
-                  <TableHead>Tiêu đề</TableHead>
-                  <TableHead>Phòng</TableHead>
-                  <TableHead>Trạng thái</TableHead>
-                  <TableHead className="w-[120px]">Thao tác</TableHead>
+                  <TableHead className="w-[80px]">{t("No")}</TableHead>
+                  <TableHead>{t("Title")}</TableHead>
+                  <TableHead>{t("Room")}</TableHead>
+                  <TableHead>{t("Status")}</TableHead>
+                  <TableHead className="w-[120px]">{t("Action")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -275,7 +278,7 @@ export default function RepairByHouse() {
                         onClick={() => handleAction(request)}
                         variant={request.status === 0 ? "default" : "outline"}
                       >
-                        {request.status === 0 ? "Xử lý" : "Xem chi tiết"}
+                        {request.status === 0 ? t("Handle") : t("Detail")}
                       </Button>
                     </TableCell>
                   </TableRow>

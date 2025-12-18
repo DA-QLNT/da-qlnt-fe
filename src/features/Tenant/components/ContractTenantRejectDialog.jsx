@@ -46,7 +46,7 @@ export default function ContractTenantRejectDialog({
 
   const handleReject = async (data) => {
     const toastId = toast.loading(
-      `Đang xử lý từ chối hợp đồng #${contractId}...`
+      `Đang xử lý từ chối hợp đồng ${contractId}...`
     );
 
     try {
@@ -67,10 +67,10 @@ export default function ContractTenantRejectDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-red-600">
             <XCircle className="w-6 h-6" />
-            Từ Chối Hợp Đồng #{contractId}
+            Từ Chối Hợp Đồng {contractId}
           </DialogTitle>
           <DialogDescription>
-            Vui lòng ghi rõ **lý do từ chối** để Chủ trọ có thể xem xét.
+            Vui lòng ghi rõ lý do từ chối để Chủ trọ có thể xem xét.
           </DialogDescription>
         </DialogHeader>
 

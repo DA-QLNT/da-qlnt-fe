@@ -25,6 +25,7 @@ import {
 } from "../../store/repairApi";
 import { Wrench, Loader2, Save, Image as ImageIcon, Trash } from "lucide-react";
 import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 
 /**
  * Dialog Form cho Tạo (Create) và Sửa (Edit) Yêu cầu Sửa chữa.
@@ -35,10 +36,10 @@ export default function RepairRequestFormDialog({
   open,
   onOpenChange,
 }) {
+  const { t } = useTranslation("repairreportrule");
+
   const isEdit = !!initialData;
-  const dialogTitle = isEdit
-    ? `Sửa Yêu cầu #${initialData?.id}`
-    : "Tạo Yêu cầu Sửa chữa mới";
+  const dialogTitle = isEdit ? t("Edit") : t("CreateNew");
 
   // Hooks API
   const [createRequest, { isLoading: isCreating }] =
@@ -105,7 +106,7 @@ export default function RepairRequestFormDialog({
   // 🚨 HÀM XỬ LÝ SUBMIT (FORM DATA)
   const onSubmit = async (data) => {
     const toastId = toast.loading(
-      `${isEdit ? "Đang cập nhật" : "Đang tạo"} yêu cầu sửa chữa...`
+      `${isEdit ? t("Updating") : t("Creating")} ...`
     );
 
     // 1. TẠO FORMDATA
@@ -137,10 +138,10 @@ export default function RepairRequestFormDialog({
         await createRequest(formData).unwrap();
       }
 
-      toast.success(`${dialogTitle} thành công!`, { id: toastId });
+      toast.success(`${dialogTitle} ${t("Success")}`, { id: toastId });
       onOpenChange(false);
     } catch (error) {
-      toast.error(error.data?.message || `${dialogTitle} thất bại.`, {
+      toast.error(error.data?.message || `${dialogTitle} ${t("Failed")}.`, {
         id: toastId,
       });
       console.error("Repair mutation error:", error);
@@ -158,21 +159,21 @@ export default function RepairRequestFormDialog({
           </DialogTitle>
           <DialogDescription>
             {isEdit
-              ? "Chỉnh sửa chi tiết yêu cầu sửa chữa."
-              : "Gửi yêu cầu sửa chữa mới tới Chủ trọ."}
+              ? t("EditDetailRepairRequest")
+              : t("SendRepairRequestToOwner")}
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <FieldGroup className="space-y-4">
             <Field>
-              <FieldLabel>Tiêu đề (*)</FieldLabel>
+              <FieldLabel>{t("Title")}*</FieldLabel>
               <Input {...register("title")} disabled={isLoading} />
               <FieldError>{errors.title?.message}</FieldError>
             </Field>
 
             <Field>
-              <FieldLabel>Mô tả chi tiết (tùy chọn)</FieldLabel>
+              <FieldLabel>{t("DetailedDescription")}</FieldLabel>
               <Textarea
                 {...register("description")}
                 disabled={isLoading}
@@ -184,7 +185,7 @@ export default function RepairRequestFormDialog({
             {/* 🚨 PHẦN XỬ LÝ ẢNH */}
             <Field>
               <FieldLabel className="flex justify-between items-center">
-                Ảnh đính kèm (Tối đa 5 ảnh)
+                {t("Image")}
                 <span className="text-xs text-muted-foreground">
                   {allImages.length}/5
                 </span>
@@ -251,7 +252,7 @@ export default function RepairRequestFormDialog({
               disabled={isLoading}
               type="button"
             >
-              Hủy
+              {t("Close")}
             </Button>
             <Button type="submit" disabled={isLoading || !isValid}>
               {isLoading ? (
@@ -259,7 +260,7 @@ export default function RepairRequestFormDialog({
               ) : (
                 <Save className="h-4 w-4 mr-2" />
               )}
-              {isEdit ? "Cập nhật" : "Tạo yêu cầu"}
+              {isEdit ? t("Update") : t("CreateRequest")}
             </Button>
           </DialogFooter>
         </form>

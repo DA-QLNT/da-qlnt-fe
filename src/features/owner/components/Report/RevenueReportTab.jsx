@@ -42,6 +42,7 @@ import { formatCurrency } from "@/lib/format/currencyFormat";
 import toast from "react-hot-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useTranslation } from "react-i18next";
 
 // Định nghĩa Chart Config
 const chartConfig = {
@@ -58,6 +59,8 @@ const defaultFilter = {
 };
 
 const RevenueReportTab = () => {
+  const { t } = useTranslation("repairreportrule");
+
   const { userId: ownerId } = useAuth();
 
   const [reportData, setReportData] = useState(null);
@@ -97,7 +100,7 @@ const RevenueReportTab = () => {
   //  HÀM SUBMIT FORM LỌC
   const onSubmit = async (data) => {
     if (data.houseIds.length === 0) {
-      return toast.error("Vui lòng chọn ít nhất một Nhà trọ.");
+      return toast.error(t("PleaseSelectHouse"));
     }
     const payload = {
       houseIds: data.houseIds, // API mong đợi list number
@@ -108,9 +111,9 @@ const RevenueReportTab = () => {
     try {
       const result = await triggerReport(payload).unwrap();
       setReportData(result);
-      toast.success("Đã tải báo cáo doanh thu mới.");
+      toast.success(t("ExportSuccess"));
     } catch (error) {
-      toast.error(error.data?.message || "Lỗi tải báo cáo.");
+      toast.error(t("ExportFailed"));
       setReportData(null);
     }
   };
@@ -133,10 +136,10 @@ const RevenueReportTab = () => {
       allHouses.length > 0 && selectedCount === allHouses.length;
     const displayText =
       selectedCount === 0
-        ? "Chọn Nhà trọ..."
+        ? t("SelectHouse")
         : allSelected
-        ? "Tất cả Nhà trọ"
-        : `${selectedCount} Nhà đã chọn`;
+        ? t("AllHouse")
+        : `${selectedCount} ${"SelectedHouse"}`;
 
     const toggleHouse = (houseId, isChecked) => {
       const newIds = isChecked
@@ -175,7 +178,7 @@ const RevenueReportTab = () => {
               >
                 <Checkbox checked={allSelected} onCheckedChange={toggleAll} />
                 <span className="font-semibold text-sm">
-                  Chọn tất cả ({allHouses.length})
+                  {t("SelectAll")} ({allHouses.length})
                 </span>
               </div>
 
@@ -198,7 +201,7 @@ const RevenueReportTab = () => {
               })}
               {allHouses.length === 0 && (
                 <p className="text-center text-xs text-muted-foreground py-4">
-                  Không tìm thấy nhà trọ.
+                  {t("NoHouse")}
                 </p>
               )}
             </div>
@@ -213,14 +216,14 @@ const RevenueReportTab = () => {
       {/* --------------------- 1. FORM LỌC --------------------- */}
       <Card>
         <CardHeader>
-          <CardTitle>Bộ lọc Báo cáo</CardTitle>
+          <CardTitle>{t("FilterRevenue")}</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <FieldGroup className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* House Select (Multi) */}
               <Field>
-                <FieldLabel>Chọn Nhà trọ</FieldLabel>
+                <FieldLabel>{t("SelectHouse")}</FieldLabel>
                 <Controller
                   name="houseIds"
                   control={control}
@@ -232,7 +235,7 @@ const RevenueReportTab = () => {
 
               {/* From Date */}
               <Field>
-                <FieldLabel>Từ ngày</FieldLabel>
+                <FieldLabel>{t("FromDate")}</FieldLabel>
                 <Controller
                   name="fromDate"
                   control={control}
@@ -247,7 +250,7 @@ const RevenueReportTab = () => {
                           <CalendarIcon className="mr-2 h-4 w-4" />
                           {field.value
                             ? format(field.value, "dd/MM/yyyy")
-                            : "Chọn ngày"}
+                            : t("SelectDate")}
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0">
@@ -265,7 +268,7 @@ const RevenueReportTab = () => {
 
               {/* To Date */}
               <Field>
-                <FieldLabel>Đến ngày</FieldLabel>
+                <FieldLabel>{t("ToDate")}</FieldLabel>
                 <Controller
                   name="toDate"
                   control={control}
@@ -280,7 +283,7 @@ const RevenueReportTab = () => {
                           <CalendarIcon className="mr-2 h-4 w-4" />
                           {field.value
                             ? format(field.value, "dd/MM/yyyy")
-                            : "Chọn ngày"}
+                            : t("SelectDate")}
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0">
@@ -306,7 +309,7 @@ const RevenueReportTab = () => {
                 ) : (
                   <FileText className="h-4 w-4 mr-2" />
                 )}
-                Xem Báo cáo
+                {t("ViewReport")}
               </Button>
             </div>
           </form>
@@ -320,13 +323,13 @@ const RevenueReportTab = () => {
         </div>
       ) : reportData ? (
         <div className="space-y-6">
-          <h3 className="text-xl font-bold">Tổng quan Doanh thu</h3>
+          <h3 className="text-xl font-bold">{t("GeneralRevenue")}</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* ... (Cards tổng quan giữ nguyên) */}
             <Card className={" overflow-auto"}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Tổng Doanh thu
+                  {t("TotalRevenue")}
                 </CardTitle>
                 <DollarSign className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
@@ -335,14 +338,14 @@ const RevenueReportTab = () => {
                   {formatCurrency(reportData.totalRevenue)}
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Đã thu: {formatCurrency(reportData.totalPaid)}
+                  {t("Paid")}: {formatCurrency(reportData.totalPaid)}
                 </p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Tổng Công nợ
+                  {t("TotalDebt")}
                 </CardTitle>
                 <FileText className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
@@ -350,13 +353,12 @@ const RevenueReportTab = () => {
                 <div className="text-2xl font-bold text-red-600">
                   {formatCurrency(reportData.totalDebt)}
                 </div>
-                <p className="text-xs text-muted-foreground">Cần phải thu</p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Tỷ lệ lấp đầy phòng
+                  {t("RoomOccupancy")}
                 </CardTitle>
                 <Bed className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
@@ -366,7 +368,7 @@ const RevenueReportTab = () => {
                 </div>
                 <p className="text-xs text-muted-foreground">
                   {reportData.totalRoomsOccupied} / {reportData.totalRooms}{" "}
-                  phòng
+                  {t("Room")}
                 </p>
               </CardContent>
             </Card>
@@ -375,10 +377,8 @@ const RevenueReportTab = () => {
           {/* --------------------- 3. BIỂU ĐỒ DOANH THU --------------------- */}
           <Card>
             <CardHeader>
-              <CardTitle>Biểu đồ Doanh thu</CardTitle>
-              <CardDescription>
-                Doanh thu đã thu theo tháng (Tổng công nợ chưa hiển thị)
-              </CardDescription>
+              <CardTitle>{t("RevenueChart")}</CardTitle>
+              <CardDescription>{t("RevenueCollected")}</CardDescription>
             </CardHeader>
             <CardContent>
               <ChartContainer
@@ -418,7 +418,7 @@ const RevenueReportTab = () => {
             </CardContent>
             <CardFooter className="flex-col items-start gap-2 text-sm">
               <div className="flex gap-2 leading-none font-medium text-green-600">
-                Tổng doanh thu: {formatCurrency(reportData.totalRevenue)}
+                {t("TotalRevenue")}: {formatCurrency(reportData.totalRevenue)}
               </div>
             </CardFooter>
           </Card>
@@ -430,7 +430,7 @@ const RevenueReportTab = () => {
         </div>
       ) : (
         <p className="text-center text-muted-foreground py-10">
-          Vui lòng chọn nhà trọ và khoảng thời gian để xem báo cáo.
+          {t("PleaseSelectHouse")}
         </p>
       )}
     </div>

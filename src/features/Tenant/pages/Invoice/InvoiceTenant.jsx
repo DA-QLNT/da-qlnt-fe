@@ -23,6 +23,7 @@ import InvoiceDetailDialog from "../../components/Invoice/InvoiceDetailDialog"; 
 import VNPayLinkDialog from "../../components/Invoice/VNPayLinkDialog";
 
 const InvoiceTenant = () => {
+  const { t } = useTranslation("service");
   const [selectedInvoice, setSelectedInvoice] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -56,39 +57,44 @@ const InvoiceTenant = () => {
         setIsVNPayDialogOpen(true);
       }
     } catch (error) {
-      toast.error(
-        error?.data?.message ||
-          "Không thể khởi tạo thanh toán. Vui lòng thử lại!"
-      );
+      toast.error(error?.data?.message || t("ErrorInitPayment"));
     }
   };
 
   const getStatusBadge = (status) => {
     switch (status) {
+      case 0:
+        return (
+          <Badge className="bg-yellow-100 text-yellow-700 hover:bg-yellow-100 border-none">
+            {t("Unpaid")}
+          </Badge>
+        );
       case 1:
         return (
           <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-none">
-            Đã thanh toán
+            {t("Paid")}
           </Badge>
         );
       case 2:
         return (
           <Badge className="bg-red-100 text-red-700 hover:bg-red-100 border-none">
-            Quá hạn
+            {t("Overdue")}
+          </Badge>
+        );
+      case 3:
+        return (
+          <Badge variant="secondary" className="border-none">
+            {t("OverduePaid")}
           </Badge>
         );
       default:
-        return (
-          <Badge variant="secondary" className="border-none">
-            Chưa thanh toán
-          </Badge>
-        );
+        return null;
     }
   };
 
   if (loadingContract || loadingInvoices) {
     return (
-      <div className="flex justify-center items-center min-h-[400px]">
+      <div className="flex justify-center items-center min-h-100">
         <Spinner className="size-12" />
       </div>
     );
@@ -103,24 +109,26 @@ const InvoiceTenant = () => {
       />
       <header className="flex justify-between items-center border-b pb-4">
         <h1 className="text-2xl font-bold flex items-center gap-3">
-          <ReceiptText className="w-6 h-6" /> Hóa đơn của tôi
+          <ReceiptText className="w-6 h-6" /> {t("MyInvoice")}
         </h1>
       </header>
 
       <Card>
         <CardHeader>
-          <CardTitle>Danh sách hóa đơn - Phòng {contract?.roomName}</CardTitle>
+          <CardTitle>
+            {t("ListInvoice")} - {t("Room")} {contract?.roomName}
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Mã hóa đơn</TableHead>
-                <TableHead>Kỳ hạn</TableHead>
-                <TableHead>Hạn thanh toán</TableHead>
-                <TableHead>Tổng tiền</TableHead>
-                <TableHead>Trạng thái</TableHead>
-                <TableHead className="text-right">Thao tác</TableHead>
+                <TableHead>{t("InvoiceCode")}</TableHead>
+                <TableHead>{t("Term")}</TableHead>
+                <TableHead>{t("PaymentDeadline")}</TableHead>
+                <TableHead>{t("Total")}</TableHead>
+                <TableHead>{t("Status")}</TableHead>
+                <TableHead className="text-right">{t("Action")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -130,7 +138,7 @@ const InvoiceTenant = () => {
                     colSpan={6}
                     className="text-center py-8 text-muted-foreground"
                   >
-                    Hiện chưa có hóa đơn nào cho hợp đồng này.
+                    {t("NoInvoice")}
                   </TableCell>
                 </TableRow>
               ) : (
@@ -138,7 +146,7 @@ const InvoiceTenant = () => {
                   <TableRow key={item.id}>
                     <TableCell className="font-medium">{item.code}</TableCell>
                     <TableCell>
-                      Tháng {item.month}/{item.year}
+                      {t("Month")} {item.month}/{item.year}
                     </TableCell>
                     <TableCell
                       className={
@@ -164,7 +172,7 @@ const InvoiceTenant = () => {
                           ) : (
                             <CreditCard className="size-4 mr-2" />
                           )}
-                          Thanh toán
+                          {t("Payment")}
                         </Button>
                       )}
                       <Button
@@ -172,7 +180,7 @@ const InvoiceTenant = () => {
                         size="sm"
                         onClick={() => handleOpenDetail(item)}
                       >
-                        <Eye className="size-4 mr-2" /> Chi tiết
+                        <Eye className="size-4 mr-2" /> {t("Detail")}
                       </Button>
                     </TableCell>
                   </TableRow>

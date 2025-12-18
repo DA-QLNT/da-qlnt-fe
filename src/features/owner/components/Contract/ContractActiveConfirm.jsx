@@ -33,7 +33,7 @@ export default function ContractActivateConfirm({
   const isPending = contract && new Date(contract.startDate) > new Date();
 
   const handleActivate = async () => {
-    const toastId = toast.loading(`Đang kích hoạt hợp đồng #${contractId}...`);
+    const toastId = toast.loading(`Đang kích hoạt hợp đồng ${contractId}...`);
     try {
       await activateContract(contractId).unwrap();
 
@@ -63,7 +63,7 @@ export default function ContractActivateConfirm({
             Xác nhận Kích hoạt Hợp đồng
           </AlertDialogTitle>
           <AlertDialogDescription>
-            Bạn có chắc chắn muốn kích hoạt hợp đồng #{contractId} không?
+            Bạn có chắc chắn muốn kích hoạt hợp đồng {contractId} không?
             {isPending ? (
               <span className="mt-2 block text-yellow-600 font-medium">
                 Hợp đồng sẽ chuyển sang trạng thái PENDING (Chờ hiệu lực vào{" "}

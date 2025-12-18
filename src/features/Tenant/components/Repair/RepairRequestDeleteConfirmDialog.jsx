@@ -13,6 +13,7 @@ import { Trash, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import React from "react";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "react-i18next";
 
 /**
  * Dialog xác nhận xóa yêu cầu sửa chữa (chỉ khi status = 0)
@@ -22,22 +23,24 @@ export default function RepairRequestDeleteConfirmDialog({
   open,
   onOpenChange,
 }) {
+  const { t } = useTranslation("repairreportrule");
+
   const [deleteRequest, { isLoading }] = useDeleteRepairRequestMutation();
 
   const handleDelete = async () => {
     if (!repairId) return;
 
-    const toastId = toast.loading(`Đang xóa yêu cầu sửa chữa...`);
+    const toastId = toast.loading(`${t("Delete")}...`);
     try {
       await deleteRequest(repairId).unwrap();
 
-      toast.success(`Yêu cầu đã được xóa thành công.`, {
+      toast.success(t("DeleteSuccess"), {
         id: toastId,
         duration: 3000,
       });
       onOpenChange(false); // Đóng dialog
     } catch (error) {
-      toast.error(error.data?.message || "Xóa yêu cầu thất bại.", {
+      toast.error(t("DeleteFailed"), {
         id: toastId,
       });
       console.error("Lỗi xóa yêu cầu:", error);
@@ -50,14 +53,13 @@ export default function RepairRequestDeleteConfirmDialog({
         <AlertDialogHeader>
           <AlertDialogTitle className="flex items-center gap-2 text-red-600">
             <Trash className="w-6 h-6" />
-            Xác nhận Xóa Yêu cầu
+            {t("Confirm")} {t("Delete")}
           </AlertDialogTitle>
-          <AlertDialogDescription>
-            Bạn có chắc chắn muốn XÓA yêu cầu sửa chữa này không?
-          </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isLoading}>Hủy</AlertDialogCancel>
+          <AlertDialogCancel disabled={isLoading}>
+            {t("Cancel")}
+          </AlertDialogCancel>
           <AlertDialogAction
             onClick={handleDelete}
             disabled={isLoading}
@@ -65,10 +67,11 @@ export default function RepairRequestDeleteConfirmDialog({
           >
             {isLoading ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Đang xóa...
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> {t("Delete")}
+                ...
               </>
             ) : (
-              "Đồng ý Xóa bỏ"
+              t("Delete")
             )}
           </AlertDialogAction>
         </AlertDialogFooter>

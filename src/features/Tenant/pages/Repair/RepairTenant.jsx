@@ -32,12 +32,15 @@ import { formatDateTime } from "@/lib/format/dateTimeFormat";
 import RepairRequestFormDialog from "../../components/Repair/RepairRequestFormDialog";
 import RepairRequestDetailDialog from "../../components/Repair/RepairRequestDetailDialog";
 import RepairRequestDeleteConfirmDialog from "../../components/Repair/RepairRequestDeleteConfirmDialog";
+import { useTranslation } from "react-i18next";
 
 // Component Badge cho Trạng thái
 const RepairStatusBadge = ({ status }) => {
+  const { t } = useTranslation("repairreportrule");
+
   const statusInfo = REPAIR_STATUS_MAP[status] || REPAIR_STATUS_MAP[0];
   const { label, color } = statusInfo;
-  return <Badge className={`uppercase ${color}`}>{label}</Badge>;
+  return <Badge className={`uppercase ${color}`}>{t(`${label}`)}</Badge>;
 };
 
 export default function RepairTenant() {
@@ -80,18 +83,14 @@ export default function RepairTenant() {
   const handleEditRequest = (request) => {
     // Chỉ cho phép sửa khi status là 0 (Chờ xử lý/Draft)
     if (request.status !== 0) {
-      return toast.error(
-        "Chỉ có thể sửa yêu cầu khi đang ở trạng thái 'Chờ xử lý'."
-      );
+      return toast.error(t("OnlyCanEditInPending"));
     }
     setDialogData({ open: true, request });
   };
   // 🚨 HÀM MỞ DIALOG XÓA
   const handleDeleteRequest = (request) => {
     if (request.status !== 0) {
-      return toast.error(
-        "Chỉ có thể xóa yêu cầu khi đang ở trạng thái 'Chờ xử lý'."
-      );
+      return toast.error(t("OnlyCanDeleteInPending"));
     }
     setDeleteDialogData({ open: true, repairId: request.id });
   };
@@ -100,7 +99,7 @@ export default function RepairTenant() {
   if (isError) {
     return (
       <div className="p-6 text-center text-red-500">
-        Lỗi tải danh sách yêu cầu sửa chữa.
+        {t("ErrorLoadingData")}
       </div>
     );
   }
@@ -131,19 +130,19 @@ export default function RepairTenant() {
       />
       <header className="flex justify-between items-center border-b pb-4">
         <h1 className="text-2xl font-bold flex items-center gap-3">
-          <Wrench className="w-6 h-6" /> Yêu cầu Sửa chữa của tôi
+          <Wrench className="w-6 h-6" /> {t("MyRepairRequest")}
         </h1>
 
         {/* NÚT TẠO MỚI */}
         <Button onClick={handleCreateNewRequest} disabled={loading}>
-          <Plus className="w-4 h-4 mr-2" /> Tạo Yêu cầu mới
+          <Plus className="w-4 h-4 mr-2" /> {t("CreateNewRequest")}
         </Button>
       </header>
 
       <Card>
         <CardHeader>
           <CardTitle className="text-xl">
-            Lịch sử Yêu cầu ({repairData?.totalElements || 0})
+            {t("HistoryRequest")} ({repairData?.totalElements || 0})
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -151,19 +150,19 @@ export default function RepairTenant() {
             <Spinner className="size-10 mx-auto" />
           ) : repairRequests.length === 0 ? (
             <p className="text-center text-muted-foreground py-10">
-              Bạn chưa có yêu cầu sửa chữa nào.
+              {t("NoRequest")}
             </p>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[50px]">STT</TableHead>
-                  <TableHead>Tiêu đề</TableHead>
-                  <TableHead>Phòng</TableHead>
-                  <TableHead>Nhà trọ</TableHead>
-                  <TableHead>Trạng thái</TableHead>
+                  <TableHead className="w-[50px]">{t("No")}</TableHead>
+                  <TableHead>{t("Title")}</TableHead>
+                  <TableHead>{t("Room")}</TableHead>
+                  <TableHead>{t("House")}</TableHead>
+                  <TableHead>{t("Status")}</TableHead>
 
-                  <TableHead className="w-[100px]">Thao tác</TableHead>
+                  <TableHead className="w-[100px]">{t("Action")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -184,7 +183,7 @@ export default function RepairTenant() {
                         variant="outline"
                         onClick={() => handleViewDetails(request)}
                       >
-                        Xem
+                        {t("View")}
                       </Button>
 
                       {/* Chỉ cho phép Sửa/Xóa khi còn là DRAFT (status 0) */}
@@ -196,7 +195,7 @@ export default function RepairTenant() {
                             onClick={() => handleEditRequest(request)}
                             className="mr-2"
                           >
-                            Sửa
+                            {t("Edit")}
                           </Button>
                           <Button
                             size="icon"
@@ -219,7 +218,7 @@ export default function RepairTenant() {
         {totalPages > 1 && (
           <CardFooter className="flex justify-between items-center">
             <small>
-              Trang {page + 1} / {totalPages}
+              {t("Page")} {page + 1} / {totalPages}
             </small>
             <div className="space-x-2">
               <Button

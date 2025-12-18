@@ -7,8 +7,10 @@ import {
 import React from "react";
 import ServiceUpsertForm from "./ServiceUpsertForm";
 import { Plus, SquarePen } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const ServiceUpsertDialog = ({ open, onOpenChange, initialData = null }) => {
+  const { t } = useTranslation("service");
   const isEditMode = !!initialData?.id;
   const handleSuccess = () => {
     onOpenChange(false);
@@ -23,7 +25,7 @@ const ServiceUpsertDialog = ({ open, onOpenChange, initialData = null }) => {
             ) : (
               <Plus className="h-5 w-5" />
             )}
-            {isEditMode ? "Chỉnh sửa Dịch vụ" : "Thêm Dịch vụ Mới"}
+            {isEditMode ? `${t("EditService")}:` : `${t("AddNewService")}`}
           </DialogTitle>
         </DialogHeader>
         <ServiceUpsertForm

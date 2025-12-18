@@ -91,7 +91,7 @@ const TenantEditForm = ({ tenant, onFormSubmitSuccess }) => {
     <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-4">
       <FieldGroup>
         <div className="flex flex-col items-center space-y-4 pb-4 border-b">
-          <div className="relative w-30 h-30 rounded-full overflow-hidden border-2 flex-shrink-0">
+          <div className="relative w-30 h-30 rounded-full overflow-hidden border-2 shrink-0">
             <img
               src={filePreview}
               alt="Avatar"
@@ -104,7 +104,7 @@ const TenantEditForm = ({ tenant, onFormSubmitSuccess }) => {
             accept="image/*"
             {...register("avatar")}
             disabled={isLoading}
-            className={"w-[300px] file:text-primary file:font-semibold"}
+            className={"w-75 file:text-primary file:font-semibold"}
           />
         </div>
         <div className="grid md:grid-cols-2 gap-4">
@@ -142,7 +142,7 @@ const TenantEditForm = ({ tenant, onFormSubmitSuccess }) => {
             <FieldError>{errors.email?.message}</FieldError>
           </Field>
           <Field>
-            <FieldLabel>Address</FieldLabel>
+            <FieldLabel>{t("Address")}</FieldLabel>
             <Input
               id="address"
               type={"address"}

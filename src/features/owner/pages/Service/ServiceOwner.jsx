@@ -57,8 +57,10 @@ import { useAuth } from "@/features/auth";
 import { useGetHousesByOwnerIdQuery } from "../../store/houseApi";
 import ServiceHouseListServiceDialog from "../../components/Service/ServiceHouseListServiceDialog";
 import { NavLink } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const ServiceOwner = () => {
+  const { t } = useTranslation("service");
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const { userId: ownerId, isLoadingMe } = useAuth();
@@ -193,7 +195,7 @@ const ServiceOwner = () => {
   if (isError) {
     return (
       <div className="p-6 text-center text-red-500">
-        Lỗi tải danh sách Dịch vụ.
+        {t("ErrorLoadingData")}
       </div>
     );
   }
@@ -234,8 +236,8 @@ const ServiceOwner = () => {
 
       <Tabs defaultValue="serviceList" className={"w-full "}>
         <TabsList>
-          <TabsTrigger value="serviceList">Danh sách dịch vụ</TabsTrigger>
-          <TabsTrigger value="serviceHouse">Dịch vụ đã có của nhà</TabsTrigger>
+          <TabsTrigger value="serviceList">{t("ServiceList")}</TabsTrigger>
+          <TabsTrigger value="serviceHouse">{t("ServiceHouse")}</TabsTrigger>
         </TabsList>
         {/* Dịch vụ đã có của nhà */}
         <TabsContent value="serviceHouse">
@@ -243,13 +245,13 @@ const ServiceOwner = () => {
             <Table>
               <TableHeader className={"bg-sidebar"}>
                 <TableRow>
-                  <TableHead className="w-[50px]">STT</TableHead>
-                  <TableHead className={"w-[250px]"}>Nhà</TableHead>
+                  <TableHead className="w-[50px]">{t("No")}</TableHead>
+                  <TableHead className={"w-[250px]"}>{t("House")}</TableHead>
                   <TableHead className={"hidden sm:table-cell"}>
-                    Địa chỉ
+                    {t("Address")}
                   </TableHead>
                   <TableHead className="text-right w-[100px]">
-                    Thao tác
+                    {t("Action")}
                   </TableHead>
                 </TableRow>
               </TableHeader>
@@ -288,10 +290,10 @@ const ServiceOwner = () => {
             <Table>
               <TableHeader className={"bg-sidebar"}>
                 <TableRow>
-                  <TableHead className="w-[50px]">STT</TableHead>
-                  <TableHead>Tên dịch vụ</TableHead>
-                  <TableHead className="">Cách tính tiền</TableHead>
-                  <TableHead className="">Đơn vị</TableHead>
+                  <TableHead className="w-[50px]">{t("No")}</TableHead>
+                  <TableHead>{t("ServiceName")}</TableHead>
+                  <TableHead className="">{t("Method")}</TableHead>
+                  <TableHead className="">{t("Unit")}</TableHead>
                   <TableHead className="text-right w-[100px]">
                     <Button
                       variant={"outline"}
@@ -300,7 +302,7 @@ const ServiceOwner = () => {
                       }
                       onClick={openAddDialog}
                     >
-                      Thêm dịch vụ
+                      {t("AddNewService")}
                     </Button>
                   </TableHead>
                 </TableRow>
@@ -312,7 +314,7 @@ const ServiceOwner = () => {
                       colSpan={4}
                       className="text-center text-muted-foreground"
                     >
-                      Chưa có loại dịch vụ nào được tạo
+                      {t("NoService")}
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -321,7 +323,7 @@ const ServiceOwner = () => {
                       <TableCell className={"w-[50px]"}>{index + 1}</TableCell>
                       <TableCell>
                         <h4 className="font-semibold text-wrap ">
-                          {service.name}
+                          {t(`${service.name}`)}
                         </h4>
                       </TableCell>
                       <TableCell className="font-medium">
@@ -345,14 +347,14 @@ const ServiceOwner = () => {
                                   openServiceHouseAddDialog(service)
                                 }
                               >
-                                Thêm dịch vụ vào nhà
+                                {t("AddServiceToHouse")}
                               </DropdownMenuItem>
 
                               <DropdownMenuItem
                                 onClick={() => openEditDialog(service)}
                               >
                                 <SquarePen />
-                                Sửa dịch vụ
+                                {t("EditService")}
                               </DropdownMenuItem>
 
                               <DropdownMenuItem
@@ -360,7 +362,7 @@ const ServiceOwner = () => {
                               >
                                 <Trash color="red" />
                                 <span className="text-red-500">
-                                  Xóa dịch vụ
+                                  {t("DeleteService")}
                                 </span>
                               </DropdownMenuItem>
                             </DropdownMenuGroup>

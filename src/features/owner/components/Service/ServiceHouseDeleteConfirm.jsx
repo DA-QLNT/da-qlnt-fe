@@ -13,6 +13,7 @@ import {
 import toast from "react-hot-toast";
 import { useDeleteHouseServiceMutation } from "../../store/serviceApi";
 import { Spinner } from "@/components/ui/spinner";
+import { useTranslation } from "react-i18next";
 
 const ServiceHouseDeleteConfirm = ({
   open,
@@ -20,17 +21,18 @@ const ServiceHouseDeleteConfirm = ({
   houseServiceId,
   serviceName,
 }) => {
+  const { t } = useTranslation("service");
   const [deleteHouseService, { isLoading: isDeleting }] =
     useDeleteHouseServiceMutation();
 
   const handleDelete = async () => {
     try {
       await deleteHouseService(houseServiceId).unwrap();
-      toast.success(`Đã xóa dịch vụ "${serviceName}" khỏi nhà.`);
+      toast.success(t("DeleteSuccess"));
       onOpenChange(false);
     } catch (error) {
-      toast.error("Lỗi khi xóa dịch vụ nhà.");
-      console.error("Lỗi xóa house-service:", error);
+      toast.error(t("DeleteFail"));
+      console.error("Error house-service:", error);
     }
   };
 
@@ -38,23 +40,18 @@ const ServiceHouseDeleteConfirm = ({
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Xác nhận xóa dịch vụ nhà</AlertDialogTitle>
-          <AlertDialogDescription>
-            Bạn có chắc chắn muốn xóa dịch vụ{" "}
-            <span className="font-semibold text-destructive">
-              "{serviceName}"
-            </span>{" "}
-            khỏi nhà này không? Thao tác này không thể hoàn tác.
-          </AlertDialogDescription>
+          <AlertDialogTitle>{t("DeleteConfirm")}</AlertDialogTitle>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isDeleting}>Hủy</AlertDialogCancel>
+          <AlertDialogCancel disabled={isDeleting}>
+            {t("Cancel")}
+          </AlertDialogCancel>
           <AlertDialogAction
             onClick={handleDelete}
             disabled={isDeleting}
             className={"text-white bg-destructive"}
           >
-            {isDeleting ? <Spinner /> : "Xóa"}
+            {isDeleting ? <Spinner /> : `${t("Delete")}`}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

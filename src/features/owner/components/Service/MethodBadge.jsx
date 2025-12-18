@@ -1,13 +1,15 @@
 import React from "react";
 import { Badge } from "@/components/ui/badge";
+import { useTranslation } from "react-i18next";
 
 export const BADGE_METHOD_OPTIONS = [
   { value: 0, label: "kWh or m\u00B3" },
-  { value: 1, label: "persion" },
-  { value: 2, label: "room" },
+  { value: 1, label: "Person" },
+  { value: 2, label: "Room" },
 ];
 
 const MethodBadge = ({ methodValue }) => {
+  const { t } = useTranslation("service");
   const method = BADGE_METHOD_OPTIONS.find(
     (option) => option.value === methodValue
   );
@@ -34,7 +36,7 @@ const MethodBadge = ({ methodValue }) => {
 
   return (
     <>
-      /<Badge variant={variant}>{method.label}</Badge>;
+      /<Badge variant={variant}>{t(`${method.label}`)}</Badge>;
     </>
   );
 };

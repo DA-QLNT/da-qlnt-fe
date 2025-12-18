@@ -13,20 +13,20 @@ import { FileText, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import React from "react";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "react-i18next";
 
 export default function InvoiceCreateConfirmDialog({
   roomId,
   open,
   onOpenChange,
 }) {
+  const { t } = useTranslation("service");
   const [createInvoice, { isLoading }] = useCreateInvoiceMutation();
   const currentMonth = new Date().getMonth() + 1;
   const currentYear = new Date().getFullYear();
 
   const handleCreate = async () => {
-    const toastId = toast.loading(
-      `Đang tạo hóa đơn tháng ${currentMonth}/${currentYear}...`
-    );
+    const toastId = toast.loading(t("CreatingInvoice"));
     try {
       await createInvoice({
         roomId,
@@ -34,13 +34,10 @@ export default function InvoiceCreateConfirmDialog({
         year: currentYear,
       }).unwrap();
 
-      toast.success(
-        `Hóa đơn tháng ${currentMonth}/${currentYear} đã được tạo thành công!`,
-        { id: toastId }
-      );
+      toast.success(t("CreateSuccess"));
       onOpenChange(false);
     } catch (error) {
-      toast.error(error.data?.message || "Tạo hóa đơn thất bại.", {
+      toast.error(t("CreateFailed"), {
         id: toastId,
       });
     }
@@ -52,16 +49,13 @@ export default function InvoiceCreateConfirmDialog({
         <AlertDialogHeader>
           <AlertDialogTitle className="flex items-center gap-2">
             <FileText className="w-6 h-6" />
-            Xác nhận Tạo Hóa đơn
+            {t("ConfirmCreateInvoice")}
           </AlertDialogTitle>
-          <AlertDialogDescription>
-            Anh có chắc chắn muốn tạo hóa đơn cho Phòng #{roomId} kỳ **Tháng{" "}
-            {currentMonth}/{currentYear}** không? Thao tác này sẽ khóa chỉ số
-            dịch vụ cho tháng này.
-          </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isLoading}>Hủy</AlertDialogCancel>
+          <AlertDialogCancel disabled={isLoading}>
+            {t("Cancel")}
+          </AlertDialogCancel>
           <AlertDialogAction
             onClick={handleCreate}
             disabled={isLoading}
@@ -69,10 +63,10 @@ export default function InvoiceCreateConfirmDialog({
           >
             {isLoading ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Đang tạo...
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               </>
             ) : (
-              "Đồng ý Tạo Hóa đơn"
+              t("ConfirmCreateInvoice")
             )}
           </AlertDialogAction>
         </AlertDialogFooter>

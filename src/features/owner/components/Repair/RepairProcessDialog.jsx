@@ -35,12 +35,14 @@ import { formatCurrency } from "@/lib/format/currencyFormat";
 import { REPAIR_STATUS_MAP } from "@/assets/repair/repairStatus";
 import { Badge } from "@/components/ui/badge";
 import { RepairCompletionSchema } from "@/lib/validation/repair";
+import { useTranslation } from "react-i18next";
 
 // Component Badge cho Trạng thái
 const RepairStatusBadge = ({ status }) => {
+  const { t } = useTranslation("repairreportrule");
   const statusInfo = REPAIR_STATUS_MAP[status] || REPAIR_STATUS_MAP[0];
   const { label, color } = statusInfo;
-  return <Badge className={`uppercase ${color}`}>{label}</Badge>;
+  return <Badge className={`uppercase ${color}`}>{t(`${label}`)}</Badge>;
 };
 
 /**
@@ -48,9 +50,11 @@ const RepairStatusBadge = ({ status }) => {
  * @param {object} request - Dữ liệu yêu cầu sửa chữa
  */
 export default function RepairProcessDialog({ request, open, onOpenChange }) {
+  const { t } = useTranslation("repairreportrule");
+
   const repairId = request?.id;
   const isCompleted = request?.status === 2;
-  const dialogTitle = isCompleted ? `Chi tiết Yêu cầu` : `Xử lý Yêu cầu`;
+  const dialogTitle = isCompleted ? t("Detail") : t("Handle");
 
   // Hook API
   const [completeRequest, { isLoading: isCompleting }] =
@@ -81,9 +85,7 @@ export default function RepairProcessDialog({ request, open, onOpenChange }) {
 
   // 🚨 HÀM XỬ LÝ HOÀN THÀNH
   const onSubmit = async (data) => {
-    const toastId = toast.loading(
-      `Đang xác nhận hoàn thành yêu cầu #${repairId}...`
-    );
+    const toastId = toast.loading(`${t("ConfirmComplete")}...`);
 
     // Dữ liệu đã bao gồm note và cost, status=2 được thêm trong mutation
     const payload = {
@@ -93,10 +95,10 @@ export default function RepairProcessDialog({ request, open, onOpenChange }) {
 
     try {
       await completeRequest({ repairId, data: payload }).unwrap();
-      toast.success(`Đã hoàn thành yêu cầu #${repairId}.`, { id: toastId });
+      toast.success(t("Completed"), { id: toastId });
       onOpenChange(false);
     } catch (error) {
-      toast.error(error.data?.message || "Xác nhận hoàn thành thất bại.", {
+      toast.error(t("Failed"), {
         id: toastId,
       });
       console.error("Complete repair error:", error);
@@ -117,7 +119,7 @@ export default function RepairProcessDialog({ request, open, onOpenChange }) {
             <Wrench className="h-6 w-6 text-primary" /> {dialogTitle}
           </DialogTitle>
           <DialogDescription className="text-lg font-medium pt-1">
-            {request.title} - Phòng: {request.roomName}
+            {request.title} - {t("Room")}: {request.roomName}
           </DialogDescription>
         </DialogHeader>
 
@@ -127,25 +129,25 @@ export default function RepairProcessDialog({ request, open, onOpenChange }) {
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
-                  <Info className="h-5 w-5" /> Thông tin cơ bản
+                  <Info className="h-5 w-5" /> {t("BaseInfor")}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2 text-sm">
                   <div>
-                    <span className="font-medium">Người gửi:</span>{" "}
+                    <span className="font-medium">{t("Tenant")}:</span>{" "}
                     {request.tenantName}
                   </div>
                   <div>
-                    <span className="font-medium">Phòng:</span>{" "}
-                    {request.roomName} ({request.houseName})
+                    <span className="font-medium">{t("Room")}:</span>{" "}
+                    {request.roomName} - ({request.houseName})
                   </div>
                   <div>
-                    <span className="font-medium">Trạng thái:</span>{" "}
+                    <span className="font-medium">{t("Status")}:</span>{" "}
                     <RepairStatusBadge status={request.status} />
                   </div>
                   <div>
-                    <span className="font-medium">Ngày hoàn thành:</span>{" "}
+                    <span className="font-medium">{t("CompletedDate")}:</span>{" "}
                     {formattedCompletedDate}
                   </div>
                 </div>
@@ -155,12 +157,12 @@ export default function RepairProcessDialog({ request, open, onOpenChange }) {
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
-                  <FileText className="h-5 w-5" /> Mô tả
+                  <FileText className="h-5 w-5" /> {t("Description")}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground">
-                  {request.description || "Không có mô tả chi tiết."}
+                  {request.description || t("NoDescription")}
                 </p>
               </CardContent>
             </Card>
@@ -170,7 +172,7 @@ export default function RepairProcessDialog({ request, open, onOpenChange }) {
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg flex items-center gap-2">
-                    <IconImage className="h-5 w-5" /> Hình ảnh (
+                    <IconImage className="h-5 w-5" /> {t("Image")} (
                     {request.images.length})
                   </CardTitle>
                 </CardHeader>
@@ -195,15 +197,15 @@ export default function RepairProcessDialog({ request, open, onOpenChange }) {
             <Card className="p-0 border-0 shadow-none">
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
-                  <CheckCheck className="h-5 w-5 text-green-600" /> Cập nhật
-                  Trạng thái
+                  <CheckCheck className="h-5 w-5 text-green-600" />{" "}
+                  {t("UpdateStatus")}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                   <FieldGroup className="space-y-4">
                     <Field>
-                      <FieldLabel>Chi phí sửa chữa (*)</FieldLabel>
+                      <FieldLabel>{t("RepairCost")}*</FieldLabel>
                       <Input
                         type="number"
                         {...register("cost", { valueAsNumber: true })}
@@ -213,7 +215,7 @@ export default function RepairProcessDialog({ request, open, onOpenChange }) {
                     </Field>
 
                     <Field>
-                      <FieldLabel>Ghi chú cho Tenant (*)</FieldLabel>
+                      <FieldLabel>{t("Note")}</FieldLabel>
                       <Textarea
                         {...register("note")}
                         disabled={isCompleted || isCompleting}
@@ -224,7 +226,7 @@ export default function RepairProcessDialog({ request, open, onOpenChange }) {
 
                     {isCompleted && (
                       <p className="text-sm font-medium text-green-600">
-                        Yêu cầu này đã được hoàn thành.
+                        {t("Completed")}
                       </p>
                     )}
                   </FieldGroup>
@@ -233,7 +235,7 @@ export default function RepairProcessDialog({ request, open, onOpenChange }) {
                     <div className="flex justify-end pt-2">
                       <Button
                         type="submit"
-                        disabled={isCompleting || !isDirty || !isValid}
+                        disabled={isCompleting || !isValid}
                         className="bg-green-600 hover:bg-green-700"
                       >
                         {isCompleting ? (
@@ -241,7 +243,7 @@ export default function RepairProcessDialog({ request, open, onOpenChange }) {
                         ) : (
                           <CheckCheck className="h-4 w-4 mr-2" />
                         )}
-                        Xác nhận Hoàn thành
+                        {t("ConfirmComplete")}
                       </Button>
                     </div>
                   )}
@@ -257,7 +259,7 @@ export default function RepairProcessDialog({ request, open, onOpenChange }) {
             onClick={() => onOpenChange(false)}
             disabled={isCompleting}
           >
-            Đóng
+            {t("Close")}
           </Button>
         </DialogFooter>
       </DialogContent>
