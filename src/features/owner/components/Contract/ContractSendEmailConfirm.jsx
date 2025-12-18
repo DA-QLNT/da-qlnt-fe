@@ -29,13 +29,13 @@ export default function ContractSendEmailConfirm({
 
   const handleSend = async () => {
     const toastId = toast.loading(
-      `Đang gửi hợp đồng #${contractId} qua email...`
+      `Đang gửi hợp đồng ${contractId} qua email...`
     );
     try {
       await sendEmail(contractId).unwrap();
 
       toast.success(
-        `Hợp đồng #${contractId} đã được gửi email thành công cho khách thuê!`,
+        `Hợp đồng ${contractId} đã được gửi email thành công cho khách thuê!`,
         { id: toastId, duration: 5000 }
       );
       onOpenChange(false); // Đóng dialog
@@ -56,7 +56,7 @@ export default function ContractSendEmailConfirm({
             Xác nhận Gửi Email Hợp đồng
           </AlertDialogTitle>
           <AlertDialogDescription>
-            Anh có chắc chắn muốn gửi email thông báo hợp đồng **#{contractId}**
+            Anh có chắc chắn muốn gửi email thông báo hợp đồng **{contractId}**
             tới người thuê không? Thao tác này sẽ gửi bản PDF hợp đồng và thông
             tin xác nhận tới email của người đại diện.
           </AlertDialogDescription>

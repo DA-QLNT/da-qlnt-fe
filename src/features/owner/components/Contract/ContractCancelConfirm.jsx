@@ -29,11 +29,11 @@ export default function ContractCancelConfirm({
   const isDraft = contract?.status === 0;
 
   const handleCancel = async () => {
-    const toastId = toast.loading(`Đang hủy hợp đồng #${contractId}...`);
+    const toastId = toast.loading(`Đang hủy hợp đồng ${contractId}...`);
     try {
       await cancelContract(contractId).unwrap();
 
-      toast.success(`Hợp đồng #${contractId} đã được HỦY bỏ thành công.`, {
+      toast.success(`Hợp đồng ${contractId} đã được HỦY bỏ thành công.`, {
         id: toastId,
         duration: 5000,
       });
@@ -55,7 +55,7 @@ export default function ContractCancelConfirm({
             Xác nhận Hủy Hợp đồng
           </AlertDialogTitle>
           <AlertDialogDescription>
-            Bạn có chắc chắn muốn HỦY BỎ hợp đồng #{contractId} không?
+            Bạn có chắc chắn muốn HỦY BỎ hợp đồng {contractId} không?
             {isDraft ? (
               <span className="mt-2 block font-medium">
                 Hợp đồng đang ở trạng thái bản nháp (DRAFT).

@@ -82,7 +82,7 @@ export default function RepairProcessDialog({ request, open, onOpenChange }) {
   // 🚨 HÀM XỬ LÝ HOÀN THÀNH
   const onSubmit = async (data) => {
     const toastId = toast.loading(
-      `Đang xác nhận hoàn thành yêu cầu #${repairId}...`
+      `Đang xác nhận hoàn thành yêu cầu ${repairId}...`
     );
 
     // Dữ liệu đã bao gồm note và cost, status=2 được thêm trong mutation
@@ -93,7 +93,7 @@ export default function RepairProcessDialog({ request, open, onOpenChange }) {
 
     try {
       await completeRequest({ repairId, data: payload }).unwrap();
-      toast.success(`Đã hoàn thành yêu cầu #${repairId}.`, { id: toastId });
+      toast.success(`Đã hoàn thành yêu cầu ${repairId}.`, { id: toastId });
       onOpenChange(false);
     } catch (error) {
       toast.error(error.data?.message || "Xác nhận hoàn thành thất bại.", {

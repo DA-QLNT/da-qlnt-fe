@@ -37,7 +37,7 @@ export default function RepairRequestFormDialog({
 }) {
   const isEdit = !!initialData;
   const dialogTitle = isEdit
-    ? `Sửa Yêu cầu #${initialData?.id}`
+    ? `Sửa Yêu cầu ${initialData?.id}`
     : "Tạo Yêu cầu Sửa chữa mới";
 
   // Hooks API

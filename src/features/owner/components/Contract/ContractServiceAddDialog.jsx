@@ -25,7 +25,7 @@ export default function ContractServiceAddDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Settings2 className="h-6 w-6" />
-            Thêm Dịch vụ vào Hợp đồng #{contract?.id}
+            Thêm Dịch vụ vào Hợp đồng {contract?.id}
           </DialogTitle>
           <DialogDescription>
             Chọn các dịch vụ có sẵn của nhà trọ để áp dụng cho hợp đồng này.

@@ -19,7 +19,7 @@ export default function ContractExtendDialog({ contract, open, onOpenChange }) {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
             <Clock className="h-6 w-6" />
-            Gia Hạn Hợp Đồng #{contract?.id}
+            Gia Hạn Hợp Đồng {contract?.id}
           </DialogTitle>
         </DialogHeader>
 

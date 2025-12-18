@@ -45,7 +45,7 @@ export default function ContractTenantConfirmDialog({
             className={`flex items-center gap-2 text-green-600`}
           >
             <CheckCheck className="w-6 h-6" />
-            Xác nhận Hợp đồng #{contractId}
+            Xác nhận Hợp đồng {contractId}
           </AlertDialogTitle>
           <AlertDialogDescription>
             Anh có chắc chắn muốn xác nhận và đồng ý với các điều khoản của hợp

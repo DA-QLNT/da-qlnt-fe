@@ -106,7 +106,7 @@ export default function TenantLeaveDialog({
           <UserMinus className="w-6 h-6" /> Xác nhận Khách rời phòng
         </AlertDialogTitle>
         <AlertDialogDescription>
-          Anh có chắc chắn muốn cho khách thuê **{tenant.fullName}** (
+          Anh có chắc chắn muốn cho khách thuê {tenant.fullName} (
           {isRepresentative ? "Đại diện" : "Khách"}) rời khỏi hợp đồng này
           không?
         </AlertDialogDescription>
@@ -136,8 +136,8 @@ export default function TenantLeaveDialog({
           <User className="w-6 h-6" /> Chọn Người Đại Diện Mới
         </AlertDialogTitle>
         <AlertDialogDescription>
-          Khách **{tenant.fullName}** là người đại diện cũ. Vui lòng chọn một
-          trong số khách thuê còn lại làm đại diện mới.
+          Khách {tenant.fullName} là người đại diện cũ. Vui lòng chọn một trong
+          số khách thuê còn lại làm đại diện mới.
         </AlertDialogDescription>
       </AlertDialogHeader>
 
@@ -178,7 +178,7 @@ export default function TenantLeaveDialog({
           ⚠️ Yêu cầu Thanh lý Hợp đồng
         </AlertDialogTitle>
         <AlertDialogDescription>
-          Khách **{tenant.fullName}** là người đại diện duy nhất. Không thể rời
+          Khách {tenant.fullName} là người đại diện duy nhất. Không thể rời
           phòng mà không thanh lý hợp đồng. Vui lòng thực hiện thao tác Thanh lý
           Hợp đồng.
         </AlertDialogDescription>
