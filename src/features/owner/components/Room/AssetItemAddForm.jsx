@@ -255,7 +255,7 @@ export default function AssetItemAddForm({ roomId, onFormSubmitSuccess }) {
 
             {/* Image Input */}
             <Field className="md:col-span-3">
-              <FieldLabel>Ảnh Item (*):</FieldLabel>
+              <FieldLabel>{t("ItemImage")}*</FieldLabel>
               <div className="flex items-center gap-4">
                 <img
                   src={filePreview || "/userDefault.png"}
