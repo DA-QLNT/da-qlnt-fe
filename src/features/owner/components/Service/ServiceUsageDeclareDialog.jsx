@@ -68,6 +68,7 @@ const PreviousReadingInput = ({ roomId, serviceId, label }) => {
 
 const ServiceUsageDeclareDialog = ({ open, onOpenChange, roomId }) => {
   const prevRoomIdRef = useRef(null);
+  const { t } = useTranslation("service");
 
   const {
     data: contract,

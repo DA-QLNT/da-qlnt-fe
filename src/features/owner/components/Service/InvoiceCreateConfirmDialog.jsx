@@ -13,6 +13,7 @@ import { FileText, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import React from "react";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "react-i18next";
 
 export default function InvoiceCreateConfirmDialog({
   roomId,

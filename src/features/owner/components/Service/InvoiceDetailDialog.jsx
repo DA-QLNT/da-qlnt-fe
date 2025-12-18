@@ -10,6 +10,7 @@ import {
   useGetInvoiceByIdQuery,
   useCreateInvoiceMutation,
   useExportInvoiceExcelMutation,
+  useExportInvoiceByInvoiceIdMutation,
 } from "../../store/serviceApi";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -52,36 +53,36 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
 
   // ✅ Sử dụng RTK Query để export Excel
   const [triggerExport, { isLoading: isExporting }] =
-    useExportInvoiceExcelMutation();
+    useExportInvoiceByInvoiceIdMutation();
 
   const handleOpenCreateConfirm = () => {
     setIsCreateConfirmOpen(true);
   };
 
-  // ✅ HÀM XUẤT EXCEL với RTK Query
+  // ✅ HÀM XUẤT EXCEL CẬP NHẬT
   const handleExportExcel = async () => {
-    if (!invoice) {
+    if (!invoiceId) {
       toast.error(t("NoInvoice"));
       return;
     }
 
     try {
-      const blobResult = await triggerExport({
-        roomId: invoice.roomId,
-        month: invoice.month,
-        year: invoice.year,
-      }).unwrap(); //  Nếu thành công, blobResult là đối tượng Blob
+      // 🚨 Truyền trực tiếp invoiceId vào trigger
+      const blobResult = await triggerExport(invoiceId).unwrap();
 
-      // Tạo Blob mới từ kết quả để ép kiểu (quan trọng để khắc phục lỗi trình duyệt)
       const excelBlob = new Blob([blobResult], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
 
-      // Tạo URL để download và kích hoạt download
       const downloadUrl = window.URL.createObjectURL(excelBlob);
       const link = document.createElement("a");
       link.href = downloadUrl;
-      link.download = `HoaDon_${invoice.roomCode}_${invoice.month}_${invoice.year}.xlsx`;
+      // Đặt tên file linh hoạt dựa trên dữ liệu invoice nếu có, hoặc dùng ID
+      const fileName = invoice
+        ? `HoaDon_${invoice.roomCode}_${invoice.month}_${invoice.year}.xlsx`
+        : `HoaDon_ChiTiet_${invoiceId}.xlsx`;
+
+      link.download = fileName;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -89,10 +90,8 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
       window.URL.revokeObjectURL(downloadUrl);
       toast.success(t("ExportSuccess"));
     } catch (error) {
-      //  Bắt lỗi JSON từ server (do responseHandler ném ra)
       console.error("Export Excel error:", error);
-      // Hiển thị message lỗi chi tiết từ server nếu có
-      const errorMessage = t("ExportFailed");
+      const errorMessage = error?.data?.message || t("ExportFailed");
       toast.error(errorMessage);
     }
   };

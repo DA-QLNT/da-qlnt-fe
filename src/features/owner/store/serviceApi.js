@@ -205,6 +205,34 @@ export const serviceApi = baseApi.injectEndpoints({
         cache: "no-cache",
       }),
     }),
+    // Xuất hóa đơn theo invoiceId
+    exportInvoiceByInvoiceId: builder.mutation({
+      query: (invoiceId) => ({
+        url: `/excel/invoice-detail`,
+        method: "POST",
+        params: { invoiceId },
+        headers: {
+          Accept:
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        },
+        responseHandler: async (response) => {
+          if (response.ok) {
+            return response.blob();
+          }
+          // Xử lý lỗi nếu không phải file
+          try {
+            const error = await response.json();
+            return Promise.reject(error);
+          } catch (e) {
+            const errorText = await response.text();
+            return Promise.reject({
+              message: errorText || "Lỗi khi xuất file hóa đơn.",
+            });
+          }
+        },
+        cache: "no-cache",
+      }),
+    }),
   }),
 });
 export const {
@@ -224,4 +252,5 @@ export const {
   useGetInvoiceByIdQuery,
   useCreateInvoiceMutation,
   useExportInvoiceExcelMutation,
+  useExportInvoiceByInvoiceIdMutation,
 } = serviceApi;
