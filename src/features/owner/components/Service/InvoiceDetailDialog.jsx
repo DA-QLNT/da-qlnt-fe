@@ -29,14 +29,17 @@ import React, { useState } from "react";
 import InvoiceCreateConfirmDialog from "./InvoiceCreateConfirmDialog";
 import toast from "react-hot-toast";
 import ServiceTypeBadge from "./ServiceTypeBadge";
+import { useTranslation } from "react-i18next";
 
 const INVOICE_STATUS_MAP = {
   0: "Chưa thanh toán",
   1: "Đã thanh toán",
-  2: "Đã hủy",
+  2: "Quá hạn",
+  3: "Đã thanh toán quá hạn",
 };
 
 export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
+  const { t } = useTranslation("service");
   const {
     data: invoice,
     isLoading,
@@ -58,7 +61,7 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
   // ✅ HÀM XUẤT EXCEL với RTK Query
   const handleExportExcel = async () => {
     if (!invoice) {
-      toast.error("Không có dữ liệu hóa đơn để xuất");
+      toast.error(t("NoInvoice"));
       return;
     }
 
@@ -84,13 +87,12 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
       document.body.removeChild(link);
 
       window.URL.revokeObjectURL(downloadUrl);
-      toast.success("Xuất Excel thành công!");
+      toast.success(t("ExportSuccess"));
     } catch (error) {
       //  Bắt lỗi JSON từ server (do responseHandler ném ra)
       console.error("Export Excel error:", error);
       // Hiển thị message lỗi chi tiết từ server nếu có
-      const errorMessage =
-        error.message || error.data?.message || "Xuất Excel thất bại.";
+      const errorMessage = t("ExportFailed");
       toast.error(errorMessage);
     }
   };

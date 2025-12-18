@@ -228,7 +228,7 @@ const ServiceUsageDeclareDialog = ({ open, onOpenChange, roomId }) => {
                     <div key={field.id} className="grid grid-cols-2 gap-4 py-2">
                       <Field>
                         <FieldLabel>
-                          {service?.serviceName} (Giá:{" "}
+                          {service?.serviceName} ({t("Price")}:{" "}
                           {service?.price?.toLocaleString()} VNĐ)
                         </FieldLabel>
                         <Input
@@ -249,7 +249,7 @@ const ServiceUsageDeclareDialog = ({ open, onOpenChange, roomId }) => {
                       <PreviousReadingInput
                         roomId={roomId}
                         serviceId={field.serviceId}
-                        label="Chỉ số tháng trước"
+                        label={t("PreviousIndex")}
                       />
 
                       <input

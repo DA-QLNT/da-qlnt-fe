@@ -129,7 +129,7 @@ const ServiceHouseAddForm = ({ serviceId, onFormSubmitSuccess }) => {
       toast.success(t("AssignSuccess"));
       onFormSubmitSuccess();
     } catch (error) {
-      toast.error(error.data?.message || `${t("AssignFail")}`);
+      toast.error(t("AssignFail"));
     }
   };
   const loading = houseLoading || houseFetching || isLoadingMe;

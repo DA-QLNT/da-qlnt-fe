@@ -23,14 +23,17 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import React, { useMemo, useState } from "react";
 import InvoiceDetailDialog from "./InvoiceDetailDialog"; //  Import Detail Dialog
+import { useTranslation } from "react-i18next";
 
 const INVOICE_STATUS_MAP = {
-  0: "Chưa thanh toán",
-  1: "Đã thanh toán",
-  2: "Đã hủy",
-}; // Giả định status
+  0: "Unpaid",
+  1: "Paid",
+  2: "Overdue",
+  3: "OverduePaid",
+};
 
 export default function InvoiceListDialog({ roomId, open, onOpenChange }) {
+  const { t } = useTranslation("service");
   const [selectedInvoiceId, setSelectedInvoiceId] = useState(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
 
@@ -69,7 +72,8 @@ export default function InvoiceListDialog({ roomId, open, onOpenChange }) {
       <DialogContent className="sm:max-w-4xl max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <FileText className="h-6 w-6" /> Lịch sử Hóa đơn Phòng #{roomId}
+            <FileText className="h-6 w-6" /> {t("InvoiceHistory")} {t("Room")}{" "}
+            {roomId}
           </DialogTitle>
         </DialogHeader>
 
@@ -77,11 +81,11 @@ export default function InvoiceListDialog({ roomId, open, onOpenChange }) {
           <Table>
             <TableHeader className="sticky top-0 bg-secondary z-10">
               <TableRow>
-                <TableHead className="w-[50px]">Kỳ</TableHead>
-                <TableHead>Tổng tiền</TableHead>
-                <TableHead>Ngày đến hạn</TableHead>
-                <TableHead>Trạng thái</TableHead>
-                <TableHead className="text-right">Action</TableHead>
+                <TableHead className="w-[50px]">{t("Term")}</TableHead>
+                <TableHead>{t("Total")}</TableHead>
+                <TableHead>{t("PaymentDeadline")}</TableHead>
+                <TableHead>{t("Status")}</TableHead>
+                <TableHead className="text-right">{t("Action")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -97,7 +101,7 @@ export default function InvoiceListDialog({ roomId, open, onOpenChange }) {
                     colSpan={5}
                     className="text-center text-muted-foreground"
                   >
-                    Chưa có hóa đơn nào.
+                    {t("NoInvoice")}
                   </TableCell>
                 </TableRow>
               ) : (
@@ -132,7 +136,7 @@ export default function InvoiceListDialog({ roomId, open, onOpenChange }) {
                             : "secondary"
                         }
                       >
-                        {INVOICE_STATUS_MAP[invoice.status]}
+                        {t(`${INVOICE_STATUS_MAP[invoice.status]}`)}
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right">
@@ -141,7 +145,7 @@ export default function InvoiceListDialog({ roomId, open, onOpenChange }) {
                         size="sm"
                         onClick={() => handleViewDetail(invoice.id)}
                       >
-                        <Eye className="h-4 w-4" /> Xem chi tiết
+                        <Eye className="h-4 w-4" /> {t("Detail")}
                       </Button>
                     </TableCell>
                   </TableRow>
@@ -152,7 +156,7 @@ export default function InvoiceListDialog({ roomId, open, onOpenChange }) {
         </div>
         <DialogFooter>
           <Button variant="secondary" onClick={() => onOpenChange(false)}>
-            Đóng
+            {t("Close")}
           </Button>
         </DialogFooter>
       </DialogContent>

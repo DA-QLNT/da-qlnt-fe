@@ -33,6 +33,7 @@ const INVOICE_STATUS_MAP = {
   0: "Chưa thanh toán",
   1: "Đã thanh toán",
   2: "Quá hạn",
+  3: "Đã thanh toán quá hạn",
 };
 
 const PAYMENT_METHOD_MAP = {
