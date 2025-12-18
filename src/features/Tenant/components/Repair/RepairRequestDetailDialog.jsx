@@ -26,12 +26,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useSubmitRepairRequestMutation } from "../../store/repairApi";
 import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 
 // Component Badge cho Trạng thái
 const RepairStatusBadge = ({ status }) => {
   const statusInfo = REPAIR_STATUS_MAP[status] || REPAIR_STATUS_MAP[0];
   const { label, color } = statusInfo;
-  return <Badge className={`uppercase ${color}`}>{label}</Badge>;
+  return <Badge className={`uppercase ${color}`}>{t(`${label}`)}</Badge>;
 };
 
 export default function RepairRequestDetailDialog({
@@ -39,6 +40,8 @@ export default function RepairRequestDetailDialog({
   open,
   onOpenChange,
 }) {
+  const { t } = useTranslation("repairreportrule");
+
   if (!request) return null;
   // 🚨 HOOK SUBMIT
   const [submitRequest, { isLoading: isSubmitting }] =
@@ -47,16 +50,16 @@ export default function RepairRequestDetailDialog({
   // 🚨 HÀM XỬ LÝ GỬI YÊU CẦU
   const handleSubmitRequest = async () => {
     const repairId = request.id;
-    const toastId = toast.loading(`Đang gửi yêu cầu đến Chủ trọ...`);
+    const toastId = toast.loading(t("SendingRequest"));
 
     try {
       await submitRequest(repairId).unwrap();
-      toast.success(`Yêu cầu đã được gửi thành công!`, {
+      toast.success(t("SendingSuccess"), {
         id: toastId,
       });
       onOpenChange(false);
     } catch (error) {
-      toast.error(error.data?.message || "Gửi yêu cầu thất bại.", {
+      toast.error(t("SendingFailed"), {
         id: toastId,
       });
       console.error("Submit repair error:", error);
@@ -72,7 +75,7 @@ export default function RepairRequestDetailDialog({
       <DialogContent className="sm:max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Wrench className="h-6 w-6 text-primary" /> Chi tiết Yêu cầu
+            <Wrench className="h-6 w-6 text-primary" /> {t("DetailRequest")}
           </DialogTitle>
           <DialogDescription className="text-lg font-medium pt-1">
             {request.title}
@@ -84,25 +87,25 @@ export default function RepairRequestDetailDialog({
           <Card>
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
-                <Info className="h-5 w-5" /> Thông tin
+                <Info className="h-5 w-5" /> {t("Infor")}
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <span className="font-medium">Phòng:</span> {request.roomName}{" "}
-                  ({request.houseName})
+                  <span className="font-medium">{t("Room")}:</span>{" "}
+                  {request.roomName} ({request.houseName})
                 </div>
                 <div>
-                  <span className="font-medium">Trạng thái:</span>{" "}
+                  <span className="font-medium">{t("Status")}:</span>{" "}
                   <RepairStatusBadge status={request.status} />
                 </div>
                 <div>
-                  <span className="font-medium">Chi phí dự kiến:</span>{" "}
-                  {request.cost ? formatCurrency(request.cost) : "Chưa có"}
+                  <span className="font-medium">{t("EstimateCost")}:</span>{" "}
+                  {request.cost ? formatCurrency(request.cost) : ""}
                 </div>
                 <div>
-                  <span className="font-medium">Ngày hoàn thành:</span>{" "}
+                  <span className="font-medium">{t("CompletedDate")}:</span>{" "}
                   {formattedDate}
                 </div>
               </div>
@@ -113,17 +116,17 @@ export default function RepairRequestDetailDialog({
           <Card>
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
-                <FileText className="h-5 w-5" /> Mô tả chi tiết
+                <FileText className="h-5 w-5" /> {t("DetailedDescription")}
               </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground">
-                {request.description || "Không có mô tả chi tiết."}
+                {request.description || t("NoDetailedDescription")}
               </p>
               {request.note && (
                 <div className="mt-3 p-3 bg-secondary rounded-md">
                   <span className="font-medium text-xs block">
-                    Ghi chú của Chủ trọ:
+                    {t("NoteOwner")}:
                   </span>
                   <p className="text-sm">{request.note}</p>
                 </div>
@@ -136,7 +139,7 @@ export default function RepairRequestDetailDialog({
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
-                  <IconImage className="h-5 w-5" /> Hình ảnh (
+                  <IconImage className="h-5 w-5" /> {t("Image")} (
                   {request.images.length})
                 </CardTitle>
               </CardHeader>
@@ -158,7 +161,7 @@ export default function RepairRequestDetailDialog({
 
         <DialogFooter>
           <Button variant="secondary" onClick={() => onOpenChange(false)}>
-            Đóng
+            {t("Close")}
           </Button>
           {request.status === 0 && (
             <Button onClick={handleSubmitRequest} disabled={isSubmitting}>
@@ -167,7 +170,7 @@ export default function RepairRequestDetailDialog({
               ) : (
                 <Send className="h-4 w-4 mr-2" />
               )}
-              Gửi cho Chủ trọ
+              {t("SendToOwner")}
             </Button>
           )}
         </DialogFooter>

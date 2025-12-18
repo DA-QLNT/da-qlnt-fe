@@ -13,6 +13,7 @@ import toast from "react-hot-toast";
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { useConfirmTenantContractMutation } from "../store/contractApi";
+import { useTranslation } from "react-i18next";
 
 /**
  * Dialog xác nhận hành động (Confirm) của Tenant
@@ -22,6 +23,8 @@ export default function ContractTenantConfirmDialog({
   open,
   onOpenChange,
 }) {
+  const { t } = useTranslation("repairreportrule");
+
   const [confirmContract, { isLoading }] = useConfirmTenantContractMutation();
   const contractId = contract?.id;
 

@@ -42,7 +42,7 @@ const RepairStatusBadge = ({ status }) => {
   const { t } = useTranslation("repairreportrule");
   const statusInfo = REPAIR_STATUS_MAP[status] || REPAIR_STATUS_MAP[0];
   const { label, color } = statusInfo;
-  return <Badge className={`uppercase ${color}`}>{label}</Badge>;
+  return <Badge className={`uppercase ${color}`}>{t(`${label}`)}</Badge>;
 };
 
 /**
@@ -50,9 +50,11 @@ const RepairStatusBadge = ({ status }) => {
  * @param {object} request - Dữ liệu yêu cầu sửa chữa
  */
 export default function RepairProcessDialog({ request, open, onOpenChange }) {
+  const { t } = useTranslation("repairreportrule");
+
   const repairId = request?.id;
   const isCompleted = request?.status === 2;
-  const dialogTitle = isCompleted ? `Chi tiết Yêu cầu` : `Xử lý Yêu cầu`;
+  const dialogTitle = isCompleted ? t("Detail") : t("Handle");
 
   // Hook API
   const [completeRequest, { isLoading: isCompleting }] =
