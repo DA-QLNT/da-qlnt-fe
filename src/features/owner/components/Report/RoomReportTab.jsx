@@ -48,6 +48,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useTranslation } from "react-i18next";
 
 // Định nghĩa Chart Config cho biểu đồ Bar Chart Nhóm
 const roomChartConfig = {
@@ -56,7 +57,7 @@ const roomChartConfig = {
     color: "hsl(var(--primary))",
   },
   vacant: {
-    label: "Phòng trống",
+    label: "Còn trống",
     color: "hsl(var(--muted-foreground))",
   },
 };
@@ -66,6 +67,8 @@ const defaultFilter = {
 };
 
 const RoomReportTab = () => {
+  const { t } = useTranslation("repairreportrule");
+
   const { userId: ownerId } = useAuth();
 
   const [reportData, setReportData] = useState(null);
@@ -131,7 +134,7 @@ const RoomReportTab = () => {
   //  HÀM SUBMIT FORM LỌC
   const onSubmit = async (data) => {
     if (data.houseIds.length === 0) {
-      return toast.error("Vui lòng chọn ít nhất một Nhà trọ.");
+      return toast.error(t("PleaseSelectHouse"));
     }
     const payload = {
       houseIds: data.houseIds, // List ID
@@ -140,9 +143,9 @@ const RoomReportTab = () => {
     try {
       const result = await triggerReport(payload).unwrap();
       setReportData(result);
-      toast.success("Đã tải báo cáo phòng mới.");
+      toast.success(t("ExportSuccess"));
     } catch (error) {
-      toast.error(error.data?.message || "Lỗi tải báo cáo.");
+      toast.error(t("ExportFailed"));
       setReportData(null);
     }
   };
@@ -165,10 +168,10 @@ const RoomReportTab = () => {
       allHouses.length > 0 && selectedCount === allHouses.length;
     const displayText =
       selectedCount === 0
-        ? "Chọn Nhà trọ..."
+        ? t("SelectHouse")
         : allSelected
-        ? "Tất cả Nhà trọ"
-        : `${selectedCount} Nhà đã chọn`;
+        ? t("AllHouse")
+        : `${selectedCount} ${t("SelectedHouse")}`;
 
     const toggleHouse = (houseId, isChecked) => {
       const newIds = isChecked
@@ -207,7 +210,7 @@ const RoomReportTab = () => {
               >
                 <Checkbox checked={allSelected} onCheckedChange={toggleAll} />
                 <span className="font-semibold text-sm">
-                  Chọn tất cả ({allHouses.length})
+                  {t("SelectAll")} ({allHouses.length})
                 </span>
               </div>
 
@@ -230,7 +233,7 @@ const RoomReportTab = () => {
               })}
               {allHouses.length === 0 && (
                 <p className="text-center text-xs text-muted-foreground py-4">
-                  Không tìm thấy nhà trọ.
+                  {t("NoHouse")}
                 </p>
               )}
             </div>
@@ -245,14 +248,14 @@ const RoomReportTab = () => {
       {/* --------------------- 1. FORM LỌC --------------------- */}
       <Card className={"w-full sm:max-w-xl"}>
         <CardHeader>
-          <CardTitle>Bộ lọc Báo cáo Phòng</CardTitle>
+          <CardTitle>{t("FilterRoom")}</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <FieldGroup className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* House Select (Multi) */}
               <Field className="md:col-span-3">
-                <FieldLabel>Chọn Nhà trọ</FieldLabel>
+                <FieldLabel>{t("SelectHouse")}</FieldLabel>
                 <Controller
                   name="houseIds"
                   control={control}
@@ -270,7 +273,7 @@ const RoomReportTab = () => {
                 ) : (
                   <FileText className="h-4 w-4 mr-2" />
                 )}
-                Xem Báo cáo
+                {t("ViewReport")}
               </Button>
             </div>
           </form>
@@ -284,12 +287,12 @@ const RoomReportTab = () => {
         </div>
       ) : reportData ? (
         <div className="space-y-6">
-          <h3 className="text-xl font-bold">Tổng quan Tình trạng Phòng</h3>
+          <h3 className="text-xl font-bold">{t("GeneralRoom")}</h3>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Tổng số Phòng
+                  {t("TotalRoom")}
                 </CardTitle>
                 <Bed className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
@@ -302,7 +305,7 @@ const RoomReportTab = () => {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Đang cho Thuê
+                  {t("Rent")}
                 </CardTitle>
                 <Home className="h-4 w-4 text-green-600" />
               </CardHeader>
@@ -315,7 +318,7 @@ const RoomReportTab = () => {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Phòng Trống
+                  {t("Available")}
                 </CardTitle>
                 <Home className="h-4 w-4 text-red-600" />
               </CardHeader>
@@ -328,7 +331,7 @@ const RoomReportTab = () => {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Tỷ lệ Lấp đầy
+                  {t("RoomOccupancy")}
                 </CardTitle>
                 <TrendingUp className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
@@ -343,10 +346,9 @@ const RoomReportTab = () => {
           {/* --------------------- 3. BIỂU ĐỒ TRẠNG THÁI PHÒNG (GROUPED BAR CHART) --------------------- */}
           <Card>
             <CardHeader>
-              <CardTitle>Phòng Đang thuê vs Phòng Trống</CardTitle>
-              <CardDescription>
-                So sánh tình trạng phòng theo từng nhà trọ
-              </CardDescription>
+              <CardTitle>
+                {t("Room")} {t("Rent")} & {t("Available")}
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <ChartContainer
@@ -387,29 +389,22 @@ const RoomReportTab = () => {
                 </BarChart>
               </ChartContainer>
             </CardContent>
-            <CardFooter className="flex-col items-start gap-2 text-sm">
-              <div className="text-muted-foreground leading-none">
-                Số lượng phòng trống và đang thuê theo nhà trọ.
-              </div>
-            </CardFooter>
           </Card>
 
           {/* --------------------- 4. CHI TIẾT THEO NHÀ (Bảng) --------------------- */}
-          <h3 className="text-xl font-bold pt-4">
-            Chi tiết Tỷ lệ Lấp đầy theo Nhà
-          </h3>
+          <h3 className="text-xl font-bold pt-4">{t("DetailRoomOccupancy")}</h3>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Nhà trọ</TableHead>
-                <TableHead>Tổng phòng</TableHead>
-                <TableHead>Đang thuê</TableHead>
-                <TableHead>Trống</TableHead>
+                <TableHead>{t("House")}</TableHead>
+                <TableHead>{t("TotalRoom")}</TableHead>
+                <TableHead>{t("Rent")}</TableHead>
+                <TableHead>{t("Available")}</TableHead>
                 <TableHead
                   className="text-right cursor-pointer select-none group flex items-center justify-end"
                   onClick={() => requestSort("occupancyRate")} //  Kích hoạt sắp xếp
                 >
-                  Tỷ lệ Lấp đầy
+                  {t("RoomOccupancy")}
                   {sortConfig.key === "occupancyRate" ? (
                     sortConfig.direction === "asc" ? (
                       <ArrowDownZA className="h-4 w-4 ml-1" />
@@ -445,7 +440,7 @@ const RoomReportTab = () => {
         </div>
       ) : (
         <p className="text-center text-muted-foreground py-10">
-          Vui lòng chọn nhà trọ để xem báo cáo.
+          {t("PleaseSelectHouse")}
         </p>
       )}
     </div>
