@@ -15,7 +15,8 @@ import HOUSE_EN from "../locales/en/house.json";
 import HOUSE_VI from "../locales/vi/house.json";
 import SERVICE_EN from "../locales/en/service.json";
 import SERVICE_VI from "../locales/vi/service.json";
-
+import REPAIRREPORTRULE_EN from "../locales/en/repair&report&rule.json";
+import REPAIRREPORTRULE_VI from "../locales/vi/repair&report&rule.json";
 // import { locales } from "@/i18n/i18n";
 export const locales = {
   en: "English",
@@ -31,6 +32,7 @@ const resources = {
     permissioncontent: PERMISSIONCONTENT_EN,
     house: HOUSE_EN,
     service: SERVICE_EN,
+    repairreportrule: REPAIRREPORTRULE_EN,
   },
   vi: {
     login: LOGIN_VI,
@@ -40,6 +42,7 @@ const resources = {
     permissioncontent: PERMISSIONCONTENT_VI,
     house: HOUSE_VI,
     service: SERVICE_VI,
+    repairreportrule: REPAIRREPORTRULE_VI,
   },
 };
 
@@ -61,6 +64,7 @@ i18n
       "permissioncontent",
       "house",
       "service",
+      "repairreportrule",
     ],
     fallbackLng: "en",
     interpolation: {
