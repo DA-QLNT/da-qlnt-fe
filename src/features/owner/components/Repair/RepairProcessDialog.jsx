@@ -213,7 +213,7 @@ export default function RepairProcessDialog({ request, open, onOpenChange }) {
                     </Field>
 
                     <Field>
-                      <FieldLabel>Ghi chú cho Tenant (*)</FieldLabel>
+                      <FieldLabel>Ghi chú cho Tenant</FieldLabel>
                       <Textarea
                         {...register("note")}
                         disabled={isCompleted || isCompleting}
@@ -233,7 +233,7 @@ export default function RepairProcessDialog({ request, open, onOpenChange }) {
                     <div className="flex justify-end pt-2">
                       <Button
                         type="submit"
-                        disabled={isCompleting || !isDirty || !isValid}
+                        disabled={isCompleting || !isValid}
                         className="bg-green-600 hover:bg-green-700"
                       >
                         {isCompleting ? (
