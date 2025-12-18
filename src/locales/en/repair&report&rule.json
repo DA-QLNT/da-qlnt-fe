@@ -1,5 +1,6 @@
 {
   "Action": "Action",
+  "AddRule": "Add Rule",
   "All": "All",
   "AllHouse": "All Houses",
   "AllStatus": "All Statuses",
@@ -89,6 +90,8 @@
   "RevenueChart": "Revenue Chart",
   "RevenueCollected": "Revenue Collected",
   "Room": "Room",
+  "Rule": "Rule",
+
   "RoomOccupancy": "Room Occupancy Rate",
   "SelectAll": "Select All",
   "SelectDate": "Select Date",

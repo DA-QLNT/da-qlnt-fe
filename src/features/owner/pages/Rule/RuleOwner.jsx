@@ -26,8 +26,10 @@ import React, { useMemo, useState } from "react";
 import { useGetRulesQuery } from "../../store/houseApi";
 import { Spinner } from "@/components/ui/spinner";
 import RuleAddDialog from "../../components/Rule/RuleAddDialog";
+import { useTranslation } from "react-i18next";
 
 const RuleOwner = () => {
+  const { t } = useTranslation("repairreportrule");
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const { data, isLoading, isFetching, isError } = useGetRulesQuery({
@@ -71,17 +73,17 @@ const RuleOwner = () => {
             }}
           >
             <Plus />
-            Add Rule
+            {t("AddRule")}
           </Button>
         </div>
         <div className="w-full p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
           <Table>
             <TableHeader className={"bg-sidebar"}>
               <TableRow>
-                <TableHead className={"w-[50px]"}>No</TableHead>
-                <TableHead>Rules</TableHead>
+                <TableHead className={"w-[50px]"}>{t("No")}</TableHead>
+                <TableHead>{t("Rule")}</TableHead>
                 <TableHead className={"text-right w-[100px]"}>
-                  Actions
+                  {t("Action")}
                 </TableHead>
               </TableRow>
             </TableHeader>
@@ -92,7 +94,7 @@ const RuleOwner = () => {
                     colSpan={3}
                     className="text-center text-muted-foreground"
                   >
-                    No Rule
+                    {t("NoRule")}
                   </TableCell>
                 </TableRow>
               ) : (
@@ -124,7 +126,7 @@ const RuleOwner = () => {
                         <DropdownMenuContent align="end" className="w-48">
                           <DropdownMenuItem className={"text-red-500"}>
                             <Trash className="mr-2 h-4 w-4 text-red-500" />
-                            Delete
+                            {t("Delete")}
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>

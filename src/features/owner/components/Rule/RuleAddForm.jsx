@@ -15,12 +15,14 @@ import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useTranslation } from "react-i18next";
 const defaultValues = {
   name: "",
   description: "",
 };
 const RuleAddForm = ({ onFormSubmitSuccess }) => {
   const [createRule, { isLoading }] = useCreateRuleMutation();
+  const { t } = useTranslation("repairreportrule");
 
   const {
     register,
@@ -35,11 +37,11 @@ const RuleAddForm = ({ onFormSubmitSuccess }) => {
     try {
       const result = await createRule(data).unwrap();
       if (result.code === 1000) {
-        toast.success("CreateSuccess");
+        toast.success(t("CreateSuccess"));
         reset();
         onFormSubmitSuccess();
       } else {
-        toast.error("CreateFail");
+        toast.error(t("CreateFail"));
       }
     } catch (error) {
       console.error(error);
@@ -49,7 +51,7 @@ const RuleAddForm = ({ onFormSubmitSuccess }) => {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <FieldGroup>
         <Field>
-          <FieldLabel htmlFor="name">Name</FieldLabel>
+          <FieldLabel htmlFor="name">{t("Name")}</FieldLabel>
           <Input
             id="name"
             {...register("name")}
@@ -59,11 +61,10 @@ const RuleAddForm = ({ onFormSubmitSuccess }) => {
           <FieldError>{errors.name?.message}</FieldError>
         </Field>
         <Field>
-          <Label htmlFor="description">Description</Label>
+          <Label htmlFor="description">{t("Description")}</Label>
           <Textarea
             id="description"
             {...register("description")}
-            placeholder="Detail about rule..."
             disabled={isLoading}
             rows={4}
           />
@@ -71,7 +72,7 @@ const RuleAddForm = ({ onFormSubmitSuccess }) => {
         </Field>
       </FieldGroup>
       <Button type="submit" disabled={isLoading} className={"w-full"}>
-        {isLoading ? <Spinner /> : "Create"}
+        {isLoading ? <Spinner /> : t("Create")}
       </Button>
     </form>
   );
