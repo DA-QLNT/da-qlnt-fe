@@ -119,22 +119,22 @@ const data = {
     //   icon: IconDashboard,
     // },
     {
-      title: "Phòng",
+      title: "Rooms",
       url: "/tenant/rooms",
       icon: IconHome,
     },
     {
-      title: "Hóa đơn",
+      title: "Invoices",
       url: "/tenant/invoices",
       icon: IconReceipt2,
     },
     {
-      title: "Hợp đồng",
+      title: "Contracts",
       url: "/tenant/contracts",
       icon: IconReceipt,
     },
     {
-      title: "Sửa chữa",
+      title: "Repairs",
       url: "/tenant/repairs",
       icon: IconHammer,
     },
