@@ -96,12 +96,12 @@ const ContractOwner = () => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead colSpan={1}>No</TableHead>
+            <TableHead colSpan={1}>{t("No")}</TableHead>
             <TableHead colSpan={2} className="w-[100px]">
-              Representative
+              {t("Representative")}
             </TableHead>
-            <TableHead colSpan={2}>Status</TableHead>
-            <TableHead className="text-right">Action</TableHead>
+            <TableHead colSpan={2}>{t("Status")}</TableHead>
+            <TableHead className="text-right">{t("Action")}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -140,7 +140,7 @@ const ContractOwner = () => {
           })}
           {defaultContracts.length === 0 && (
             <TableRow>
-              <TableCell colSpan={4}>No contract</TableCell>
+              <TableCell colSpan={4}>{t("NoContract")}</TableCell>
             </TableRow>
           )}
         </TableBody>

@@ -32,6 +32,8 @@ import toast from "react-hot-toast";
 import { formatDateTime } from "@/lib/format/dateTimeFormat";
 import ContractSendEmailConfirm from "../../components/Contract/ContractSendEmailConfirm";
 const ContractDetailByHouse = () => {
+  const { t } = useTranslation("contractinvoice");
+
   const { houseId, contractId } = useParams();
   const navigate = useNavigate();
   const backToContractList = () => {
@@ -58,9 +60,7 @@ const ContractDetailByHouse = () => {
     if (contract.status === 0 || contract.status === 2) {
       setIsTenantAddDialogOpen(true);
     } else {
-      toast.error(
-        "Không thể thêm khách thuê khi hợp đồng không phải DRAFT hoặc ACTIVE."
-      );
+      toast.error(t("OnlyAddTenantIfDraftOrActive"));
     }
   };
   // leave tenant
@@ -73,14 +73,12 @@ const ContractDetailByHouse = () => {
       setTenantToLeave(tenant);
       setIsTenantLeaveDialogOpen(true);
     } else {
-      toast.error(
-        "Không thể thay đổi khách thuê khi hợp đồng không phải DRAFT hoặc ACTIVE."
-      );
+      toast.error(t("OnlyChangeTenantIfDraftOrActive"));
     }
   };
   const handleSetRepresentative = async (tenantId) => {
     if (contract.status !== 2) {
-      return toast.error("Chỉ có thể thay đổi đại diện khi hợp đồng ACTIVE.");
+      return toast.error(t("OnlyChangeRepresentativeIfDraftOrActive"));
     }
 
     //  CHỈ THỰC HIỆN KHI UNCHECKING (để chuyển sang người khác)
@@ -89,17 +87,15 @@ const ContractDetailByHouse = () => {
     if (tenant.representative) return; // Đã là đại diện, không làm gì.
 
     // Gửi mutation chọn người này làm đại diện
-    const toastId = toast.loading(
-      `Đang gán ${tenant.fullName} làm đại diện...`
-    );
+    const toastId = toast.loading(t("Assigning"));
     try {
       await setRepresentative({
         contractId: contract.id,
         newRepresentativeId: tenantId,
       }).unwrap();
-      toast.success("Đã gán đại diện thành công!", { id: toastId });
+      toast.success(t("AssignSuccess"), { id: toastId });
     } catch (error) {
-      toast.error(error.data?.message || "Gán đại diện thất bại.", {
+      toast.error(t("AssignFailed"), {
         id: toastId,
       });
     }
@@ -114,9 +110,7 @@ const ContractDetailByHouse = () => {
     if (contract.status === 0 || contract.status === 2) {
       setIsServiceAddDialogOpen(true);
     } else {
-      toast.error(
-        "Không thể chỉnh sửa dịch vụ khi hợp đồng không phải DRAFT hoặc ACTIVE."
-      );
+      toast.error(t("OnlyEditServiceIfDraftOrActive"));
     }
   };
   const closeServiceAddDialog = (open) => {
@@ -131,7 +125,7 @@ const ContractDetailByHouse = () => {
       // Chỉ khi DRAFT (0)
       setIsActivateDialogOpen(true);
     } else {
-      toast.error("Chỉ hợp đồng bản nháp (DRAFT) mới có thể Kích hoạt.");
+      toast.error(t("OnlyActivateIfDraft"));
     }
   };
   const closeActivateDialog = (open) => {
@@ -159,9 +153,7 @@ const ContractDetailByHouse = () => {
     if (contract.status === 0 || contract.status === 1) {
       setIsCancelDialogOpen(true);
     } else {
-      toast.error(
-        "Chỉ có thể Hủy hợp đồng trước ngày hiệu lực (DRAFT/PENDING)."
-      );
+      toast.error(t("OnlyCancelIfDraftOrPending"));
     }
   };
   const closeCancelDialog = (open) => {
@@ -178,7 +170,7 @@ const ContractDetailByHouse = () => {
     if (contract.status === 2) {
       setIsExtendDialogOpen(true);
     } else {
-      toast.error("Chỉ hợp đồng đang ACTIVE mới có thể Gia hạn.");
+      toast.error(t("OnlyExtendIfActive"));
     }
   };
   const closeExtendDialog = (open) => {
@@ -198,7 +190,7 @@ const ContractDetailByHouse = () => {
   } else if (errorContract || !contract) {
     return (
       <div className="p-6 text-center text-red-500">
-        Không tìm thấy Hợp đồng ID: {contractId}.
+        {t("NoContract")}: {contractId}.
       </div>
     );
   }
@@ -263,12 +255,12 @@ const ContractDetailByHouse = () => {
         onClick={backToContractList}
         className={"w-fit"}
       >
-        <ArrowLeft className="mr-2 h-4 w-4" /> Quay lại Danh sách Hợp đồng
+        <ArrowLeft className="mr-2 h-4 w-4" /> {t("Back")}
       </Button>
 
       <header className="flex justify-between items-center mb-6 border-b pb-4">
         <h1 className="text-2xl font-bold flex items-center gap-3">
-          <FileText className="w-6 h-6" /> Chi tiết Hợp đồng phòng{" "}
+          <FileText className="w-6 h-6" /> {t("DetailContract")}{" "}
           {contract.roomName}
         </h1>
       </header>
@@ -278,12 +270,12 @@ const ContractDetailByHouse = () => {
         <CardHeader>
           <CardTitle className="text-xl flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Info className="h-5 w-5" /> Thông tin Hợp đồng
+              <Info className="h-5 w-5" /> {t("ContractInfor")}
             </div>
             {(contract.status === 0 ||
               contract.status === 1 ||
               contract.status === 2) && (
-              <Button onClick={openContractInforEditDialog}>Sửa</Button>
+              <Button onClick={openContractInforEditDialog}>{t("Edit")}</Button>
             )}
           </CardTitle>
         </CardHeader>
@@ -291,40 +283,46 @@ const ContractDetailByHouse = () => {
           <Table>
             <TableBody>
               <TableRow>
-                <TableCell className="w-1/4 font-medium">Phòng thuê</TableCell>
+                <TableCell className="w-1/4 font-medium">
+                  {t("RentedRoom")}
+                </TableCell>
                 <TableCell>
-                  {contract.roomName} (Nhà: {contract.houseName})
+                  {contract.roomName} ({t("House")}: {contract.houseName})
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell className="font-medium">Trạng thái</TableCell>
+                <TableCell className="font-medium">{t("Status")}</TableCell>
                 <TableCell>
                   <ContractStatusBadge contractStatus={contract.status} />
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell className="font-medium">Giá thuê</TableCell>
+                <TableCell className="font-medium">{t("Price")}</TableCell>
                 <TableCell>{formatCurrency(contract.rent)}</TableCell>
               </TableRow>
               <TableRow>
-                <TableCell className="font-medium">Giá cọc</TableCell>
+                <TableCell className="font-medium">{t("Deposit")}</TableCell>
                 <TableCell>{formatCurrency(contract.deposit)}</TableCell>
               </TableRow>
               <TableRow>
-                <TableCell className="font-medium">Chu kỳ thanh toán</TableCell>
-                <TableCell>{contract.paymentCycle} tháng/lần</TableCell>
+                <TableCell className="font-medium">
+                  {t("PaymentCycle")}
+                </TableCell>
+                <TableCell>
+                  {contract.paymentCycle} {t("Month/Time")}
+                </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell className="font-medium">Ngày hiệu lực</TableCell>
+                <TableCell className="font-medium">
+                  {t("EffectiveDate")}
+                </TableCell>
                 <TableCell>
                   {formatDateTime(contract.startDate).formattedDate} -
                   {formatDateTime(contract.endDate).formattedDate}
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell className="font-medium">
-                  Phạt nếu vi phạm quy tắc
-                </TableCell>
+                <TableCell className="font-medium">{t("Penalty")}</TableCell>
                 <TableCell>{formatCurrency(contract.penaltyAmount)}</TableCell>
               </TableRow>
             </TableBody>
@@ -337,10 +335,10 @@ const ContractDetailByHouse = () => {
         <CardHeader>
           <CardTitle className="text-xl flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <User className="h-5 w-5" /> Danh sách Khách thuê{" "}
+              <User className="h-5 w-5" /> {t("ListTenant")}{" "}
             </div>
             {(contract.status === 0 || contract.status === 2) && (
-              <Button onClick={openTenantAddDialog}>Thêm khách</Button>
+              <Button onClick={openTenantAddDialog}>{t("AddTenant")}</Button>
             )}
           </CardTitle>
         </CardHeader>
@@ -349,10 +347,10 @@ const ContractDetailByHouse = () => {
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[10px]">#</TableHead>
-                <TableHead>Họ Tên</TableHead>
-                <TableHead>SĐT</TableHead>
-                <TableHead>Đại diện</TableHead>
-                <TableHead className="text-right">Thao tác</TableHead>
+                <TableHead>{t("FullName")}</TableHead>
+                <TableHead>{t("PhoneNumber")}</TableHead>
+                <TableHead>{t("Representative")}</TableHead>
+                <TableHead className="text-right">{t("Action")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -384,7 +382,7 @@ const ContractDetailByHouse = () => {
                         variant="destructive"
                         onClick={() => openLeaveTenantDialog(tenant)}
                       >
-                        Rời
+                        {t("Leave")}
                       </Button>
                     )}
                   </TableCell>
@@ -400,10 +398,10 @@ const ContractDetailByHouse = () => {
         <CardHeader>
           <CardTitle className="text-xl flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Settings className="h-5 w-5" /> Dịch vụ áp dụng
+              <Settings className="h-5 w-5" /> {t("AppliedServices")}
             </div>
             {(contract.status === 0 || contract.status === 2) && (
-              <Button onClick={openServiceAddDialog}>Thêm dịch vụ</Button>
+              <Button onClick={openServiceAddDialog}>{t("AddService")}</Button>
             )}
           </CardTitle>
         </CardHeader>
@@ -411,10 +409,10 @@ const ContractDetailByHouse = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Dịch vụ</TableHead>
-                <TableHead>Giá/Chu kỳ</TableHead>
-                <TableHead>Cách tính</TableHead>
-                <TableHead className="text-right">Thao tác</TableHead>
+                <TableHead>{t("ServiceName")}</TableHead>
+                <TableHead>{t("PricePerCycle")}</TableHead>
+                <TableHead>{t("CalculationMethod")}</TableHead>
+                <TableHead className="text-right">{t("Action")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -442,20 +440,20 @@ const ContractDetailByHouse = () => {
           contract.status === 2 ||
           contract.status === 3) && (
           <Button variant="secondary" onClick={openCancelDialog}>
-            Hủy
+            {t("Cancel")}
           </Button>
         )}
         {(contract.status === 0 || contract.status === 1) && (
-          <Button onClick={openSendEmailDialog}>Gửi mail</Button>
+          <Button onClick={openSendEmailDialog}>{t("SendEmail")}</Button>
         )}
         {contract.status === 2 && (
-          <Button onClick={openActivateDialog}>Kích hoạt</Button>
+          <Button onClick={openActivateDialog}>{t("Activate")}</Button>
         )}
 
         {/* ACTIVE ACTIONS */}
         {contract.status === 4 && (
           <Button onClick={openExtendDialog} variant="outline">
-            Gia hạn
+            {t("Extend")}
           </Button>
         )}
       </div>

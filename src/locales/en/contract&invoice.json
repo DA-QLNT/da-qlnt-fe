@@ -92,5 +92,9 @@
   "TotalContracts": "Total contracts",
   "UpdateContractInfo": "Update contract info",
   "View": "View",
-  "Year": "Year"
+  "Year": "Year",
+  "CreateContract": "Create contract",
+  "No": "No",
+  "Representative": "Representative",
+  "Method": "Method"
 }

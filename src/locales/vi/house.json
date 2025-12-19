@@ -22,6 +22,8 @@
   "Code": "Mã",
   "Contract": "Hợp đồng",
   "Create": "Tạo",
+  "CreateContract": "Tạo hợp đồng",
+
   "Delete": "Xóa",
   "DeleteHouseConfirm": "Xác nhận xóa nhà",
   "DeleteRoomConfirm": "Xác nhận xóa phòng",
@@ -91,5 +93,7 @@
   "UpdateFail": "Cập nhật thất bại",
   "UpdatingStatus": "Đang cập nhật trạng thái...",
 
-  "View": "Xem"
+  "View": "Xem",
+  "Representative": "Đại diện",
+  "NoContract": "Không có hợp đồng nào"
 }
