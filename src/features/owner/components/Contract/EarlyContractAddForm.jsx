@@ -257,7 +257,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
         <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
           {/* HOUSE SELECT */}
           <Field>
-            <FieldLabel>Nhà (*)</FieldLabel>
+            <FieldLabel>{t("House")} (*)</FieldLabel>
             <Controller
               name="houseId"
               control={control}
@@ -270,7 +270,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
                   <SelectTrigger>
                     <SelectValue
                       placeholder={
-                        loadingHouses ? "Loading..." : "Select House"
+                        loadingHouses ? t("Loading") : t("SelectHouse")
                       }
                     />
                   </SelectTrigger>
@@ -291,7 +291,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
 
           {/* ROOM SELECT */}
           <Field>
-            <FieldLabel>Phòng (*)</FieldLabel>
+            <FieldLabel>{t("Room")} (*)</FieldLabel>
             <Controller
               name="roomId"
               control={control}
@@ -311,9 +311,9 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
                       placeholder={
                         selectedHouseId
                           ? loadingRooms
-                            ? "Loading Rooms..."
-                            : "Select Room"
-                          : "Select House first"
+                            ? t("LoadingRooms")
+                            : t("SelectRoom")
+                          : t("SelectHouseFirst")
                       }
                     />
                   </SelectTrigger>
@@ -334,7 +334,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
 
           {/* Rent & Deposit */}
           <Field>
-            <FieldLabel>Giá thuê (*)</FieldLabel>
+            <FieldLabel>{t("Rent")} (*)</FieldLabel>
             <Input
               type="number"
               {...register("rent", { valueAsNumber: true })}
@@ -343,7 +343,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
             <FieldError>{errors.rent?.message}</FieldError>
           </Field>
           <Field>
-            <FieldLabel>Tiền cọc (*)</FieldLabel>
+            <FieldLabel>{t("Deposit")} (*)</FieldLabel>
             <Input
               type="number"
               {...register("deposit", { valueAsNumber: true })}
@@ -354,7 +354,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
 
           {/* Start/End Date */}
           <Field>
-            <FieldLabel>Ngày bắt đầu (*)</FieldLabel>
+            <FieldLabel>{t("StartDate")} (*)</FieldLabel>
             <Controller
               name="startDate"
               control={control}
@@ -412,7 +412,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
 
           {/* Payment Cycle & Penalty */}
           <Field>
-            <FieldLabel>Chu kỳ thanh toán(*)</FieldLabel>
+            <FieldLabel>{t("PaymentCycle")}(*)</FieldLabel>
             <Controller
               name="paymentCycle"
               control={control}
@@ -428,7 +428,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
                   <SelectContent>
                     {PAYMENT_CYCLE_OPTIONS.map((val) => (
                       <SelectItem key={val} value={val.toString()}>
-                        {val} Tháng/lần
+                        {val} {t("Month/Time")}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -438,7 +438,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
             <FieldError>{errors.paymentCycle?.message}</FieldError>
           </Field>
           <Field>
-            <FieldLabel>Tiền phạt (*)</FieldLabel>
+            <FieldLabel>{t("PenaltyAmount")} (*)</FieldLabel>
             <Input
               type="number"
               {...register("penaltyAmount", { valueAsNumber: true })}
@@ -451,7 +451,8 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
         {/* ------------------- DỊCH VỤ (MULTI-SELECT CHECKBOX) ------------------- */}
         <Field className="pt-4 border-t">
           <FieldLabel>
-            Dịch vụ áp dụng ({allHouseServiceMeta.length} có sẵn):
+            {t("AppliedServices")} ({allHouseServiceMeta.length}{" "}
+            {t("AvailableServicesCount")}):
           </FieldLabel>
           <Controller
             name="houseServiceIds"
@@ -512,7 +513,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
         {/* ------------------- KHÁCH THUÊ (DYNAMIC ARRAY) ------------------- */}
         <Field className="pt-4 border-t space-y-3">
           <FieldLabel className="font-bold">
-            Danh sách Khách thuê (*):
+            {t("TenantListInContract")} (*):
           </FieldLabel>
 
           {/* ============= PHẦN TÌM KIẾM/NÚT TẠO MỚI ============= */}
@@ -591,7 +592,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
               {/* THÔNG BÁO KHI SĐT CHƯA ĐỦ DÀI */}
               {phoneSearchTerm.length > 0 && phoneSearchTerm.length < 5 && (
                 <p className="text-sm text-yellow-600">
-                  Nhập đủ 5 số để tìm kiếm.
+                  {t("Enter5DigitsToSearch")}
                 </p>
               )}
             </div>
@@ -603,7 +604,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
           {/* ============= DANH SÁCH TENANT ĐÃ THÊM ============= */}
           <div className="space-y-2 pt-2">
             <h4 className="font-semibold text-sm">
-              Khách thuê trong Hợp đồng ({fields.length}):
+              {t("TenantsInContract")} ({fields.length}):
             </h4>
 
             {fields.map((fieldItem, index) => (

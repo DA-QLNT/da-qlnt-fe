@@ -337,10 +337,10 @@ const ContractDetailOwner = () => {
         <CardHeader>
           <CardTitle className="text-xl flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <User className="h-5 w-5" /> Danh sách Khách thuê{" "}
+              <User className="h-5 w-5" /> {t("TenantListInContract")}{" "}
             </div>
             {(contract.status === 0 || contract.status === 2) && (
-              <Button onClick={openTenantAddDialog}>Tạo khách thuê</Button>
+              <Button onClick={openTenantAddDialog}>{t("CreateTenant")}</Button>
             )}
           </CardTitle>
         </CardHeader>
@@ -348,11 +348,11 @@ const ContractDetailOwner = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[10px]">#</TableHead>
-                <TableHead>Họ Tên</TableHead>
-                <TableHead>SĐT</TableHead>
-                <TableHead>Đại diện</TableHead>
-                <TableHead className="text-right">Hành động</TableHead>
+                <TableHead className="w-[10px]">{t("Number")}</TableHead>
+                <TableHead>{t("FullName")}</TableHead>
+                <TableHead>{t("PhoneNumber")}</TableHead>
+                <TableHead>{t("Representative")}</TableHead>
+                <TableHead className="text-right">{t("Action")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -384,7 +384,7 @@ const ContractDetailOwner = () => {
                         variant="destructive"
                         onClick={() => openLeaveTenantDialog(tenant)}
                       >
-                        Rời
+                        {t("Leave")}
                       </Button>
                     )}
                   </TableCell>
@@ -400,10 +400,10 @@ const ContractDetailOwner = () => {
         <CardHeader>
           <CardTitle className="text-xl flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Settings className="h-5 w-5" /> Dịch vụ áp dụng
+              <Settings className="h-5 w-5" /> {t("AppliedServices")}
             </div>
             {(contract.status === 0 || contract.status === 2) && (
-              <Button onClick={openServiceAddDialog}>Thêm dịch vụ</Button>
+              <Button onClick={openServiceAddDialog}>{t("AddService")}</Button>
             )}
           </CardTitle>
         </CardHeader>
@@ -411,10 +411,10 @@ const ContractDetailOwner = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Dịch vụ</TableHead>
-                <TableHead>Giá/Chu kỳ</TableHead>
-                <TableHead>Cách tính</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead>{t("Service")}</TableHead>
+                <TableHead>{t("PricePerCycle")}</TableHead>
+                <TableHead>{t("CalculationMethod")}</TableHead>
+                <TableHead className="text-right">{t("Action")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -439,17 +439,17 @@ const ContractDetailOwner = () => {
         {/* DRAFT ACTIONS */}
         {(contract.status === 0 || contract.status === 1) && (
           <Button variant="secondary" onClick={openCancelDialog}>
-            Hủy
+            {t("Cancel")}
           </Button>
         )}
         {contract.status === 0 && (
-          <Button onClick={openActivateDialog}>Kích hoạt</Button>
+          <Button onClick={openActivateDialog}>{t("Activate")}</Button>
         )}
 
         {/* ACTIVE ACTIONS */}
         {contract.status === 2 && (
           <Button onClick={openExtendDialog} variant="outline">
-            Gia hạn
+            {t("Extend")}
           </Button>
         )}
       </div>

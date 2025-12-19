@@ -332,7 +332,7 @@ export default function ContractAddForm({
                   <SelectContent>
                     {PAYMENT_CYCLE_OPTIONS.map((val) => (
                       <SelectItem key={val} value={val.toString()}>
-                        {val} Tháng/lần
+                        {val} {t("Month/Time")}
                       </SelectItem>
                     ))}
                   </SelectContent>

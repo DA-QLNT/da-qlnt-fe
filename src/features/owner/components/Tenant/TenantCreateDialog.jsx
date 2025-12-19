@@ -11,8 +11,8 @@ import TenantCreateForm from "./TenantCreateForm";
 import { useTranslation } from "react-i18next";
 
 export default function TenantCreateDialog({ onTenantCreated }) {
-  const { t } = useTranslation("usercontent");
   const [open, setOpen] = React.useState(false);
+  const { t } = useTranslation("contract&invoice");
 
   const handleFormSubmitSuccess = (newTenant) => {
     onTenantCreated(newTenant);
@@ -25,7 +25,7 @@ export default function TenantCreateDialog({ onTenantCreated }) {
         type="button"
         size="sm"
         onClick={() => setOpen(true)}
-        className="flex-shrink-0 mt-0"
+        className="shrink-0 mt-0"
       >
         <PlusCircle className="h-4 w-4 mr-2" />
         {t("CreateTenant")}

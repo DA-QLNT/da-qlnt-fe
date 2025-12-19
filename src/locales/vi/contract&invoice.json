@@ -112,7 +112,7 @@
   "ServiceName": "Tên dịch vụ",
   "ServicePrice": "Giá dịch vụ",
   "Services": "Dịch vụ",
-  "ServiceTable": "Dịch vụ",
+  "Service": "Dịch vụ",
   "StartDate": "Ngày bắt đầu",
   "Status": "Trạng thái",
   "SuggestedDate": "Ngày được đề xuất",
@@ -218,5 +218,14 @@
   "EmailPlaceholder": "Email",
   "PhoneNumberInput": "Số điện thoại",
   "CreateDraftContractButton": "Tạo Bản Nháp Hợp Đồng",
-  "inContract": "trong Hợp đồng"
+  "inContract": "trong Hợp đồng",
+  "Number": "#",
+  "CalculationMethod": "Cách tính",
+  "SelectHouse": "Chọn nhà",
+  "SelectRoom": "Chọn phòng",
+  "SelectHouseFirst": "Chọn nhà trước",
+  "LoadingRooms": "Đang tải phòng...",
+  "AvailableServicesCount": "có sẵn",
+  "TenantsInContract": "Khách thuê trong Hợp đồng",
+  "Enter5DigitsToSearch": "Nhập đủ 5 số để tìm kiếm"
 }
