@@ -16,7 +16,9 @@ const RuleEditDialog = ({ ruleId, open, onOpenChange }) => {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className={"sm:max-w-[425px]"}>
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">{t("EditRule")}</DialogTitle>
+          <DialogTitle className="flex items-center gap-2">
+            {t("EditRule")}
+          </DialogTitle>
         </DialogHeader>
         <RuleEditForm ruleId={ruleId} onFormSubmitSuccess={handleSuccess} />
       </DialogContent>

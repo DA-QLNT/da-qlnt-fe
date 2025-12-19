@@ -1,5 +1,10 @@
 import React from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useDeleteRuleMutation } from "../../store/houseApi";
 import toast from "react-hot-toast";
@@ -33,7 +38,11 @@ const RuleDeleteConfirm = ({ ruleId, open, onOpenChange, onDeleted }) => {
             <Button variant="ghost" onClick={() => onOpenChange(false)}>
               {t("Cancel")}
             </Button>
-            <Button variant="destructive" onClick={handleDelete} disabled={isLoading}>
+            <Button
+              variant="destructive"
+              onClick={handleDelete}
+              disabled={isLoading}
+            >
               {t("Delete")}
             </Button>
           </div>
