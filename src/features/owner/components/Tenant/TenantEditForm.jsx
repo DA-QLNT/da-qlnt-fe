@@ -132,7 +132,7 @@ const TenantEditForm = ({ tenant, onFormSubmitSuccess }) => {
             <FieldError>{errors.fullName?.message}</FieldError>
           </Field>
           <Field>
-            <FieldLabel>Email</FieldLabel>
+            <FieldLabel>{t("Email")}</FieldLabel>
             <Input
               id="email"
               type={"email"}
