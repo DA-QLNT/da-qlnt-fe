@@ -95,12 +95,13 @@ const ContractDetailOwner = () => {
   const [setRepresentative] = useSetNewRepresentativeMutation();
 
   const openLeaveTenantDialog = (tenant) => {
-    if (contract.status === 4 || contract.status === 0) {
+    if (contract.status === 4) {
       setTenantToLeave(tenant);
       setIsTenantLeaveDialogOpen(true);
-    } else {
-      toast.error(t("OnlyChangeTenantIfDraftOrActive"));
     }
+    // else {
+    //   toast.error(t("OnlyChangeTenantIfDraftOrActive"));
+    // }
   };
   const handleSetRepresentative = async (tenantId) => {
     if (contract.status !== 4 && contract.status !== 0) {
@@ -135,9 +136,10 @@ const ContractDetailOwner = () => {
     // Chỉ cho phép thêm khi DRAFT (0) hoặc ACTIVE (4)
     if (contract.status === 0 || contract.status === 4) {
       setIsServiceAddDialogOpen(true);
-    } else {
-      toast.error(t("OnlyEditServiceIfDraftOrActive"));
     }
+    // else {
+    //   toast.error(t("OnlyEditServiceIfDraftOrActive"));
+    // }
   };
   const closeServiceAddDialog = (open) => {
     if (!open) {
@@ -150,9 +152,10 @@ const ContractDetailOwner = () => {
     if (contract.status === 0) {
       // Chỉ khi DRAFT (0)
       setIsActivateDialogOpen(true);
-    } else {
-      toast.error(t("OnlyActivateIfDraft"));
     }
+    // else {
+    //   toast.error(t("OnlyActivateIfDraft"));
+    // }
   };
   const closeActivateDialog = (open) => {
     if (!open) {
@@ -172,9 +175,10 @@ const ContractDetailOwner = () => {
       contract.status === 3
     ) {
       setIsCancelDialogOpen(true);
-    } else {
-      toast.error(t("OnlyCancelIfDraftOrPending"));
     }
+    // else {
+    //   toast.error(t("OnlyCancelIfDraftOrPending"));
+    // }
   };
   const closeCancelDialog = (open) => {
     if (!open) {
@@ -186,8 +190,8 @@ const ContractDetailOwner = () => {
 
   // Logic mở Dialog Gia hạn
   const openExtendDialog = () => {
-    // Chỉ cho phép gia hạn khi ACTIVE (2)
-    if (contract.status === 2) {
+    // Chỉ cho phép gia hạn khi ACTIVE (4)
+    if (contract.status === 4) {
       setIsExtendDialogOpen(true);
     } else {
       toast.error(t("OnlyExtendIfActive"));
@@ -400,7 +404,7 @@ const ContractDetailOwner = () => {
                   </TableCell>
 
                   <TableCell className="text-right">
-                    {(contract.status === 4 || contract.status === 0) && (
+                    {contract.status === 4 && (
                       <Button
                         variant="destructive"
                         onClick={() => openLeaveTenantDialog(tenant)}
@@ -423,7 +427,7 @@ const ContractDetailOwner = () => {
             <div className="flex items-center gap-2">
               <Settings className="h-5 w-5" /> {t("AppliedServices")}
             </div>
-            {(contract.status === 0 || contract.status === 4) && (
+            {contract.status === 4 && (
               <Button onClick={openServiceAddDialog}>
                 {t("UpdateService")}
               </Button>
@@ -437,7 +441,7 @@ const ContractDetailOwner = () => {
                 <TableHead>{t("Service")}</TableHead>
                 <TableHead>{t("PricePerCycle")}</TableHead>
                 <TableHead>{t("CalculationMethod")}</TableHead>
-                <TableHead className="text-right">{t("Action")}</TableHead>
+                {/* <TableHead className="text-right">{t("Action")}</TableHead> */}
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -448,9 +452,9 @@ const ContractDetailOwner = () => {
                   <TableCell>
                     <ServiceTypeBadge type={Number(service.method)} />
                   </TableCell>
-                  <TableCell className="flex justify-end">
+                  {/* <TableCell className="flex justify-end">
                     <Trash />
-                  </TableCell>
+                  </TableCell> */}
                 </TableRow>
               ))}
             </TableBody>
@@ -477,7 +481,7 @@ const ContractDetailOwner = () => {
         )}
 
         {/* ACTIVE ACTIONS */}
-        {contract.status === 2 && (
+        {contract.status === 4 && (
           <Button onClick={openExtendDialog} variant="outline">
             {t("Extend")}
           </Button>

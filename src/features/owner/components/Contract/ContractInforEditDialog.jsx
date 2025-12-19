@@ -29,28 +29,30 @@ export default function ContractInforEditDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-full sm:max-w-2xl overflow-y-auto">
+      <DialogContent className="w-full sm:max-w-2xl max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
             <SquarePen className="h-6 w-6" /> {t("EditContractInfo")}
           </DialogTitle>
         </DialogHeader>
 
-        {isLoading ? (
-          <div className="flex justify-center py-10">
-            <Spinner className="size-10" />
-          </div>
-        ) : contract ? (
-          <ContractInforEditForm
-            contractId={contractId}
-            initialData={contract}
-            onFormSubmitSuccess={handleSuccess}
-          />
-        ) : (
-          <div className="text-center text-red-500 py-10">
-            {t("CannotLoadContractData")}
-          </div>
-        )}
+        <div className="overflow-y-auto flex-1">
+          {isLoading ? (
+            <div className="flex justify-center py-10">
+              <Spinner className="size-10" />
+            </div>
+          ) : contract ? (
+            <ContractInforEditForm
+              contractId={contractId}
+              initialData={contract}
+              onFormSubmitSuccess={handleSuccess}
+            />
+          ) : (
+            <div className="text-center text-red-500 py-10">
+              {t("CannotLoadContractData")}
+            </div>
+          )}
+        </div>
       </DialogContent>
     </Dialog>
   );

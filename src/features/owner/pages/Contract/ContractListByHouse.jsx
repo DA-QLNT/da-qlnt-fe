@@ -27,7 +27,7 @@ const ContractListByHouse = () => {
     isLoading: loadingContract,
     isError: errorContract,
   } = useGetContractsByHouseIdQuery(
-    { houseId: houseId, page: 0, size: 20 },
+    { houseId: houseId, page: 0, size: 100 },
     {
       skip: !houseId,
     }

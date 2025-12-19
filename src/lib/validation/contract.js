@@ -89,3 +89,40 @@ export const ContractExtendSchema = z.object({
 
   note: z.string().optional(),
 });
+
+// Schema cho việc cập nhật đầy đủ hợp đồng
+export const ContractFullUpdateSchema = z.object({
+  // ID hợp đồng
+  id: z.number(),
+
+  // Thông tin cơ bản
+  startDate: z.date({ required_error: "Ngày bắt đầu là bắt buộc." }),
+  endDate: z.date({ required_error: "Ngày kết thúc là bắt buộc." }),
+  rent: requiredNumber.min(1000, "Giá thuê phải lớn hơn 1,000 VNĐ."),
+  deposit: requiredNumber.min(1000, "Giá cọc phải lớn hơn 1,000 VNĐ."),
+  penaltyAmount: requiredNumber.min(1000, "Phí phạt phải lớn hơn 1,000 VNĐ."),
+  paymentCycle: z.coerce
+    .number()
+    .min(1, "Chu kỳ thanh toán tối thiểu là 1 tháng."),
+
+  // Dịch vụ: [{ serviceId, houseServiceId }]
+  houseServiceIds: z.array(
+    z.object({
+      serviceId: z.number(),
+      houseServiceId: z.number(),
+    })
+  ),
+
+  // Khách thuê: [{ id, representative }]
+  tenants: z
+    .array(
+      z.object({
+        id: z.number(),
+        representative: z.boolean(),
+        // Các trường phụ để hiển thị UI nhưng không gửi body
+        fullName: z.string().optional(),
+        phoneNumber: z.string().optional(),
+      })
+    )
+    .min(1, "Cần ít nhất một khách thuê."),
+});

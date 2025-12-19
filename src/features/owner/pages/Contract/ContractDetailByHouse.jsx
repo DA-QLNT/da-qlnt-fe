@@ -381,7 +381,7 @@ const ContractDetailByHouse = () => {
                   </TableCell>
 
                   <TableCell className="text-right">
-                    {(contract.status === 4 || contract.status === 0) && (
+                    {contract.status === 4 && (
                       <Button
                         variant="destructive"
                         onClick={() => openLeaveTenantDialog(tenant)}
@@ -404,7 +404,7 @@ const ContractDetailByHouse = () => {
             <div className="flex items-center gap-2">
               <Settings className="h-5 w-5" /> {t("AppliedServices")}
             </div>
-            {(contract.status === 0 || contract.status === 4) && (
+            {contract.status === 4 && (
               <Button onClick={openServiceAddDialog}>
                 {t("UpdateService")}
               </Button>
@@ -418,7 +418,7 @@ const ContractDetailByHouse = () => {
                 <TableHead>{t("ServiceName")}</TableHead>
                 <TableHead>{t("PricePerCycle")}</TableHead>
                 <TableHead>{t("CalculationMethod")}</TableHead>
-                <TableHead className="text-right">{t("Action")}</TableHead>
+                {/* <TableHead className="text-right">{t("Action")}</TableHead> */}
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -429,9 +429,9 @@ const ContractDetailByHouse = () => {
                   <TableCell>
                     <ServiceTypeBadge type={Number(service.method)} />
                   </TableCell>
-                  <TableCell className="flex justify-end">
+                  {/* <TableCell className="flex justify-end">
                     <Trash />
-                  </TableCell>
+                  </TableCell> */}
                 </TableRow>
               ))}
             </TableBody>
