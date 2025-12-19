@@ -14,6 +14,7 @@ import toast from "react-hot-toast";
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
+import { useTranslation } from "react-i18next";
 
 /**
  * Dialog xác nhận kích hoạt hợp đồng (DRAFT -> PENDING/ACTIVE)
@@ -24,6 +25,7 @@ export default function ContractActivateConfirm({
   open,
   onOpenChange,
 }) {
+  const { t } = useTranslation("contractinvoice");
   const [activateContract, { isLoading }] = useActivateContractMutation();
 
   const contractId = contract?.id;
@@ -33,21 +35,22 @@ export default function ContractActivateConfirm({
   const isPending = contract && new Date(contract.startDate) > new Date();
 
   const handleActivate = async () => {
-    const toastId = toast.loading(`Đang kích hoạt hợp đồng ${contractId}...`);
+    const toastId = toast.loading(
+      `${t("ActivatingContractLoading")} ${contractId}...`
+    );
     try {
       await activateContract(contractId).unwrap();
 
       toast.success(
-        `Kích hoạt thành công! Hợp đồng đang ở trạng thái ${
-          isPending ? "CHỜ HIỆU LỰC (PENDING)" : "ACTIVE"
+        `${t("ActivatedSuccess")}! ${t("ContractCode")} đang ở trạng thái ${
+          isPending ? t("Pending") : t("Active")
         }`,
         { id: toastId, duration: 5000 }
       );
       onOpenChange(false);
     } catch (error) {
       toast.error(
-        error.data?.message ||
-          "Kích hoạt thất bại. Vui lòng kiểm tra dữ liệu hợp đồng.",
+        error.data?.message || t("PleaseCheckContractData"),
         { id: toastId }
       );
       console.error("Lỗi kích hoạt:", error);
@@ -60,24 +63,28 @@ export default function ContractActivateConfirm({
         <AlertDialogHeader>
           <AlertDialogTitle className="flex items-center gap-2 ">
             <Play className="w-6 h-6" />
-            Xác nhận Kích hoạt Hợp đồng
+            {t("ConfirmActivateContract")}
           </AlertDialogTitle>
           <AlertDialogDescription>
-            Bạn có chắc chắn muốn kích hoạt hợp đồng {contractId} không?
+            {t("ActiveContractMessage").replace(
+              "hợp đồng này",
+              `${t("ContractCode")} ${contractId}`
+            )}
             {isPending ? (
               <span className="mt-2 block text-yellow-600 font-medium">
-                Hợp đồng sẽ chuyển sang trạng thái PENDING (Chờ hiệu lực vào{" "}
-                {startDate}).
+                {t("ContractWillPending")} {startDate}).
               </span>
             ) : (
               <span className="mt-2 block text-yellow-600 font-medium">
-                Hợp đồng sẽ chuyển sang trạng thái ACTIVE ngay lập tức.
+                {t("ContractWillActive")}
               </span>
             )}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isLoading}>Hủy bỏ</AlertDialogCancel>
+          <AlertDialogCancel disabled={isLoading}>
+            {t("DisabledButton")}
+          </AlertDialogCancel>
           <AlertDialogAction
             onClick={handleActivate}
             disabled={isLoading}
@@ -85,11 +92,11 @@ export default function ContractActivateConfirm({
           >
             {isLoading ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Đang kích
-                hoạt...
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />{" "}
+                {t("ActivatingContractLoading")}...
               </>
             ) : (
-              "Đồng ý Kích hoạt"
+              t("ConfirmActivate")
             )}
           </AlertDialogAction>
         </AlertDialogFooter>

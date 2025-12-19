@@ -16,7 +16,7 @@ export default function ContractInforEditDialog({
   open,
   onOpenChange,
 }) {
-  //   const { t } = useTranslation("house");
+  const { t } = useTranslation("contractinvoice");
 
   // Lấy data chi tiết hợp đồng để điền vào form (Nếu chưa có trong cache)
   const { data: contract, isLoading } = useGetContractByIdQuery(contractId, {
@@ -32,7 +32,7 @@ export default function ContractInforEditDialog({
       <DialogContent className="w-full sm:max-w-2xl overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
-            <SquarePen className="h-6 w-6" /> Sửa Thông tin Hợp đồng
+            <SquarePen className="h-6 w-6" /> {t("EditContractInfo")}
           </DialogTitle>
         </DialogHeader>
 
@@ -48,7 +48,7 @@ export default function ContractInforEditDialog({
           />
         ) : (
           <div className="text-center text-red-500 py-10">
-            Không thể tải dữ liệu hợp đồng.
+            {t("CannotLoadContractData")}
           </div>
         )}
       </DialogContent>

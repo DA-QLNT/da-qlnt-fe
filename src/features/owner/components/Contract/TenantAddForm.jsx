@@ -18,8 +18,10 @@ import { useSearchTenantByPhoneNumberQuery } from "../../store/tenantApi";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import TenantCreateDialog from "../Tenant/TenantCreateDialog";
+import { useTranslation } from "react-i18next";
 
 export default function TenantAddForm({ contractId, onFormSubmitSuccess }) {
+  const { t } = useTranslation("contractinvoice");
   const [addTenant, { isLoading: isAdding }] = useAddTenantMutation();
 
   // State cho tìm kiếm
@@ -65,12 +67,14 @@ export default function TenantAddForm({ contractId, onFormSubmitSuccess }) {
       };
 
       await addTenant({ contractId, tenantData: payload }).unwrap();
-      toast.success(`Đã thêm khách thuê ${tenant.fullName} vào hợp đồng.`);
+      toast.success(
+        `${t("AddedTenantToContract")} ${tenant.fullName} ${t("intoContract")}.`
+      );
       setPhoneSearchTerm("");
       refetchSearch();
       onFormSubmitSuccess();
     } catch (error) {
-      toast.error(error.data?.message || "Thêm khách thuê thất bại.");
+      toast.error(error.data?.message || t("AddTenantFailed"));
       console.error("Add tenant error:", error);
     }
   };
@@ -86,10 +90,12 @@ export default function TenantAddForm({ contractId, onFormSubmitSuccess }) {
       };
 
       await addTenant({ contractId, tenantData: payload }).unwrap();
-      toast.success(`Đã thêm khách thuê ${newTenant.fullName} vào hợp đồng.`);
+      toast.success(
+        `${t("AddedTenantToContract")} ${newTenant.fullName} ${t("intoContract")}.`
+      );
       onFormSubmitSuccess();
     } catch (error) {
-      toast.error(error.data?.message || "Thêm khách thuê thất bại.");
+      toast.error(error.data?.message || t("AddTenantFailed"));
       console.error("Add tenant error:", error);
     }
   };
@@ -99,13 +105,13 @@ export default function TenantAddForm({ contractId, onFormSubmitSuccess }) {
       {/* ============= PHẦN TÌM KIẾM/NÚT TẠO MỚI ============= */}
       <Field>
         <FieldLabel className="font-bold">
-          Tìm kiếm hoặc Tạo Khách thuê mới:
+          {t("SearchOrCreateTenant")}
         </FieldLabel>
         <div className="flex gap-2 items-start">
           <div className="flex-grow space-y-2">
             <div className="flex gap-2">
               <Input
-                placeholder="Nhập SĐT để tìm kiếm"
+                placeholder={t("SearchByPhoneNumber")}
                 value={phoneSearchTerm}
                 onChange={(e) => setPhoneSearchTerm(e.target.value)}
                 disabled={isAdding}
@@ -124,8 +130,8 @@ export default function TenantAddForm({ contractId, onFormSubmitSuccess }) {
             {/* HIỂN THỊ KẾT QUẢ TÌM KIẾM */}
             {isSearching && debouncedSearch.length >= 10 && (
               <div className="flex items-center text-sm">
-                <Loader2 className="h-4 w-4 animate-spin mr-2" /> Đang tìm kiếm
-                Tenant...
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />{" "}
+                {t("SearchingTenantLoading")}...
               </div>
             )}
 
@@ -156,15 +162,15 @@ export default function TenantAddForm({ contractId, onFormSubmitSuccess }) {
                     disabled={isAdding}
                   >
                     <UserPlus className="h-4 w-4 mr-2" />
-                    Thêm vào Hợp đồng
+                    {t("AddToContract")}
                   </Button>
                 </Card>
               ) : (
                 // Tenant KHÔNG TÌM THẤY
                 <Card className="p-3 border-red-500 bg-red-50 dark:bg-red-900/10">
                   <p className="font-medium text-sm">
-                    Không tìm thấy Tenant với SĐT *{debouncedSearch}*. Vui lòng
-                    Tạo Tenant mới.
+                    {t("TenantNotFoundWithPhone")} *{debouncedSearch}*.{" "}
+                    {t("PleaseCreateNewTenant")}
                   </p>
                 </Card>
               ))}
@@ -172,7 +178,7 @@ export default function TenantAddForm({ contractId, onFormSubmitSuccess }) {
             {/* THÔNG BÁO KHI SĐT CHƯA ĐỦ DÀI */}
             {phoneSearchTerm.length > 0 && phoneSearchTerm.length < 10 && (
               <p className="text-sm text-yellow-600">
-                Nhập đủ 10 số để tìm kiếm.
+                {t("Enter10DigitsToSearch")}
               </p>
             )}
           </div>

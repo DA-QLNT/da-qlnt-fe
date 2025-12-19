@@ -8,6 +8,7 @@ import {
 import ContractServiceAddForm from "./ContractServiceAddForm";
 import { Settings2 } from "lucide-react";
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 export default function ContractServiceAddDialog({
   contract,
@@ -15,6 +16,7 @@ export default function ContractServiceAddDialog({
   open,
   onOpenChange,
 }) {
+  const { t } = useTranslation("contractinvoice");
   const handleSuccess = () => {
     onOpenChange(false);
   };
@@ -25,10 +27,10 @@ export default function ContractServiceAddDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Settings2 className="h-6 w-6" />
-            Thêm Dịch vụ vào Hợp đồng {contract?.id}
+            {t("AddServiceToContractDialog")} {contract?.id}
           </DialogTitle>
           <DialogDescription>
-            Chọn các dịch vụ có sẵn của nhà trọ để áp dụng cho hợp đồng này.
+            {t("SelectAvailableServices")}
           </DialogDescription>
         </DialogHeader>
 

@@ -30,12 +30,14 @@ import { PAYMENT_CYCLE_OPTIONS } from "@/assets/contract/paymentOptions";
 import { useUpdateContractInforMutation } from "../../store/contractApi"; // ✅ Import hook update
 import { useEffect, useMemo } from "react";
 import { ContractInforEditSchema } from "@/lib/validation/contract";
+import { useTranslation } from "react-i18next";
 
 export default function ContractInforEditForm({
   contractId,
   initialData, // Dữ liệu hợp đồng hiện tại
   onFormSubmitSuccess,
 }) {
+  const { t } = useTranslation("contractinvoice");
   // ✅ Mutation Update
   const [updateContractInfor, { isLoading: isMutating }] =
     useUpdateContractInforMutation();
@@ -87,10 +89,10 @@ export default function ContractInforEditForm({
     try {
       // Gọi mutation update
       await updateContractInfor({ contractId: id, ...payload }).unwrap();
-      toast.success("Cập nhật thông tin hợp đồng thành công!");
+      toast.success(t("ContractInfoUpdatedSuccess"));
       onFormSubmitSuccess();
     } catch (error) {
-      toast.error(error.data?.message || "Cập nhật hợp đồng thất bại.");
+      toast.error(error.data?.message || t("ContractInfoUpdateFailed"));
       console.error("Contract update error:", error);
     }
   };
@@ -103,7 +105,7 @@ export default function ContractInforEditForm({
         <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
           {/* Rent & Deposit */}
           <Field>
-            <FieldLabel>Giá Thuê (*)</FieldLabel>
+            <FieldLabel>{t("Rent")} (*)</FieldLabel>
             <Input
               type="number"
               {...register("rent", { valueAsNumber: true })}
@@ -112,7 +114,7 @@ export default function ContractInforEditForm({
             <FieldError>{errors.rent?.message}</FieldError>
           </Field>
           <Field>
-            <FieldLabel>Tiền Cọc (*)</FieldLabel>
+            <FieldLabel>{t("Deposit")} (*)</FieldLabel>
             <Input
               type="number"
               {...register("deposit", { valueAsNumber: true })}
@@ -122,7 +124,7 @@ export default function ContractInforEditForm({
           </Field>
           {/* Payment Cycle & Penalty */}
           <Field>
-            <FieldLabel>Chu kỳ TT(*)</FieldLabel>
+            <FieldLabel>{t("PaymentCycle")} (*)</FieldLabel>
             <Controller
               name="paymentCycle"
               control={control}
@@ -138,7 +140,7 @@ export default function ContractInforEditForm({
                   <SelectContent>
                     {PAYMENT_CYCLE_OPTIONS.map((val) => (
                       <SelectItem key={val} value={val.toString()}>
-                        {val} Tháng/lần
+                        {val} {t("Month/Time")}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -148,7 +150,7 @@ export default function ContractInforEditForm({
             <FieldError>{errors.paymentCycle?.message}</FieldError>
           </Field>
           <Field>
-            <FieldLabel>Phí Phạt (*)</FieldLabel>
+            <FieldLabel>{t("PenaltyAmount")} (*)</FieldLabel>
             <Input
               type="number"
               {...register("penaltyAmount", { valueAsNumber: true })}
@@ -160,7 +162,7 @@ export default function ContractInforEditForm({
         <div className="grid gap-4 grid-cols-2">
           {/* Start/End Date */}
           <Field className={"col-span-full sm:col-span-1"}>
-            <FieldLabel>Ngày Bắt Đầu (*)</FieldLabel>
+            <FieldLabel>{t("StartDate")} (*)</FieldLabel>
             <Controller
               name="startDate"
               control={control}
@@ -171,7 +173,7 @@ export default function ContractInforEditForm({
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {field.value
                         ? format(new Date(field.value), "dd/MM/yyyy")
-                        : "Chọn ngày"}
+                        : t("SelectDate")}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0">
@@ -188,7 +190,7 @@ export default function ContractInforEditForm({
             <FieldError>{errors.startDate?.message}</FieldError>
           </Field>
           <Field className={"col-span-full sm:col-span-1"}>
-            <FieldLabel>Ngày Kết Thúc (*)</FieldLabel>
+            <FieldLabel>{t("EndDate")} (*)</FieldLabel>
             <Controller
               name="endDate"
               control={control}
@@ -199,7 +201,7 @@ export default function ContractInforEditForm({
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {field.value
                         ? format(new Date(field.value), "dd/MM/yyyy")
-                        : "Chọn ngày"}
+                        : t("SelectDate")}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0">
@@ -229,7 +231,7 @@ export default function ContractInforEditForm({
           ) : (
             <Save className="h-4 w-4 mr-2" />
           )}
-          Cập Nhật Hợp Đồng
+          {t("UpdateContractInfo")}
         </Button>
       </div>
     </form>

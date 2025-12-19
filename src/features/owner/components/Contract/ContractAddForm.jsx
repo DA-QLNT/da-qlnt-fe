@@ -52,12 +52,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 // Import component TenantCreateDialog mới
 import TenantCreateDialog from "../Tenant/TenantCreateDialog";
 import { useSearchTenantByPhoneNumberQuery } from "../../store/tenantApi";
+import { useTranslation } from "react-i18next";
 
 export default function ContractAddForm({
   houseId,
   roomId,
   onFormSubmitSuccess,
 }) {
+  const { t } = useTranslation("contractinvoice");
   const { userId: ownerId } = useAuth();
 
   const [createContract, { isLoading: isMutating }] =
@@ -156,7 +158,7 @@ export default function ContractAddForm({
 
   const handleAddTenantToContract = (tenant) => {
     if (isAlreadyAdded(tenant.id)) {
-      toast.error("Tenant này đã được thêm vào hợp đồng.");
+      toast.error(t("TenantAlreadyAdded"));
       return;
     } // Thêm Tenant đã tìm thấy hoặc mới tạo
 
@@ -167,7 +169,9 @@ export default function ContractAddForm({
       email: tenant.email,
     });
     setSearchPhoneNumber(""); // Reset ô tìm kiếm
-    toast.success(`Đã thêm ${tenant.fullName} vào hợp đồng.`);
+    toast.success(
+      `${t("AddedTenantToContract")} ${tenant.fullName} ${t("intoContract")}.`
+    );
     // Refetch lại để xóa kết quả tìm kiếm cũ
     refetchSearch();
   };
@@ -208,11 +212,11 @@ export default function ContractAddForm({
     try {
       console.log("Payload gửi đi:", payload);
       await createContract(payload).unwrap();
-      toast.success("Hợp đồng được tạo thành bản nháp (DRAFT)!");
+      toast.success(t("ContractCreatedSuccess"));
       reset();
       onFormSubmitSuccess();
     } catch (error) {
-      toast.error(error.data?.message || "Tạo hợp đồng thất bại.");
+      toast.error(error.data?.message || t("ContractCreateFailed"));
       console.error("Contract create error:", error);
     }
   };
@@ -231,7 +235,7 @@ export default function ContractAddForm({
         <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
           {/* Rent & Deposit */}
           <Field>
-            <FieldLabel>Rent (*)</FieldLabel>
+            <FieldLabel>{t("Rent")} (*)</FieldLabel>
             <Input
               type="number"
               {...register("rent", { valueAsNumber: true })}
@@ -240,7 +244,7 @@ export default function ContractAddForm({
           </Field>
 
           <Field>
-            <FieldLabel>Deposit (*)</FieldLabel>
+            <FieldLabel>{t("Deposit")} (*)</FieldLabel>
             <Input
               type="number"
               {...register("deposit", { valueAsNumber: true })}
@@ -249,7 +253,7 @@ export default function ContractAddForm({
           </Field>
           {/* Start/End Date */}
           <Field>
-            <FieldLabel>Start Date (*)</FieldLabel>
+            <FieldLabel>{t("StartDate")} (*)</FieldLabel>
             <Controller
               name="startDate"
               control={control}
@@ -261,7 +265,7 @@ export default function ContractAddForm({
 
                       {field.value
                         ? format(new Date(field.value), "dd/MM/yyyy")
-                        : "Chọn ngày"}
+                        : t("SelectDate")}
                     </Button>
                   </PopoverTrigger>
 
@@ -280,7 +284,7 @@ export default function ContractAddForm({
           </Field>
 
           <Field>
-            <FieldLabel>End Date (*)</FieldLabel>
+            <FieldLabel>{t("EndDate")} (*)</FieldLabel>
             <Controller
               name="endDate"
               control={control}
@@ -292,7 +296,7 @@ export default function ContractAddForm({
 
                       {field.value
                         ? format(new Date(field.value), "dd/MM/yyyy")
-                        : "Chọn ngày"}
+                        : t("SelectDate")}
                     </Button>
                   </PopoverTrigger>
 
@@ -396,7 +400,7 @@ export default function ContractAddForm({
 
         <Field className="pt-4 border-t space-y-3">
           <FieldLabel className="font-bold">
-            Danh sách Khách thuê (*):
+            {t("TenantListInContract")} (*):
           </FieldLabel>
           {/* ============= PHẦN TÌM KIẾM/NÚT TẠO MỚI ============= */}
 
@@ -404,7 +408,7 @@ export default function ContractAddForm({
             <div className="flex-grow space-y-2">
               <div className="flex gap-2 justify-end">
                 <Input
-                  placeholder="Nhập SĐT để tìm kiếm"
+                  placeholder={t("SearchByPhoneNumber")}
                   value={searchPhoneNumber}
                   onChange={(e) => setSearchPhoneNumber(e.target.value)}
                   disabled={isDisabled}
@@ -424,8 +428,8 @@ export default function ContractAddForm({
 
               {loadingSearch && debouncedSearch.length >= 10 && (
                 <div className="flex items-center text-sm">
-                  <Loader2 className="h-4 w-4 animate-spin mr-2" /> Đang tìm
-                  kiếm Tenant...
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />{" "}
+                  {t("SearchingTenantLoading")}...
                 </div>
               )}
 
@@ -468,16 +472,16 @@ export default function ContractAddForm({
                       )}
 
                       {isAlreadyAdded(searchedTenant.id)
-                        ? "Đã thêm"
-                        : "Thêm vào Hợp đồng"}
+                        ? t("Already Added")
+                        : t("AddToContract")}
                     </Button>
                   </Card>
                 ) : (
                   // Tenant KHÔNG TÌM THẤY
                   <Card className="p-3 border-red-500 bg-red-50 dark:bg-red-900/10">
                     <p className="font-medium text-sm">
-                      Không tìm thấy Tenant với SĐT *{debouncedSearch}*. Vui
-                      lòng Tạo Tenant mới.
+                      {t("TenantNotFoundWithPhone")} *{debouncedSearch}*.{" "}
+                      {t("PleaseCreateNewTenant")}
                     </p>
                   </Card>
                 ))}
@@ -486,7 +490,7 @@ export default function ContractAddForm({
               {searchPhoneNumber.length > 0 &&
                 searchPhoneNumber.length < 10 && (
                   <p className="text-sm text-yellow-600">
-                    Nhập đủ 10 số để tìm kiếm.
+                    {t("Enter10DigitsToSearch")}
                   </p>
                 )}
             </div>
@@ -497,7 +501,7 @@ export default function ContractAddForm({
           {/* ============= DANH SÁCH TENANT ĐÃ THÊM ============= */}
           <div className="space-y-2 pt-2">
             <h4 className="font-semibold text-sm">
-              Khách thuê trong Hợp đồng ({fields.length}):
+              {t("Tenants")} {t("inContract")} ({fields.length}):
             </h4>
 
             {fields.map((fieldItem, index) => (
@@ -513,7 +517,7 @@ export default function ContractAddForm({
                   <Input
                     value={fieldItem.fullName}
                     readOnly
-                    placeholder="Họ Tên"
+                    placeholder={t("FullName")}
                     className="bg-gray-100 dark:bg-gray-700"
                   />
                   {/* Hidden fields để gửi payload */}
@@ -530,7 +534,7 @@ export default function ContractAddForm({
                   <Input
                     value={fieldItem.phoneNumber}
                     readOnly
-                    placeholder="Số điện thoại"
+                    placeholder={t("PhoneNumberInput")}
                     className="bg-gray-100 dark:bg-gray-700"
                   />
 
@@ -544,7 +548,7 @@ export default function ContractAddForm({
                   <Input
                     value={fieldItem.email}
                     readOnly
-                    placeholder="Email"
+                    placeholder={t("EmailPlaceholder")}
                     className="bg-gray-100 dark:bg-gray-700"
                   />
 
@@ -571,7 +575,7 @@ export default function ContractAddForm({
 
           {fields.length === 0 && (
             <p className="text-sm text-muted-foreground italic">
-              Vui lòng tìm kiếm hoặc tạo ít nhất một khách thuê.
+              {t("PleaseAddTenant")}
             </p>
           )}
           <FieldError>{errors.tenants?.message}</FieldError>
@@ -589,7 +593,7 @@ export default function ContractAddForm({
           ) : (
             <Save className="h-4 w-4 mr-2" />
           )}
-          Tạo Bản Nháp Hợp Đồng
+          {t("CreateDraftContractButton")}
         </Button>
       </div>
     </form>

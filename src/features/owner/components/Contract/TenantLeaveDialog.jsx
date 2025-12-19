@@ -18,6 +18,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { useTranslation } from "react-i18next";
 
 export default function TenantLeaveDialog({
   contractId,
@@ -25,6 +26,7 @@ export default function TenantLeaveDialog({
   open,
   onOpenChange,
 }) {
+  const { t } = useTranslation("contractinvoice");
   const [leaveTenant] = useLeaveTenantMutation();
   const [setNewRepresentative] = useSetNewRepresentativeMutation();
   const [step, setStep] = useState("SUCCESS"); // SUCCESS | SELECT_NEW_REPRESENTATIVE | REQUIRE_TERMINATE_CONTRACT
@@ -36,7 +38,9 @@ export default function TenantLeaveDialog({
 
   const handleLeave = async () => {
     setIsMutating(true);
-    const toastId = toast.loading(`Đang xử lý ${tenant.fullName} rời phòng...`);
+    const toastId = toast.loading(
+      `${t("Processing")} ${tenant.fullName} ${t("LeaveRoom")}...`
+    );
 
     try {
       const result = await leaveTenant({
@@ -47,20 +51,22 @@ export default function TenantLeaveDialog({
 
       if (serverStatus === "SUCCESS") {
         toast.success(
-          `Khách thuê ${tenant.fullName} đã rời phòng thành công.`,
+          `${t("Tenants")} ${tenant.fullName} đã ${t("LeaveRoom")} thành công.`,
           { id: toastId }
         );
         onOpenChange(false);
       } else if (serverStatus === "REQUIRE_TERMINATE_CONTRACT") {
-        toast.info("Yêu cầu thanh lý hợp đồng.", { id: toastId });
+        toast.info(t("RequireTerminateContractToast"), { id: toastId });
         setStep("REQUIRE_TERMINATE_CONTRACT"); // Chuyển sang bước yêu cầu thanh lý
       } else if (serverStatus === "SELECT_NEW_REPRESENTATIVE") {
-        toast.info("Vui lòng chọn người đại diện mới.", { id: toastId });
+        toast.info(t("PleaseSelectNewRepresentative"), { id: toastId });
         setNewTenants(result.result.tenants);
         setStep("SELECT_NEW_REPRESENTATIVE"); // Chuyển sang bước chọn đại diện
       }
     } catch (error) {
-      toast.error(error.data?.message || "Lỗi xử lý yêu cầu.", { id: toastId });
+      toast.error(error.data?.message || t("ErrorProcessingRequest"), {
+        id: toastId,
+      });
     } finally {
       setIsMutating(false);
     }
@@ -68,19 +74,21 @@ export default function TenantLeaveDialog({
 
   const handleSetRepresentative = async () => {
     if (!selectedRepId)
-      return toast.error("Vui lòng chọn một người đại diện mới.");
+      return toast.error(t("PleaseSelectNewRepresentative"));
     setIsMutating(true);
-    const toastId = toast.loading(`Đang gán đại diện mới...`);
+    const toastId = toast.loading(t("AssigningNewRepresentative"));
 
     try {
       await setNewRepresentative({
         contractId,
         newRepresentativeId: selectedRepId,
       }).unwrap();
-      toast.success("Gán đại diện mới thành công!", { id: toastId });
+      toast.success(t("AssignNewRepresentativeSuccess"), { id: toastId });
       onOpenChange(false); // Đóng dialog
     } catch (error) {
-      toast.error(error.data?.message || "Lỗi gán đại diện.", { id: toastId });
+      toast.error(error.data?.message || t("ErrorAssignRepresentative"), {
+        id: toastId,
+      });
     } finally {
       setIsMutating(false);
     }
@@ -103,16 +111,18 @@ export default function TenantLeaveDialog({
     <>
       <AlertDialogHeader>
         <AlertDialogTitle className="flex items-center gap-2 text-red-600">
-          <UserMinus className="w-6 h-6" /> Xác nhận Khách rời phòng
+          <UserMinus className="w-6 h-6" /> {t("ConfirmTenantLeave")}
         </AlertDialogTitle>
         <AlertDialogDescription>
-          Anh có chắc chắn muốn cho khách thuê {tenant.fullName} (
-          {isRepresentative ? "Đại diện" : "Khách"}) rời khỏi hợp đồng này
-          không?
+          {t("TenantLeaveMessage")} {tenant.fullName} (
+          {isRepresentative ? t("Representative") : t("Guest")}){" "}
+          {t("LeaveContract")}
         </AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>
-        <AlertDialogCancel disabled={isMutating}>Hủy bỏ</AlertDialogCancel>
+        <AlertDialogCancel disabled={isMutating}>
+          {t("DisabledButton")}
+        </AlertDialogCancel>
         <Button
           onClick={handleLeave}
           disabled={isMutating}
@@ -121,7 +131,7 @@ export default function TenantLeaveDialog({
           {isMutating ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (
-            "Đồng ý rời"
+            t("ConfirmLeave")
           )}
         </Button>
       </AlertDialogFooter>
@@ -133,11 +143,10 @@ export default function TenantLeaveDialog({
     <>
       <AlertDialogHeader>
         <AlertDialogTitle className="flex items-center gap-2">
-          <User className="w-6 h-6" /> Chọn Người Đại Diện Mới
+          <User className="w-6 h-6" /> {t("SelectNewRepresentative")}
         </AlertDialogTitle>
         <AlertDialogDescription>
-          Khách {tenant.fullName} là người đại diện cũ. Vui lòng chọn một trong
-          số khách thuê còn lại làm đại diện mới.
+          {t("Tenants")} {tenant.fullName} {t("SelectNewRepMessage")}
         </AlertDialogDescription>
       </AlertDialogHeader>
 
@@ -149,7 +158,7 @@ export default function TenantLeaveDialog({
           >
             <RadioGroupItem value={rep.id.toString()} id={`rep-${rep.id}`} />
             <Label htmlFor={`rep-${rep.id}`}>
-              {rep.fullName} (SĐT: {rep.phoneNumber || "N/A"})
+              {rep.fullName} ({t("PhoneNumber")}: {rep.phoneNumber || "N/A"})
             </Label>
           </div>
         ))}
@@ -163,7 +172,7 @@ export default function TenantLeaveDialog({
           {isMutating ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (
-            "Gán Đại Diện Mới"
+            t("AssignNewRepresentative")
           )}
         </Button>
       </AlertDialogFooter>
@@ -175,17 +184,15 @@ export default function TenantLeaveDialog({
     <>
       <AlertDialogHeader>
         <AlertDialogTitle className="flex items-center gap-2 text-red-600">
-          ⚠️ Yêu cầu Thanh lý Hợp đồng
+          ⚠️ {t("RequireTerminateContract")}
         </AlertDialogTitle>
         <AlertDialogDescription>
-          Khách {tenant.fullName} là người đại diện duy nhất. Không thể rời
-          phòng mà không thanh lý hợp đồng. Vui lòng thực hiện thao tác Thanh lý
-          Hợp đồng.
+          {t("Tenants")} {tenant.fullName} {t("TerminateRequiredMessage")}
         </AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>
         <Button variant="outline" onClick={() => onOpenChange(false)}>
-          Đóng
+          {t("CloseButton")}
         </Button>
         {/*  Nút chuyển sang luồng thanh lý sẽ được tích hợp ở đây sau */}
       </AlertDialogFooter>

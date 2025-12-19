@@ -18,6 +18,7 @@ import toast from "react-hot-toast";
 import { Loader2, Save } from "lucide-react";
 import ServiceTypeBadge from "../Service/ServiceTypeBadge";
 import { formatCurrency } from "@/lib/format/currencyFormat";
+import { useTranslation } from "react-i18next";
 
 // Schema chỉ cần xác thực mảng IDs
 const ServiceIdsSchema = z.object({
@@ -29,6 +30,7 @@ export default function ContractServiceAddForm({
   houseId,
   onFormSubmitSuccess,
 }) {
+  const { t } = useTranslation("contractinvoice");
   const existingServiceIds = useMemo(
     () => contract.services?.map((s) => s.id) || [],
     [contract.services]
@@ -77,10 +79,10 @@ export default function ContractServiceAddForm({
     try {
       await updateServices(payload).unwrap();
 
-      toast.success("Đã thêm dịch vụ vào hợp đồng!");
+      toast.success(t("AddServiceToContract"));
       onFormSubmitSuccess();
     } catch (error) {
-      toast.error(error.data?.message || "Thêm dịch vụ thất bại.");
+      toast.error(error.data?.message || t("AddServiceFailed"));
     }
   };
 
@@ -90,7 +92,7 @@ export default function ContractServiceAddForm({
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <FieldGroup>
         <Field>
-          <FieldLabel>Chọn Dịch vụ muốn thêm (Chưa có trong HĐ):</FieldLabel>
+          <FieldLabel>{t("SelectServicesToAdd")}</FieldLabel>
           <Controller
             name="houseServiceIds"
             control={control}
@@ -128,7 +130,7 @@ export default function ContractServiceAddForm({
                     ))}
                     {allHouseServices.length === 0 && !loadingServices && (
                       <p className="text-muted-foreground text-sm py-4">
-                        Chưa có dịch vụ nào cấu hình cho nhà này.
+                        {t("NoServicesConfigured")}
                       </p>
                     )}
                   </div>
@@ -151,7 +153,7 @@ export default function ContractServiceAddForm({
           ) : (
             <Save className="h-4 w-4 mr-2" />
           )}
-          Cập nhật Dịch vụ
+          {t("UpdateServices")}
         </Button>
       </div>
     </form>
