@@ -1,11 +1,5 @@
 import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
   Table,
   TableBody,
   TableCell,
@@ -21,11 +15,14 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { EllipsisIcon, EllipsisVertical, Plus, Trash } from "lucide-react";
+import { Plus, Eye, Edit3, Trash } from "lucide-react";
 import React, { useMemo, useState } from "react";
 import { useGetRulesQuery } from "../../store/houseApi";
 import { Spinner } from "@/components/ui/spinner";
 import RuleAddDialog from "../../components/Rule/RuleAddDialog";
+import RuleViewDialog from "../../components/Rule/RuleViewDialog";
+import RuleEditDialog from "../../components/Rule/RuleEditDialog";
+import RuleDeleteConfirm from "../../components/Rule/RuleDeleteConfirm";
 import { useTranslation } from "react-i18next";
 
 const RuleOwner = () => {
@@ -37,6 +34,10 @@ const RuleOwner = () => {
     size: pageSize,
   });
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [selectedRuleId, setSelectedRuleId] = useState(null);
+  const [isViewOpen, setIsViewOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const rawRules = data?.rules || [];
   const totalElements = data?.totalElements || 0;
   const totalPages = data?.totalPages || 0;
@@ -64,6 +65,27 @@ const RuleOwner = () => {
   return (
     <div className="px-4 lg:px-6">
       <RuleAddDialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen} />
+      {/* View / Edit / Delete dialogs */}
+      {selectedRuleId && (
+        <>
+          <RuleViewDialog
+            ruleId={selectedRuleId}
+            open={isViewOpen}
+            onOpenChange={setIsViewOpen}
+          />
+          <RuleEditDialog
+            ruleId={selectedRuleId}
+            open={isEditOpen}
+            onOpenChange={setIsEditOpen}
+          />
+          <RuleDeleteConfirm
+            ruleId={selectedRuleId}
+            open={isDeleteOpen}
+            onOpenChange={setIsDeleteOpen}
+            onDeleted={() => setSelectedRuleId(null)}
+          />
+        </>
+      )}
 
       <div className="flex flex-col gap-8">
         <div className="text-end ">
@@ -110,26 +132,38 @@ const RuleOwner = () => {
                       </p>
                     </TableCell>
                     <TableCell className={"text-right w-[100px]"}>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="sm">
-                            <EllipsisIcon
-                              size={20}
-                              className="hidden sm:block"
-                            />
-                            <EllipsisVertical
-                              size={20}
-                              className="block sm:hidden"
-                            />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-48">
-                          <DropdownMenuItem className={"text-red-500"}>
-                            <Trash className="mr-2 h-4 w-4 text-red-500" />
-                            {t("Delete")}
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                      <div className="flex justify-end gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            setSelectedRuleId(rule.id);
+                            setIsViewOpen(true);
+                          }}
+                        >
+                          <Eye className="mr-2 h-4 w-4" /> {t("View")}
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => {
+                            setSelectedRuleId(rule.id);
+                            setIsEditOpen(true);
+                          }}
+                        >
+                          <Edit3 className="mr-2 h-4 w-4" /> {t("Edit")}
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => {
+                            setSelectedRuleId(rule.id);
+                            setIsDeleteOpen(true);
+                          }}
+                        >
+                          <Trash className="mr-2 h-4 w-4" /> {t("Delete")}
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))

@@ -453,7 +453,7 @@ const ContractDetailByHouse = () => {
             {t("SendEmail")}
           </Button>
         )}
-        {(contract.status === 0 || contract.status === 2) && (
+        {contract.status === 2 && (
           <Button
             onClick={openActivateDialog}
             variant={"outline"}

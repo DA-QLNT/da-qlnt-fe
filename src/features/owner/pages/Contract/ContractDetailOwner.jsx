@@ -471,7 +471,7 @@ const ContractDetailOwner = () => {
             {t("Cancel")}
           </Button>
         )}
-        {contract.status === 0 && (
+        {contract.status === 2 && (
           <Button onClick={openActivateDialog}>{t("Activate")}</Button>
         )}
         {(contract.status === 0 || contract.status === 1) && (
