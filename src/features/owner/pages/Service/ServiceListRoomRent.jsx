@@ -29,7 +29,7 @@ import InvoiceCreateConfirmDialog from "../../components/Service/InvoiceCreateCo
 import InvoiceListDialog from "../../components/Service/InvoiceListDialog";
 
 const ServiceListRoomRent = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation("service");
   const { houseId } = useParams();
 
   // State cho Declare Dialog
@@ -96,7 +96,7 @@ const ServiceListRoomRent = () => {
 
     if (
       !window.confirm(
-        `Bạn có chắc muốn xác nhận tất cả chỉ số cho tháng ${currentMonth}/${currentYear} không?`
+        `${t("ConfirmAllIndexesForMonth")} ${currentMonth}/${currentYear}?`
       )
     ) {
       return;
@@ -108,10 +108,10 @@ const ServiceListRoomRent = () => {
         year: currentYear,
       }).unwrap();
       toast.success(
-        `Đã xác nhận tất cả chỉ số cho tháng ${currentMonth}/${currentYear}!`
+        `${t("ConfirmedAllIndexesForMonth")} ${currentMonth}/${currentYear}!`
       );
     } catch (error) {
-      toast.error(error.data?.message || "Xác nhận chỉ số thất bại.");
+      toast.error(error.data?.message || t("ConfirmIndexFailed"));
       console.error("Confirm service usage error:", error);
     }
   };
@@ -147,7 +147,7 @@ const ServiceListRoomRent = () => {
 
       {/* Header với nút Confirm All */}
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold">Danh sách phòng đang thuê</h2>
+        <h2 className="text-lg font-semibold">{t("RentedRoomList")}</h2>
         <Button
           onClick={handleConfirmAll}
           disabled={isConfirming || roomsToDisplay.length === 0}
@@ -158,7 +158,7 @@ const ServiceListRoomRent = () => {
           ) : (
             <CheckCircle className="h-4 w-4" />
           )}
-          Xác nhận tất cả chỉ số
+          {t("ConfirmAllIndexes")}
         </Button>
       </div>
 
@@ -166,11 +166,11 @@ const ServiceListRoomRent = () => {
         <Table>
           <TableHeader className="bg-sidebar">
             <TableRow>
-              <TableHead className="w-[50px]">STT</TableHead>
-              <TableHead>Phòng</TableHead>
-              <TableHead>Giá</TableHead>
-              <TableHead>Trạng thái</TableHead>
-              <TableHead className="text-right w-[100px]">Thao tác</TableHead>
+              <TableHead className="w-[50px]">{t("No")}</TableHead>
+              <TableHead>{t("Room")}</TableHead>
+              <TableHead>{t("Price")}</TableHead>
+              <TableHead>{t("Status")}</TableHead>
+              <TableHead className="text-right w-[100px]">{t("Action")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -186,7 +186,7 @@ const ServiceListRoomRent = () => {
                   colSpan={5}
                   className="text-center text-muted-foreground"
                 >
-                  Không có phòng nào đang cho thuê
+                  {t("NoRentedRooms")}
                 </TableCell>
               </TableRow>
             ) : (
@@ -210,24 +210,24 @@ const ServiceListRoomRent = () => {
                           <DropdownMenuItem
                             onClick={() => handleOpenDeclareDialog(room.id)}
                           >
-                            Khai báo chỉ số
+                            {t("DeclareServiceRecord")}
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() => handleOpenViewDialog(room)}
                           >
-                            Xem chỉ số
+                            {t("ViewIndexes")}
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() => handleOpenInvoiceListDialog(room.id)}
                           >
-                            Xem hóa đơn
+                            {t("ViewInvoice")}
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() =>
                               handleOpenCreateInvoiceConfirm(room.id)
                             }
                           >
-                            Tạo hóa đơn
+                            {t("CreateInvoice")}
                           </DropdownMenuItem>
                         </DropdownMenuGroup>
                       </DropdownMenuContent>

@@ -8,6 +8,7 @@ import {
 import { FileText } from "lucide-react";
 import { formatCurrency } from "@/lib/format/currencyFormat";
 import EarlyContractAddForm from "./EarlyContractAddForm";
+import { useTranslation } from "react-i18next";
 
 export default function EarlyContractAddDialog({
   houseId,
@@ -15,6 +16,7 @@ export default function EarlyContractAddDialog({
   open,
   onOpenChange,
 }) {
+  const { t } = useTranslation("contractinvoice");
   const handleSuccess = () => {
     onOpenChange(false);
   };
@@ -25,7 +27,7 @@ export default function EarlyContractAddDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
             <FileText className="h-6 w-6" />
-            Tạo Hợp Đồng Thuê Phòng
+            {t("CreateRoomRentalContract")}
           </DialogTitle>
         </DialogHeader>
 

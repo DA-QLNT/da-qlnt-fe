@@ -111,7 +111,7 @@ export default function TenantCreateForm({ onFormSubmitSuccess }) {
           <FieldError>{errors.phoneNumber?.message}</FieldError>
         </Field>
         <Field>
-          <FieldLabel>Email*</FieldLabel>
+          <FieldLabel>{t("Email")}*</FieldLabel>
           <Input type="email" {...register("email")} disabled={isLoading} />
           <FieldError>{errors.email?.message}</FieldError>
         </Field>

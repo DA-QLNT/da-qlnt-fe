@@ -23,8 +23,10 @@ import { Clock, Calendar as CalendarIcon, Loader2, Save } from "lucide-react";
 import React, { useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/lib/format/currencyFormat";
+import { useTranslation } from "react-i18next";
 
 export default function ContractExtendForm({ contract, onFormSubmitSuccess }) {
+  const { t } = useTranslation("contractinvoice");
   const [extendContract, { isLoading }] = useExtendContractMutation();
 
   const currentEndDate = useMemo(
@@ -65,15 +67,17 @@ export default function ContractExtendForm({ contract, onFormSubmitSuccess }) {
       note: data.note || null,
     };
 
-    const toastId = toast.loading(`Đang gia hạn hợp đồng ${contract.id}...`);
+    const toastId = toast.loading(
+      `${t("ExtendingContractLoading")} ${contract.id}...`
+    );
 
     try {
       await extendContract({ contractId: contract.id, data: payload }).unwrap();
 
-      toast.success("Hợp đồng đã được gia hạn thành công!", { id: toastId });
+      toast.success(t("ContractExtendedSuccessMessage"), { id: toastId });
       onFormSubmitSuccess();
     } catch (error) {
-      toast.error(error.data?.message || "Gia hạn thất bại.", { id: toastId });
+      toast.error(error.data?.message || t("ExtendFailed"), { id: toastId });
       console.error("Contract extend error:", error);
     }
   };
@@ -83,13 +87,13 @@ export default function ContractExtendForm({ contract, onFormSubmitSuccess }) {
       <FieldGroup>
         {/* Current End Date */}
         <div className="flex justify-between items-center bg-gray-50 dark:bg-gray-800 p-3 rounded-md">
-          <span className="font-medium">Ngày hết hạn cũ:</span>
+          <span className="font-medium">{t("OldEndDateLabel")}</span>
           <span>{format(currentEndDate, "PP")}</span>
         </div>
 
         {/* New End Date */}
         <Field>
-          <FieldLabel>Ngày Kết Thúc Mới (*)</FieldLabel>
+          <FieldLabel>{t("NewEndDateLabel")} (*)</FieldLabel>
           <Controller
             name="newEndDate"
             control={control}
@@ -104,7 +108,7 @@ export default function ContractExtendForm({ contract, onFormSubmitSuccess }) {
                     <CalendarIcon className="mr-2 h-4 w-4" />
                     {field.value
                       ? format(field.value, "dd/MM/yyyy")
-                      : "Chọn ngày"}
+                      : t("SelectDate")}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0">
@@ -125,11 +129,11 @@ export default function ContractExtendForm({ contract, onFormSubmitSuccess }) {
 
         {/* New Rent */}
         <Field>
-          <FieldLabel>Giá thuê mới (VNĐ)</FieldLabel>
+          <FieldLabel>{t("NewRentLabel")}</FieldLabel>
           <Input
             type="number"
             {...register("newRent", { valueAsNumber: true })}
-            placeholder={`Mặc định: ${formatCurrency(contract.rent)}`}
+            placeholder={`${t("DefaultRent")}: ${formatCurrency(contract.rent)}`}
             disabled={isLoading}
           />
           <FieldError>{errors.newRent?.message}</FieldError>
@@ -137,10 +141,10 @@ export default function ContractExtendForm({ contract, onFormSubmitSuccess }) {
 
         {/* Note */}
         <Field>
-          <FieldLabel>Ghi chú Gia hạn</FieldLabel>
+          <FieldLabel>{t("ExtendNoteLabel")}</FieldLabel>
           <Textarea
             {...register("note")}
-            placeholder="Gia hạn thêm 1 năm..."
+            placeholder={t("ExtendNotePlaceholder")}
             disabled={isLoading}
           />
         </Field>
@@ -157,7 +161,7 @@ export default function ContractExtendForm({ contract, onFormSubmitSuccess }) {
           ) : (
             <Clock className="h-4 w-4 mr-2" />
           )}
-          Gia Hạn Hợp Đồng
+          {t("ExtendContract")}
         </Button>
       </div>
     </form>

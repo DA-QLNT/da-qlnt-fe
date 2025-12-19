@@ -14,7 +14,10 @@ import { Eye } from "lucide-react";
 import { useAuth } from "@/features/auth";
 import { useGetHousesByOwnerIdQuery } from "../../store/houseApi";
 import { Spinner } from "@/components/ui/spinner";
+import { useTranslation } from "react-i18next";
+
 const RecordMeter = () => {
+  const { t } = useTranslation("service");
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const { userId: ownerId, isLoadingMe } = useAuth();
@@ -59,10 +62,10 @@ const RecordMeter = () => {
         <Table>
           <TableHeader className={"bg-sidebar"}>
             <TableRow>
-              <TableHead className="w-[50px]">STT</TableHead>
-              <TableHead>Phòng</TableHead>
-              <TableHead>Địa chỉ</TableHead>
-              <TableHead className="text-right w-[100px]">Thao tác</TableHead>
+              <TableHead className="w-[50px]">{t("No")}</TableHead>
+              <TableHead>{t("House")}</TableHead>
+              <TableHead>{t("Address")}</TableHead>
+              <TableHead className="text-right w-[100px]">{t("Action")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -90,7 +93,7 @@ const RecordMeter = () => {
                         to={`/owner/recordmeters/houses/${house.id}/rooms`}
                         className={"flex items-center gap-2"}
                       >
-                        <Eye /> Phòng thuê
+                        <Eye /> {t("RentedRoom")}
                       </NavLink>
                     </Button>
                   </TableCell>

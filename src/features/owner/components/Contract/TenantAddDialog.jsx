@@ -8,8 +8,10 @@ import {
 import TenantAddForm from "./TenantAddForm";
 import { UserPlus } from "lucide-react";
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 export default function TenantAddDialog({ contractId, open, onOpenChange }) {
+  const { t } = useTranslation("contractinvoice");
   const handleSuccess = () => {
     onOpenChange(false);
   };
@@ -20,7 +22,7 @@ export default function TenantAddDialog({ contractId, open, onOpenChange }) {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <UserPlus className="h-5 w-5" />
-            Thêm Khách Thuê Mới
+            {t("AddTenantToContract")}
           </DialogTitle>
         </DialogHeader>
 

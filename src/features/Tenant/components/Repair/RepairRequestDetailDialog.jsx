@@ -30,6 +30,8 @@ import { useTranslation } from "react-i18next";
 
 // Component Badge cho Trạng thái
 const RepairStatusBadge = ({ status }) => {
+  const { t } = useTranslation("repairreportrule");
+
   const statusInfo = REPAIR_STATUS_MAP[status] || REPAIR_STATUS_MAP[0];
   const { label, color } = statusInfo;
   return <Badge className={`uppercase ${color}`}>{t(`${label}`)}</Badge>;
@@ -42,10 +44,11 @@ export default function RepairRequestDetailDialog({
 }) {
   const { t } = useTranslation("repairreportrule");
 
-  if (!request) return null;
-  // 🚨 HOOK SUBMIT
+  // Always initialize hooks at the top level to preserve hook order
   const [submitRequest, { isLoading: isSubmitting }] =
     useSubmitRepairRequestMutation();
+
+  if (!request) return null;
 
   // 🚨 HÀM XỬ LÝ GỬI YÊU CẦU
   const handleSubmitRequest = async () => {

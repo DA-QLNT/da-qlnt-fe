@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/dialog";
 import ContractAddForm from "./ContractAddForm";
 import { FileText } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function ContractAddDialog({
   houseId,
@@ -14,6 +15,7 @@ export default function ContractAddDialog({
   open,
   onOpenChange,
 }) {
+  const { t } = useTranslation("contractinvoice");
   const handleSuccess = () => {
     onOpenChange(false);
   };
@@ -24,7 +26,7 @@ export default function ContractAddDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
             <FileText className="h-6 w-6" />
-            Tạo Hợp Đồng Thuê Phòng
+            {t("CreateRoomRentalContract")}
           </DialogTitle>
         </DialogHeader>
 

@@ -7,8 +7,10 @@ import {
 import ContractExtendForm from "./ContractExtendForm";
 import { Clock } from "lucide-react";
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 export default function ContractExtendDialog({ contract, open, onOpenChange }) {
+  const { t } = useTranslation("contractinvoice");
   const handleSuccess = () => {
     onOpenChange(false);
   };
@@ -19,7 +21,7 @@ export default function ContractExtendDialog({ contract, open, onOpenChange }) {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
             <Clock className="h-6 w-6" />
-            Gia Hạn Hợp Đồng {contract?.id}
+            {t("ExtendContractTitle")} {contract?.id}
           </DialogTitle>
         </DialogHeader>
 

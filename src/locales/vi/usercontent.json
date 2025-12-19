@@ -24,6 +24,7 @@
   "Filter": "Lọc",
   "FullName": "Họ và tên",
   "IdPersion": "CCCD",
+  "IdPerson": "CCCD",
   "Next": "Tiếp",
   "No": "STT",
   "NoSort": "Không sắp xếp",
@@ -47,5 +48,12 @@
   "Update": "Cập nhật",
 
   "Verified": "Đã xác minh",
-  "ViewProfile": "Xem hồ sơ"
+  "ViewProfile": "Xem hồ sơ",
+  "IdPerson": "CCCD",
+  "CreateFail": "Tạo thất bại",
+  "UpdateFail": "Cập nhật thất bại",
+  "CreateTenant": "Tạo khách thuê",
+  "CreateNewTenant": "Tạo Khách thuê mới",
+  "Email": "Email",
+  "SelectDate": "Chọn ngày"
 }

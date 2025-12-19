@@ -53,8 +53,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useGetHousesByOwnerIdQuery } from "../../store/houseApi";
 import { formatCurrency } from "@/lib/format/currencyFormat";
 import { Card } from "@/components/ui/card";
+import { useTranslation } from "react-i18next";
 
 export default function ContractAddForm({ onFormSubmitSuccess }) {
+  const { t } = useTranslation("contractinvoice");
   const { userId: ownerId } = useAuth();
   const [createContract, { isLoading: isMutating }] =
     useCreateContractMutation();
@@ -163,9 +165,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
 
   const handleAddTenantToContract = (tenant) => {
     if (isAlreadyAdded(tenant.id)) {
-      return toast.error(
-        `Khách thuê ${tenant.fullName} đã có trong danh sách.`
-      );
+      return toast.error(t("TenantAlreadyAdded"));
     }
 
     append({
@@ -175,7 +175,9 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
       email: tenant.email,
     });
     setSearchPhoneNumber("");
-    toast.success(`Đã thêm ${tenant.fullName} vào hợp đồng.`);
+    toast.success(
+      `${t("AddedTenantToContract")} ${tenant.fullName} ${t("intoContract")}.`
+    );
     refetchSearch();
   };
 
@@ -196,7 +198,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
     console.log(data, "abcd");
 
     if (data.tenants.length === 0) {
-      toast.error("Vui lòng thêm ít nhất một khách thuê.");
+      toast.error(t("PleaseAddAtLeastOneTenant"));
       return;
     }
     const finalTenants = data.tenants.filter(
@@ -204,7 +206,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
     );
 
     if (finalTenants.length === 0) {
-      toast.error("Hợp đồng cần ít nhất một khách thuê hợp lệ.");
+      toast.error(t("ContractNeedsAtLeastOneValidTenant"));
       return;
     }
 
@@ -233,11 +235,11 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
 
     try {
       await createContract(payload).unwrap();
-      toast.success("Hợp đồng được tạo thành bản nháp (DRAFT)!");
+      toast.success(t("ContractCreatedSuccess"));
       reset();
       onFormSubmitSuccess();
     } catch (error) {
-      toast.error(error.data?.message || "Tạo hợp đồng thất bại.");
+      toast.error(error.data?.message || t("ContractCreateFailed"));
       console.error("Contract create error:", error);
     }
   };
@@ -255,7 +257,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
         <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
           {/* HOUSE SELECT */}
           <Field>
-            <FieldLabel>Nhà (*)</FieldLabel>
+            <FieldLabel>{t("House")} (*)</FieldLabel>
             <Controller
               name="houseId"
               control={control}
@@ -268,7 +270,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
                   <SelectTrigger>
                     <SelectValue
                       placeholder={
-                        loadingHouses ? "Loading..." : "Select House"
+                        loadingHouses ? t("Loading") : t("SelectHouse")
                       }
                     />
                   </SelectTrigger>
@@ -289,7 +291,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
 
           {/* ROOM SELECT */}
           <Field>
-            <FieldLabel>Phòng (*)</FieldLabel>
+            <FieldLabel>{t("Room")} (*)</FieldLabel>
             <Controller
               name="roomId"
               control={control}
@@ -309,9 +311,9 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
                       placeholder={
                         selectedHouseId
                           ? loadingRooms
-                            ? "Loading Rooms..."
-                            : "Select Room"
-                          : "Select House first"
+                            ? t("LoadingRooms")
+                            : t("SelectRoom")
+                          : t("SelectHouseFirst")
                       }
                     />
                   </SelectTrigger>
@@ -332,7 +334,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
 
           {/* Rent & Deposit */}
           <Field>
-            <FieldLabel>Giá thuê (*)</FieldLabel>
+            <FieldLabel>{t("Rent")} (*)</FieldLabel>
             <Input
               type="number"
               {...register("rent", { valueAsNumber: true })}
@@ -341,7 +343,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
             <FieldError>{errors.rent?.message}</FieldError>
           </Field>
           <Field>
-            <FieldLabel>Tiền cọc (*)</FieldLabel>
+            <FieldLabel>{t("Deposit")} (*)</FieldLabel>
             <Input
               type="number"
               {...register("deposit", { valueAsNumber: true })}
@@ -352,7 +354,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
 
           {/* Start/End Date */}
           <Field>
-            <FieldLabel>Ngày bắt đầu (*)</FieldLabel>
+            <FieldLabel>{t("StartDate")} (*)</FieldLabel>
             <Controller
               name="startDate"
               control={control}
@@ -363,7 +365,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {field.value
                         ? format(new Date(field.value), "dd/MM/yyyy")
-                        : "Chọn ngày"}
+                        : t("SelectDate")}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0">
@@ -380,7 +382,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
             <FieldError>{errors.startDate?.message}</FieldError>
           </Field>
           <Field>
-            <FieldLabel>Ngày kết thúc (*)</FieldLabel>
+            <FieldLabel>{t("EndDate")} (*)</FieldLabel>
             <Controller
               name="endDate"
               control={control}
@@ -391,7 +393,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {field.value
                         ? format(new Date(field.value), "dd/MM/yyyy")
-                        : "Chọn ngày"}
+                        : t("SelectDate")}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0">
@@ -410,7 +412,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
 
           {/* Payment Cycle & Penalty */}
           <Field>
-            <FieldLabel>Chu kỳ thanh toán(*)</FieldLabel>
+            <FieldLabel>{t("PaymentCycle")}(*)</FieldLabel>
             <Controller
               name="paymentCycle"
               control={control}
@@ -426,7 +428,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
                   <SelectContent>
                     {PAYMENT_CYCLE_OPTIONS.map((val) => (
                       <SelectItem key={val} value={val.toString()}>
-                        {val} Tháng/lần
+                        {val} {t("Month/Time")}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -436,7 +438,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
             <FieldError>{errors.paymentCycle?.message}</FieldError>
           </Field>
           <Field>
-            <FieldLabel>Tiền phạt (*)</FieldLabel>
+            <FieldLabel>{t("PenaltyAmount")} (*)</FieldLabel>
             <Input
               type="number"
               {...register("penaltyAmount", { valueAsNumber: true })}
@@ -449,7 +451,8 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
         {/* ------------------- DỊCH VỤ (MULTI-SELECT CHECKBOX) ------------------- */}
         <Field className="pt-4 border-t">
           <FieldLabel>
-            Dịch vụ áp dụng ({allHouseServiceMeta.length} có sẵn):
+            {t("AppliedServices")} ({allHouseServiceMeta.length}{" "}
+            {t("AvailableServicesCount")}):
           </FieldLabel>
           <Controller
             name="houseServiceIds"
@@ -510,7 +513,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
         {/* ------------------- KHÁCH THUÊ (DYNAMIC ARRAY) ------------------- */}
         <Field className="pt-4 border-t space-y-3">
           <FieldLabel className="font-bold">
-            Danh sách Khách thuê (*):
+            {t("TenantListInContract")} (*):
           </FieldLabel>
 
           {/* ============= PHẦN TÌM KIẾM/NÚT TẠO MỚI ============= */}
@@ -518,7 +521,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
             <div className="flex-grow space-y-2">
               <div className="flex gap-2 justify-end">
                 <Input
-                  placeholder="Nhập SĐT để tìm kiếm"
+                  placeholder={t("SearchByPhoneNumber")}
                   value={phoneSearchTerm}
                   onChange={(e) => setSearchPhoneNumber(e.target.value)}
                   disabled={isDisabled}
@@ -537,8 +540,8 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
               {/* HIỂN THỊ KẾT QUẢ TÌM KIẾM */}
               {isSearching && debouncedSearch.length >= 5 && (
                 <div className="flex items-center text-sm">
-                  <Loader2 className="h-4 w-4 animate-spin mr-2" /> Đang tìm
-                  kiếm Tenant...
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />{" "}
+                  {t("SearchingTenantLoading")}...
                 </div>
               )}
 
@@ -573,15 +576,15 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
                         <UserPlus className="h-4 w-4 mr-2" />
                       )}
                       {isAlreadyAdded(foundTenant.id)
-                        ? "Đã thêm"
-                        : "Thêm vào Hợp đồng"}
+                        ? t("Already Added")
+                        : t("AddToContract")}
                     </Button>
                   </Card>
                 ) : (
                   <Card className="p-3 border-red-500 bg-red-50 dark:bg-red-900/10">
                     <p className="font-medium text-sm">
-                      Không tìm thấy Tenant với SĐT *{debouncedSearch}*. Vui
-                      lòng Tạo Tenant mới.
+                      {t("TenantNotFoundWithPhone")} *{debouncedSearch}*.{" "}
+                      {t("PleaseCreateNewTenant")}
                     </p>
                   </Card>
                 ))}
@@ -589,7 +592,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
               {/* THÔNG BÁO KHI SĐT CHƯA ĐỦ DÀI */}
               {phoneSearchTerm.length > 0 && phoneSearchTerm.length < 5 && (
                 <p className="text-sm text-yellow-600">
-                  Nhập đủ 5 số để tìm kiếm.
+                  {t("Enter5DigitsToSearch")}
                 </p>
               )}
             </div>
@@ -601,7 +604,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
           {/* ============= DANH SÁCH TENANT ĐÃ THÊM ============= */}
           <div className="space-y-2 pt-2">
             <h4 className="font-semibold text-sm">
-              Khách thuê trong Hợp đồng ({fields.length}):
+              {t("TenantsInContract")} ({fields.length}):
             </h4>
 
             {fields.map((fieldItem, index) => (
@@ -618,7 +621,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
                   <Input
                     value={fieldItem.fullName}
                     readOnly
-                    placeholder="Họ Tên"
+                    placeholder={t("FullName")}
                     className="bg-gray-100 dark:bg-gray-700"
                   />
                   <input type="hidden" {...register(`tenants.${index}.id`)} />
@@ -633,7 +636,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
                   <Input
                     value={fieldItem.phoneNumber}
                     readOnly
-                    placeholder="Số điện thoại"
+                    placeholder={t("PhoneNumberInput")}
                     className="bg-gray-100 dark:bg-gray-700"
                   />
                   <input
@@ -647,7 +650,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
                   <Input
                     value={fieldItem.email}
                     readOnly
-                    placeholder="Email"
+                    placeholder={t("EmailPlaceholder")}
                     className="bg-gray-100 dark:bg-gray-700"
                   />
                   <input
@@ -674,7 +677,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
 
           {fields.length === 0 && (
             <p className="text-sm text-muted-foreground italic">
-              Vui lòng tìm kiếm hoặc tạo ít nhất một khách thuê.
+              {t("PleaseAddTenant")}
             </p>
           )}
 
@@ -694,7 +697,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
           ) : (
             <Save className="h-4 w-4 mr-2" />
           )}
-          Tạo Bản Nháp Hợp Đồng
+          {t("CreateDraftContractButton")}
         </Button>
       </div>
     </form>

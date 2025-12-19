@@ -97,5 +97,14 @@
   "UpdateSuccess": "Cập nhật thành công",
   "Water": "Nước",
   "Nước": "Nước",
-  "Wifi": "Wifi"
+  "Wifi": "Wifi",
+  "RentedRoomList": "Danh sách phòng đang thuê",
+  "ConfirmAllIndexes": "Xác nhận tất cả chỉ số",
+  "ViewIndexes": "Xem chỉ số",
+  "ViewInvoice": "Xem hóa đơn",
+  "NoRentedRooms": "Không có phòng nào đang cho thuê",
+  "ConfirmAllIndexesForMonth": "Bạn có chắc muốn xác nhận tất cả chỉ số cho tháng",
+  "ConfirmedAllIndexesForMonth": "Đã xác nhận tất cả chỉ số cho tháng",
+  "ConfirmIndexFailed": "Xác nhận chỉ số thất bại",
+  "RentedRoom": "Phòng thuê"
 }

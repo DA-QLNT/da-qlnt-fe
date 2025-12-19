@@ -23,6 +23,7 @@
   "Filter": "Filter",
   "FullName": "Full Name",
   "IdPersion": "Id Persion",
+  "IdPerson": "ID Card",
   "Next": "Next",
   "No": "No",
   "NoSort": "No Sort",
@@ -46,5 +47,12 @@
   "UserProfile": "User Profile",
   "Update": "Update",
   "Verified": "Verified",
-  "ViewProfile": "View Profile"
+  "ViewProfile": "View Profile",
+  "IdPerson": "ID Card",
+  "CreateFail": "Create failed",
+  "UpdateFail": "Update failed",
+  "CreateTenant": "Create tenant",
+  "CreateNewTenant": "Create New Tenant",
+  "Email": "Email",
+  "SelectDate": "Select date"
 }

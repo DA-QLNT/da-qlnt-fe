@@ -98,5 +98,14 @@
   "UpdateSuccess": "Update success",
   "Water": "Water",
   "Nước": "Water",
-  "Wifi": "Wifi"
+  "Wifi": "Wifi",
+  "RentedRoomList": "Rented Room List",
+  "ConfirmAllIndexes": "Confirm All Indexes",
+  "ViewIndexes": "View Indexes",
+  "ViewInvoice": "View Invoice",
+  "NoRentedRooms": "No rented rooms",
+  "ConfirmAllIndexesForMonth": "Are you sure you want to confirm all indexes for month",
+  "ConfirmedAllIndexesForMonth": "Confirmed all indexes for month",
+  "ConfirmIndexFailed": "Confirm index failed",
+  "RentedRoom": "Rented Room"
 }

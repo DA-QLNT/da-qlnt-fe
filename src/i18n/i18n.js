@@ -17,6 +17,8 @@ import SERVICE_EN from "../locales/en/service.json";
 import SERVICE_VI from "../locales/vi/service.json";
 import REPAIRREPORTRULE_EN from "../locales/en/repair&report&rule.json";
 import REPAIRREPORTRULE_VI from "../locales/vi/repair&report&rule.json";
+import CONTRACTINVOICE_EN from "../locales/en/contract&invoice.json";
+import CONTRACTINVOICE_VI from "../locales/vi/contract&invoice.json";
 // import { locales } from "@/i18n/i18n";
 export const locales = {
   en: "English",
@@ -33,6 +35,7 @@ const resources = {
     house: HOUSE_EN,
     service: SERVICE_EN,
     repairreportrule: REPAIRREPORTRULE_EN,
+    contractinvoice: CONTRACTINVOICE_EN,
   },
   vi: {
     login: LOGIN_VI,
@@ -43,6 +46,7 @@ const resources = {
     house: HOUSE_VI,
     service: SERVICE_VI,
     repairreportrule: REPAIRREPORTRULE_VI,
+    contractinvoice: CONTRACTINVOICE_VI,
   },
 };
 
@@ -65,6 +69,7 @@ i18n
       "house",
       "service",
       "repairreportrule",
+      "contractinvoice",
     ],
     fallbackLng: "en",
     interpolation: {

@@ -76,7 +76,7 @@ const HouseList = () => {
         <div className="text-end">
           <Button onClick={openEalryAddContractDialog}>
             <Plus />
-            Tạo hợp đồng
+            {t("CreatContract")}
           </Button>
         </div>
         <div className="w-full p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">

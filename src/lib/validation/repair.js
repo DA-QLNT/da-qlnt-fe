@@ -11,7 +11,7 @@ const optionalFileSchema = z
 
 // 🚨 SCHEMA CHUNG CHO TẠO VÀ SỬA
 export const RepairRequestSchema = z.object({
-  title: z.string().min(5, "Tiêu đề phải có ít nhất 5 ký tự."),
+  title: z.string().min(3, "Tiêu đề phải có ít nhất 3 ký tự."),
 
   description: z.string().optional(),
 

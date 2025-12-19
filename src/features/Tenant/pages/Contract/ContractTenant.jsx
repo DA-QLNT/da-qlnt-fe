@@ -32,7 +32,7 @@ import ContractTenantRejectDialog from "./../../components/ContractTenantRejectD
 import { useNavigate } from "react-router-dom";
 
 const ContractTenant = () => {
-  const { t } = useTranslation("house");
+  const { t } = useTranslation("contract&invoice");
   const navigate = useNavigate();
 
   // FETCH HỢP ĐỒNG MỚI NHẤT

@@ -13,6 +13,7 @@ import { Mail, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import React from "react";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "react-i18next";
 
 /**
  * Dialog xác nhận gửi email hợp đồng cho khách thuê.
@@ -23,24 +24,25 @@ export default function ContractSendEmailConfirm({
   open,
   onOpenChange,
 }) {
+  const { t } = useTranslation("contractinvoice");
   const [sendEmail, { isLoading }] = useSendContractEmailMutation();
 
   const contractId = contract?.id;
 
   const handleSend = async () => {
     const toastId = toast.loading(
-      `Đang gửi hợp đồng ${contractId} qua email...`
+      `${t("SendingContract")} ${contractId} ${t("ViaEmail")}...`
     );
     try {
       await sendEmail(contractId).unwrap();
 
       toast.success(
-        `Hợp đồng ${contractId} đã được gửi email thành công cho khách thuê!`,
+        `${t("ContractCode")} ${contractId} ${t("SentEmailSuccessToTenant")}!`,
         { id: toastId, duration: 5000 }
       );
       onOpenChange(false); // Đóng dialog
     } catch (error) {
-      toast.error(error.data?.message || "Gửi email thất bại.", {
+      toast.error(error.data?.message || t("EmailSendFailed"), {
         id: toastId,
       });
       console.error("Lỗi gửi email:", error);
@@ -53,16 +55,16 @@ export default function ContractSendEmailConfirm({
         <AlertDialogHeader>
           <AlertDialogTitle className="flex items-center gap-2 text-primary">
             <Mail className="w-6 h-6" />
-            Xác nhận Gửi Email Hợp đồng
+            {t("ConfirmSendEmailContract")}
           </AlertDialogTitle>
           <AlertDialogDescription>
-            Anh có chắc chắn muốn gửi email thông báo hợp đồng **{contractId}**
-            tới người thuê không? Thao tác này sẽ gửi bản PDF hợp đồng và thông
-            tin xác nhận tới email của người đại diện.
+            {t("SendEmailMessage")} **{contractId}** {t("SendToPDF")}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isLoading}>Hủy bỏ</AlertDialogCancel>
+          <AlertDialogCancel disabled={isLoading}>
+            {t("DisabledButton")}
+          </AlertDialogCancel>
           <AlertDialogAction
             onClick={handleSend}
             disabled={isLoading}
@@ -70,10 +72,11 @@ export default function ContractSendEmailConfirm({
           >
             {isLoading ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Đang gửi...
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />{" "}
+                {t("SendingEmail")}
               </>
             ) : (
-              "Đồng ý Gửi Email"
+              t("ConfirmSendEmail")
             )}
           </AlertDialogAction>
         </AlertDialogFooter>

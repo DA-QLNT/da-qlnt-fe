@@ -16,7 +16,7 @@ import { useTranslation } from "react-i18next";
 import EarlyContractAddDialog from "../../components/Contract/EarlyContractAddDialog";
 import ContractStatusBadge from "../../components/Contract/ContractStatusBadge";
 const ContractListByHouse = () => {
-  const { t } = useTranslation("house");
+  const { t } = useTranslation("contractinvoice");
   const { houseId } = useParams();
   const navigate = useNavigate();
   const backToContractList = () => {
@@ -77,21 +77,21 @@ const ContractListByHouse = () => {
           onClick={backToContractList}
           className={"w-fit"}
         >
-          <ArrowLeft className="mr-2 h-4 w-4" /> Quay lại Danh sách nhà
+          <ArrowLeft className="mr-2 h-4 w-4" /> {t("Back")}
         </Button>
         <Button onClick={openEalryAddContractDialog}>
           <Plus />
-          Tạo hợp đồng
+          {t("CreateContract")}
         </Button>
       </div>
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className={"w-[50px]"}>STT</TableHead>
-            <TableHead>Phòng</TableHead>
-            <TableHead>Đại diện</TableHead>
-            <TableHead>Trạng thái</TableHead>
-            <TableHead className={"text-right"}>Thao tác</TableHead>
+            <TableHead className={"w-[50px]"}>{t("No")}</TableHead>
+            <TableHead>{t("Room")}</TableHead>
+            <TableHead>{t("Representative")}</TableHead>
+            <TableHead>{t("Status")}</TableHead>
+            <TableHead className={"text-right"}>{t("Method")}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
