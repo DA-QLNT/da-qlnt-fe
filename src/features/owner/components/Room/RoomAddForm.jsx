@@ -122,7 +122,7 @@ export default function RoomAddForm({ houseId, onFormSubmitSuccess }) {
 
           {/* Rent */}
           <Field>
-            <FieldLabel>{t("Rent")}*: </FieldLabel>
+            <FieldLabel>{t("Price")}*: </FieldLabel>
             <Input
               type={"number"}
               {...register("rent", { valueAsNumber: true })}
