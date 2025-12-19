@@ -15,7 +15,6 @@
   "AssignSuccess": "Gán thành công",
   "AvailableServices": "Dịch vụ có sẵn",
   "Back": "Quay lại",
-  "CalculationMethod": "Cách tính",
   "Cancel": "Hủy",
   "CancelContract": "Hủy hợp đồng",
   "CancelContractMessage": "Bạn có chắc chắn muốn hủy hợp đồng này không?",
@@ -208,7 +207,6 @@
   "intoContract": "vào hợp đồng",
   "AddTenantFailed": "Thêm khách thuê thất bại",
   "SearchingTenantLoading": "Đang tìm kiếm Tenant",
-  "AddToContract": "Thêm vào Hợp đồng",
   "TenantNotFoundWithPhone": "Không tìm thấy Tenant với SĐT",
   "PleaseCreateNewTenant": "Vui lòng Tạo Tenant mới",
   "Enter10DigitsToSearch": "Nhập đủ 10 số để tìm kiếm",
@@ -220,12 +218,12 @@
   "CreateDraftContractButton": "Tạo Bản Nháp Hợp Đồng",
   "inContract": "trong Hợp đồng",
   "Number": "#",
-  "CalculationMethod": "Cách tính",
   "SelectHouse": "Chọn nhà",
   "SelectRoom": "Chọn phòng",
   "SelectHouseFirst": "Chọn nhà trước",
   "LoadingRooms": "Đang tải phòng...",
   "AvailableServicesCount": "có sẵn",
   "TenantsInContract": "Khách thuê trong Hợp đồng",
-  "Enter5DigitsToSearch": "Nhập đủ 5 số để tìm kiếm"
+  "Enter5DigitsToSearch": "Nhập đủ 5 số để tìm kiếm",
+  "UpdateService": "Cập nhật dịch vụ"
 }

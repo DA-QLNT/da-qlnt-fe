@@ -403,7 +403,9 @@ const ContractDetailOwner = () => {
               <Settings className="h-5 w-5" /> {t("AppliedServices")}
             </div>
             {(contract.status === 0 || contract.status === 2) && (
-              <Button onClick={openServiceAddDialog}>{t("AddService")}</Button>
+              <Button onClick={openServiceAddDialog}>
+                {t("UpdateService")}
+              </Button>
             )}
           </CardTitle>
         </CardHeader>
