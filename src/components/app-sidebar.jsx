@@ -39,11 +39,11 @@ const data = {
   //   avatar: "/avatars/shadcn.jpg",
   // },
   navMainAdmin: [
-    {
-      title: "Dashboard",
-      url: "/admin",
-      icon: IconDashboard,
-    },
+    // {
+    //   title: "Dashboard",
+    //   url: "/admin",
+    //   icon: IconDashboard,
+    // },
     {
       title: "Users",
       url: "/admin/users",
@@ -59,11 +59,11 @@ const data = {
       url: "/admin/permissions",
       icon: IconKey,
     },
-    {
-      title: "Analytics",
-      url: "/admin/analytics",
-      icon: IconChartBar,
-    },
+    // {
+    //   title: "Analytics",
+    //   url: "/admin/analytics",
+    //   icon: IconChartBar,
+    // },
   ],
   navMainOwner: [
     {
@@ -113,11 +113,11 @@ const data = {
     },
   ],
   navMainTenant: [
-    {
-      title: "Dashboard",
-      url: "/tenant",
-      icon: IconDashboard,
-    },
+    // {
+    //   title: "Dashboard",
+    //   url: "/tenant",
+    //   icon: IconDashboard,
+    // },
     {
       title: "Phòng",
       url: "/tenant/rooms",
