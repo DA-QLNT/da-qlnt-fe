@@ -17,7 +17,7 @@ const TenantOwner = () => {
   const { t } = useTranslation("usercontent");
   const { userId: ownerId, isLoadingMe } = useAuth();
   const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(20);
+  const [pageSize, setPageSize] = useState(100);
   const [search, setSearch] = useState("");
   const {
     data: defaultTenantData,
