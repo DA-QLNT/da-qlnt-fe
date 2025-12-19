@@ -44,6 +44,7 @@ import RepairOwner from "./features/owner/pages/Repair/RepairOwner";
 import RepairByHouse from "./features/owner/pages/Repair/RepairByHouse";
 import ContractHistoryTenant from "./features/Tenant/pages/Contract/ContractHistoryTenant";
 import ContractPendingRenewal from "./features/Tenant/pages/Contract/ContractPendingRenewal";
+import RoomDetailPublic from "./pages/RoomDetailPublic";
 function App() {
   return (
     <div className="min-h-screen flex flex-col">
@@ -53,6 +54,7 @@ function App() {
           {/*Public Pages */}
           <Route element={<MainLayout />}>
             <Route path="/" element={<HomePage />} />
+            <Route path="/rooms/:roomId" element={<RoomDetailPublic />} />
           </Route>
 
           {/* Auth */}

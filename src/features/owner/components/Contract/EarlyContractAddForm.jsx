@@ -148,7 +148,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
     if (selectedRoom) {
       const rent = selectedRoom.rent || 0;
       setValue("rent", rent);
-      setValue("deposit", rent * 2);
+      setValue("deposit", rent);
     }
   }, [selectedRoom, setValue]);
 
