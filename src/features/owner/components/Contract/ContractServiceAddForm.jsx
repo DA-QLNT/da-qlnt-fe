@@ -51,7 +51,7 @@ export default function ContractServiceAddForm({
     if (!contract || !contract.services || contract.services.length === 0)
       return [];
     return contract.services.map((service) => ({
-      houseServiceId: service.id || service.houseServiceId,
+      houseServiceId: service.houseServiceId || service.id,
       serviceId: service.serviceId,
       lastMeterReading: service.lastMeterReading || undefined,
     }));
