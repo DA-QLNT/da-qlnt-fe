@@ -35,6 +35,7 @@ export default function ContractServiceAddDialog({
         </DialogHeader>
 
         <ContractServiceAddForm
+          key={contract?.id} // Force remount khi contract thay đổi
           contract={contract}
           houseId={houseId}
           onFormSubmitSuccess={handleSuccess}

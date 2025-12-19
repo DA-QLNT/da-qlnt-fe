@@ -220,5 +220,6 @@
   "AvailableServicesCount": "available",
   "TenantsInContract": "Tenants in Contract",
   "Enter5DigitsToSearch": "Enter 5 digits to search",
-  "UpdateService": "Update service"
+  "UpdateService": "Update service",
+  "LastMeterReading": "Last Meter Reading"
 }

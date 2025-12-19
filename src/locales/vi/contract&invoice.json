@@ -225,5 +225,6 @@
   "AvailableServicesCount": "có sẵn",
   "TenantsInContract": "Khách thuê trong Hợp đồng",
   "Enter5DigitsToSearch": "Nhập đủ 5 số để tìm kiếm",
-  "UpdateService": "Cập nhật dịch vụ"
+  "UpdateService": "Cập nhật dịch vụ",
+  "LastMeterReading": "Chỉ số cuối"
 }

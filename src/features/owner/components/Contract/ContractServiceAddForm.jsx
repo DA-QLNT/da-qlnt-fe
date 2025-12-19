@@ -6,6 +6,7 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Spinner } from "@/components/ui/spinner";
 import { useForm, Controller } from "react-hook-form";
@@ -20,9 +21,17 @@ import ServiceTypeBadge from "../Service/ServiceTypeBadge";
 import { formatCurrency } from "@/lib/format/currencyFormat";
 import { useTranslation } from "react-i18next";
 
-// Schema chỉ cần xác thực mảng IDs
+// Schema mới với format object có lastMeterReading
 const ServiceIdsSchema = z.object({
-  houseServiceIds: z.array(z.number()).optional(),
+  houseServiceIds: z
+    .array(
+      z.object({
+        houseServiceId: z.number(),
+        serviceId: z.number(),
+        lastMeterReading: z.number().optional(),
+      })
+    )
+    .optional(),
 });
 
 export default function ContractServiceAddForm({
@@ -31,15 +40,22 @@ export default function ContractServiceAddForm({
   onFormSubmitSuccess,
 }) {
   const { t } = useTranslation("contractinvoice");
-  const existingServiceIds = useMemo(
-    () => contract.services?.map((s) => s.id) || [],
-    [contract.services]
-  );
 
   // FETCH TẤT CẢ DỊCH VỤ CỦA NHÀ TRỌ
   const { data: allServicesData, isLoading: loadingServices } =
     useGetHouseServicesByHouseIdQuery(houseId, { skip: !houseId });
   const allHouseServices = allServicesData || [];
+
+  // Map các service đã có trong contract sang format mới
+  const existingServices = useMemo(() => {
+    if (!contract || !contract.services || contract.services.length === 0)
+      return [];
+    return contract.services.map((service) => ({
+      houseServiceId: service.id || service.houseServiceId,
+      serviceId: service.serviceId,
+      lastMeterReading: service.lastMeterReading || undefined,
+    }));
+  }, [contract, contract?.services]);
 
   const [updateServices, { isLoading: isMutating }] =
     useUpdateContractServicesMutation();
@@ -52,33 +68,56 @@ export default function ContractServiceAddForm({
     reset,
   } = useForm({
     resolver: zodResolver(ServiceIdsSchema),
-    defaultValues: { houseServiceIds: existingServiceIds },
+    defaultValues: { houseServiceIds: existingServices },
   });
+
   //  2. PRELOAD TRẠNG THÁI CHECKBOX KHI DỮ LIỆU SERVICES ĐÃ CÓ
-  const isServiceDataReady = !loadingServices && allHouseServices.length > 0;
+  const isServiceDataReady = !loadingServices && allHouseServices.length >= 0;
   const isFormPreloadedRef = useRef(false); // Dùng để tránh reset khi user tương tác
 
   useEffect(() => {
-    if (isServiceDataReady && !isFormPreloadedRef.current) {
-      // Khi Services và Contract đã load, ta reset form với IDs đã gán
-      console.log(existingServiceIds);
+    // Reset form với existing services mỗi khi component mount hoặc contract thay đổi
+    reset({ houseServiceIds: existingServices });
+    isFormPreloadedRef.current = false;
+  }, [contract?.id, reset]);
 
-      reset({ houseServiceIds: existingServiceIds });
-      console.log(existingServiceIds);
+  useEffect(() => {
+    if (isServiceDataReady && !isFormPreloadedRef.current) {
+      // Khi Services đã load, ta update form với services đã gán
+      reset({ houseServiceIds: existingServices });
       isFormPreloadedRef.current = true;
     }
-  }, [isServiceDataReady, existingServiceIds, reset]);
+  }, [isServiceDataReady, existingServices, reset]);
 
   const onSubmit = async (data) => {
+    // Format lại data: chỉ gửi các service được check, và chỉ thêm lastMeterReading cho method = 0
+    const formattedServices = (data.houseServiceIds || []).map((service) => {
+      const houseService = allHouseServices.find(
+        (hs) => hs.id === service.houseServiceId
+      );
+      const result = {
+        houseServiceId: service.houseServiceId,
+        serviceId: service.serviceId,
+      };
+      // Chỉ thêm lastMeterReading nếu method = 0 và có giá trị (kể cả 0)
+      if (
+        houseService &&
+        Number(houseService.method) === 0 &&
+        service.lastMeterReading !== undefined &&
+        service.lastMeterReading !== null
+      ) {
+        result.lastMeterReading = Number(service.lastMeterReading);
+      }
+      return result;
+    });
+
     const payload = {
       contractId: contract.id,
-      houseServiceIds: data.houseServiceIds || [], // Gửi mảng IDs đã được RHF quản lý
+      houseServiceIds: formattedServices,
     };
-    console.log(payload);
 
     try {
       await updateServices(payload).unwrap();
-
       toast.success(t("AddServiceToContract"));
       onFormSubmitSuccess();
     } catch (error) {
@@ -87,7 +126,17 @@ export default function ContractServiceAddForm({
   };
 
   const isDisabled = isMutating || loadingServices;
-  const currentCheckedIds = watch("houseServiceIds") || [];
+  const currentServices = watch("houseServiceIds") || [];
+
+  // Helper function để kiểm tra service đã được check chưa
+  const isServiceChecked = (houseServiceId) => {
+    return currentServices.some((s) => s.houseServiceId === houseServiceId);
+  };
+
+  // Helper function để lấy service từ form data
+  const getServiceFromForm = (houseServiceId) => {
+    return currentServices.find((s) => s.houseServiceId === houseServiceId);
+  };
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <FieldGroup>
@@ -103,31 +152,92 @@ export default function ContractServiceAddForm({
                     <Spinner />
                   </div>
                 ) : (
-                  <div className="space-y-2">
-                    {allHouseServices.map((service) => (
-                      <div
-                        key={service.id}
-                        className="flex items-center justify-between space-x-2 py-1"
-                      >
-                        <div className="flex items-center space-x-2">
-                          <Checkbox
-                            checked={field.value.includes(service.id)}
-                            onCheckedChange={(checked) => {
-                              const newIds = checked
-                                ? [...field.value, service.id]
-                                : field.value.filter((id) => id !== service.id);
-                              field.onChange(newIds);
-                            }}
-                            disabled={isDisabled}
-                          />
-                          <label className="text-sm font-medium">
-                            {service.serviceName} (
-                            {formatCurrency(service.price)})
-                          </label>
+                  <div className="space-y-3">
+                    {allHouseServices.map((service) => {
+                      const isChecked = isServiceChecked(service.id);
+                      const serviceInForm = getServiceFromForm(service.id);
+                      const isMethod0 = Number(service.method) === 0;
+
+                      return (
+                        <div
+                          key={service.id}
+                          className="space-y-2 border-b pb-2 last:border-b-0"
+                        >
+                          <div className="flex items-center justify-between space-x-2">
+                            <div className="flex items-center space-x-2 flex-1">
+                              <Checkbox
+                                checked={isChecked}
+                                onCheckedChange={(checked) => {
+                                  const currentValues = field.value || [];
+                                  if (checked) {
+                                    // Thêm service mới
+                                    const newService = {
+                                      houseServiceId: service.id,
+                                      serviceId: service.serviceId,
+                                      ...(isMethod0 && {
+                                        lastMeterReading:
+                                          serviceInForm?.lastMeterReading ||
+                                          undefined,
+                                      }),
+                                    };
+                                    field.onChange([
+                                      ...currentValues,
+                                      newService,
+                                    ]);
+                                  } else {
+                                    // Xóa service
+                                    field.onChange(
+                                      currentValues.filter(
+                                        (s) => s.houseServiceId !== service.id
+                                      )
+                                    );
+                                  }
+                                }}
+                                disabled={isDisabled}
+                              />
+                              <label className="text-sm font-medium">
+                                {service.serviceName} (
+                                {formatCurrency(service.price)})
+                              </label>
+                            </div>
+                            <ServiceTypeBadge type={Number(service.method)} />
+                          </div>
+                          {/* Hiển thị input lastMeterReading nếu method = 0 và đã được check */}
+                          {isChecked && isMethod0 && (
+                            <div className="ml-7">
+                              <Field>
+                                <FieldLabel className="text-xs">
+                                  {t("LastMeterReading")}:
+                                </FieldLabel>
+                                <Input
+                                  type="number"
+                                  min="0"
+                                  value={serviceInForm?.lastMeterReading || ""}
+                                  onChange={(e) => {
+                                    const currentValues = field.value || [];
+                                    const updatedValues = currentValues.map(
+                                      (s) =>
+                                        s.houseServiceId === service.id
+                                          ? {
+                                              ...s,
+                                              lastMeterReading: e.target.value
+                                                ? Number(e.target.value)
+                                                : 0,
+                                            }
+                                          : s
+                                    );
+                                    field.onChange(updatedValues);
+                                  }}
+                                  disabled={isDisabled}
+                                  className="w-32"
+                                  placeholder="0"
+                                />
+                              </Field>
+                            </div>
+                          )}
                         </div>
-                        <ServiceTypeBadge type={Number(service.method)} />
-                      </div>
-                    ))}
+                      );
+                    })}
                     {allHouseServices.length === 0 && !loadingServices && (
                       <p className="text-muted-foreground text-sm py-4">
                         {t("NoServicesConfigured")}
