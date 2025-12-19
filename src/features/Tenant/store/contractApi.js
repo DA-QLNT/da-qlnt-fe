@@ -2,7 +2,7 @@ import { baseApi } from "@/store/api/baseApi";
 
 export const contractApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    // 1. QUERY LẤY HỢP ĐỒNG MỚI NHẤT CỦA TENANT
+    // 1. QUERY LẤY HỢP ĐỒNG HIỆU LỰC HIỆN TẠI CỦA TENANT
     // Endpoint: /contracts/tenants/current
     getCurrentTenantContract: builder.query({
       query: () => ({
@@ -79,6 +79,14 @@ export const contractApi = baseApi.injectEndpoints({
       transformResponse: (response) => response.result,
       providesTags: ["Contract"],
     }),
+    getPendingRenewalContract: builder.query({
+      query: () => ({
+        url: "/contracts/tenants/pending-renewal",
+        method: "GET",
+      }),
+      transformResponse: (response) => response.result,
+      providesTags: ["Contract", "TenantContract"],
+    }),
   }),
 });
 
@@ -90,4 +98,5 @@ export const {
   useGetInvoiceByIdQuery,
   useDeclareServiceUsageMutation, // Tùy chọn nếu Tenant được phép khai báo
   useGetTenantContractHistoryQuery,
+  useGetPendingRenewalContractQuery,
 } = contractApi;

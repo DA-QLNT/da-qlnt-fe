@@ -150,10 +150,10 @@ function App() {
 
               {/* Contract */}
               <Route path="contracts" element={<ContractTenant />} />
-              <Route
+              {/* <Route
                 path="contracts/history"
                 element={<ContractHistoryTenant />}
-              />
+              /> */}
               <Route
                 path="contracts/pending-renewal"
                 element={<ContractPendingRenewal />}

@@ -33,7 +33,7 @@ export const CONTRACT_STATUS_MAP = {
 
   // 7: TENANT_RENEWAL_REJECTED - Khách từ chối gia hạn
   7: {
-    label: "RenewalReject",
+    label: "RenewalRejected",
     color: "bg-orange-500 hover:bg-orange-600 text-white",
   },
 };
