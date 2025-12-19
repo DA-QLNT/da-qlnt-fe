@@ -56,8 +56,8 @@ const ContractDetailByHouse = () => {
   // add tenant
   const [isTenantAddDialogOpen, setIsTenantAddDialogOpen] = useState(false);
   const openTenantAddDialog = () => {
-    // Chỉ cho phép thêm khi DRAFT (0) hoặc ACTIVE (2) cũng đã kiểm tra trước đó với nút thêm
-    if (contract.status === 0 || contract.status === 2) {
+    // Chỉ cho phép thêm khi DRAFT (0) hoặc ACTIVE (4) cũng đã kiểm tra trước đó với nút thêm
+    if (contract.status === 0 || contract.status === 4) {
       setIsTenantAddDialogOpen(true);
     } else {
       toast.error(t("OnlyAddTenantIfDraftOrActive"));
@@ -69,15 +69,16 @@ const ContractDetailByHouse = () => {
   const [setRepresentative] = useSetNewRepresentativeMutation();
 
   const openLeaveTenantDialog = (tenant) => {
-    if (contract.status === 2 || contract.status === 0) {
+    if (contract.status === 4 || contract.status === 0) {
       setTenantToLeave(tenant);
       setIsTenantLeaveDialogOpen(true);
-    } else {
-      toast.error(t("OnlyChangeTenantIfDraftOrActive"));
     }
+    // else {
+    //   toast.error(t("OnlyChangeTenantIfDraftOrActive"));
+    // }
   };
   const handleSetRepresentative = async (tenantId) => {
-    if (contract.status !== 2) {
+    if (contract.status !== 4 && contract.status !== 0) {
       return toast.error(t("OnlyChangeRepresentativeIfDraftOrActive"));
     }
 
@@ -106,8 +107,8 @@ const ContractDetailByHouse = () => {
   const openServiceAddDialog = () => {
     console.log("abc");
 
-    // Chỉ cho phép thêm khi DRAFT (0) hoặc ACTIVE (2)
-    if (contract.status === 0 || contract.status === 2) {
+    // Chỉ cho phép thêm khi DRAFT (0) hoặc ACTIVE (4)
+    if (contract.status === 0 || contract.status === 4) {
       setIsServiceAddDialogOpen(true);
     } else {
       toast.error(t("OnlyEditServiceIfDraftOrActive"));
@@ -150,7 +151,11 @@ const ContractDetailByHouse = () => {
   // Hàm mở Dialog Hủy
   const openCancelDialog = () => {
     // Chỉ khi DRAFT (0) hoặc PENDING (1)
-    if (contract.status === 0 || contract.status === 1) {
+    if (
+      contract.status === 0 ||
+      contract.status === 1 ||
+      contract.status === 3
+    ) {
       setIsCancelDialogOpen(true);
     } else {
       toast.error(t("OnlyCancelIfDraftOrPending"));
@@ -166,12 +171,13 @@ const ContractDetailByHouse = () => {
 
   // Logic mở Dialog Gia hạn
   const openExtendDialog = () => {
-    // Chỉ cho phép gia hạn khi ACTIVE (2)
-    if (contract.status === 2) {
+    // Chỉ cho phép gia hạn khi ACTIVE (4)
+    if (contract.status === 4) {
       setIsExtendDialogOpen(true);
-    } else {
-      toast.error(t("OnlyExtendIfActive"));
     }
+    // else {
+    //   toast.error(t("OnlyExtendIfActive"));
+    // }
   };
   const closeExtendDialog = (open) => {
     if (!open) {
@@ -272,9 +278,7 @@ const ContractDetailByHouse = () => {
             <div className="flex items-center gap-2">
               <Info className="h-5 w-5" /> {t("ContractInfor")}
             </div>
-            {(contract.status === 0 ||
-              contract.status === 1 ||
-              contract.status === 2) && (
+            {(contract.status === 0 || contract.status === 1) && (
               <Button onClick={openContractInforEditDialog}>{t("Edit")}</Button>
             )}
           </CardTitle>
@@ -337,7 +341,7 @@ const ContractDetailByHouse = () => {
             <div className="flex items-center gap-2">
               <User className="h-5 w-5" /> {t("ListTenant")}{" "}
             </div>
-            {(contract.status === 0 || contract.status === 2) && (
+            {(contract.status === 0 || contract.status === 4) && (
               <Button onClick={openTenantAddDialog}>{t("AddTenant")}</Button>
             )}
           </CardTitle>
@@ -364,7 +368,7 @@ const ContractDetailByHouse = () => {
                   <TableCell>
                     <Checkbox
                       checked={tenant.representative}
-                      disabled={contract.status !== 2} // Chỉ sửa khi ACTIVE
+                      disabled={contract.status !== 4} // Chỉ sửa khi ACTIVE
                       // Xử lý khi Checkbox thay đổi
                       onCheckedChange={(checked) => {
                         if (checked) {
@@ -377,7 +381,7 @@ const ContractDetailByHouse = () => {
                   </TableCell>
 
                   <TableCell className="text-right">
-                    {(contract.status === 2 || contract.status === 0) && (
+                    {contract.status === 4 && (
                       <Button
                         variant="destructive"
                         onClick={() => openLeaveTenantDialog(tenant)}
@@ -400,7 +404,7 @@ const ContractDetailByHouse = () => {
             <div className="flex items-center gap-2">
               <Settings className="h-5 w-5" /> {t("AppliedServices")}
             </div>
-            {(contract.status === 0 || contract.status === 2) && (
+            {contract.status === 4 && (
               <Button onClick={openServiceAddDialog}>
                 {t("UpdateService")}
               </Button>
@@ -414,7 +418,7 @@ const ContractDetailByHouse = () => {
                 <TableHead>{t("ServiceName")}</TableHead>
                 <TableHead>{t("PricePerCycle")}</TableHead>
                 <TableHead>{t("CalculationMethod")}</TableHead>
-                <TableHead className="text-right">{t("Action")}</TableHead>
+                {/* <TableHead className="text-right">{t("Action")}</TableHead> */}
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -425,9 +429,9 @@ const ContractDetailByHouse = () => {
                   <TableCell>
                     <ServiceTypeBadge type={Number(service.method)} />
                   </TableCell>
-                  <TableCell className="flex justify-end">
+                  {/* <TableCell className="flex justify-end">
                     <Trash />
-                  </TableCell>
+                  </TableCell> */}
                 </TableRow>
               ))}
             </TableBody>
@@ -439,22 +443,37 @@ const ContractDetailByHouse = () => {
         {/* DRAFT ACTIONS */}
         {(contract.status === 0 ||
           contract.status === 1 ||
-          contract.status === 2 ||
           contract.status === 3) && (
           <Button variant="secondary" onClick={openCancelDialog}>
             {t("Cancel")}
           </Button>
         )}
         {(contract.status === 0 || contract.status === 1) && (
-          <Button onClick={openSendEmailDialog}>{t("SendEmail")}</Button>
+          <Button onClick={openSendEmailDialog} variant="outline">
+            {t("SendEmail")}
+          </Button>
         )}
-        {contract.status === 2 && (
-          <Button onClick={openActivateDialog}>{t("Activate")}</Button>
+        {(contract.status === 0 || contract.status === 2) && (
+          <Button
+            onClick={openActivateDialog}
+            variant={"outline"}
+            className={
+              "border-purple-400 dark:border-purple-400 hover:border-amber-500 hover:text-amber-500"
+            }
+          >
+            {t("Activate")}
+          </Button>
         )}
 
         {/* ACTIVE ACTIONS */}
         {contract.status === 4 && (
-          <Button onClick={openExtendDialog} variant="outline">
+          <Button
+            onClick={openExtendDialog}
+            variant={"outline"}
+            className={
+              "border-purple-400 dark:border-purple-400 hover:border-amber-500 hover:text-amber-500"
+            }
+          >
             {t("Extend")}
           </Button>
         )}
