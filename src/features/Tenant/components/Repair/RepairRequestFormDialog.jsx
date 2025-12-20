@@ -131,11 +131,10 @@ export default function RepairRequestFormDialog({
     }
 
     // 3. XỬ LÝ ẢNH CŨ (chỉ gửi danh sách URL còn lại khi Edit)
-    if (isEdit) {
-      formData.append(
-        "existingImageUrls",
-        JSON.stringify(data.existingImageUrls || [])
-      );
+    if (isEdit && data.existingImageUrls && data.existingImageUrls.length > 0) {
+      data.existingImageUrls.forEach((url) => {
+        formData.append("existingImageUrls", url);
+      });
     }
 
     try {
