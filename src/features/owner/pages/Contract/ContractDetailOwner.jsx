@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
+  useExportContractWordMutation,
   useGetContractByIdQuery,
   useSetNewRepresentativeMutation,
 } from "../../store/contractApi"; //  Import hook
@@ -24,6 +25,8 @@ import {
   Settings,
   Settings2,
   Trash,
+  Loader2,
+  Download,
 } from "lucide-react";
 import { formatCurrency } from "@/lib/format/currencyFormat";
 import { formatDateTime } from "@/lib/format/dateTimeFormat";
@@ -212,6 +215,43 @@ const ContractDetailOwner = () => {
       setIsSendEmailDialogOpen(false);
     }
   };
+  // export word
+  const [triggerExport, { isLoading: isExporting }] =
+    useExportContractWordMutation();
+  const handleExportWord = async () => {
+    if (!id) return;
+
+    const toastId = toast.loading(t("Export"));
+
+    try {
+      const blobResult = await triggerExport(id).unwrap();
+
+      // Tạo Blob với MIME type của Word
+      const wordBlob = new Blob([blobResult], {
+        type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      });
+
+      // Tạo đường dẫn tải về
+      const downloadUrl = window.URL.createObjectURL(wordBlob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+
+      // Đặt tên file (Ví dụ: HopDong_P201.docx)
+      link.download = `HopDong_${contract?.roomName || id}.docx`;
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      window.URL.revokeObjectURL(downloadUrl);
+      toast.success(t("ExportSuccess"), {
+        id: toastId,
+      });
+    } catch (error) {
+      console.error("Export Word error:", error);
+      toast.error(error?.data?.message || t("ExportFailed"), { id: toastId });
+    }
+  };
 
   // ========UI===========
 
@@ -294,6 +334,18 @@ const ContractDetailOwner = () => {
           <FileText className="w-6 h-6" /> {t("DetailContract")} {t("Room")}-
           {contract.roomName}
         </h1>
+        <Button
+          onClick={handleExportWord}
+          disabled={isExporting || loadingContract}
+          className="gap-2"
+        >
+          {isExporting ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Download className="h-4 w-4" />
+          )}
+          {t("Export")}
+        </Button>
       </header>
 
       {/* --------------------- PHẦN THÔNG TIN CHÍNH --------------------- */}

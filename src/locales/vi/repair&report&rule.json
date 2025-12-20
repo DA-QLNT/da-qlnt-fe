@@ -38,6 +38,8 @@
   "EditSuccess": "Sửa thành công",
   "ErrorLoadData": "Lỗi tải dữ liệu",
   "EstimateCost": "Chi phí dự kiến",
+  "Cost": "Chi phí",
+
   "Export": "Xuất",
   "ExportFailed": "Xuất thất bại",
   "ExportInvoice": "Xuất hóa đơn",
@@ -62,6 +64,8 @@
   "ListInvoice": "Danh sách hóa đơn",
   "ListRequest": "Danh sách yêu cầu",
   "MyRepairRequest": "Yêu cầu sửa chữa của tôi",
+  "Max5Images": "Tối đa 5 ảnh",
+
   "Name": "Tên",
   "NextPage": "Trang sau",
   "No": "STT",
@@ -79,6 +83,7 @@
   "Overdue": "Quá hạn",
   "OverdueInvoice": "Hóa đơn quá hạn",
   "OverduePaid": "Đã thanh toán (quá hạn)",
+  "Optional": "Tùy chọn",
   "Page": "Trang",
   "Paid": "Đã thanh toán",
   "PaymentDeadline": "Hạn thanh toán",
@@ -87,6 +92,7 @@
   "PleaseSelectFilter": "Vui lòng chọn bộ lọc",
   "PleaseSelectHouse": "Vui lòng chọn nhà",
   "PreviousPage": "Trang trước",
+  "PleaseUploadImageIfCostGreaterThanZero": "Vui lòng tải lên ảnh nếu chi phí lớn hơn 0",
   "Rent": "Đang thuê",
   "RentCost": "Chi phí thuê",
   "RepairCost": "Chi phí sửa chữa",
@@ -96,6 +102,9 @@
   "Room": "Phòng",
   "RoomOccupancy": "Tỷ lệ lấp đầy phòng",
   "Rule": "Quy định",
+  "Receive": "Tiếp nhận",
+
+  "Received": "Đã tiếp nhận",
   "SelectAll": "Chọn tất cả",
   "SelectDate": "Chọn ngày",
   "SelectedHouse": "Nhà đã chọn",
@@ -110,6 +119,8 @@
   "ServiceCost": "Chi phí dịch vụ",
   "Status": "Trạng thái",
   "Success": "Thành công",
+  "SortBy": "Sắp xếp theo",
+
   "Tenant": "Khách thuê",
   "Term": "Kỳ hạn",
   "Title": "Tiêu đề",
@@ -122,6 +133,11 @@
   "Unpaid": "Chưa thanh toán",
   "UpdateStatus": "Cập nhật trạng thái",
   "Updating": "Đang cập nhật",
-  "view": "Xem",
-  "ViewReport": "Xem báo cáo"
+  "Update": "Cập nhật",
+  "View": "Xem",
+  "ViewReport": "Xem báo cáo",
+  "CreatedAt": "Ngày tạo",
+  "Draft": "Nháp",
+  "Sent": "Đã gửi",
+  "Canceled": "Bị hủy"
 }

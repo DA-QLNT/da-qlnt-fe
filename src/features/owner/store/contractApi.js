@@ -158,6 +158,26 @@ export const contractApi = baseApi.injectEndpoints({
         { type: "Contract", id: contractId },
       ],
     }),
+    // 🚨 MUTATION XUẤT FILE WORD HỢP ĐỒNG
+    exportContractWord: builder.mutation({
+      query: (contractId) => ({
+        url: `/contracts/${contractId}/doc/download`,
+        method: "GET",
+        responseHandler: async (response) => {
+          if (response.ok) {
+            return response.blob();
+          }
+          // Xử lý lỗi nếu backend trả về JSON lỗi thay vì file
+          try {
+            const errorData = await response.json();
+            return Promise.reject(errorData);
+          } catch (e) {
+            return Promise.reject({ message: "Lỗi khi tải file hợp đồng." });
+          }
+        },
+        cache: "no-cache",
+      }),
+    }),
   }),
 });
 
@@ -176,4 +196,5 @@ export const {
   useCancelContractMutation,
   useExtendContractMutation,
   useGetCurrentContractByIdQuery,
+  useExportContractWordMutation,
 } = contractApi;

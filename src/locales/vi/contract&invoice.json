@@ -227,5 +227,9 @@
   "Enter5DigitsToSearch": "Nhập đủ 5 số để tìm kiếm",
   "UpdateService": "Cập nhật dịch vụ",
   "LastMeterReading": "Chỉ số cuối",
-  "CalculationMethod": "Cách tính"
+  "CalculationMethod": "Cách tính",
+  "Export": "Xuất",
+  "ExportFailed": "Xuất thất bại",
+  "ExportInvoice": "Xuất hóa đơn",
+  "ExportSuccess": "Xuất thành công"
 }

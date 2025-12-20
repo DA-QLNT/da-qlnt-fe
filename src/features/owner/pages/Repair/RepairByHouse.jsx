@@ -1,6 +1,9 @@
 import React, { useState, useMemo, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useGetHouseRepairRequestsQuery } from "../../store/repairApi";
+import {
+  useGetHouseRepairRequestsQuery,
+  useUpdateRepairStatusMutation,
+} from "../../store/repairApi";
 import {
   Wrench,
   Loader2,
@@ -38,6 +41,8 @@ import {
 import { REPAIR_STATUS_MAP } from "@/assets/repair/repairStatus";
 import RepairProcessDialog from "../../components/Repair/RepairProcessDialog";
 import { useTranslation } from "react-i18next";
+import { formatDateTime } from "@/lib/format/dateTimeFormat";
+import toast from "react-hot-toast";
 
 // Component Badge cho Trạng thái (Giữ nguyên)
 const RepairStatusBadge = ({ status }) => {
@@ -51,8 +56,11 @@ const RepairStatusBadge = ({ status }) => {
 // Map Trạng thái cho bộ lọc Select
 const STATUS_FILTER_OPTIONS = [
   { label: "AllStatus", value: "all" },
+  { label: REPAIR_STATUS_MAP[0].label, value: "0" },
   { label: REPAIR_STATUS_MAP[1].label, value: "1" },
   { label: REPAIR_STATUS_MAP[2].label, value: "2" },
+  { label: REPAIR_STATUS_MAP[3].label, value: "3" },
+  { label: REPAIR_STATUS_MAP[4].label, value: "4" },
 ];
 
 // Map trường cho Sắp xếp (Chỉ dùng Title, RoomName, Status)
@@ -92,6 +100,7 @@ export default function RepairByHouse() {
     isLoading,
     isFetching,
     isError,
+    refetch,
   } = useGetHouseRepairRequestsQuery(
     { houseId: houseIdNumber, page, size: pageSize },
     { skip: !houseIdNumber }
@@ -144,6 +153,24 @@ export default function RepairByHouse() {
   // 🚨 HÀM XỬ LÝ ACTION (MỞ DIALOG PROCESS)
   const handleAction = (request) => {
     setProcessDialogData({ open: true, request });
+  };
+
+  const [updateRepairStatus] = useUpdateRepairStatusMutation();
+  const [loadingReceiveId, setLoadingReceiveId] = useState(null);
+
+  const handleReceive = async (request) => {
+    setLoadingReceiveId(request.id);
+    const toastId = toast.loading(t("Processing") + "...");
+    try {
+      await updateRepairStatus({ repairId: request.id, status: 2 }).unwrap();
+      toast.success(t("Received"), { id: toastId });
+      if (typeof refetch === "function") refetch();
+    } catch (error) {
+      toast.error(t("Failed"), { id: toastId });
+      console.error("Receive repair error:", error);
+    } finally {
+      setLoadingReceiveId(null);
+    }
   };
 
   if (isError) {
@@ -208,7 +235,7 @@ export default function RepairByHouse() {
             {/* 2. Sắp xếp theo trường (Dùng Select) */}
             <div className="w-[200px]">
               <label className="text-xs font-medium text-muted-foreground block mb-1">
-                Sắp xếp theo
+                {t("SortBy")}
               </label>
               <div className="flex items-center gap-2">
                 <Select
@@ -219,7 +246,7 @@ export default function RepairByHouse() {
                   disabled={loading}
                 >
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Lọc theo" />
+                    <SelectValue placeholder={t("SortBy")} />
                   </SelectTrigger>
                   <SelectContent>
                     {SORT_FIELD_OPTIONS.map((opt) => (
@@ -254,11 +281,13 @@ export default function RepairByHouse() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[80px]">{t("No")}</TableHead>
+                  <TableHead className="w-20">{t("No")}</TableHead>
                   <TableHead>{t("Title")}</TableHead>
                   <TableHead>{t("Room")}</TableHead>
+                  <TableHead>{t("CreatedAt")}</TableHead>
+
                   <TableHead>{t("Status")}</TableHead>
-                  <TableHead className="w-[120px]">{t("Action")}</TableHead>
+                  <TableHead className="w-30">{t("Action")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -267,18 +296,31 @@ export default function RepairByHouse() {
                     <TableCell className="font-semibold">{index + 1}</TableCell>
                     <TableCell>{request.title}</TableCell>
                     <TableCell>{request.roomName}</TableCell>
+                    {formatDateTime(request.createdAt).formattedDate}
                     <TableCell>
                       <RepairStatusBadge status={request.status} />
                     </TableCell>
 
-                    <TableCell>
+                    <TableCell className="flex gap-2">
                       {/* Nút xử lý chính (Owner Action) */}
+                      {request.status === 1 && (
+                        <Button
+                          size="sm"
+                          onClick={() => handleReceive(request)}
+                          disabled={loadingReceiveId === request.id}
+                        >
+                          {loadingReceiveId === request.id ? (
+                            <Loader2 className="w-4 h-4 animate-spin mr-1" />
+                          ) : null}
+                          {t("Receive")}
+                        </Button>
+                      )}
                       <Button
                         size="sm"
                         onClick={() => handleAction(request)}
-                        variant={request.status === 0 ? "default" : "outline"}
+                        variant={"outline"}
                       >
-                        {request.status === 0 ? t("Handle") : t("Detail")}
+                        {t("Detail")}
                       </Button>
                     </TableCell>
                   </TableRow>

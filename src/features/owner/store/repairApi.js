@@ -18,17 +18,35 @@ export const repairOwnerApi = baseApi.injectEndpoints({
         { type: "RepairHouse", id: houseId },
       ],
     }),
-    // 🚨 MUTATION HOÀN THÀNH YÊU CẦU
-    completeRepairRequest: builder.mutation({
-      query: ({ repairId, data }) => ({
-        url: `/repairs/${repairId}/status`,
-        method: "PUT",
-        // Body phải bao gồm status=2, note, cost
-        data: {
-          ...data,
-          status: 2, // Hardcode status là 2 (Hoàn thành)
-        },
-      }),
+
+    // 🚨 MUTATION CẬP NHẬT TRẠNG THÁI (Mới)
+    updateRepairStatus: builder.mutation({
+      query: ({ repairId, status, ...data }) => {
+        const formData = new FormData();
+        formData.append("status", status);
+        // Append other data fields if they exist
+        Object.keys(data).forEach((key) => {
+          const value = data[key];
+          if (value !== undefined && value !== null) {
+            if (value instanceof FileList) {
+              Array.from(value).forEach((file) => {
+                formData.append(key, file);
+              });
+            } else if (Array.isArray(value)) {
+              value.forEach((item) => {
+                formData.append(key, item);
+              });
+            } else {
+              formData.append(key, value);
+            }
+          }
+        });
+        return {
+          url: `/repairs/${repairId}/status`,
+          method: "PUT",
+          data: formData,
+        };
+      },
       invalidatesTags: (result, error, { repairId }) => [
         "Repair",
         { type: "RepairHouse", id: result?.houseId },
@@ -39,5 +57,5 @@ export const repairOwnerApi = baseApi.injectEndpoints({
 
 export const {
   useGetHouseRepairRequestsQuery,
-  useCompleteRepairRequestMutation,
+  useUpdateRepairStatusMutation,
 } = repairOwnerApi;

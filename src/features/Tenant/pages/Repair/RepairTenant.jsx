@@ -162,9 +162,11 @@ export default function RepairTenant() {
                   <TableHead>{t("Title")}</TableHead>
                   <TableHead>{t("Room")}</TableHead>
                   <TableHead>{t("House")}</TableHead>
+                  <TableHead>{t("CreatedAt")}</TableHead>
+
                   <TableHead>{t("Status")}</TableHead>
 
-                  <TableHead className="w-25">{t("Action")}</TableHead>
+                  <TableHead className="w">{t("Action")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -175,10 +177,14 @@ export default function RepairTenant() {
                     <TableCell>{request.roomName}</TableCell>
                     <TableCell>{request.houseName}</TableCell>
                     <TableCell>
+                      {formatDateTime(request.createdAt).formattedDate}
+                    </TableCell>
+
+                    <TableCell>
                       <RepairStatusBadge status={request.status} />
                     </TableCell>
 
-                    <TableCell className="space-x-2">
+                    <TableCell className="flex items-center space-x-2">
                       {/* Nút thao tác (Sửa/Xóa/Xem chi tiết) */}
                       <Button
                         size="sm"
@@ -190,23 +196,26 @@ export default function RepairTenant() {
 
                       {/* Chỉ cho phép Sửa/Xóa khi còn là DRAFT (status 0) */}
                       {request.status === 0 && (
-                        <>
+                        <div className="flex items-center gap-2">
                           <Button
                             size="sm"
                             variant="secondary"
                             onClick={() => handleEditRequest(request)}
-                            className="mr-2"
+                            className=""
                           >
                             {t("Edit")}
                           </Button>
                           <Button
                             size="icon"
-                            variant="destructive"
+                            variant="outline"
+                            className={
+                              "w-fit px-2 text-red-600 hover:text-red-700"
+                            }
                             onClick={() => handleDeleteRequest(request)}
                           >
-                            <Trash className="w-4 h-4" />
+                            {t("Delete")}
                           </Button>
-                        </>
+                        </div>
                       )}
                     </TableCell>
                   </TableRow>
