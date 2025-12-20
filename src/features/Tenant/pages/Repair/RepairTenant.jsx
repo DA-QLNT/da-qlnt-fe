@@ -158,13 +158,13 @@ export default function RepairTenant() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[50px]">{t("No")}</TableHead>
+                  <TableHead className="w-12.5">{t("No")}</TableHead>
                   <TableHead>{t("Title")}</TableHead>
                   <TableHead>{t("Room")}</TableHead>
                   <TableHead>{t("House")}</TableHead>
                   <TableHead>{t("Status")}</TableHead>
 
-                  <TableHead className="w-[100px]">{t("Action")}</TableHead>
+                  <TableHead className="w-25">{t("Action")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

@@ -35,6 +35,7 @@ const ContractDetailByHouse = () => {
   const { t } = useTranslation("contractinvoice");
 
   const { houseId, contractId } = useParams();
+  const id = Number(contractId);
   const navigate = useNavigate();
   const backToContractList = () => {
     navigate(`/owner/contracts/houses/${houseId}/contracts`);
@@ -43,8 +44,8 @@ const ContractDetailByHouse = () => {
     data: contract,
     isLoading: loadingContract,
     isError: errorContract,
-  } = useGetContractByIdQuery(contractId, {
-    skip: !contractId,
+  } = useGetContractByIdQuery(id, {
+    skip: !id,
   });
 
   //   update contract
@@ -230,20 +231,20 @@ const ContractDetailByHouse = () => {
       />
       {/* update contract */}
       <ContractInforEditDialog
-        contractId={contractId}
+        contractId={id}
         open={isContractInforEditDialogOpen}
         onOpenChange={setIsContractInforEditDialogOpen}
       />
       {/* add tenant */}
       <TenantAddDialog
-        contractId={contractId}
+        contractId={id}
         open={isTenantAddDialogOpen}
         onOpenChange={setIsTenantAddDialogOpen}
       />
       {/* leave tenant */}
       {tenantToLeave && (
         <TenantLeaveDialog
-          contractId={contractId}
+          contractId={id}
           tenant={tenantToLeave}
           open={isTenantLeaveDialogOpen}
           onOpenChange={setIsTenantLeaveDialogOpen}

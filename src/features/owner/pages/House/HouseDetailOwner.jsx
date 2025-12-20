@@ -144,7 +144,9 @@ const HouseDetailOwner = () => {
             </TableBody>
           </Table>
         </div>
-        <div className="flex gap-x-2 w-full md:justify-center  order-1">
+        <div className="flex gap-x-2 w-full justify-between  order-1">
+          <h1>{t("DetailHouse")}</h1>
+
           <div className="w-full flex justify-end gap-x-4 ">
             <Button
               variant="outline"

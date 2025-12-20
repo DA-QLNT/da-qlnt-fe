@@ -137,6 +137,7 @@ export const baseApi = createApi({
     "Service",
     "ServiceHouse",
     "Contract",
+    "HouseContract",
     "Tenant",
     "Invoice",
     "ServiceUsage",

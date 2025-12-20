@@ -71,7 +71,8 @@ const HouseOwner = () => {
         onOpenChange={setIsAddDialogOpen}
       />
       <div className="flex flex-col gap-8">
-        <div className="text-end">
+        <div className="flex items-center justify-between">
+          <h1>{t("ManageHouse")}</h1>
           <Button onClick={() => setIsAddDialogOpen(true)}>
             <Plus />
             {t("AddHouse")}
