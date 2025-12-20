@@ -18,6 +18,7 @@ import {
   FileText,
   Loader2,
   Send,
+  CheckCheck,
 } from "lucide-react";
 import { formatDateTime } from "@/lib/format/dateTimeFormat";
 import { formatCurrency } from "@/lib/format/currencyFormat";
@@ -103,10 +104,10 @@ export default function RepairRequestDetailDialog({
                   <span className="font-medium">{t("Status")}:</span>{" "}
                   <RepairStatusBadge status={request.status} />
                 </div>
-                <div>
-                  <span className="font-medium">{t("EstimateCost")}:</span>{" "}
+                {/* <div>
+                  <span className="font-medium">{t("Cost")}:</span>{" "}
                   {request.cost ? formatCurrency(request.cost) : ""}
-                </div>
+                </div> */}
                 <div>
                   <span className="font-medium">{t("CompletedDate")}:</span>{" "}
                   {formattedDate}
@@ -126,7 +127,7 @@ export default function RepairRequestDetailDialog({
               <p className="text-sm text-muted-foreground">
                 {request.description || t("NoDetailedDescription")}
               </p>
-              {request.note && (
+              {request.note && request.status !== 3 && (
                 <div className="mt-3 p-3 bg-secondary rounded-md">
                   <span className="font-medium text-xs block">
                     {t("NoteOwner")}:
@@ -157,6 +158,59 @@ export default function RepairRequestDetailDialog({
                     />
                   ))}
                 </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* KẾT QUẢ SỬA CHỮA (HIỂN THỊ KHI ĐÃ HOÀN THÀNH) */}
+          {request.status === 3 && (
+            <Card className="border-green-200 bg-green-50/30">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2 text-green-700">
+                  <CheckCheck className="h-5 w-5" /> {t("Detail")}{" "}
+                  {t("Completed")}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <span className="font-medium flex items-center gap-1 text-muted-foreground mb-1">
+                      <DollarSign className="w-4 h-4" /> {t("RepairCost")}
+                    </span>
+                    <span className="text-lg font-semibold text-green-700">
+                      {formatCurrency(request.cost)}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="font-medium flex items-center gap-1 text-muted-foreground mb-1">
+                      <FileText className="w-4 h-4" /> {t("NoteOwner")}
+                    </span>
+                    <p className="text-sm">
+                      {request.note || t("NoDescription")}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Ảnh minh chứng hoàn thành */}
+                {request.completedImages &&
+                  request.completedImages.length > 0 && (
+                    <div>
+                      <span className="font-medium flex items-center gap-1 text-muted-foreground mb-2">
+                        <IconImage className="w-4 h-4" /> {t("Image")} (
+                        {t("Completed")})
+                      </span>
+                      <div className="flex flex-wrap gap-2 max-h-40 overflow-y-auto">
+                        {request.completedImages.map((url, index) => (
+                          <img
+                            key={index}
+                            src={url}
+                            alt={`Evidence ${index + 1}`}
+                            className="w-20 h-20 object-cover border rounded-md"
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )}
               </CardContent>
             </Card>
           )}

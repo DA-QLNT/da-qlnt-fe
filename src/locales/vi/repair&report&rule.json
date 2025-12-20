@@ -38,6 +38,8 @@
   "EditSuccess": "Sửa thành công",
   "ErrorLoadData": "Lỗi tải dữ liệu",
   "EstimateCost": "Chi phí dự kiến",
+  "Cost": "Chi phí",
+
   "Export": "Xuất",
   "ExportFailed": "Xuất thất bại",
   "ExportInvoice": "Xuất hóa đơn",
