@@ -180,8 +180,8 @@ const AssetOwner = () => {
             <TableRow>
               <TableHead className="w-[50px]">No</TableHead>
               <TableHead>Tên Tài Sản</TableHead>
-              <TableHead className="w-[150px]">Tổng Số Lượng</TableHead>
-              <TableHead className="text-right w-[100px]">
+              <TableHead>Tổng Số Lượng</TableHead>
+              <TableHead className="text-right">
                 <Button
                   variant={"outline"}
                   className={
@@ -189,8 +189,7 @@ const AssetOwner = () => {
                   }
                   onClick={openAddDialog}
                 >
-                  <Plus className="mr-2 h-4 w-4" />
-                  Thêm
+                  Thêm tài sản
                 </Button>
               </TableHead>
             </TableRow>
@@ -212,46 +211,71 @@ const AssetOwner = () => {
                   <TableCell>
                     <h4 className="font-semibold">{asset.name}</h4>
                   </TableCell>
-                  <TableCell className="font-medium text-center">
-                    {asset.itemCount}
-                  </TableCell>
-                  <TableCell className={"flex justify-end"}>
-                    {" "}
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant={"outline"} className={"px-1"}>
-                          Actions
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent className="w-48 mr-4" align="start">
-                        <DropdownMenuGroup>
-                          {/* <DropdownMenuItem
+                  <TableCell>{asset.itemCount}</TableCell>
+                  <TableCell className={"flex justify-end gap-2"}>
+                    <div className="md:hidden">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button className="px-1" variant={"outline"}>
+                            Actions
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent
+                          className="w-48 mr-4"
+                          align="start"
+                        >
+                          <DropdownMenuGroup>
+                            {/* <DropdownMenuItem
                           onClick={() => openEditDialog(user.id)}
                           >
                             <Plus />
                             Add Item
                           </DropdownMenuItem> */}
-                          <DropdownMenuItem
-                            onClick={() => openEditDialog(asset)}
-                          >
-                            <SquarePen />
-                            Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => openViewItemsDialog(asset.id)}
-                          >
-                            <Eye />
-                            View Items
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => openDeleteDialog(asset)}
-                          >
-                            <Trash color="red" />
-                            <span className="text-red-500">Delete</span>
-                          </DropdownMenuItem>
-                        </DropdownMenuGroup>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                            <DropdownMenuItem
+                              onClick={() => openEditDialog(asset)}
+                            >
+                              <SquarePen />
+                              Edit
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => openViewItemsDialog(asset.id)}
+                            >
+                              <Eye />
+                              View Items
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => openDeleteDialog(asset)}
+                            >
+                              <Trash color="red" />
+                              <span className="text-red-500">Delete</span>
+                            </DropdownMenuItem>
+                          </DropdownMenuGroup>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                    <div className="hidden md:flex items-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => openEditDialog(asset)}
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => openViewItemsDialog(asset.id)}
+                      >
+                        View Items
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => openDeleteDialog(asset)}
+                      >
+                        Delete
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))
