@@ -235,11 +235,11 @@ export default function ContractInforEditForm({
                     onSelect={field.onChange}
                     initialFocus
                   />
-                  <FieldError>{errors.endDate?.message}</FieldError>
                 </PopoverContent>
               </Popover>
             )}
           />
+          <FieldError>{errors.endDate?.message}</FieldError>
         </Field>
         <Field>
           <FieldLabel>{t("PaymentCycle")} (*)</FieldLabel>
