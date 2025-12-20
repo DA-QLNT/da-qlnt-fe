@@ -64,7 +64,7 @@ const ServiceHouseAddForm = ({ serviceId, onFormSubmitSuccess }) => {
       houseIds: [], // Mảng ID nhà được chọn
       method: undefined,
       price: 0,
-      effectiveDate: undefined,
+      effectiveDate: new Date(),
     },
   });
   const selectedHouseIds = watch("houseIds");
@@ -205,6 +205,7 @@ const ServiceHouseAddForm = ({ serviceId, onFormSubmitSuccess }) => {
                       selected={field.value}
                       onSelect={field.onChange}
                       initialFocus
+                      defaultMonth={field.value || new Date()}
                     />
                   </PopoverContent>
                 </Popover>
@@ -233,8 +234,7 @@ const ServiceHouseAddForm = ({ serviceId, onFormSubmitSuccess }) => {
                     />
                   </TableHead>
                   <TableHead>{t("House")}</TableHead>
-                  <TableHead>{t("Price/Month")}</TableHead>
-                  <TableHead>{t("EffectiveDate")}</TableHead>
+                  <TableHead>{t("Address")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -242,7 +242,6 @@ const ServiceHouseAddForm = ({ serviceId, onFormSubmitSuccess }) => {
                   <HouseRow
                     key={house.id}
                     house={house}
-                    serviceId={serviceId}
                     // TRUYỀN PROPS CHECKBOX
                     isChecked={selectedHouseIds.includes(house.id)}
                     onCheckedChange={() => toggleHouse(house.id)}
