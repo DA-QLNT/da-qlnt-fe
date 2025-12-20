@@ -26,7 +26,7 @@ const ServiceHouseListServiceTable = ({ houseId, onFormSubmitSuccess }) => {
   if (isLoading || isFetching) {
     return (
       <div className="absoulute inset-0 flex items-center justify-center">
-        <Spinner className={"size-14"} />
+        <Spinner className={"size-14 text-primary"} />
       </div>
     );
   }

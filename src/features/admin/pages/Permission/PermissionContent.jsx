@@ -137,7 +137,7 @@ const PermissionContent = () => {
               <div className="relative w-full p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
                 {isLoading && (
                   <div className="absolute inset-0 z-10 flex items-center justify-center">
-                    <Spinner className={"size-10"} />
+                    <Spinner className={"size-10 text-primary"} />
                   </div>
                 )}
                 <Table>

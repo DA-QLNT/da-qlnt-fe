@@ -7,7 +7,11 @@ import { Spinner } from "../ui/spinner";
 const TenantProtectedRoute = () => {
   const { isAuthenticated, isTenant, isLoadingMe } = useAuth();
   if (isAuthenticated && isLoadingMe) {
-    return <Spinner className="size-10" />;
+    return (
+      <div className="absolute flex justify-center items-center inset-0">
+        <Spinner className="size-20 text-primary" />
+      </div>
+    );
   }
   if (!isAuthenticated) {
     toast.error("Require Login");

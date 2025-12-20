@@ -149,7 +149,7 @@ export default function RepairTenant() {
         </CardHeader>
         <CardContent>
           {loading && repairRequests.length === 0 ? (
-            <Spinner className="size-10 mx-auto" />
+            <Spinner className="size-10 text-primary mx-auto" />
           ) : repairRequests.length === 0 ? (
             <p className="text-center text-muted-foreground py-10">
               {t("NoRequest")}

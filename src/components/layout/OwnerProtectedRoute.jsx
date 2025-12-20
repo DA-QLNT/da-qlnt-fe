@@ -6,10 +6,14 @@ import { Spinner } from "../ui/spinner";
 
 const OwnerProtectedRoute = () => {
   const { isAuthenticated, isOwner, isLoadingMe } = useAuth();
-  if(isAuthenticated && isLoadingMe){
-    return <Spinner className="size-10"/>
+  if (isAuthenticated && isLoadingMe) {
+    return (
+      <div className="absolute flex justify-center items-center inset-0">
+        <Spinner className="size-20 text-primary" />
+      </div>
+    );
   }
-  if (!isAuthenticated ) {
+  if (!isAuthenticated) {
     toast.error("Require Login");
     return <Navigate to="/auth/login" replace />;
   }

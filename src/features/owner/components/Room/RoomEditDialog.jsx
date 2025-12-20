@@ -29,7 +29,7 @@ const RoomEditDialog = ({ roomId, open, onOpenChange }) => {
           <DialogTitle>{t("EditRoom")}</DialogTitle>
         </DialogHeader>
         {isLoading || isFetching ? (
-          <Spinner className={"size-10 mx-auto"} />
+          <Spinner className={"size-10 text-primary mx-auto"} />
         ) : roomData ? (
           <RoomEditForm
             initialData={roomData}

@@ -16,7 +16,12 @@ const ContractCurrent = () => {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isRejectOpen, setIsRejectOpen] = useState(false);
 
-  if (isLoading) return <Spinner className="size-10 mx-auto mt-10" />;
+  if (isLoading)
+    return (
+      <div className="absolute inset-0 flex justify-center items-center">
+        <Spinner className="size-10 text-primary" />
+      </div>
+    );
   if (isError || !contract)
     return (
       <div className="text-center py-10 text-muted-foreground">

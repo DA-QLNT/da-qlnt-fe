@@ -96,7 +96,7 @@ const InvoiceTenant = () => {
   if (loadingContract || loadingInvoices) {
     return (
       <div className="flex justify-center items-center min-h-100">
-        <Spinner className="size-12" />
+        <Spinner className="size-12 text-primary" />
       </div>
     );
   }

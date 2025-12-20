@@ -205,7 +205,11 @@ const TenantEditForm = ({ tenant, onFormSubmitSuccess }) => {
         <div className="grid grid-cols-2 gap-4"></div>
       </FieldGroup>
       <Button type="submit" disabled={isLoading}>
-        {isLoading ? <Spinner className={"text-white size-4"} /> : t("Update")}
+        {isLoading ? (
+          <Spinner className={"text-muted-foreground size-4"} />
+        ) : (
+          t("Update")
+        )}
       </Button>
     </form>
   );
