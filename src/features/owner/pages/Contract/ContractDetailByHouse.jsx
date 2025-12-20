@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
+  useExportContractWordMutation,
   useGetContractByIdQuery,
   useSetNewRepresentativeMutation,
 } from "../../store/contractApi";
@@ -22,7 +23,16 @@ import ContractInforEditDialog from "../../components/Contract/ContractInforEdit
 import TenantAddDialog from "../../components/Contract/TenantAddDialog";
 import TenantLeaveDialog from "../../components/Contract/TenantLeaveDialog";
 import ContractServiceAddDialog from "../../components/Contract/ContractServiceAddDialog";
-import { ArrowLeft, FileText, Info, Settings, Trash, User } from "lucide-react";
+import {
+  ArrowLeft,
+  Download,
+  FileText,
+  Info,
+  Loader2,
+  Settings,
+  Trash,
+  User,
+} from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ContractStatusBadge from "../../components/Contract/ContractStatusBadge";
 import { formatCurrency } from "@/lib/format/currencyFormat";
@@ -133,6 +143,44 @@ const ContractDetailByHouse = () => {
   const closeActivateDialog = (open) => {
     if (!open) {
       setIsActivateDialogOpen(false);
+    }
+  };
+
+  // eport contract
+  const [triggerExport, { isLoading: isExporting }] =
+    useExportContractWordMutation();
+  const handleExportWord = async () => {
+    if (!id) return;
+
+    const toastId = toast.loading(t("Export"));
+
+    try {
+      const blobResult = await triggerExport(id).unwrap();
+
+      // Tạo Blob với MIME type của Word
+      const wordBlob = new Blob([blobResult], {
+        type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      });
+
+      // Tạo đường dẫn tải về
+      const downloadUrl = window.URL.createObjectURL(wordBlob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+
+      // Đặt tên file (Ví dụ: HopDong_P201.docx)
+      link.download = `HopDong_${contract?.roomName || id}.docx`;
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      window.URL.revokeObjectURL(downloadUrl);
+      toast.success(t("ExportSuccess"), {
+        id: toastId,
+      });
+    } catch (error) {
+      console.error("Export Word error:", error);
+      toast.error(error?.data?.message || t("ExportFailed"), { id: toastId });
     }
   };
   // send email contract
@@ -270,6 +318,18 @@ const ContractDetailByHouse = () => {
           <FileText className="w-6 h-6" /> {t("DetailContract")}{" "}
           {contract.roomName}
         </h1>
+        <Button
+          onClick={handleExportWord}
+          disabled={isExporting || loadingContract}
+          className="gap-2"
+        >
+          {isExporting ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Download className="h-4 w-4" />
+          )}
+          {t("Export")}
+        </Button>
       </header>
 
       {/* --------------------- PHẦN THÔNG TIN CHÍNH --------------------- */}

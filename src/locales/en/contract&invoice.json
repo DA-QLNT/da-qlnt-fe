@@ -221,5 +221,8 @@
   "TenantsInContract": "Tenants in Contract",
   "Enter5DigitsToSearch": "Enter 5 digits to search",
   "UpdateService": "Update service",
-  "LastMeterReading": "Last Meter Reading"
+  "LastMeterReading": "Last Meter Reading",
+  "Export": "Export",
+  "ExportFailed": "Export failed",
+  "ExportSuccess": "Export successfully"
 }
