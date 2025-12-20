@@ -23,7 +23,14 @@ import {
   useCreateRepairRequestMutation,
   useUpdateRepairRequestMutation,
 } from "../../store/repairApi";
-import { Wrench, Loader2, Save, Image as ImageIcon, Trash } from "lucide-react";
+import {
+  Wrench,
+  Loader2,
+  Save,
+  Image as ImageIcon,
+  Trash,
+  XCircle,
+} from "lucide-react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 

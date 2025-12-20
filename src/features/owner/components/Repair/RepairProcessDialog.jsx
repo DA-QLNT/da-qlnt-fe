@@ -1,4 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
+
 import {
   Dialog,
   DialogContent,
@@ -18,7 +20,7 @@ import {
 } from "@/components/ui/field";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useCompleteRepairRequestMutation } from "../../store/repairApi";
+import { useUpdateRepairStatusMutation } from "../../store/repairApi";
 import {
   Wrench,
   Loader2,
@@ -27,6 +29,7 @@ import {
   ImageIcon as IconImage,
   CheckCheck,
   DollarSign,
+  ImagePlus,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -53,25 +56,44 @@ export default function RepairProcessDialog({ request, open, onOpenChange }) {
   const { t } = useTranslation("repairreportrule");
 
   const repairId = request?.id;
-  const isCompleted = request?.status === 2;
+  const isCompleted = request?.status === 3;
   const dialogTitle = isCompleted ? t("Detail") : t("Handle");
 
   // Hook API
-  const [completeRequest, { isLoading: isCompleting }] =
-    useCompleteRepairRequestMutation();
+  const [updateRepairStatus, { isLoading: isCompleting }] =
+    useUpdateRepairStatusMutation();
 
   const {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors, isValid, isDirty },
   } = useForm({
     resolver: zodResolver(RepairCompletionSchema),
     defaultValues: {
       note: request?.note || "",
       cost: request?.cost || 0,
+      completedImages: null,
     },
   });
+
+  // Watch file input for preview
+  const evidenceFiles = watch("completedImages");
+  const [evidencePreviews, setEvidencePreviews] = useState([]);
+
+  useEffect(() => {
+    if (evidenceFiles && evidenceFiles.length > 0) {
+      const urls = Array.from(evidenceFiles).map((file) =>
+        URL.createObjectURL(file)
+      );
+      setEvidencePreviews(urls);
+      // Cleanup
+      return () => urls.forEach((url) => URL.revokeObjectURL(url));
+    } else {
+      setEvidencePreviews([]);
+    }
+  }, [evidenceFiles]);
 
   // Reset form khi request thay đổi
   useEffect(() => {
@@ -79,7 +101,9 @@ export default function RepairProcessDialog({ request, open, onOpenChange }) {
       reset({
         note: request.note || "",
         cost: request.cost || 0,
+        completedImages: null,
       });
+      setEvidencePreviews([]);
     }
   }, [request, reset]);
 
@@ -91,10 +115,15 @@ export default function RepairProcessDialog({ request, open, onOpenChange }) {
     const payload = {
       note: data.note,
       cost: data.cost,
+      completedImages: data.completedImages,
     };
 
     try {
-      await completeRequest({ repairId, data: payload }).unwrap();
+      await updateRepairStatus({
+        repairId,
+        status: 3,
+        ...payload,
+      }).unwrap();
       toast.success(t("Completed"), { id: toastId });
       onOpenChange(false);
     } catch (error) {
@@ -123,7 +152,13 @@ export default function RepairProcessDialog({ request, open, onOpenChange }) {
           </DialogDescription>
         </DialogHeader>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4"> */}
+        <div
+          className={cn(
+            "grid grid-cols-1 gap-4",
+            request.status === 2 ? "grid-cols-2" : ""
+          )}
+        >
           {/* CỘT TRÁI: THÔNG TIN VÀ MÔ TẢ */}
           <div className="space-y-4">
             <Card>
@@ -192,50 +227,86 @@ export default function RepairProcessDialog({ request, open, onOpenChange }) {
             )}
           </div>
 
-          {/* CỘT PHẢI: FORM XỬ LÝ (CHỈ KHI CHƯA HOÀN THÀNH) */}
-          <div className="space-y-4">
-            <Card className="p-0 border-0 shadow-none">
-              <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <CheckCheck className="h-5 w-5 text-green-600" />{" "}
-                  {t("UpdateStatus")}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                  <FieldGroup className="space-y-4">
-                    <Field>
-                      <FieldLabel>{t("RepairCost")}*</FieldLabel>
-                      <Input
-                        type="number"
-                        {...register("cost", { valueAsNumber: true })}
-                        disabled={isCompleted || isCompleting}
-                      />
-                      <FieldError>{errors.cost?.message}</FieldError>
-                    </Field>
+          {/* CỘT PHẢI: FORM XỬ LÝ (CHỈ HIỂN THỊ KHI STATUS LÀ 2) */}
+          {request.status === 2 && (
+            <div className="space-y-4">
+              <Card className="p-0 border-0 shadow-none">
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <CheckCheck className="h-5 w-5 text-green-600" />{" "}
+                    {t("UpdateStatus")}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                    <FieldGroup className="space-y-4">
+                      <Field>
+                        <FieldLabel>{t("RepairCost")}*</FieldLabel>
+                        <Input
+                          type="number"
+                          {...register("cost", { valueAsNumber: true })}
+                          disabled={isCompleting}
+                        />
+                        <FieldError>{errors.cost?.message}</FieldError>
+                      </Field>
 
-                    <Field>
-                      <FieldLabel>{t("Note")}</FieldLabel>
-                      <Textarea
-                        {...register("note")}
-                        disabled={isCompleted || isCompleting}
-                        rows={4}
-                      />
-                      <FieldError>{errors.note?.message}</FieldError>
-                    </Field>
+                      <Field>
+                        <FieldLabel>{t("Note")}</FieldLabel>
+                        <Textarea
+                          {...register("note")}
+                          disabled={isCompleting}
+                          rows={4}
+                        />
+                        <FieldError>{errors.note?.message}</FieldError>
+                      </Field>
 
-                    {isCompleted && (
-                      <p className="text-sm font-medium text-green-600">
-                        {t("Completed")}
-                      </p>
-                    )}
-                  </FieldGroup>
+                      <Field>
+                        <FieldLabel className="flex items-center gap-2">
+                          <ImagePlus className="w-4 h-4" />
+                          {t("Image")} ({t("Optional")})
+                        </FieldLabel>
 
-                  {!isCompleted && (
+                        {/* Preview Images */}
+                        {evidencePreviews.length > 0 && (
+                          <div className="flex flex-wrap gap-2 mb-2">
+                            {evidencePreviews.map((src, idx) => (
+                              <div
+                                key={idx}
+                                className="relative w-16 h-16 border rounded-md overflow-hidden group"
+                              >
+                                <img
+                                  src={src}
+                                  alt="Preview"
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          multiple
+                          {...register("completedImages")}
+                          disabled={isCompleting}
+                          className="cursor-pointer"
+                        />
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {t("Max5Images")}
+                        </p>
+                        <FieldError>
+                          {/* {errors.completedImages?.message ||
+                            errors.completedImages?.root?.message} */}
+                          {t(errors.completedImages?.message)}
+                        </FieldError>
+                      </Field>
+                    </FieldGroup>
+
                     <div className="flex justify-end pt-2">
                       <Button
                         type="submit"
-                        disabled={isCompleting || !isValid}
+                        disabled={isCompleting}
                         className="bg-green-600 hover:bg-green-700"
                       >
                         {isCompleting ? (
@@ -246,11 +317,11 @@ export default function RepairProcessDialog({ request, open, onOpenChange }) {
                         {t("ConfirmComplete")}
                       </Button>
                     </div>
-                  )}
-                </form>
-              </CardContent>
-            </Card>
-          </div>
+                  </form>
+                </CardContent>
+              </Card>
+            </div>
+          )}
         </div>
 
         <DialogFooter className="mt-4">
