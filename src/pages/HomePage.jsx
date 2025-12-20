@@ -161,7 +161,7 @@ const HomePage = () => {
       <div className="container mx-auto mt-8 px-4">
         {isLoading || isFetching ? (
           <div className="flex justify-center py-20">
-            <Spinner className="size-12" />
+            <Spinner className="size-12 text-primary" />
           </div>
         ) : rooms.length === 0 ? (
           <div className="text-center py-20 bg-sidebar rounded-2xl border-2 border-dashed">

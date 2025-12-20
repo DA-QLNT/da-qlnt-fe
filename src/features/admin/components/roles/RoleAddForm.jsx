@@ -3,9 +3,14 @@ import { useCreateRoleMutation } from "../../store/roleApi";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
-import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import { RoleAddSchema } from "@/lib/validation/role";
 import { useTranslation } from "react-i18next";
 import { Spinner } from "@/components/ui/spinner";
@@ -14,7 +19,7 @@ const defaultValues = {
   name: "",
 };
 const RoleAddForm = ({ onFormSubmitSuccess }) => {
-  const {t} = useTranslation('rolecontent')
+  const { t } = useTranslation("rolecontent");
   const [createRole, { isLoading }] = useCreateRoleMutation();
   const {
     register,
@@ -30,7 +35,7 @@ const RoleAddForm = ({ onFormSubmitSuccess }) => {
       const result = await createRole(data).unwrap();
 
       if (result.code === 1000) {
-        toast.success(t('CreateSuccess'));
+        toast.success(t("CreateSuccess"));
         reset();
         onFormSubmitSuccess();
       } else {
@@ -45,7 +50,7 @@ const RoleAddForm = ({ onFormSubmitSuccess }) => {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <FieldGroup>
         <Field>
-          <FieldLabel htmlFor="name">{t('RoleName')}</FieldLabel>
+          <FieldLabel htmlFor="name">{t("RoleName")}</FieldLabel>
           <Input
             id="name"
             {...register("name")}
@@ -56,7 +61,11 @@ const RoleAddForm = ({ onFormSubmitSuccess }) => {
         </Field>
       </FieldGroup>
       <Button type="submit" className={"w-full"} disabled={isLoading}>
-        {isLoading ? (<Spinner/>) : t('Create')}
+        {isLoading ? (
+          <Spinner className={"text-muted-foreground size-4"} />
+        ) : (
+          t("Create")
+        )}
       </Button>
     </form>
   );

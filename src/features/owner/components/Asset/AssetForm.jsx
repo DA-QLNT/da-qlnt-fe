@@ -15,16 +15,14 @@ import { Loader2, Plus, Save } from "lucide-react";
 import React, { useMemo } from "react";
 import { Spinner } from "@/components/ui/spinner";
 
-
 export default function AssetForm({ initialData = null, onFormSubmitSuccess }) {
   const [createOrUpdateAsset, { isLoading }] = useCreateOrUpdateAssetMutation();
 
   const isEditMode = !!initialData?.id;
 
-  
   const defaultValues = useMemo(
     () => ({
-      id: initialData?.id || null, 
+      id: initialData?.id || null,
       name: initialData?.name || "",
     }),
     [initialData]
@@ -79,7 +77,7 @@ export default function AssetForm({ initialData = null, onFormSubmitSuccess }) {
 
       <Button type="submit" className="w-full" disabled={isLoading}>
         {isLoading ? (
-          <Spinner/>
+          <Spinner className={"text-muted-foreground size-4"} />
         ) : (
           <>
             <Save className="mr-2 h-4 w-4" />{" "}

@@ -180,7 +180,11 @@ export default function RepairByHouse() {
   }
 
   if (loading && rawRequests.length === 0) {
-    return <Spinner className="size-20 mx-auto mt-20" />;
+    return (
+      <div className="absolute inset-0 flex items-center justify-center">
+        <Spinner className="size-20 text-primary mt-20" />
+      </div>
+    );
   }
 
   return (

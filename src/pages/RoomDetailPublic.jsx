@@ -25,7 +25,7 @@ const RoomDetailPublic = () => {
   if (isLoading)
     return (
       <div className="flex justify-center py-20">
-        <Spinner className="size-12" />
+        <Spinner className="size-12 text-primary" />
       </div>
     );
   if (!room)

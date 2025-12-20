@@ -245,7 +245,7 @@ const RoleContent = () => {
           <div className="mt-4 w-full flex flex-col lg:flex-row lg:justify-between gap-8">
             {isLoadingRoles && (
               <div className="absolute inset-0 z-10 flex items-center justify-center">
-                <Spinner className={"size-10"} />
+                <Spinner className={"size-10 text-primary"} />
               </div>
             )}
             <div

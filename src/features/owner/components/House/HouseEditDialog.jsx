@@ -49,7 +49,7 @@ const HouseEditDialog = ({ houseId, open, onOpenChange }) => {
           </DialogTitle>
         </DialogHeader>
         {loading ? (
-          <Spinner className={"size-10"} />
+          <Spinner className={"size-10 text-primary"} />
         ) : house ? (
           <HouseForm
             mode="edit"

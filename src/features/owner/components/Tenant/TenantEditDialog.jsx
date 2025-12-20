@@ -39,7 +39,7 @@ const TenantEditDialog = ({ tenantId, open, onOpenChange }) => {
         </DialogHeader>
         {loading ? (
           <div className="flex justify-center items-center">
-            <Spinner className={"size-10"} />
+            <Spinner className={"size-10 text-primary"} />
           </div>
         ) : tenant ? (
           <TenantEditForm

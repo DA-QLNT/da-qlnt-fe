@@ -39,7 +39,7 @@ export default function ContractInforEditDialog({
         <div className="overflow-y-auto flex-1">
           {isLoading ? (
             <div className="flex justify-center py-10">
-              <Spinner className="size-10" />
+              <Spinner className="size-10 text-primary" />
             </div>
           ) : contract ? (
             <ContractInforEditForm
