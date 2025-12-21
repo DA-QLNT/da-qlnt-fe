@@ -50,7 +50,10 @@ import { useGetAssetsQuery } from "../../store/assetApi";
 import AssetDeleteConfirm from "../../components/Asset/AssetDeleteConfirm";
 import AssetCreatOrUpdateDialog from "../../components/Asset/AssetCreatOrUpdateDialog";
 import AssetItemsViewDialog from "../../components/Asset/AssetItemsViewDialog";
+import { useTranslation } from "react-i18next";
+
 const AssetOwner = () => {
+  const { t } = useTranslation("asset");
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const {
@@ -128,7 +131,7 @@ const AssetOwner = () => {
   // if (isErrorAssets) {
   //   return (
   //     <div className="p-6 text-center text-red-500">
-  //       Lỗi tải danh sách Assets.
+  //       {t("ErrorLoadAssets")}
   //     </div>
   //   );
   // }
@@ -171,16 +174,16 @@ const AssetOwner = () => {
       {/* end dialog */}
       <header className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">
-          Quản lý Tài Sản ({totalElements} Loại)
+          {t("Title", { total: totalElements })}
         </h1>
       </header>
       <div className="w-full  p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
         <Table>
           <TableHeader className={"bg-sidebar"}>
             <TableRow>
-              <TableHead className="w-[50px]">No</TableHead>
-              <TableHead>Tên Tài Sản</TableHead>
-              <TableHead>Tổng Số Lượng</TableHead>
+              <TableHead className="w-[50px]">{t("No")}</TableHead>
+              <TableHead>{t("AssetName")}</TableHead>
+              <TableHead>{t("TotalAmount")}</TableHead>
               <TableHead className="text-right">
                 <Button
                   variant={"outline"}
@@ -189,7 +192,7 @@ const AssetOwner = () => {
                   }
                   onClick={openAddDialog}
                 >
-                  Thêm tài sản
+                  {t("Add")}
                 </Button>
               </TableHead>
             </TableRow>
@@ -201,7 +204,7 @@ const AssetOwner = () => {
                   colSpan={4}
                   className="text-center text-muted-foreground"
                 >
-                  Chưa có loại tài sản nào được đăng ký.
+                  {t("NoAssetsRegistered")}
                 </TableCell>
               </TableRow>
             ) : (
@@ -217,7 +220,7 @@ const AssetOwner = () => {
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button className="px-1" variant={"outline"}>
-                            Actions
+                            {t("Actions")}
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent
@@ -235,19 +238,19 @@ const AssetOwner = () => {
                               onClick={() => openEditDialog(asset)}
                             >
                               <SquarePen />
-                              Edit
+                              {t("Edit")}
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={() => openViewItemsDialog(asset.id)}
                             >
                               <Eye />
-                              View Items
+                              {t("ViewItems")}
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={() => openDeleteDialog(asset)}
                             >
                               <Trash color="red" />
-                              <span className="text-red-500">Delete</span>
+                              <span className="text-red-500">{t("Delete")}</span>
                             </DropdownMenuItem>
                           </DropdownMenuGroup>
                         </DropdownMenuContent>
@@ -259,21 +262,21 @@ const AssetOwner = () => {
                         size="sm"
                         onClick={() => openEditDialog(asset)}
                       >
-                        Edit
+                        {t("Edit")}
                       </Button>
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => openViewItemsDialog(asset.id)}
                       >
-                        View Items
+                        {t("ViewItems")}
                       </Button>
                       <Button
                         variant="destructive"
                         size="sm"
                         onClick={() => openDeleteDialog(asset)}
                       >
-                        Delete
+                        {t("Delete")}
                       </Button>
                     </div>
                   </TableCell>

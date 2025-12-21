@@ -13,6 +13,7 @@ import { Trash, AlertTriangle, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import React from "react";
 import { Spinner } from "@/components/ui/spinner";
+import { useTranslation } from "react-i18next";
 
 export default function AssetDeleteConfirm({
   assetId,
@@ -20,19 +21,19 @@ export default function AssetDeleteConfirm({
   open,
   onOpenChange,
 }) {
+  const { t } = useTranslation("asset");
   const [deleteAsset, { isLoading }] = useDeleteAssetMutation();
 
   const handleDelete = async () => {
     try {
       await deleteAsset(assetId).unwrap();
 
-      toast.success(`Đã xóa loại tài sản '${assetName}' thành công.`);
+      toast.success(t("DeleteSuccess", { name: assetName }));
       onOpenChange(false);
     } catch (error) {
       console.error("Lỗi xóa Asset:", error);
-      const errorMessage =
-        error.data?.message || `Xóa loại tài sản '${assetName}' thất bại.`;
-      toast.error(errorMessage);
+
+      toast.error(t("DeleteFailed"));
     }
   };
 
@@ -42,25 +43,22 @@ export default function AssetDeleteConfirm({
         <AlertDialogHeader>
           <AlertDialogTitle className="flex items-center gap-2 text-red-600">
             <AlertTriangle className="w-6 h-6" />
-            Xác nhận xóa Loại Tài Sản
+            {t("ConfirmDeleteTitle")}
           </AlertDialogTitle>
           <AlertDialogDescription>
-            Anh có chắc chắn muốn xóa loại tài sản {assetName} không? Thao
-            tác này sẽ xóa tất cả Asset Items thuộc loại này khỏi hệ thống.
+            {t("ConfirmDeleteMessage", { name: assetName })}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isLoading}>Hủy bỏ</AlertDialogCancel>
+          <AlertDialogCancel disabled={isLoading}>
+            {t("Cancel")}
+          </AlertDialogCancel>
           <AlertDialogAction
             onClick={handleDelete}
             disabled={isLoading}
             className="bg-red-600 hover:bg-red-700"
           >
-            {isLoading ? (
-              <Spinner/>
-            ) : (
-              "Đồng ý xóa"
-            )}
+            {isLoading ? <Spinner /> : t("ConfirmDelete")}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

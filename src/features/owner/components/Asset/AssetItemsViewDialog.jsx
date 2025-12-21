@@ -29,8 +29,10 @@ import {
 } from "@/components/ui/popover";
 import { AssetImageViewer } from "./../../../../components/common/ImageViewer";
 import { formatCurrency } from "./../../../../lib/format/currencyFormat";
+import { useTranslation } from "react-i18next";
 
 export default function AssetItemsViewDialog({ assetId, open, onOpenChange }) {
+  const { t } = useTranslation("asset");
   const {
     data: asset,
     isLoading,
@@ -47,7 +49,7 @@ export default function AssetItemsViewDialog({ assetId, open, onOpenChange }) {
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="text-red-500">
-          Lỗi tải chi tiết tài sản.
+          {t("ErrorLoadAssetDetails")}
         </DialogContent>
       </Dialog>
     );
@@ -60,7 +62,7 @@ export default function AssetItemsViewDialog({ assetId, open, onOpenChange }) {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Eye className="h-5 w-5" />
-            Danh sách Item: {asset?.name || "..."} ({assetItems.length} mục)
+            {t("ItemListTitle", { name: asset?.name || "...", count: assetItems.length })}
           </DialogTitle>
         </DialogHeader>
 
@@ -71,19 +73,19 @@ export default function AssetItemsViewDialog({ assetId, open, onOpenChange }) {
               <Table className="relative min-w-max">
                 <TableHeader className="sticky top-0 bg-secondary z-10">
                   <TableRow>
-                    <TableHead className="w-[30px]">No</TableHead>
-                    <TableHead>Mô tả</TableHead>
-                    <TableHead className="w-[150px]">Giá mua</TableHead>
-                    <TableHead className="w-[150px]">Ngày mua</TableHead>
-                    <TableHead className="w-[80px]">Status</TableHead>
-                    <TableHead className="w-[50px] text-right">Ảnh</TableHead>
+                    <TableHead className="w-[30px]">{t("No")}</TableHead>
+                    <TableHead>{t("Description")}</TableHead>
+                    <TableHead className="w-[150px]">{t("PurchasePrice")}</TableHead>
+                    <TableHead className="w-[150px]">{t("PurchaseDate")}</TableHead>
+                    <TableHead className="w-[80px]">{t("Status")}</TableHead>
+                    <TableHead className="w-[50px] text-right">{t("Image")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {loading ? (
                     <TableRow>
                       <TableCell colSpan={6} className="text-center py-8">
-                        <Spinner /> Đang tải...
+                        <Spinner /> {t("Loading")}
                       </TableCell>
                     </TableRow>
                   ) : assetItems.length === 0 ? (
@@ -92,7 +94,7 @@ export default function AssetItemsViewDialog({ assetId, open, onOpenChange }) {
                         colSpan={6}
                         className="text-center text-muted-foreground"
                       >
-                        Không có mục tài sản nào.
+                        {t("NoItems")}
                       </TableCell>
                     </TableRow>
                   ) : (
@@ -114,7 +116,7 @@ export default function AssetItemsViewDialog({ assetId, open, onOpenChange }) {
                               item.status === 0 ? "success" : "destructive"
                             }
                           >
-                            {item.status === 0 ? "Tốt" : "Hỏng"}
+                            {item.status === 0 ? t("Good") : t("Broken")}
                           </Badge>
                         </TableCell>
                         <TableCell className="text-right">
@@ -149,15 +151,6 @@ export default function AssetItemsViewDialog({ assetId, open, onOpenChange }) {
             </div>
           </ScrollArea>
         </div>
-
-        {/* <DialogFooter className="mt-4 justify-between">
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
-            <X className="mr-2 h-4 w-4" /> Đóng
-          </Button>
-          <Button variant="default" title="Thêm mục tài sản mới">
-            <Plus className="mr-2 h-4 w-4" /> Add Item
-          </Button>
-        </DialogFooter> */}
       </DialogContent>
     </Dialog>
   );

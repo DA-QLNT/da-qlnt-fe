@@ -8,14 +8,16 @@ import {
 } from "@/components/ui/field";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AssetSchema } from "@/lib/validation/asset";
+import { getAssetSchema } from "@/lib/validation/asset";
 import { useCreateOrUpdateAssetMutation } from "../../store/assetApi";
 import toast from "react-hot-toast";
 import { Loader2, Plus, Save } from "lucide-react";
 import React, { useMemo } from "react";
 import { Spinner } from "@/components/ui/spinner";
+import { useTranslation } from "react-i18next";
 
 export default function AssetForm({ initialData = null, onFormSubmitSuccess }) {
+  const { t } = useTranslation("asset");
   const [createOrUpdateAsset, { isLoading }] = useCreateOrUpdateAssetMutation();
 
   const isEditMode = !!initialData?.id;
@@ -27,6 +29,8 @@ export default function AssetForm({ initialData = null, onFormSubmitSuccess }) {
     }),
     [initialData]
   );
+
+  const AssetSchema = useMemo(() => getAssetSchema(t), [t]);
 
   const {
     register,
@@ -43,15 +47,19 @@ export default function AssetForm({ initialData = null, onFormSubmitSuccess }) {
       const result = await createOrUpdateAsset(data).unwrap();
 
       if (result.code === 1000) {
-        const action = isEditMode ? "Cập nhật" : "Tạo mới";
-        toast.success(`${action} loại tài sản '${data.name}' thành công!`);
+        if (isEditMode) {
+          toast.success(t("UpdateSuccess", { name: data.name }));
+        } else {
+          toast.success(t("CreateSuccess", { name: data.name }));
+        }
+
         if (!isEditMode) reset();
         onFormSubmitSuccess();
       } else {
-        toast.error(result.message || "Thao tác thất bại.");
+        toast.error(t("OperationFailed"));
       }
     } catch (error) {
-      toast.error(error.data?.message || "Lỗi mạng hoặc server.");
+      toast.error(error.data?.message || t("NetworkError"));
     }
   };
 
@@ -64,11 +72,11 @@ export default function AssetForm({ initialData = null, onFormSubmitSuccess }) {
 
         {/* Name */}
         <Field>
-          <FieldLabel htmlFor="name">Tên Loại Tài Sản (*)</FieldLabel>
+          <FieldLabel htmlFor="name">{t("LabelName")}</FieldLabel>
           <Input
             id="name"
             {...register("name")}
-            placeholder="Ví dụ: TIVI, QUẠT, ĐIỀU HÒA"
+            placeholder={t("PlaceholderName")}
             disabled={isLoading}
           />
           <FieldError>{errors.name?.message}</FieldError>
@@ -81,7 +89,7 @@ export default function AssetForm({ initialData = null, onFormSubmitSuccess }) {
         ) : (
           <>
             <Save className="mr-2 h-4 w-4" />{" "}
-            {isEditMode ? "Cập nhật" : "Tạo mới"}
+            {isEditMode ? t("ButtonUpdate") : t("ButtonCreate")}
           </>
         )}
       </Button>
