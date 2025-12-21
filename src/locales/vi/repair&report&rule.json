@@ -96,6 +96,8 @@
   "Rent": "Đang thuê",
   "RentCost": "Chi phí thuê",
   "RepairCost": "Chi phí sửa chữa",
+  "RepairManagement": "Quản lý sửa chữa",
+
   "Revenue": "Doanh thu",
   "RevenueChart": "Biểu đồ doanh thu",
   "RevenueCollected": "Doanh thu đã thu",
@@ -120,6 +122,8 @@
   "Status": "Trạng thái",
   "Success": "Thành công",
   "SortBy": "Sắp xếp theo",
+  "Search": "Tìm kiếm",
+  "EnterKeyworSearch": "Nhập từ khóa để tìm kiếm",
 
   "Tenant": "Khách thuê",
   "Term": "Kỳ hạn",

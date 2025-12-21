@@ -52,10 +52,27 @@ export const repairOwnerApi = baseApi.injectEndpoints({
         { type: "RepairHouse", id: result?.houseId },
       ],
     }),
+    // 🚨 QUERY LẤY TẤT CẢ YÊU CẦU SỬA CHỮA CÓ BỘ LỌC
+    getAllRepairRequests: builder.query({
+      query: ({ status, houseId, keyword, page = 0, size = 20 }) => ({
+        url: `/repairs`,
+        method: "GET",
+        params: {
+          status: status === "all" ? undefined : status,
+          houseId: houseId === "all" ? undefined : houseId,
+          keyword: keyword || undefined,
+          page,
+          size,
+        },
+      }),
+      transformResponse: (response) => response.result,
+      providesTags: ["Repair"],
+    }),
   }),
 });
 
 export const {
   useGetHouseRepairRequestsQuery,
   useUpdateRepairStatusMutation,
+  useGetAllRepairRequestsQuery,
 } = repairOwnerApi;
