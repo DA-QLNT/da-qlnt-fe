@@ -2,7 +2,7 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 
 import axios from "axios";
 import { format } from "date-fns";
-const ADDRESS_BASE_URL = import.meta.env.VITE_ADDRESS_BASE_URL;
+const ADDRESS_BASE_URL = "/address-api/";
 
 const publicBaseQuery =
   ({ baseUrl }) =>
