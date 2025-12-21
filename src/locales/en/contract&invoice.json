@@ -1,5 +1,16 @@
 {
   "Action": "Action",
+  "AllHouse": "All house",
+  "AllRoom": "All room",
+  "AllStatus": "AllStatus",
+  "FromDate": "From date",
+  "ToDate": "To date",
+  "Keyword": "Keyword",
+  "Search": "Search",
+  "ResetFilters": "Reset filters",
+  "ContractManagement": "Contract management",
+  "Duration": "Duration",
+  "PickDate": "PickDate",
   "ActivatedSuccess": "Activated successfully",
   "Activate": "Activate",
   "ActivateFailed": "Activation failed",
@@ -224,5 +235,6 @@
   "LastMeterReading": "Last Meter Reading",
   "Export": "Export",
   "ExportFailed": "Export failed",
-  "ExportSuccess": "Export successfully"
+  "ExportSuccess": "Export successfully",
+  "Terminated": "Terminated"
 }

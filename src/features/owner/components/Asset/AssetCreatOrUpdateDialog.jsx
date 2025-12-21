@@ -7,8 +7,10 @@ import {
 import AssetForm from "./AssetForm";
 import { Plus, SquarePen } from "lucide-react";
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 export default function AssetCreatOrUpdateDialog({ open, onOpenChange, initialData = null }) {
+  const { t } = useTranslation("asset");
   const isEditMode = !!initialData?.id;
 
   const handleSuccess = () => {
@@ -25,7 +27,7 @@ export default function AssetCreatOrUpdateDialog({ open, onOpenChange, initialDa
             ) : (
               <Plus className="h-5 w-5" />
             )}
-            {isEditMode ? "Chỉnh sửa Loại Tài Sản" : "Thêm Loại Tài Sản Mới"}
+            {isEditMode ? t("DialogEditTitle") : t("DialogAddTitle")}
           </DialogTitle>
         </DialogHeader>
 

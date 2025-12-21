@@ -48,7 +48,7 @@ const ContractDetailByHouse = () => {
   const id = Number(contractId);
   const navigate = useNavigate();
   const backToContractList = () => {
-    navigate(`/owner/contracts/houses/${houseId}/contracts`);
+    navigate(`/owner/contracts`);
   };
   const {
     data: contract,
@@ -250,7 +250,7 @@ const ContractDetailByHouse = () => {
     );
   }
   return (
-    <div className="px-4 lg:px-6 flex flex-col gap-4">
+    <div className="px-4 lg:px-6 space-y-4">
       {/* extend contract */}
       {contract && (
         <ContractExtendDialog
@@ -333,15 +333,20 @@ const ContractDetailByHouse = () => {
       </header>
 
       {/* --------------------- PHẦN THÔNG TIN CHÍNH --------------------- */}
+      {(contract.status === 0 || contract.status === 1) && (
+        <Button
+          onClick={openContractInforEditDialog}
+          className={"w-fit flex justify-self-end"}
+        >
+          {t("Edit")}
+        </Button>
+      )}
       <Card>
         <CardHeader>
           <CardTitle className="text-xl flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Info className="h-5 w-5" /> {t("ContractInfor")}
             </div>
-            {(contract.status === 0 || contract.status === 1) && (
-              <Button onClick={openContractInforEditDialog}>{t("Edit")}</Button>
-            )}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -510,9 +515,7 @@ const ContractDetailByHouse = () => {
           </Button>
         )}
         {(contract.status === 0 || contract.status === 1) && (
-          <Button onClick={openSendEmailDialog} variant="outline">
-            {t("SendEmail")}
-          </Button>
+          <Button onClick={openSendEmailDialog}>{t("SendEmail")}</Button>
         )}
         {contract.status === 2 && (
           <Button

@@ -78,7 +78,8 @@ const data = {
     },
     {
       title: "Contracts",
-      url: "/owner/contracts/houses",
+      // url: "/owner/contracts/houses",
+      url: "/owner/contracts",
       icon: IconContract,
     },
     {

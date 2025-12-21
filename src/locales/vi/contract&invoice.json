@@ -1,5 +1,17 @@
 {
   "Action": "Hành động",
+  "AllHouse": "Tất cả nhà",
+  "AllRoom": "Tất cả phòng",
+  "AllStatus": "Tất cả trạng thái",
+  "FromDate": "Từ ngày",
+  "ToDate": "Đến ngày",
+  "Keyword": "Từ khóa",
+  "Search": "Tìm kiếm",
+  "ResetFilters": "Làm mới bộ lọc",
+  "ContractManagement": "Quản lý hợp đồng",
+  "Duration": "Thời hạn",
+  "PickDate": "Chọn ngày",
+
   "Activate": "Kích hoạt",
   "Active": "Đang có hiệu lực",
   "ActiveContract": "Kích hoạt hợp đồng",
@@ -231,5 +243,6 @@
   "Export": "Xuất",
   "ExportFailed": "Xuất thất bại",
   "ExportInvoice": "Xuất hóa đơn",
-  "ExportSuccess": "Xuất thành công"
+  "ExportSuccess": "Xuất thành công",
+  "Terminated": "Bị thanh lý"
 }

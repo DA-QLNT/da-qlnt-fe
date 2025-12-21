@@ -67,6 +67,34 @@ export const contractApi = baseApi.injectEndpoints({
         { type: "Contract", id: contractId },
       ],
     }),
+    // all COntract
+    searchContracts: builder.query({
+      query: ({
+        houseId,
+        roomId,
+        status,
+        keyword,
+        fromDate,
+        toDate,
+        page = 0,
+        size = 10,
+      }) => ({
+        url: `/contracts/search`,
+        method: "GET",
+        params: {
+          houseId: houseId === "all" ? undefined : houseId,
+          roomId: roomId === "all" ? undefined : roomId,
+          status: status === "all" ? undefined : status,
+          keyword: keyword || undefined,
+          fromDate: fromDate || undefined,
+          toDate: toDate || undefined,
+          page,
+          size,
+        },
+      }),
+      transformResponse: (response) => response.result,
+      providesTags: ["Contract"],
+    }),
     // ===========tenant==========
     addTenant: builder.mutation({
       query: ({ contractId, tenantData }) => ({
@@ -197,4 +225,5 @@ export const {
   useExtendContractMutation,
   useGetCurrentContractByIdQuery,
   useExportContractWordMutation,
+  useSearchContractsQuery,
 } = contractApi;

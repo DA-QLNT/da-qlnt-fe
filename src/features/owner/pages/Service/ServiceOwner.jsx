@@ -9,6 +9,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
@@ -29,6 +34,7 @@ import {
   EllipsisVertical,
   Eye,
   FunnelPlus,
+  HousePlus,
   PackagePlus,
   Plus,
   Search,
@@ -271,12 +277,14 @@ const ServiceOwner = () => {
                         </h4>
                       </TableCell>
                       <TableCell className={"flex justify-end"}>
-                        <SquarePen
+                        <Button
+                          variant="outline"
                           onClick={() => {
                             openServiceHouseListServiceDialog(house);
                           }}
-                          className="h-4 w-4 md:w-6 lg:h-6"
-                        />
+                        >
+                          {t("Edit")}
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -335,7 +343,7 @@ const ServiceOwner = () => {
                       <TableCell className={"flex justify-end"}>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <EllipsisVertical className="h-4 w-4" />
+                            <EllipsisVertical className="h-4 w-4 md:hidden" />
                           </DropdownMenuTrigger>
                           <DropdownMenuContent
                             className="w-48 mr-4"
@@ -368,6 +376,53 @@ const ServiceOwner = () => {
                             </DropdownMenuGroup>
                           </DropdownMenuContent>
                         </DropdownMenu>
+
+                        <div className="gap-2 hidden md:flex">
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <Button
+                                onClick={() =>
+                                  openServiceHouseAddDialog(service)
+                                }
+                              >
+                                <HousePlus />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              {t("AddServiceToHouse")}
+                            </TooltipContent>
+                          </Tooltip>
+
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                onClick={() => openEditDialog(service)}
+                              >
+                                <SquarePen className="h-4 w-4" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>{t("EditService")}</TooltipContent>
+                          </Tooltip>
+
+                          {/* Nút 3: Xóa */}
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                className="hover:bg-red-50"
+                                onClick={() => openDeleteDialog(service)}
+                              >
+                                <Trash className="h-4 w-4 text-red-500" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              {t("DeleteService")}
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))

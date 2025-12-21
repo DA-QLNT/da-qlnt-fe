@@ -13,6 +13,7 @@ import {
 import { SquarePen } from "lucide-react";
 import TenantEditDialog from "../../components/Tenant/TenantEditDialog";
 import { useTranslation } from "react-i18next";
+import { Button } from "@/components/ui/button";
 const TenantOwner = () => {
   const { t } = useTranslation("usercontent");
   const { userId: ownerId, isLoadingMe } = useAuth();
@@ -138,19 +139,20 @@ const TenantOwner = () => {
                 </TableCell>
                 <TableCell colSpan={2}>{tenant.phoneNumber}</TableCell>
                 <TableCell className="text-right">
-                  <div className="flex justify-end">
-                    <SquarePen
-                      onClick={() => {
-                        openEditDialog(tenant.id);
-                      }}
-                    />
-                  </div>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      openEditDialog(tenant.id);
+                    }}
+                  >
+                    {t("Edit")}
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
             {sortedTenantByName.length === 0 && (
               <TableRow>
-                <TableCell colSpan={4}>Không có khách thuê</TableCell>
+                <TableCell colSpan={4}>{t("NoTenant")}</TableCell>
               </TableRow>
             )}
           </TableBody>

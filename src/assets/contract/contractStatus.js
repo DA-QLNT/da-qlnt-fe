@@ -36,4 +36,9 @@ export const CONTRACT_STATUS_MAP = {
     label: "RenewalRejected",
     color: "bg-orange-500 hover:bg-orange-600 text-white",
   },
+
+  8: {
+    label: "Terminated",
+    color: "bg-red-500 hover:bg-red-600 text-white",
+  },
 };
