@@ -22,8 +22,7 @@ const ServiceHouseListServiceDialog = ({
       <DialogContent className={"w-full sm:w-[90vw] h-[80vh] sm:max-w-4xl"}>
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 mb-4">
-            {t("EditServiceHouse")}
-            {houseName}
+            {t("EditServiceHouse")} {houseName}
           </DialogTitle>
           <ServiceHouseListServiceTable
             houseId={houseId}
