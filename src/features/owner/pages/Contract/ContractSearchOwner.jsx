@@ -51,11 +51,17 @@ import {
   ChevronRight,
   X,
   ArrowRight,
+  RotateCcw,
 } from "lucide-react";
 
 import ContractStatusBadge from "../../components/Contract/ContractStatusBadge";
 import EarlyContractAddDialog from "../../components/Contract/EarlyContractAddDialog";
 import { CONTRACT_STATUS_MAP } from "@/assets/contract/contractStatus";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const ContractSearchOwner = () => {
   const { t } = useTranslation("contractinvoice");
@@ -151,84 +157,8 @@ const ContractSearchOwner = () => {
 
       {/* 🚨 BỘ LỌC HÀNG NGANG TỐI ƯU */}
       <Card className="shadow-sm border-purple-100">
-        <CardContent className="p-4 space-y-4">
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-3 items-end">
-            {/* House */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-500 flex items-center gap-1 uppercase">
-                <Home size={12} /> {t("House")}
-              </label>
-              <Select
-                value={filters.houseId}
-                onValueChange={(val) =>
-                  setFilters((p) => ({ ...p, houseId: val }))
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder={t("AllHouse")} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{t("AllHouse")}</SelectItem>
-                  {allHouses.map((h) => (
-                    <SelectItem key={h.id} value={h.id.toString()}>
-                      {h.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Room */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-500 flex items-center gap-1 uppercase">
-                <DoorOpen size={12} /> {t("Room")}
-              </label>
-              <Select
-                value={filters.roomId}
-                onValueChange={(val) =>
-                  setFilters((p) => ({ ...p, roomId: val }))
-                }
-                disabled={filters.houseId === "all"}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder={t("AllRoom")} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{t("AllRoom")}</SelectItem>
-                  {houseRooms.map((r) => (
-                    <SelectItem key={r.id} value={r.id.toString()}>
-                      {r.code}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Status */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-500 flex items-center gap-1 uppercase">
-                <Filter size={12} /> {t("Status")}
-              </label>
-              <Select
-                value={filters.status}
-                onValueChange={(val) =>
-                  setFilters((p) => ({ ...p, status: val }))
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{t("AllStatus")}</SelectItem>
-                  {Object.keys(CONTRACT_STATUS_MAP).map((key) => (
-                    <SelectItem key={key} value={key}>
-                      {t(CONTRACT_STATUS_MAP[key].label)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
+        <CardContent className="px-4 py-0 space-y-4 relative">
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-6 gap-4 ">
             {/* From Date */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-500 uppercase ml-1">
@@ -260,7 +190,7 @@ const ContractSearchOwner = () => {
               </Popover>
             </div>
 
-            {/* To Date (MỚI BỔ SUNG) */}
+            {/* To Date */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-500 uppercase ml-1">
                 {t("ToDate")}
@@ -291,6 +221,82 @@ const ContractSearchOwner = () => {
               </Popover>
             </div>
 
+            {/* House */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-500 flex items-center gap-1 uppercase">
+                <Home size={12} /> {t("House")}
+              </label>
+              <Select
+                value={filters.houseId}
+                onValueChange={(val) =>
+                  setFilters((p) => ({ ...p, houseId: val }))
+                }
+              >
+                <SelectTrigger className={"w-full"}>
+                  <SelectValue placeholder={t("AllHouse")} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{t("AllHouse")}</SelectItem>
+                  {allHouses.map((h) => (
+                    <SelectItem key={h.id} value={h.id.toString()}>
+                      {h.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Room */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-500 flex items-center gap-1 uppercase">
+                <DoorOpen size={12} /> {t("Room")}
+              </label>
+              <Select
+                value={filters.roomId}
+                onValueChange={(val) =>
+                  setFilters((p) => ({ ...p, roomId: val }))
+                }
+                disabled={filters.houseId === "all"}
+              >
+                <SelectTrigger className={"w-full"}>
+                  <SelectValue placeholder={t("AllRoom")} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{t("AllRoom")}</SelectItem>
+                  {houseRooms.map((r) => (
+                    <SelectItem key={r.id} value={r.id.toString()}>
+                      {r.code}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Status */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-500 flex items-center gap-1 uppercase">
+                <Filter size={12} /> {t("Status")}
+              </label>
+              <Select
+                value={filters.status}
+                onValueChange={(val) =>
+                  setFilters((p) => ({ ...p, status: val }))
+                }
+              >
+                <SelectTrigger className={"w-full"}>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{t("AllStatus")}</SelectItem>
+                  {Object.keys(CONTRACT_STATUS_MAP).map((key) => (
+                    <SelectItem key={key} value={key}>
+                      {t(CONTRACT_STATUS_MAP[key].label)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
             {/* Keyword Search */}
             <div className="space-y-1.5 lg:col-span-1">
               <label className="text-xs font-semibold text-slate-500 uppercase ml-1">
@@ -308,29 +314,33 @@ const ContractSearchOwner = () => {
                 />
               </div>
             </div>
-
-            {/* Reset Button */}
-            <div className="flex justify-end lg:mb-0.5">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-xs text-slate-500 hover:text-red-500 h-9"
-                onClick={() =>
-                  setFilters({
-                    houseId: "all",
-                    roomId: "all",
-                    status: "all",
-                    keyword: "",
-                    fromDate: undefined,
-                    toDate: undefined,
-                    page: 0,
-                    size: 10,
-                  })
-                }
-              >
-                <X className="h-3 w-3 mr-1" /> {t("ResetFilters")}
-              </Button>
-            </div>
+          </div>
+          {/* Reset Button */}
+          <div className="absolute -top-4 right-4">
+            <Tooltip>
+              <TooltipTrigger>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="text-red-500 h-9"
+                  onClick={() =>
+                    setFilters({
+                      houseId: "all",
+                      roomId: "all",
+                      status: "all",
+                      keyword: "",
+                      fromDate: undefined,
+                      toDate: undefined,
+                      page: 0,
+                      size: 10,
+                    })
+                  }
+                >
+                  <RotateCcw />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>{t("ResetFilters")}</TooltipContent>
+            </Tooltip>
           </div>
         </CardContent>
       </Card>
@@ -431,14 +441,13 @@ const ContractSearchOwner = () => {
         {/* Phân trang */}
         {totalPages > 1 && (
           <div className="flex justify-between items-center p-4 border-t bg-sidebar">
-            <p className="text-xs text-slate-500 font-medium">
+            <p className="text-xs text-muted-foreground font-medium">
               {t("Page")} {filters.page + 1} / {totalPages}
             </p>
             <div className="flex gap-2">
               <Button
                 variant="outline"
                 size="sm"
-                className="bg-muted-foreground"
                 onClick={() => setFilters((p) => ({ ...p, page: p.page - 1 }))}
                 disabled={filters.page === 0}
               >
@@ -447,7 +456,6 @@ const ContractSearchOwner = () => {
               <Button
                 variant="outline"
                 size="sm"
-                className="bg-muted-foreground"
                 onClick={() => setFilters((p) => ({ ...p, page: p.page + 1 }))}
                 disabled={filters.page >= totalPages - 1}
               >

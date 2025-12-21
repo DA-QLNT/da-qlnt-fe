@@ -19,7 +19,7 @@ import { useTranslation } from "react-i18next";
 const HouseOwner = () => {
   const { t } = useTranslation("house");
   const { userId: ownerId, isLoadingMe } = useAuth();
-  console.log(ownerId);
+  // console.log(ownerId);
   // add house
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 

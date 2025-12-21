@@ -8,8 +8,8 @@ import { Plus } from "lucide-react";
 import HouseAddDialog from "../../components/House/HouseAddDialog";
 
 const HouseOwner = () => {
-  const { userId:ownerId, isLoadingMe } = useAuth();
-  console.log(ownerId);
+  const { userId: ownerId, isLoadingMe } = useAuth();
+  // console.log(ownerId);
   // add house
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
@@ -35,8 +35,6 @@ const HouseOwner = () => {
 
   const totalElements = data?.totalElements || 0;
   const totalPages = data?.totalPages || 0;
-
- 
 
   return (
     <div className="px-4 lg:px-6">
