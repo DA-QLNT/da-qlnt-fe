@@ -1,3 +1,9 @@
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -132,7 +138,8 @@ const RuleOwner = () => {
                       </p>
                     </TableCell>
                     <TableCell className={"text-right w-[100px]"}>
-                      <div className="flex justify-end gap-2">
+                      {/* --- GIAO DIỆN DESKTOP (Màn hình md trở lên) --- */}
+                      <div className="hidden md:flex justify-end gap-2">
                         <Button
                           size="sm"
                           variant="outline"
@@ -141,7 +148,7 @@ const RuleOwner = () => {
                             setIsViewOpen(true);
                           }}
                         >
-                          <Eye className="mr-2 h-4 w-4" /> {t("View")}
+                          {t("View")}
                         </Button>
                         <Button
                           size="sm"
@@ -151,7 +158,7 @@ const RuleOwner = () => {
                             setIsEditOpen(true);
                           }}
                         >
-                          <Edit3 className="mr-2 h-4 w-4" /> {t("Edit")}
+                          {t("Edit")}
                         </Button>
                         <Button
                           size="sm"
@@ -161,8 +168,46 @@ const RuleOwner = () => {
                             setIsDeleteOpen(true);
                           }}
                         >
-                          <Trash className="mr-2 h-4 w-4" /> {t("Delete")}
+                          {t("Delete")}
                         </Button>
+                      </div>
+
+                      {/* --- GIAO DIỆN MOBILE (Dưới màn hình md) --- */}
+                      <div className="md:hidden">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="outline" size="sm" className="">
+                              {t("Action")}
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem
+                              onClick={() => {
+                                setSelectedRuleId(rule.id);
+                                setIsViewOpen(true);
+                              }}
+                            >
+                              {t("View")}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => {
+                                setSelectedRuleId(rule.id);
+                                setIsEditOpen(true);
+                              }}
+                            >
+                              {t("Edit")}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              className="text-destructive focus:text-destructive"
+                              onClick={() => {
+                                setSelectedRuleId(rule.id);
+                                setIsDeleteOpen(true);
+                              }}
+                            >
+                              {t("Delete")}
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </div>
                     </TableCell>
                   </TableRow>
