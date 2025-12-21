@@ -45,6 +45,7 @@ import RepairByHouse from "./features/owner/pages/Repair/RepairByHouse";
 import ContractHistoryTenant from "./features/Tenant/pages/Contract/ContractHistoryTenant";
 import ContractPendingRenewal from "./features/Tenant/pages/Contract/ContractPendingRenewal";
 import RoomDetailPublic from "./pages/RoomDetailPublic";
+import ContractSearchOwner from "./features/owner/pages/Contract/ContractSearchOwner";
 function App() {
   return (
     <div className="min-h-screen flex flex-col">
@@ -100,11 +101,12 @@ function App() {
 
               <Route path="tenants" element={<TenantOwner />} />
               {/* contract */}
-              <Route path="contracts/houses" element={<HouseList />} />
+              <Route path="contracts" element={<ContractSearchOwner />} />
+              {/* <Route path="contracts/houses" element={<HouseList />} />
               <Route
                 path="contracts/houses/:houseId/contracts"
                 element={<ContractListByHouse />}
-              />
+              /> */}
               <Route
                 path="contracts/houses/:houseId/contracts/:contractId"
                 element={<ContractDetailByHouse />}

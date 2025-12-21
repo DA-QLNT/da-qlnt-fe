@@ -48,7 +48,7 @@ const ContractDetailByHouse = () => {
   const id = Number(contractId);
   const navigate = useNavigate();
   const backToContractList = () => {
-    navigate(`/owner/contracts/houses/${houseId}/contracts`);
+    navigate(`/owner/contracts`);
   };
   const {
     data: contract,
