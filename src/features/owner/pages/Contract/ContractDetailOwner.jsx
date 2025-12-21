@@ -347,7 +347,14 @@ const ContractDetailOwner = () => {
           {t("Export")}
         </Button>
       </header>
-
+      {(contract.status === 0 || contract.status === 1) && (
+        <Button
+          onClick={openContractInforEditDialog}
+          className={"w-fit flex justify-self-end"}
+        >
+          {t("Edit")}
+        </Button>
+      )}
       {/* --------------------- PHẦN THÔNG TIN CHÍNH --------------------- */}
       <Card>
         <CardHeader>
@@ -355,9 +362,6 @@ const ContractDetailOwner = () => {
             <div className="flex items-center gap-2">
               <Info className="h-5 w-5" /> {t("ContractInfor")}
             </div>
-            {(contract.status === 0 || contract.status === 1) && (
-              <Button onClick={openContractInforEditDialog}>{t("Edit")}</Button>
-            )}
           </CardTitle>
         </CardHeader>
         <CardContent>
