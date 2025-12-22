@@ -108,5 +108,21 @@
   "ConfirmAllIndexesForMonth": "Are you sure you want to confirm all indexes for month",
   "ConfirmedAllIndexesForMonth": "Confirmed all indexes for month",
   "ConfirmIndexFailed": "Confirm index failed",
-  "RentedRoom": "Rented Room"
+  "RentedRoom": "Rented Room",
+  "FromDate": "From date",
+  "ToDate": "To date",
+  "End": "End",
+  "Start": "Start",
+  "All": "All",
+  "ResetFilters": "Reset filters",
+  "Tenant": "Tenant",
+  "HouseSelectionRequired": "House Selection Required",
+  "PleaseSelectAHouseToViewInvoices": "Please Select A House To View Invoices",
+  "InvoiceManagement": "Invoice Management",
+  "PaymentMethod": "Payment method",
+  "SelectHouse": "Select House",
+  "AllHouse": "All House",
+  "AllRoom": "All Room",
+  "AllStatus": "All Status",
+  "ErrorLoadData": "Error loading data"
 }

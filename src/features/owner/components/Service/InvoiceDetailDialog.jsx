@@ -228,7 +228,7 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
                         </TableCell>
                         <TableCell>
                           {detail.quantity}{" "}
-                          {detail.method === "0" ? "số" : "người/lần"}
+                          {detail.method === "0" ? "số" : "người"}
                         </TableCell>
                         <TableCell className="text-right">
                           {formatCurrency(detail.amount)}

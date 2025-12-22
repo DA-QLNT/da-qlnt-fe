@@ -233,6 +233,34 @@ export const serviceApi = baseApi.injectEndpoints({
         cache: "no-cache",
       }),
     }),
+    // 🚨 QUERY TÌM KIẾM HÓA ĐƠN THEO BỘ LỌC
+    searchInvoices: builder.query({
+      query: ({
+        houseId,
+        roomId,
+        status,
+        fromDate,
+        toDate,
+        paymentMethod,
+        page = 0,
+        size = 10,
+      }) => ({
+        url: `/invoices/search`,
+        method: "GET",
+        params: {
+          houseId: houseId === "all" ? undefined : houseId,
+          roomId: roomId === "all" ? undefined : roomId,
+          status: status === "all" ? undefined : status,
+          paymentMethod: paymentMethod === "all" ? undefined : paymentMethod,
+          fromDate: fromDate || undefined,
+          toDate: toDate || undefined,
+          page,
+          size,
+        },
+      }),
+      transformResponse: (response) => response.result,
+      providesTags: ["Invoice"],
+    }),
   }),
 });
 export const {
@@ -253,4 +281,5 @@ export const {
   useCreateInvoiceMutation,
   useExportInvoiceExcelMutation,
   useExportInvoiceByInvoiceIdMutation,
+  useSearchInvoicesQuery,
 } = serviceApi;

@@ -26,6 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
 import {
   Card,
   CardContent,
@@ -165,7 +166,7 @@ const ContractSearchOwner = () => {
                 {t("FromDate")}
               </label>
               <Popover>
-                <PopoverTrigger asChild>
+                <PopoverTrigger asChild className={"w-full"}>
                   <Button
                     variant="outline"
                     className="w-full justify-start font-normal px-2"
@@ -196,7 +197,7 @@ const ContractSearchOwner = () => {
                 {t("ToDate")}
               </label>
               <Popover>
-                <PopoverTrigger asChild>
+                <PopoverTrigger asChild className={"w-full"}>
                   <Button
                     variant="outline"
                     className="w-full justify-start font-normal px-2"

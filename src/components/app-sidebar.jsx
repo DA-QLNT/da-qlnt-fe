@@ -16,6 +16,7 @@ import {
   IconContract,
   IconWritingFilled,
   IconHammer,
+  IconReceiptDollar,
 } from "@tabler/icons-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -91,6 +92,11 @@ const data = {
       title: "RecordMeters & Invoices",
       url: "/owner/recordmeters",
       icon: IconDashboard,
+    },
+    {
+      title: "Invoices",
+      url: "/owner/invoices",
+      icon: IconReceiptDollar,
     },
     {
       title: "Statistics",

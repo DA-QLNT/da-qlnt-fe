@@ -108,5 +108,21 @@
   "ConfirmAllIndexesForMonth": "Bạn có chắc muốn xác nhận tất cả chỉ số cho tháng",
   "ConfirmedAllIndexesForMonth": "Đã xác nhận tất cả chỉ số cho tháng",
   "ConfirmIndexFailed": "Xác nhận chỉ số thất bại",
-  "RentedRoom": "Phòng thuê"
+  "RentedRoom": "Phòng thuê",
+  "FromDate": "Từ ngày",
+  "ToDate": "Đến ngày",
+  "End": "Kết thúc",
+  "Start": "Bắt đầu",
+  "All": "Tất cả",
+  "ResetFilters": "Làm mới bộ lọc",
+  "Tenant": "Khách thuê",
+  "HouseSelectionRequired": "Vui lòng chọn nhà",
+  "PleaseSelectAHouseToViewInvoices": "Vui lòng chọn nhà để xem hóa đơn",
+  "InvoiceManagement": "Quản lý hóa đơn",
+  "PaymentMethod": "Thanh toán",
+  "SelectHouse": "Chọn nhà",
+  "AllHouse": "Tất cả nhà",
+  "AllRoom": "Tất cả phòng",
+  "AllStatus": "Tất cả",
+  "ErrorLoadData": "Lỗi tải dữ liệu"
 }

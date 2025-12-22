@@ -145,14 +145,14 @@ export default function RepairOwner() {
       {/* 🚨 BỘ LỌC HÀNG NGANG */}
       <Card className="border-purple-100 shadow-sm">
         <CardContent className="p-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 items-end">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {/* Lọc nhà */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-muted-foreground uppercase flex items-center gap-1">
                 <Home size={12} /> {t("House")}
               </label>
               <Select value={houseFilter} onValueChange={setHouseFilter}>
-                <SelectTrigger>
+                <SelectTrigger className={"w-full"}>
                   <SelectValue placeholder={t("SelectHouse")} />
                 </SelectTrigger>
                 <SelectContent>
@@ -172,7 +172,7 @@ export default function RepairOwner() {
                 <Filter size={12} /> {t("Status")}
               </label>
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger>
+                <SelectTrigger className={"w-full"}>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -187,7 +187,7 @@ export default function RepairOwner() {
             </div>
 
             {/* Tìm kiếm keyword */}
-            <div className="col-span-2 space-y-1.5">
+            <div className="col-span-full md:col-span-2 space-y-1.5">
               <label className="text-xs font-semibold text-muted-foreground uppercase flex items-center gap-1">
                 <Search size={12} /> {t("Search")}
               </label>
