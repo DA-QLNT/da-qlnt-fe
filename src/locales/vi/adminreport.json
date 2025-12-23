@@ -1,0 +1,21 @@
+{
+  "dashboard": {
+    "title": "Hệ thống Thống kê",
+    "subtitle": "Cập nhật dữ liệu thời gian thực của toàn sàn",
+    "totalHouses": "Tổng Nhà Trọ",
+    "totalHousesDesc": "Số lượng nhà trọ trên toàn hệ thống",
+    "totalOwners": "Tổng Chủ Trọ",
+    "totalOwnersDesc": "Tài khoản chủ sở hữu nhà",
+    "totalTenants": "Tổng Khách Thuê",
+    "totalTenantsDesc": "Người dùng đang thuê phòng",
+    "totalRooms": "Tổng Số Phòng",
+    "totalRoomsDesc": "Tổng quy mô phòng trọ",
+    "occupiedRooms": "Phòng Đang Thuê",
+    "occupiedRoomsDesc": "Phòng đã có hợp đồng",
+    "vacantRooms": "Phòng Trống",
+    "vacantRoomsDesc": "Phòng sẵn sàng cho thuê",
+    "occupancyRate": "Tỉ Lệ Lấp Đầy",
+    "occupancyRateDesc": "Hiệu suất khai thác phòng",
+    "errorLoading": "Lỗi khi tải dữ liệu thống kê hệ thống."
+  }
+}

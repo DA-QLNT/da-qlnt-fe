@@ -1,0 +1,21 @@
+{
+  "dashboard": {
+    "title": "System Statistics",
+    "subtitle": "Real-time data updates from the entire platform",
+    "totalHouses": "Total Rental Houses",
+    "totalHousesDesc": "Number of rental houses in the entire system",
+    "totalOwners": "Total House Owners",
+    "totalOwnersDesc": "House owner accounts",
+    "totalTenants": "Total Tenants",
+    "totalTenantsDesc": "Users currently renting rooms",
+    "totalRooms": "Total Rooms",
+    "totalRoomsDesc": "Total rental room scale",
+    "occupiedRooms": "Occupied Rooms",
+    "occupiedRoomsDesc": "Rooms with active contracts",
+    "vacantRooms": "Vacant Rooms",
+    "vacantRoomsDesc": "Rooms ready for rent",
+    "occupancyRate": "Occupancy Rate",
+    "occupancyRateDesc": "Room utilization efficiency",
+    "errorLoading": "Error loading system statistics."
+  }
+}
