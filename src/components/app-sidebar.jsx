@@ -17,6 +17,7 @@ import {
   IconWritingFilled,
   IconHammer,
   IconReceiptDollar,
+  IconLayoutDashboard,
 } from "@tabler/icons-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -40,11 +41,11 @@ const data = {
   //   avatar: "/avatars/shadcn.jpg",
   // },
   navMainAdmin: [
-    // {
-    //   title: "Dashboard",
-    //   url: "/admin",
-    //   icon: IconDashboard,
-    // },
+    {
+      title: "Dashboard",
+      url: "/admin",
+      icon: IconLayoutDashboard,
+    },
     {
       title: "Users",
       url: "/admin/users",
@@ -117,6 +118,11 @@ const data = {
       title: "Rules",
       url: "/owner/rules",
       icon: IconBrandAsana,
+    },
+    {
+      title: "Dashboard",
+      url: "/owner",
+      icon: IconLayoutDashboard,
     },
   ],
   navMainTenant: [

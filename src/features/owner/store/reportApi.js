@@ -39,6 +39,15 @@ export const reportApi = baseApi.injectEndpoints({
         cache: "no-cache",
       }),
     }),
+    // 🚨 QUERY LẤY THỐNG KÊ DASHBOARD CHO OWNER
+    getOwnerDashboardStats: builder.mutation({
+      query: (houseIds) => ({
+        url: "/reports/dashboard",
+        method: "POST",
+        data: { houseIds }, // Body gửi đi danh sách ID nhà [1, 2]
+      }),
+      transformResponse: (response) => response.result,
+    }),
   }),
 });
 
@@ -47,4 +56,5 @@ export const {
   useGetRoomReportMutation,
   useGetInvoiceReportMutation,
   useExportInvoiceDetailMutation,
+  useGetOwnerDashboardStatsMutation,
 } = reportApi;

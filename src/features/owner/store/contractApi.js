@@ -142,13 +142,25 @@ export const contractApi = baseApi.injectEndpoints({
     // ================active contract
     activateContract: builder.mutation({
       query: (contractId) => ({
-        url: `/contracts/${contractId}/activate`,
-        method: "PUT",
+        url: `/contracts/${contractId}/owner/confirm`,
+        method: "POST",
       }),
       // Invalidates Contract chi tiết và danh sách Rooms (vì status phòng có thể thay đổi)
       invalidatesTags: (result, error, contractId) => [
         { type: "Contract", id: contractId },
         "Room", // Phòng bị ảnh hưởng (chuyển sang RENTED)
+      ],
+    }),
+    // ================terminate contract
+    terminateContract: builder.mutation({
+      query: (contractId) => ({
+        url: `/contracts/${contractId}/terminate/request`,
+        method: "PUT",
+      }),
+      // Invalidates Contract chi tiết và danh sách Rooms (vì status phòng có thể thay đổi)
+      invalidatesTags: (result, error, contractId) => [
+        { type: "Contract", id: contractId },
+        "Room", // Phòng bị ảnh hưởng (chuyển sang Available)
       ],
     }),
     // ================send email contract
@@ -220,6 +232,7 @@ export const {
   useSetNewRepresentativeMutation,
   useUpdateContractServicesMutation,
   useActivateContractMutation,
+  useTerminateContractMutation,
   useSendContractEmailMutation,
   useCancelContractMutation,
   useExtendContractMutation,

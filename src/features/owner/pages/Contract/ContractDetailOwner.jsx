@@ -44,6 +44,7 @@ import ContractCancelConfirm from "../../components/Contract/ContractCancelConfi
 import ContractExtendDialog from "../../components/Contract/ContractExtendDialog";
 import ContractSendEmailConfirm from "../../components/Contract/ContractSendEmailConfirm";
 import { useTranslation } from "react-i18next";
+import ContractTerminateConfirm from "../../components/Contract/ContractTerminateConfirm";
 
 // export const CONTRACT_STATUS_MAP_Dev = {
 //   0: { label: "DRAFT", color: "bg-gray-400" },
@@ -152,17 +153,27 @@ const ContractDetailOwner = () => {
   // active contract
   const [isActivateDialogOpen, setIsActivateDialogOpen] = useState(false);
   const openActivateDialog = () => {
-    if (contract.status === 0) {
-      // Chỉ khi DRAFT (0)
+    if (contract.status === 2) {
+      // Chỉ khi tenanat confirm
       setIsActivateDialogOpen(true);
     }
-    // else {
-    //   toast.error(t("OnlyActivateIfDraft"));
-    // }
   };
   const closeActivateDialog = (open) => {
     if (!open) {
       setIsActivateDialogOpen(false);
+    }
+  };
+  // terminate contract
+  const [isTerminateDialogOpen, setIsTerminateDialogOpen] = useState(false);
+  const openTerminateDialog = () => {
+    // khi contract active
+    if (contract.status === 4) {
+      setIsTerminateDialogOpen(true);
+    }
+  };
+  const closeTerminateDialog = (open) => {
+    if (!open) {
+      setIsTerminateDialogOpen(false);
     }
   };
 
@@ -290,6 +301,13 @@ const ContractDetailOwner = () => {
         contract={contract}
         open={isActivateDialogOpen}
         onOpenChange={closeActivateDialog}
+      />
+
+      {/* terminate contract */}
+      <ContractTerminateConfirm
+        contract={contract}
+        open={isTerminateDialogOpen}
+        onOpenChange={closeTerminateDialog}
       />
       {/* send email contract */}
       <ContractSendEmailConfirm
@@ -527,19 +545,31 @@ const ContractDetailOwner = () => {
             {t("Cancel")}
           </Button>
         )}
+        {/* ACTIVE */}
         {contract.status === 2 && (
           <Button onClick={openActivateDialog}>{t("Activate")}</Button>
         )}
+        {/* SEND EMAIL */}
         {(contract.status === 0 || contract.status === 1) && (
           <Button onClick={openSendEmailDialog} variant="outline">
             {t("SendEmail")}
           </Button>
         )}
 
-        {/* ACTIVE ACTIONS */}
+        {/* EXTEND ACTIONS */}
         {contract.status === 4 && (
           <Button onClick={openExtendDialog} variant="outline">
             {t("Extend")}
+          </Button>
+        )}
+        {/* Terminate ACTIONS */}
+        {contract.status === 4 && (
+          <Button
+            onClick={openTerminateDialog}
+            variant={"destructive"}
+            className={""}
+          >
+            {t("Terminate")}
           </Button>
         )}
       </div>

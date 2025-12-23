@@ -138,5 +138,22 @@
   "CreatedAt": "Created at",
   "Draft": "Draft",
   "Sent": "Sent",
-  "Canceled": "Canceled"
+  "Canceled": "Canceled",
+  "OwnerDashboard": "Owner Dashboard",
+  "BusinessOverview": "Business overview",
+  "RoomStatusChart": "Room Status",
+  "TaskManagementChart": "Task Management",
+  "Contract": "Contract",
+  "AllTasksCompleted": "All tasks completed",
+  "Occupied": "Occupied",
+  "Vacant": "Vacant",
+  "WaitingActivate": "Waiting to activate",
+  "ActiveContracts": "Active contracts",
+  "NewRepair": "New repair requests",
+  "ProcessingRepair": "Processing repair requests",
+  "TotalRooms": "Total Rooms",
+  "OccupancyRate": "Occupancy Rate",
+  "NoContract": "No contract",
+  "NoRepairRequests": "No Repair Requests",
+  "Repair": "Repair"
 }

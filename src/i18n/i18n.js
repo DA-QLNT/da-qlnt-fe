@@ -21,6 +21,8 @@ import CONTRACTINVOICE_EN from "../locales/en/contract&invoice.json";
 import CONTRACTINVOICE_VI from "../locales/vi/contract&invoice.json";
 import ASSET_EN from "../locales/en/asset.json";
 import AASSET_VI from "../locales/vi/asset.json";
+import DASHBOARD_EN from "../locales/en/dashboard.json";
+import DASHBOARD_VI from "../locales/vi/dashboard.json";
 // import { locales } from "@/i18n/i18n";
 export const locales = {
   en: "English",
@@ -39,6 +41,7 @@ const resources = {
     repairreportrule: REPAIRREPORTRULE_EN,
     contractinvoice: CONTRACTINVOICE_EN,
     asset: ASSET_EN,
+    dashboard: DASHBOARD_EN,
   },
   vi: {
     login: LOGIN_VI,
@@ -51,6 +54,7 @@ const resources = {
     repairreportrule: REPAIRREPORTRULE_VI,
     contractinvoice: CONTRACTINVOICE_VI,
     asset: AASSET_VI,
+    dashboard: DASHBOARD_VI,
   },
 };
 
@@ -75,6 +79,7 @@ i18n
       "repairreportrule",
       "contractinvoice",
       "asset",
+      "dashboard",
     ],
     fallbackLng: "en",
     interpolation: {

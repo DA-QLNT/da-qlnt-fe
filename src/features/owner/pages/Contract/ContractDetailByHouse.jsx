@@ -41,6 +41,7 @@ import ServiceTypeBadge from "../../components/Service/ServiceTypeBadge";
 import toast from "react-hot-toast";
 import { formatDateTime } from "@/lib/format/dateTimeFormat";
 import ContractSendEmailConfirm from "../../components/Contract/ContractSendEmailConfirm";
+import ContractTerminateConfirm from "../../components/Contract/ContractTerminateConfirm";
 const ContractDetailByHouse = () => {
   const { t } = useTranslation("contractinvoice");
 
@@ -133,11 +134,9 @@ const ContractDetailByHouse = () => {
   // active contract
   const [isActivateDialogOpen, setIsActivateDialogOpen] = useState(false);
   const openActivateDialog = () => {
-    if (contract.status === 0) {
+    if (contract.status === 2) {
       // Chỉ khi DRAFT (0)
       setIsActivateDialogOpen(true);
-    } else {
-      toast.error(t("OnlyActivateIfDraft"));
     }
   };
   const closeActivateDialog = (open) => {
@@ -145,7 +144,19 @@ const ContractDetailByHouse = () => {
       setIsActivateDialogOpen(false);
     }
   };
-
+  // terminate contract
+  const [isTerminateDialogOpen, setIsTerminateDialogOpen] = useState(false);
+  const openTerminateDialog = () => {
+    // khi contract active
+    if (contract.status === 4) {
+      setIsTerminateDialogOpen(true);
+    }
+  };
+  const closeTerminateDialog = (open) => {
+    if (!open) {
+      setIsTerminateDialogOpen(false);
+    }
+  };
   // eport contract
   const [triggerExport, { isLoading: isExporting }] =
     useExportContractWordMutation();
@@ -270,6 +281,13 @@ const ContractDetailByHouse = () => {
         contract={contract}
         open={isActivateDialogOpen}
         onOpenChange={closeActivateDialog}
+      />
+
+      {/* terminate contract */}
+      <ContractTerminateConfirm
+        contract={contract}
+        open={isTerminateDialogOpen}
+        onOpenChange={closeTerminateDialog}
       />
       {/* send email contract */}
       <ContractSendEmailConfirm
@@ -529,7 +547,7 @@ const ContractDetailByHouse = () => {
           </Button>
         )}
 
-        {/* ACTIVE ACTIONS */}
+        {/* Extend ACTIONS */}
         {contract.status === 4 && (
           <Button
             onClick={openExtendDialog}
@@ -539,6 +557,16 @@ const ContractDetailByHouse = () => {
             }
           >
             {t("Extend")}
+          </Button>
+        )}
+        {/* Terminate ACTIONS */}
+        {contract.status === 4 && (
+          <Button
+            onClick={openTerminateDialog}
+            variant={"destructive"}
+            className={""}
+          >
+            {t("Terminate")}
           </Button>
         )}
       </div>

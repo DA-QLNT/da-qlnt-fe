@@ -42,17 +42,16 @@ export default function ContractActivateConfirm({
       await activateContract(contractId).unwrap();
 
       toast.success(
-        `${t("ActivatedSuccess")}! ${t("ContractCode")} đang ở trạng thái ${
+        `${t("ActivatedSuccess")}! ${t("ContractCode")}  ${
           isPending ? t("Pending") : t("Active")
         }`,
         { id: toastId, duration: 5000 }
       );
       onOpenChange(false);
     } catch (error) {
-      toast.error(
-        error.data?.message || t("PleaseCheckContractData"),
-        { id: toastId }
-      );
+      toast.error(error.data?.message || t("PleaseCheckContractData"), {
+        id: toastId,
+      });
       console.error("Lỗi kích hoạt:", error);
     }
   };
@@ -72,7 +71,7 @@ export default function ContractActivateConfirm({
             )}
             {isPending ? (
               <span className="mt-2 block text-yellow-600 font-medium">
-                {t("ContractWillPending")} {startDate}).
+                {t("ContractWillPending")} {startDate}.
               </span>
             ) : (
               <span className="mt-2 block text-yellow-600 font-medium">

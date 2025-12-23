@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { useGetTenantsByOwnerIdQuery } from "../../store/tenantApi";
 import { useAuth } from "@/features/auth";
 import { Spinner } from "@/components/ui/spinner";
@@ -14,6 +14,14 @@ import { SquarePen } from "lucide-react";
 import TenantEditDialog from "../../components/Tenant/TenantEditDialog";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 const TenantOwner = () => {
   const { t } = useTranslation("usercontent");
   const { userId: ownerId, isLoadingMe } = useAuth();
@@ -43,6 +51,23 @@ const TenantOwner = () => {
       return nameA.localeCompare(nameB, "vi", { sensitivity: "base" });
     });
   }, [defaultTenants]);
+
+  // pagination over sorted list
+  const totalFilteredElements = sortedTenantByName.length;
+  const totalPages = Math.ceil(totalFilteredElements / pageSize);
+  const startIndex = page * pageSize;
+  const tenantsToDisplay = sortedTenantByName.slice(
+    startIndex,
+    startIndex + pageSize
+  );
+
+  useEffect(() => {
+    if (page >= totalPages && totalPages > 0) {
+      setPage(totalPages - 1);
+    } else if (totalPages === 0 && page !== 0) {
+      setPage(0);
+    }
+  }, [totalPages, page]);
 
   //   edit tenant
   const [viewDialog, setViewDialog] = useState({
@@ -115,9 +140,11 @@ const TenantOwner = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {sortedTenantByName.map((tenant, index) => (
+            {tenantsToDisplay.map((tenant, index) => (
               <TableRow key={tenant.id}>
-                <TableCell className={"w-[50px]"}>{index + 1}</TableCell>
+                <TableCell className={"w-[50px]"}>
+                  {startIndex + index + 1}
+                </TableCell>
                 <TableCell colSpan={2} className="font-medium">
                   <div className="flex w-full items-center gap-2">
                     <div className="flex-shrink-0 p-0.5 bg-green-600 rounded-full">
@@ -150,14 +177,42 @@ const TenantOwner = () => {
                 </TableCell>
               </TableRow>
             ))}
-            {sortedTenantByName.length === 0 && (
+            {totalFilteredElements === 0 && (
               <TableRow>
-                <TableCell colSpan={4}>{t("NoTenant")}</TableCell>
+                <TableCell colSpan={6}>{t("NoTenant")}</TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
       </div>
+      {totalPages > 1 && (
+        <Pagination className={"mt-4 flex"}>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                disabled={page === 0}
+                onClick={() => setPage((p) => Math.max(0, p - 1))}
+              ></PaginationPrevious>
+            </PaginationItem>
+            {[...Array(totalPages)].map((_, i) => (
+              <PaginationItem key={i}>
+                <PaginationLink
+                  onClick={() => setPage(i)}
+                  isActive={i === page}
+                >
+                  {i + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+            <PaginationItem>
+              <PaginationNext
+                disabled={page === totalPages - 1}
+                onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+              ></PaginationNext>
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
     </div>
   );
 };
