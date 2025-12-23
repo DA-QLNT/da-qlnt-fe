@@ -42,7 +42,7 @@ export default function ContractActivateConfirm({
       await activateContract(contractId).unwrap();
 
       toast.success(
-        `${t("ActivatedSuccess")}! ${t("ContractCode")} đang ở trạng thái ${
+        `${t("ActivatedSuccess")}! ${t("ContractCode")}  ${
           isPending ? t("Pending") : t("Active")
         }`,
         { id: toastId, duration: 5000 }
