@@ -143,5 +143,22 @@
   "CreatedAt": "Ngày tạo",
   "Draft": "Nháp",
   "Sent": "Đã gửi",
-  "Canceled": "Bị hủy"
+  "Canceled": "Bị hủy",
+  "OwnerDashboard": "Bảng điều khiển",
+  "BusinessOverview": "Tổng quan hoạt động",
+  "RoomStatusChart": "Tình trạng phòng",
+  "TaskManagementChart": "Quản lý công việc",
+  "Contract": "Hợp đồng",
+  "AllTasksCompleted": "Tất cả công việc đã hoàn thành",
+  "Occupied": "Đang thuê",
+  "Vacant": "Trống",
+  "WaitingActivate": "Chờ kích hoạt",
+  "ActiveContracts": "Hợp đồng đang hoạt động",
+  "NewRepair": "Yêu cầu sửa mới",
+  "ProcessingRepair": "Yêu cầu đang xử lý",
+  "TotalRooms": "Tổng số phòng",
+  "OccupancyRate": "Tỉ lệ lấp đầy",
+  "NoContract": "Không có hợp đồng",
+  "NoRepairRequests": "Không có yêu cầu sửa chữa",
+  "Repair": "Sửa chữa"
 }

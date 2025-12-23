@@ -15,7 +15,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 
 const DashboardAdmin = () => {
-  const { t } = useTranslation("adminreport");
+  const { t } = useTranslation("dashboard");
   const {
     data: stats,
     isLoading,

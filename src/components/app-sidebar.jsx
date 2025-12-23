@@ -119,6 +119,11 @@ const data = {
       url: "/owner/rules",
       icon: IconBrandAsana,
     },
+    {
+      title: "Dashboard",
+      url: "/owner",
+      icon: IconLayoutDashboard,
+    },
   ],
   navMainTenant: [
     // {
