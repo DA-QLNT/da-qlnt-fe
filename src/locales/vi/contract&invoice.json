@@ -171,7 +171,7 @@
   "TerminateRequiredMessage": "là người đại diện duy nhất. Không thể rời phòng mà không thanh lý hợp đồng. Vui lòng thực hiện thao tác Thanh lý Hợp đồng",
   "SelectNewRep": "Chọn một người đại diện mới",
   "CloseButton": "Đóng",
-  "DisabledButton": "Hủy bỏ",
+  "Disabled": "Hủy bỏ",
   "ExtendContract": "Gia Hạn Hợp Đồng",
   "ExtendingContractLoading": "Đang gia hạn hợp đồng",
   "ConfirmLeave": "Đồng ý rời",
@@ -244,5 +244,9 @@
   "ExportFailed": "Xuất thất bại",
   "ExportInvoice": "Xuất hóa đơn",
   "ExportSuccess": "Xuất thành công",
-  "Terminated": "Bị thanh lý"
+  "Terminated": "Bị thanh lý",
+  "TerminateSuccess": "Thanh lý thành công",
+  "TerminateFailed": "Thanh lý thất bại",
+  "ConfirmTerminateContract": "Xác nhận Thanh lý Hợp đồng",
+  "ConfirmTerminate": "Xác nhận Thanh lý"
 }
