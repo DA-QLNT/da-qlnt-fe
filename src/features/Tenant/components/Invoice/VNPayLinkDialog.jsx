@@ -15,7 +15,9 @@ export default function VNPayLinkDialog({ paymentUrl, open, onOpenChange }) {
   const { t } = useTranslation("service");
   const handleGoToVNPay = () => {
     if (paymentUrl) {
-      window.open(paymentUrl, "_blank"); // Mở trang thanh toán ở tab mới
+      // window.open(paymentUrl, "_blank"); // Mở trang thanh toán ở tab mới
+
+      window.location.href = paymentUrl; // Chuyển hướng ngay trên tab hiện tại để đảm bảo tính liền mạch
       onOpenChange(false);
     }
   };

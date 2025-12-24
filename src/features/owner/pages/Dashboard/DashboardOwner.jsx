@@ -253,7 +253,7 @@ const DashboardOwner = () => {
                     data={roomChartData}
                     dataKey="value"
                     nameKey="name"
-                    innerRadius={50}
+                    // innerRadius={50}
                     strokeWidth={5}
                   >
                     <LabelList

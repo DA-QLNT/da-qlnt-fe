@@ -47,6 +47,7 @@ import ContractPendingRenewal from "./features/Tenant/pages/Contract/ContractPen
 import RoomDetailPublic from "./pages/RoomDetailPublic";
 import ContractSearchOwner from "./features/owner/pages/Contract/ContractSearchOwner";
 import InvoiceOwner from "./features/owner/pages/Invoice/InvoiceOwner";
+import VNPayReturn from "./features/Tenant/pages/Invoice/VNPayReturn";
 function App() {
   return (
     <div className="min-h-screen flex flex-col">
@@ -155,7 +156,11 @@ function App() {
             <Route path="/tenant" element={<TenantLayout />}>
               <Route index element={<DashboardTenant />} />
               <Route path="rooms" element={<RoomTenant />} />
+
+              {/* invoice */}
               <Route path="invoices" element={<InvoiceTenant />} />
+              <Route path="payment/vnpay-return" element={<VNPayReturn />} />
+              {/* invoice */}
 
               {/* Contract */}
               <Route path="contracts" element={<ContractTenant />} />

@@ -148,5 +148,8 @@
   "PersonShort": "Person",
   "EnterRoomCode": "Enter room code",
   "ResetFilter": "ResetFilter",
-  "SearchRoomCode": "Search room code"
+  "SearchRoomCode": "Search room code",
+  "ProcessingPaymentResult": "Processing payment",
+  "PaymentSuccess": "Payment Successfully",
+  "PaymentFailed": "Payment Failed"
 }

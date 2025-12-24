@@ -148,5 +148,8 @@
   "PersonShort": "Người",
   "EnterRoomCode": "Nhập mã phòng",
   "ResetFilter": "Làm mới bộ lọc",
-  "SearchRoomCode": "Tìm kiếm theo mã phòng"
+  "SearchRoomCode": "Tìm kiếm theo mã phòng",
+  "ProcessingPaymentResult": "Đang xử lý kết quả thanh toán",
+  "PaymentSuccess": "Thanh toán thành công",
+  "PaymentFailed": "Thanh toán thất bại"
 }
