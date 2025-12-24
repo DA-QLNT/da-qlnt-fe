@@ -154,6 +154,7 @@
   "TotalRooms": "Total Rooms",
   "OccupancyRate": "Occupancy Rate",
   "NoContract": "No contract",
+  "NoData": "No data",
   "NoRepairRequests": "No Repair Requests",
   "Repair": "Repair",
   "ExportAllInvoice": "Export All",

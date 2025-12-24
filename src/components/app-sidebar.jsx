@@ -126,16 +126,16 @@ const data = {
     },
   ],
   navMainTenant: [
-    // {
-    //   title: "Dashboard",
-    //   url: "/tenant",
-    //   icon: IconDashboard,
-    // },
     {
-      title: "Rooms",
-      url: "/tenant/rooms",
-      icon: IconHome,
+      title: "Dashboard",
+      url: "/tenant",
+      icon: IconDashboard,
     },
+    // {
+    //   title: "Rooms",
+    //   url: "/tenant/rooms",
+    //   icon: IconHome,
+    // },
     {
       title: "Invoices",
       url: "/tenant/invoices",
