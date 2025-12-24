@@ -156,5 +156,6 @@
   "NoContract": "No contract",
   "NoRepairRequests": "No Repair Requests",
   "Repair": "Repair",
-  "ExportAllInvoice": "Export All"
+  "ExportAllInvoice": "Export All",
+  "ViewDetail": "View detail"
 }

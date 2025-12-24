@@ -283,7 +283,7 @@ const RoomReportTab = () => {
       {/* --------------------- 2. HIỂN THỊ CHỈ SỐ TỔNG QUAN & BIỂU ĐỒ --------------------- */}
       {isReportLoading && !reportData ? (
         <div className="text-center py-10">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto" />
+          <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
         </div>
       ) : reportData ? (
         <div className="space-y-6">

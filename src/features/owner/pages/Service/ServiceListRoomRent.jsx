@@ -339,8 +339,12 @@ const ServiceListRoomRent = () => {
                     <div className="hidden lg:flex lg:items-center lg:gap-2">
                       <Tooltip>
                         <TooltipTrigger>
-                          <Button variant={"outline"} size={"icon"}>
-                            <PencilRuler />
+                          <Button
+                            variant={"outline"}
+                            size={"icon"}
+                            onClick={() => handleOpenDeclareDialog(room.id)}
+                          >
+                            <PencilRuler className="text-yellow-500" />
                           </Button>
                         </TooltipTrigger>
                         <TooltipContent>
@@ -349,24 +353,38 @@ const ServiceListRoomRent = () => {
                       </Tooltip>
                       <Tooltip>
                         <TooltipTrigger>
-                          <Button variant={"secondary"} size={"icon"}>
-                            <Eye />
+                          <Button
+                            variant={"outline"}
+                            size={"icon"}
+                            onClick={() => handleOpenViewDialog(room)}
+                          >
+                            <Eye className="text-blue-500" />
                           </Button>
                         </TooltipTrigger>
                         <TooltipContent>{t("ViewIndexes")}</TooltipContent>
                       </Tooltip>
                       <Tooltip>
                         <TooltipTrigger>
-                          <Button variant={"outline"} size={"icon"}>
-                            <ReceiptText />
+                          <Button
+                            variant={"outline"}
+                            size={"icon"}
+                            onClick={() => handleOpenInvoiceListDialog(room.id)}
+                          >
+                            <ReceiptText className="text-green-500" />
                           </Button>
                         </TooltipTrigger>
                         <TooltipContent>{t("ViewInvoice")}</TooltipContent>
                       </Tooltip>
                       <Tooltip>
                         <TooltipTrigger>
-                          <Button variant={"secondary"} size={"icon"}>
-                            <FilePlus />
+                          <Button
+                            variant={"outline"}
+                            size={"icon"}
+                            onClick={() =>
+                              handleOpenCreateInvoiceConfirm(room.id)
+                            }
+                          >
+                            <FilePlus className="text-violet-500" />
                           </Button>
                         </TooltipTrigger>
                         <TooltipContent>{t("CreateInvoice")}</TooltipContent>

@@ -10,6 +10,7 @@ import {
   Loader2,
   ChevronDown,
   ChevronUp,
+  Eye,
 } from "lucide-react";
 import {
   Card,
@@ -67,6 +68,12 @@ import { Badge } from "@/components/ui/badge";
 import { formatDateTime } from "@/lib/format/dateTimeFormat";
 import { useTranslation } from "react-i18next";
 import { useExportAllInvoicesMutation } from "../../store/serviceApi";
+import InvoiceDetailDialog from "../Service/InvoiceDetailDialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 // Định nghĩa Chart Config và Colors
 const PIE_COLORS = ["#10b981", "#f59e0b", "#ef4444", "#3b82f6"]; // Paid, Unpaid, Overdue, Paid Overdue
@@ -191,6 +198,15 @@ const InvoiceReportTab = () => {
     }
   };
   // excel
+
+  // xem chi tiet hoa don
+  const [selectedInvoiceId, setSelectedInvoiceId] = useState(null);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+
+  const handleViewDetail = (id) => {
+    setSelectedInvoiceId(id);
+    setIsDetailOpen(true);
+  };
 
   // Sắp xếp bảng
   const [sortConfig, setSortConfig] = useState({
@@ -412,6 +428,11 @@ const InvoiceReportTab = () => {
 
   return (
     <div className="space-y-6 overflow-auto">
+      <InvoiceDetailDialog
+        invoiceId={selectedInvoiceId}
+        open={isDetailOpen}
+        onOpenChange={setIsDetailOpen}
+      />
       {/* --------------------- 1. FORM LỌC --------------------- */}
       <Card>
         <CardHeader>
@@ -593,7 +614,7 @@ const InvoiceReportTab = () => {
       {/* --------------------- 2. HIỂN THỊ TỔNG QUAN VÀ PIE CHART --------------------- */}
       {isReportLoading && !reportData ? (
         <div className="text-center py-10">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto" />
+          <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
         </div>
       ) : reportData ? (
         <div className="space-y-6">
@@ -819,8 +840,8 @@ const InvoiceReportTab = () => {
                   </span>
                 </TableHead>
                 <TableHead>{t("Status")}</TableHead>
-                <TableHead>{t("PaymentDealine")}</TableHead>
-                <TableHead>{t("ExportInvoice")}</TableHead>
+                <TableHead>{t("PaymentDeadline")}</TableHead>
+                <TableHead>{t("Action")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -865,18 +886,40 @@ const InvoiceReportTab = () => {
                   >
                     {formatDateTime(invoice.dueDate).formattedDate}
                   </TableCell>
-                  <TableCell className="text-center">
-                    <Button
-                      size="icon"
-                      onClick={() => handleExportInvoice(invoice)}
-                      disabled={exportingId !== null}
-                    >
-                      {exportingId === invoice.id ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <FileText className="h-4 w-4" />
-                      )}
-                    </Button>
+                  <TableCell className="text-center space-x-2">
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Button
+                          size="icon"
+                          variant="outline"
+                          className={"text-blue-500"}
+                          onClick={() => handleExportInvoice(invoice)}
+                          disabled={exportingId !== null}
+                        >
+                          {exportingId === invoice.id ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <FileText className="h-4 w-4" />
+                          )}
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>{t("ExportInvoice")}</TooltipContent>
+                    </Tooltip>
+
+                    {/* view invoice */}
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Button
+                          variant="outline"
+                          className={"text-violet-500"}
+                          size="icon"
+                          onClick={() => handleViewDetail(invoice.id)}
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>{t("ViewInvoice")}</TooltipContent>
+                    </Tooltip>
                   </TableCell>
                 </TableRow>
               ))}
