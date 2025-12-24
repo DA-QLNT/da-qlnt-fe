@@ -161,7 +161,7 @@ const InvoiceTenant = () => {
                     </TableCell>
                     <TableCell>{getStatusBadge(item.status)}</TableCell>
                     <TableCell className="text-right space-x-2">
-                      {item.status !== 1 && (
+                      {item.status !== 1 && item.status !== 3 && (
                         <Button
                           size="sm"
                           variant="default"

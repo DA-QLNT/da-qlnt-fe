@@ -70,6 +70,7 @@
   "NextPage": "Trang sau",
   "No": "STT",
   "NoDescription": "Không có mô tả",
+  "NoData": "Không có dữ liệu",
   "NoDetailedDescription": "Không có mô tả chi tiết",
   "NoHouse": "Không có nhà trọ",
   "NoInvoice": "Không có hóa đơn",
@@ -160,5 +161,7 @@
   "OccupancyRate": "Tỉ lệ lấp đầy",
   "NoContract": "Không có hợp đồng",
   "NoRepairRequests": "Không có yêu cầu sửa chữa",
-  "Repair": "Sửa chữa"
+  "Repair": "Sửa chữa",
+  "ExportAllInvoice": "Xuất tất cả hóa đơn",
+  "ViewDetail": "Chi tiết hóa đơn"
 }

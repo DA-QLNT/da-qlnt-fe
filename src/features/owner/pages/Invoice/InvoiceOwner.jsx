@@ -462,11 +462,11 @@ const InvoiceOwner = () => {
                     </TableCell>
                     <TableCell className="text-right">
                       <Button
-                        variant="ghost"
+                        variant="outline"
                         size="icon"
                         onClick={() => handleViewDetail(item.id)}
                       >
-                        <Eye className="h-4 w-4 text-slate-600" />
+                        <Eye className="h-4 w-4" />
                       </Button>
                     </TableCell>
                   </TableRow>

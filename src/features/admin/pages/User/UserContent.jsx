@@ -252,8 +252,8 @@ const UserContent = () => {
       {/* Add user dialog */}
       <UserAddDialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen} />
       {isLoading && (
-        <div className="">
-          <Spinner className="size-20 text-primary inset-0 flex items-center justify-center" />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <Spinner className="size-20 text-primary " />
         </div>
       )}
       {/* View User Profile Dialog */}

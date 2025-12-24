@@ -20,6 +20,20 @@ export const tenantApi = baseApi.injectEndpoints({
         { type: "TenantsByOwner", id: ownerId },
       ],
     }),
+    getTenantByOwnerIdAndSearch: builder.query({
+      query: ({ ownerId, page = 0, size = 20, tenantName = "" }) => ({
+        url: `/tenants/getAllByOwnerId`,
+        method: "GET",
+        params: {
+          page,
+          size,
+          ownerId,
+          tenantName, // Gửi keyword tìm kiếm lên server
+        },
+      }),
+      transformResponse: (response) => response.result,
+      providesTags: ["Tenant"],
+    }),
     getTenantsById: builder.query({
       query: (tenantId) => ({
         url: `/tenants/${tenantId}`,
@@ -60,6 +74,7 @@ export const tenantApi = baseApi.injectEndpoints({
 
 export const {
   useGetTenantsByOwnerIdQuery,
+  useGetTenantByOwnerIdAndSearchQuery,
   useGetTenantsByIdQuery,
   useUpdateTenantMutation,
   useSearchTenantByPhoneNumberQuery,

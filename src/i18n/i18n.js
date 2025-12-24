@@ -23,6 +23,8 @@ import ASSET_EN from "../locales/en/asset.json";
 import AASSET_VI from "../locales/vi/asset.json";
 import DASHBOARD_EN from "../locales/en/dashboard.json";
 import DASHBOARD_VI from "../locales/vi/dashboard.json";
+import PUBLIC_EN from "../locales/en/public.json";
+import PUBLIC_VI from "../locales/vi/public.json";
 // import { locales } from "@/i18n/i18n";
 export const locales = {
   en: "English",
@@ -41,6 +43,7 @@ const resources = {
     repairreportrule: REPAIRREPORTRULE_EN,
     contractinvoice: CONTRACTINVOICE_EN,
     asset: ASSET_EN,
+    public: PUBLIC_EN,
     dashboard: DASHBOARD_EN,
   },
   vi: {
@@ -54,6 +57,7 @@ const resources = {
     repairreportrule: REPAIRREPORTRULE_VI,
     contractinvoice: CONTRACTINVOICE_VI,
     asset: AASSET_VI,
+    public: PUBLIC_VI,
     dashboard: DASHBOARD_VI,
   },
 };
@@ -79,6 +83,7 @@ i18n
       "repairreportrule",
       "contractinvoice",
       "asset",
+      "public",
       "dashboard",
     ],
     fallbackLng: "en",

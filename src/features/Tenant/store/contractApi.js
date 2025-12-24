@@ -107,6 +107,14 @@ export const contractApi = baseApi.injectEndpoints({
         cache: "no-cache",
       }),
     }),
+    getBillableContracts: builder.query({
+      query: () => ({
+        url: "/contracts/tenants/billable",
+        method: "GET",
+      }),
+      transformResponse: (response) => response.result.content,
+      providesTags: ["Contract"],
+    }),
   }),
 });
 
@@ -120,4 +128,5 @@ export const {
   useGetTenantContractHistoryQuery,
   useGetPendingRenewalContractQuery,
   useExportContractWordMutation,
+  useGetBillableContractsQuery,
 } = contractApi;

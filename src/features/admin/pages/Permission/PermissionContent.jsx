@@ -132,110 +132,108 @@ const PermissionContent = () => {
           <MatrixHooksWrapper />
         </TabsContent>
         <TabsContent value="permissionList">
-          <div className="mt-4 w-full flex flex-col lg:flex-row lg:justify-between gap-8">
-            <div className={"order-1  lg:w-3/5"}>
-              <div className="relative w-full p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
-                {isLoading && (
-                  <div className="absolute inset-0 z-10 flex items-center justify-center">
-                    <Spinner className={"size-10 text-primary"} />
-                  </div>
-                )}
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>{t("No")}</TableHead>
-                      <TableHead>{t("Permission")}</TableHead>
-                      <TableHead>{t("CreatedAt")}</TableHead>
-                      <TableHead className="text-right w-[100px]">
-                        {t("Action")}
-                      </TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {sortedPermissions.map((permission, index) => (
-                      <TableRow key={permission.id}>
-                        <TableCell>{page * pageSize + index + 1}</TableCell>
-                        <TableCell>
-                          <PermissionBadge permissionName={permission.code} />
-                        </TableCell>
-                        <TableCell>
-                          {formatDateTime(permission.createdAt).formattedDate}
-                        </TableCell>
-                        <TableCell className="text-right w-[100px]">
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="sm">
-                                <EllipsisVertical size={20} />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-48">
-                              <DropdownMenuItem
-                                onClick={() =>
-                                  openDeletePermissionDialog(permission)
-                                }
-                                className={"text-red-500"}
-                              >
-                                <Trash className="mr-2 h-4 w-4 text-red-500" />
-                                {t("Delete")}
-                              </DropdownMenuItem>
-                              <DropdownMenuItem
-                                onClick={() => openEditDialog(permission)}
-                              >
-                                <SquarePen className="mr-2 h-4 w-4" />
-                                {t("Edit")}
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                    {sortedPermissions.length === 0 && !isLoading && (
-                      <TableRow>
-                        <TableCell colSpan={5} className="text-center">
-                          {t("NoPermission")}
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
-              </div>
-              {totalPages > 1 && (
-                <Pagination className={"mt-4"}>
-                  <PaginationContent>
-                    <PaginationItem>
-                      <PaginationPrevious
-                        disabled={page === 0}
-                        onClick={() => setPage((p) => Math.max(0, p - 1))}
-                      />
-                    </PaginationItem>
-                    {[...Array(totalPages)].map((_, i) => (
-                      <PaginationItem key={i}>
-                        <PaginationLink
-                          onClick={() => setPage(i)}
-                          isActive={i === page}
-                        >
-                          {i + 1}
-                        </PaginationLink>
-                      </PaginationItem>
-                    ))}
-                    <PaginationItem>
-                      <PaginationNext
-                        disabled={page === totalPages - 1}
-                        onClick={() =>
-                          setPage((p) => Math.min(totalPages - 1, p + 1))
-                        }
-                      />
-                    </PaginationItem>
-                  </PaginationContent>
-                </Pagination>
-              )}
-            </div>
-            <div className="order-0 lg:order-2 text-end">
+          <div className="mt-4 w-full flex flex-col  gap-8">
+            <div className=" text-end">
               <Button onClick={openAddDialog}>
                 <Plus className="mr-2 h-4 w-4" />
                 {t("AddPermission")}
               </Button>
             </div>
+            <div className="relative w-full p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
+              {isLoading && (
+                <div className="absolute inset-0 z-10 flex items-center justify-center">
+                  <Spinner className={"size-10 text-primary"} />
+                </div>
+              )}
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>{t("No")}</TableHead>
+                    <TableHead>{t("Permission")}</TableHead>
+                    <TableHead>{t("CreatedAt")}</TableHead>
+                    <TableHead className="text-right w-[100px]">
+                      {t("Action")}
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {sortedPermissions.map((permission, index) => (
+                    <TableRow key={permission.id}>
+                      <TableCell>{page * pageSize + index + 1}</TableCell>
+                      <TableCell>
+                        <PermissionBadge permissionName={permission.code} />
+                      </TableCell>
+                      <TableCell>
+                        {formatDateTime(permission.createdAt).formattedDate}
+                      </TableCell>
+                      <TableCell className="text-right w-[100px]">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="sm">
+                              <EllipsisVertical size={20} />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-48">
+                            <DropdownMenuItem
+                              onClick={() =>
+                                openDeletePermissionDialog(permission)
+                              }
+                              className={"text-red-500"}
+                            >
+                              <Trash className="mr-2 h-4 w-4 text-red-500" />
+                              {t("Delete")}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => openEditDialog(permission)}
+                            >
+                              <SquarePen className="mr-2 h-4 w-4" />
+                              {t("Edit")}
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                  {sortedPermissions.length === 0 && !isLoading && (
+                    <TableRow>
+                      <TableCell colSpan={5} className="text-center">
+                        {t("NoPermission")}
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+            {totalPages > 1 && (
+              <Pagination className={"mt-4"}>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious
+                      disabled={page === 0}
+                      onClick={() => setPage((p) => Math.max(0, p - 1))}
+                    />
+                  </PaginationItem>
+                  {[...Array(totalPages)].map((_, i) => (
+                    <PaginationItem key={i}>
+                      <PaginationLink
+                        onClick={() => setPage(i)}
+                        isActive={i === page}
+                      >
+                        {i + 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
+                  <PaginationItem>
+                    <PaginationNext
+                      disabled={page === totalPages - 1}
+                      onClick={() =>
+                        setPage((p) => Math.min(totalPages - 1, p + 1))
+                      }
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            )}
           </div>
         </TabsContent>
       </Tabs>

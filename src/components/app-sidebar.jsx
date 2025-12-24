@@ -33,6 +33,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/features/auth";
+import GradientText from "./GradientText";
 
 const data = {
   // user: {
@@ -90,7 +91,7 @@ const data = {
       icon: IconSettings,
     },
     {
-      title: "RecordMeters & Invoices",
+      title: "RecordMeters & CreateInvoices",
       url: "/owner/recordmeters",
       icon: IconDashboard,
     },
@@ -126,16 +127,16 @@ const data = {
     },
   ],
   navMainTenant: [
-    // {
-    //   title: "Dashboard",
-    //   url: "/tenant",
-    //   icon: IconDashboard,
-    // },
     {
-      title: "Rooms",
-      url: "/tenant/rooms",
-      icon: IconHome,
+      title: "Dashboard",
+      url: "/tenant",
+      icon: IconDashboard,
     },
+    // {
+    //   title: "Rooms",
+    //   url: "/tenant/rooms",
+    //   icon: IconHome,
+    // },
     {
       title: "Invoices",
       url: "/tenant/invoices",
@@ -170,11 +171,15 @@ export function AppSidebar({ ...props }) {
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
-              className="data-[slot=sidebar-menu-button]:!p-1.5"
+              className="data-[slot=sidebar-menu-button]:p-1.5! h-12"
             >
               <a href="#">
-                <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">PTIT </span>
+                <img
+                  className="h-12 w-12 object-contain rounded-full shadow-sm"
+                  src="https://lh3.google.com/u/0/d/1eZej4XXjDg5r68w5kpQZCZ__CBVV-9Tf=w1864-h889-iv1?auditContext=prefetch"
+                  alt="logo"
+                />
+                <GradientText className="text-xl ml-4">HĐN</GradientText>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>

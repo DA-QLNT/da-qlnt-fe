@@ -10,6 +10,7 @@ import {
   Loader2,
   ChevronDown,
   ChevronUp,
+  Eye,
 } from "lucide-react";
 import {
   Card,
@@ -66,6 +67,13 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { formatDateTime } from "@/lib/format/dateTimeFormat";
 import { useTranslation } from "react-i18next";
+import { useExportAllInvoicesMutation } from "../../store/serviceApi";
+import InvoiceDetailDialog from "../Service/InvoiceDetailDialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 // Định nghĩa Chart Config và Colors
 const PIE_COLORS = ["#10b981", "#f59e0b", "#ef4444", "#3b82f6"]; // Paid, Unpaid, Overdue, Paid Overdue
@@ -121,7 +129,7 @@ const InvoiceReportTab = () => {
   // 🚨 HÀM XỬ LÝ TẢI FILE
   const handleExportInvoice = async (invoice) => {
     setExportingId(invoice.id);
-    const toastId = toast.loading(`${t("ExportInvice")} ...`);
+    const toastId = toast.loading(`${t("ExportInvoice")} ...`);
     try {
       const blobResult = await triggerExport(invoice.id).unwrap();
 
@@ -148,7 +156,57 @@ const InvoiceReportTab = () => {
       setExportingId(null);
     }
   };
+
+  // xuất tất cả invoice
+  const [triggerExportAll, { isLoading: isExportingAll }] =
+    useExportAllInvoicesMutation();
+  const handleExportAllInvoices = async () => {
+    const toastId = toast.loading(`${t("ExportInvoice")}...`);
+    try {
+      // Chuẩn bị payload đúng format yêu cầu
+      const payload = {
+        houseIds: currentFilters.houseIds,
+        roomIds: currentFilters.roomIds || [],
+        year: currentFilters.year || null,
+        month: currentFilters.month || null,
+        fromDate: format(currentFilters.fromDate, "yyyy-MM-dd"),
+        toDate: format(currentFilters.toDate, "yyyy-MM-dd"),
+        status: currentFilters.status,
+        paymentMethod: currentFilters.paymentMethod,
+      };
+
+      const blobResult = await triggerExportAll(payload).unwrap();
+
+      const excelBlob = new Blob([blobResult], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+
+      const downloadUrl = window.URL.createObjectURL(excelBlob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = `DanhSach_HoaDon_${format(new Date(), "ddMMyyyy")}.xlsx`;
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      window.URL.revokeObjectURL(downloadUrl);
+      toast.success(t("ExportSuccess"), { id: toastId });
+    } catch (error) {
+      console.error("Export All Error:", error);
+      toast.error(t("ExportFailed"), { id: toastId });
+    }
+  };
   // excel
+
+  // xem chi tiet hoa don
+  const [selectedInvoiceId, setSelectedInvoiceId] = useState(null);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+
+  const handleViewDetail = (id) => {
+    setSelectedInvoiceId(id);
+    setIsDetailOpen(true);
+  };
 
   // Sắp xếp bảng
   const [sortConfig, setSortConfig] = useState({
@@ -280,8 +338,15 @@ const InvoiceReportTab = () => {
   useEffect(() => {
     if (ownerId && allHouses.length > 0 && !reportData) {
       const defaultHouseIds = allHouses.map((h) => h.id);
+
+      // 1. Cập nhật giá trị vào Form của react-hook-form để hiển thị dấu check
+      setValue("houseIds", defaultHouseIds);
+
+      // 2. Tạo filter để gọi API
       const initialFilters = { ...defaultFilter, houseIds: defaultHouseIds };
       setCurrentFilters(initialFilters);
+
+      // 3. Gọi API lấy dữ liệu lần đầu
       fetchReport(initialFilters, 0, pageSize);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -362,7 +427,12 @@ const InvoiceReportTab = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 overflow-auto">
+      <InvoiceDetailDialog
+        invoiceId={selectedInvoiceId}
+        open={isDetailOpen}
+        onOpenChange={setIsDetailOpen}
+      />
       {/* --------------------- 1. FORM LỌC --------------------- */}
       <Card>
         <CardHeader>
@@ -370,7 +440,7 @@ const InvoiceReportTab = () => {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmitFilters)} className="space-y-4">
-            <FieldGroup className="grid grid-cols-2 md:grid-cols-5 gap-4">
+            <FieldGroup className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 xl:grid-cols-5">
               {/* House Select (Multi) */}
               <Field className="md:col-span-1">
                 <FieldLabel>{t("SelectHouse")}</FieldLabel>
@@ -544,12 +614,12 @@ const InvoiceReportTab = () => {
       {/* --------------------- 2. HIỂN THỊ TỔNG QUAN VÀ PIE CHART --------------------- */}
       {isReportLoading && !reportData ? (
         <div className="text-center py-10">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto" />
+          <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
         </div>
       ) : reportData ? (
         <div className="space-y-6">
           <h3 className="text-xl font-bold">{t("GeneralInvoice")}</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium">
@@ -612,7 +682,7 @@ const InvoiceReportTab = () => {
             </Card>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
             {/* Biểu đồ tròn */}
             <Card>
               <CardHeader>
@@ -704,7 +774,23 @@ const InvoiceReportTab = () => {
           </div>
 
           {/* --------------------- 3. DANH SÁCH HÓA ĐƠN (BẢNG) --------------------- */}
-          <h3 className="text-xl font-bold pt-4">{t("ListInvoice")}</h3>
+          <div className="flex justify-between items-center">
+            <h3 className="text-xl font-bold pt-4">{t("ListInvoice")}</h3>
+            {reportData?.invoices?.content?.length > 0 && (
+              <Button
+                variant="outline"
+                onClick={handleExportAllInvoices}
+                disabled={isExportingAll}
+              >
+                {isExportingAll ? (
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                ) : (
+                  <FileText className="h-4 w-4 mr-2" />
+                )}
+                {t("ExportAllInvoice")}
+              </Button>
+            )}
+          </div>
           <Table>
             <TableHeader>
               <TableRow>
@@ -754,8 +840,8 @@ const InvoiceReportTab = () => {
                   </span>
                 </TableHead>
                 <TableHead>{t("Status")}</TableHead>
-                <TableHead>{t("PaymentDealine")}</TableHead>
-                <TableHead>{t("ExportInvoice")}</TableHead>
+                <TableHead>{t("PaymentDeadline")}</TableHead>
+                <TableHead>{t("Action")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -800,18 +886,40 @@ const InvoiceReportTab = () => {
                   >
                     {formatDateTime(invoice.dueDate).formattedDate}
                   </TableCell>
-                  <TableCell className="text-center">
-                    <Button
-                      size="icon"
-                      onClick={() => handleExportInvoice(invoice)}
-                      disabled={exportingId !== null}
-                    >
-                      {exportingId === invoice.id ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <FileText className="h-4 w-4" />
-                      )}
-                    </Button>
+                  <TableCell className="text-center space-x-2">
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Button
+                          size="icon"
+                          variant="outline"
+                          className={"text-blue-500"}
+                          onClick={() => handleExportInvoice(invoice)}
+                          disabled={exportingId !== null}
+                        >
+                          {exportingId === invoice.id ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <FileText className="h-4 w-4" />
+                          )}
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>{t("ExportInvoice")}</TooltipContent>
+                    </Tooltip>
+
+                    {/* view invoice */}
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Button
+                          variant="outline"
+                          className={"text-violet-500"}
+                          size="icon"
+                          onClick={() => handleViewDetail(invoice.id)}
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>{t("ViewInvoice")}</TooltipContent>
+                    </Tooltip>
                   </TableCell>
                 </TableRow>
               ))}

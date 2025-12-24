@@ -30,6 +30,15 @@ export const invoiceApi = baseApi.injectEndpoints({
       }),
       transformResponse: (response) => response.result,
     }),
+    getTenantInvoiceReport: builder.mutation({
+      query: ({ filters, page = 0, size = 10 }) => ({
+        url: `/reports-tenant/invoice`,
+        method: "POST",
+        params: { page, size },
+        data: filters,
+      }),
+      transformResponse: (response) => response.result,
+    }),
   }),
 });
 
@@ -37,4 +46,5 @@ export const {
   useGetInvoicesByContractQuery,
   useGetInvoiceDetailQuery,
   useCreateVNPayUrlMutation,
+  useGetTenantInvoiceReportMutation,
 } = invoiceApi;
