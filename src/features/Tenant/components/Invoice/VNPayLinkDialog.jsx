@@ -43,7 +43,10 @@ export default function VNPayLinkDialog({ paymentUrl, open, onOpenChange }) {
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             {t("Later")}
           </Button>
-          <Button onClick={handleGoToVNPay} className="gap-2  hover:bg-[#1a83c0]">
+          <Button
+            onClick={handleGoToVNPay}
+            className="gap-2  hover:bg-[#1a83c0]"
+          >
             {t("GoToVNPay")} <ExternalLink className="h-4 w-4" />
           </Button>
         </DialogFooter>

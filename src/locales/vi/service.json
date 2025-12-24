@@ -124,8 +124,7 @@
   "AllHouse": "Tất cả nhà",
   "AllRoom": "Tất cả phòng",
   "AllStatus": "Tất cả",
-  "ErrorLoadData": "Lỗi tải dữ liệu"
-  ,
+  "ErrorLoadData": "Lỗi tải dữ liệu",
   "ReadyToPay": "Sẵn sàng thanh toán",
   "PaymentLinkCreated": "Hệ thống đã khởi tạo link thanh toán an toàn qua cổng VNPay.",
   "PleaseProceedToVNPay": "Anh vui lòng nhấn vào nút bên dưới để chuyển sang trang cổng thanh toán VNPay.",

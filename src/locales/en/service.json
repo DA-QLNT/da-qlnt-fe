@@ -124,8 +124,7 @@
   "AllHouse": "All House",
   "AllRoom": "All Room",
   "AllStatus": "All Status",
-  "ErrorLoadData": "Error loading data"
-  ,
+  "ErrorLoadData": "Error loading data",
   "ReadyToPay": "Ready to pay",
   "PaymentLinkCreated": "A secure VNPay payment link has been created.",
   "PleaseProceedToVNPay": "Please click the button below to proceed to the VNPay payment gateway.",

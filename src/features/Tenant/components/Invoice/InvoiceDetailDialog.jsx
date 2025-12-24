@@ -87,7 +87,9 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">{t("Status")}:</span>
+                    <span className="text-muted-foreground">
+                      {t("Status")}:
+                    </span>
                     <Badge
                       variant={
                         invoice.status === 1
@@ -114,7 +116,9 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
                 </CardHeader>
                 <CardContent className="text-sm space-y-2">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">{t("PaymentDeadline")}</span>
+                    <span className="text-muted-foreground">
+                      {t("PaymentDeadline")}
+                    </span>
                     <span className="font-medium text-red-500">
                       {formatDateTime(invoice.dueDate).formattedDate}
                     </span>
@@ -122,13 +126,17 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
                   {invoice.status === 1 && (
                     <>
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">{t("Payment") + " " + t("Date")}</span>
+                        <span className="text-muted-foreground">
+                          {t("Payment") + " " + t("Date")}
+                        </span>
                         <span className="font-medium text-green-600">
                           {formatDateTime(invoice.paymentDate).formattedDate}
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">{t("PaymentMethod")}</span>
+                        <span className="text-muted-foreground">
+                          {t("PaymentMethod")}
+                        </span>
                         <span className="font-medium">
                           {invoice.paymentMethod === 0
                             ? t("PaymentMethodCash")
@@ -156,9 +164,15 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
                     <TableRow>
                       <TableHead>{t("ServiceName")}</TableHead>
                       <TableHead>{t("Method")}</TableHead>
-                      <TableHead className="text-right">{t("UnitPrice")}</TableHead>
-                      <TableHead className="text-right">{t("Quantity")}</TableHead>
-                      <TableHead className="text-right">{t("Amount")}</TableHead>
+                      <TableHead className="text-right">
+                        {t("UnitPrice")}
+                      </TableHead>
+                      <TableHead className="text-right">
+                        {t("Quantity")}
+                      </TableHead>
+                      <TableHead className="text-right">
+                        {t("Amount")}
+                      </TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -166,9 +180,13 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
                     <TableRow className="font-semibold">
                       <TableCell>{t("RentFee")}</TableCell>
                       <TableCell>{t("Fixed")}</TableCell>
-                      <TableCell className="text-right">{formatCurrency(invoice.rentAmount)}</TableCell>
+                      <TableCell className="text-right">
+                        {formatCurrency(invoice.rentAmount)}
+                      </TableCell>
                       <TableCell className="text-right">1</TableCell>
-                      <TableCell className="text-right">{formatCurrency(invoice.rentAmount)}</TableCell>
+                      <TableCell className="text-right">
+                        {formatCurrency(invoice.rentAmount)}
+                      </TableCell>
                     </TableRow>
 
                     {/* Chi tiết Dịch vụ */}
@@ -186,7 +204,9 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
                         <TableCell className="text-right">
                           {detail.quantity}{" "}
                           <span className="text-[10px] text-muted-foreground uppercase">
-                            {detail.method === "0" ? t("NumberShort") : t("PersonShort")}
+                            {detail.method === "0"
+                              ? t("NumberShort")
+                              : t("PersonShort")}
                           </span>
                         </TableCell>
                         <TableCell className="text-right">
@@ -200,7 +220,9 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
                       <TableCell colSpan={4} className="text-right text-base">
                         {t("TotalUpper")}
                       </TableCell>
-                      <TableCell className="text-right text-xl text-primary">{formatCurrency(invoice.totalAmount)}</TableCell>
+                      <TableCell className="text-right text-xl text-primary">
+                        {formatCurrency(invoice.totalAmount)}
+                      </TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>
@@ -210,7 +232,9 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
         ) : null}
 
         <DialogFooter className="gap-2">
-          <Button variant="outline" onClick={() => onOpenChange(false)}>{t("Close")}</Button>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
+            {t("Close")}
+          </Button>
           {/* {invoice?.status !== 1 && (
             <Button className="gap-2">
               <CreditCard className="h-4 w-4" /> Thanh toán
