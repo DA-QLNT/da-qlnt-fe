@@ -118,6 +118,22 @@ export const roomApi = baseApi.injectEndpoints({
         { type: "RoomsByStatus", id: `${houseId}-${status}` }, // Tag cụ thể hơn
       ],
     }),
+    //  api lấy room theo filter house
+    searchRooms: builder.query({
+      query: ({ houseId, status = 1, keyword = "", page = 0, size = 20 }) => ({
+        url: `/rooms/search`,
+        method: "GET",
+        params: {
+          houseId,
+          status,
+          keyword,
+          page,
+          size,
+        },
+      }),
+      transformResponse: (response) => response.result,
+      providesTags: ["Room"],
+    }),
   }),
 });
 export const {
@@ -131,4 +147,5 @@ export const {
   useCreateAssetItemMutation,
   useCreateRoomMutation,
   useGetRoomsByHouseIdAndStatusQuery,
+  useSearchRoomsQuery,
 } = roomApi;

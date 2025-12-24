@@ -1,3 +1,20 @@
+import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { useParams } from "react-router-dom";
+import { useSearchRoomsQuery } from "../../store/roomApi"; // Hook mới
+import { useGetHousesByOwnerIdQuery } from "../../store/houseApi";
+import { useConfirmServiceUsageMutation } from "../../store/serviceApi";
+import { useAuth } from "@/features/auth";
+import useDebounce from "@/hooks/useDebounce";
+import { formatCurrency } from "@/lib/format/currencyFormat";
+import toast from "react-hot-toast";
+
 import {
   Table,
   TableBody,
@@ -7,12 +24,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { formatCurrency } from "@/lib/format/currencyFormat";
-import { useTranslation } from "react-i18next";
-import { EllipsisVertical, Loader2, CheckCircle } from "lucide-react";
-import { useParams } from "react-router-dom";
-import { useGetRoomsByHouseIdAndStatusQuery } from "../../store/roomApi";
-import RoomStatusBadge from "../../components/Room/RoomStatusBadge";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,71 +39,92 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useState } from "react";
-import { useConfirmServiceUsageMutation } from "../../store/serviceApi";
+import {
+  EllipsisVertical,
+  Loader2,
+  CheckCircle,
+  Search,
+  Home,
+  FilterX,
+  PencilRuler,
+  Eye,
+  ReceiptText,
+  FilePlus,
+} from "lucide-react";
+
+import RoomStatusBadge from "../../components/Room/RoomStatusBadge";
 import ServiceUsageDeclareDialog from "../../components/Service/ServiceUsageDeclareDialog";
 import ServiceUsageViewDialog from "../../components/Service/ServiceUsageViewDialog";
-import toast from "react-hot-toast";
 import InvoiceCreateConfirmDialog from "../../components/Service/InvoiceCreateConfirmDialog";
 import InvoiceListDialog from "../../components/Service/InvoiceListDialog";
+import { Spinner } from "@/components/ui/spinner";
 
 const ServiceListRoomRent = () => {
   const { t } = useTranslation("service");
-  const { houseId } = useParams();
+  const { houseId: urlHouseId } = useParams();
+  const { userId: ownerId } = useAuth();
 
-  // State cho Declare Dialog
+  // --- States cho bộ lọc ---
+  const [selectedHouseId, setSelectedHouseId] = useState(urlHouseId || "all");
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const debouncedKeyword = useDebounce(searchKeyword, 500);
+  const [page, setPage] = useState(0);
+
+  // --- States cho Dialogs ---
   const [isDeclareDialogOpen, setIsDeclareDialogOpen] = useState(false);
   const [selectedRoomIdForDeclare, setSelectedRoomIdForDeclare] =
     useState(null);
-
-  // State cho View Dialog
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [selectedRoomForView, setSelectedRoomForView] = useState(null);
-
-  //  STATE CHO INVOICE LIST
   const [invoiceListDialog, setInvoiceListDialog] = useState({
     open: false,
     roomId: null,
   });
-
-  //  STATE CHO INVOICE CREATE CONFIRM
   const [isInvoiceCreateConfirmOpen, setIsInvoiceCreateConfirmOpen] =
     useState(false);
   const [roomIdForInvoice, setRoomIdForInvoice] = useState(null);
 
-  // HÀM MỞ DANH SÁCH HÓA ĐƠN
-  const handleOpenInvoiceListDialog = (roomId) => {
-    setInvoiceListDialog({ open: true, roomId });
-  };
+  // 1. Lấy danh sách nhà để làm bộ lọc
+  const { data: housesData } = useGetHousesByOwnerIdQuery(
+    { ownerId, page: 0, size: 100 },
+    { skip: !ownerId }
+  );
+  const allHouses = housesData?.houses || [];
 
-  // HÀM MỞ XÁC NHẬN TẠO HÓA ĐƠN
-  const handleOpenCreateInvoiceConfirm = (roomId) => {
-    setRoomIdForInvoice(roomId);
-    setIsInvoiceCreateConfirmOpen(true);
-  };
+  // 2. Lấy danh sách phòng ĐÃ THUÊ (status = 1) theo bộ lọc
+  const {
+    data: roomsData,
+    isLoading,
+    isFetching,
+  } = useSearchRoomsQuery({
+    houseId: selectedHouseId === "all" ? undefined : selectedHouseId,
+    status: 1, // Fix cứng status = 1 như anh yêu cầu
+    keyword: debouncedKeyword,
+    page: page,
+    size: 20,
+  });
 
-  const { data: rentedRooms, isLoading: loadingRentedRooms } =
-    useGetRoomsByHouseIdAndStatusQuery(
-      {
-        houseId: Number(houseId),
-        status: 1,
-        page: 0,
-        size: 20,
-      },
-      {
-        skip: !houseId,
-      }
-    );
-  const roomsToDisplay = rentedRooms?.content || [];
+  const roomsToDisplay = roomsData?.content || [];
 
   const [confirmServiceUsage, { isLoading: isConfirming }] =
     useConfirmServiceUsageMutation();
 
+  // Reset trang khi đổi bộ lọc
+  useEffect(() => {
+    setPage(0);
+  }, [selectedHouseId, debouncedKeyword]);
+
+  // --- Handlers ---
+  const handleOpenInvoiceListDialog = (roomId) =>
+    setInvoiceListDialog({ open: true, roomId });
+  const handleOpenCreateInvoiceConfirm = (roomId) => {
+    setRoomIdForInvoice(roomId);
+    setIsInvoiceCreateConfirmOpen(true);
+  };
   const handleOpenDeclareDialog = (roomId) => {
     setSelectedRoomIdForDeclare(roomId);
     setIsDeclareDialogOpen(true);
   };
-
   const handleOpenViewDialog = (room) => {
     setSelectedRoomForView(room);
     setIsViewDialogOpen(true);
@@ -98,9 +138,8 @@ const ServiceListRoomRent = () => {
       !window.confirm(
         `${t("ConfirmAllIndexesForMonth")} ${currentMonth}/${currentYear}?`
       )
-    ) {
+    )
       return;
-    }
 
     try {
       await confirmServiceUsage({
@@ -112,32 +151,27 @@ const ServiceListRoomRent = () => {
       );
     } catch (error) {
       toast.error(error.data?.message || t("ConfirmIndexFailed"));
-      console.error("Confirm service usage error:", error);
     }
   };
 
   return (
-    <div className="px-4 lg:px-6">
+    <div className="px-4 lg:px-6 space-y-6">
+      {/* Dialogs */}
       <InvoiceCreateConfirmDialog
         roomId={roomIdForInvoice}
         open={isInvoiceCreateConfirmOpen}
         onOpenChange={setIsInvoiceCreateConfirmOpen}
       />
-
-      {/*  RENDER INVOICE LIST DIALOG */}
       <InvoiceListDialog
         roomId={invoiceListDialog.roomId}
         open={invoiceListDialog.open}
-        onOpenChange={setInvoiceListDialog}
+        onOpenChange={(val) => setInvoiceListDialog(val)}
       />
-      {/* Declare Dialog */}
       <ServiceUsageDeclareDialog
         open={isDeclareDialogOpen}
         onOpenChange={setIsDeclareDialogOpen}
         roomId={selectedRoomIdForDeclare}
       />
-
-      {/* View Dialog */}
       <ServiceUsageViewDialog
         open={isViewDialogOpen}
         onOpenChange={setIsViewDialogOpen}
@@ -145,13 +179,63 @@ const ServiceListRoomRent = () => {
         roomName={selectedRoomForView?.code}
       />
 
-      {/* Header với nút Confirm All */}
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold">{t("RentedRoomList")}</h2>
+      {/* 🚨 BỘ LỌC HÀNG NGANG */}
+      <div className="flex flex-col md:flex-row gap-4 items-end bg-sidebar p-4 rounded-lg border shadow-sm">
+        <div className="flex-1 space-y-1.5">
+          <label className="text-xs font-bold text-muted-foreground uppercase flex items-center gap-1">
+            <Home size={14} /> {t("House")}
+          </label>
+          <Select value={selectedHouseId} onValueChange={setSelectedHouseId}>
+            <SelectTrigger>
+              <SelectValue placeholder={t("SelectHouse")} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">{t("AllHouse")}</SelectItem>
+              {allHouses.map((h) => (
+                <SelectItem key={h.id} value={h.id.toString()}>
+                  {h.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="flex-1 space-y-1.5">
+          <label className="text-xs font-bold text-muted-foreground uppercase flex items-center gap-1">
+            <Search size={14} /> {t("SearchRoomCode")}
+          </label>
+          <div className="relative">
+            <Input
+              placeholder={t("EnterRoomCode")}
+              value={searchKeyword}
+              onChange={(e) => setSearchKeyword(e.target.value)}
+              className="pl-9"
+            />
+            <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+          </div>
+        </div>
+
+        <Button
+          variant="outline"
+          onClick={() => {
+            setSelectedHouseId("all");
+            setSearchKeyword("");
+          }}
+          className="gap-2"
+        >
+          <FilterX size={16} /> {t("ResetFilter")}
+        </Button>
+      </div>
+
+      {/* Header Action */}
+      <div className="flex justify-between items-center">
+        <h2 className="text-xl font-bold text-muted-foreground">
+          {t("RentedRoomList")} ({roomsData?.totalElements || 0})
+        </h2>
         <Button
           onClick={handleConfirmAll}
           disabled={isConfirming || roomsToDisplay.length === 0}
-          className="gap-2"
+          className="gap-2 bg-green-600 hover:bg-green-700"
         >
           {isConfirming ? (
             <Loader2 className="h-4 w-4 animate-spin" />
@@ -162,76 +246,132 @@ const ServiceListRoomRent = () => {
         </Button>
       </div>
 
-      <div className="w-full p-1 rounded-lg border border-purple-300 shadow-md shadow-secondary">
+      <div className="w-full p-1 rounded-lg border border-purple-200 shadow-md bg-sidebar overflow-hidden">
         <Table>
-          <TableHeader className="bg-sidebar">
+          <TableHeader className="bg-sidebar/50">
             <TableRow>
-              <TableHead className="w-[50px]">{t("No")}</TableHead>
+              <TableHead className="w-[60px]">{t("No")}</TableHead>
               <TableHead>{t("Room")}</TableHead>
-              <TableHead>{t("Price")}</TableHead>
+              <TableHead>{t("RentPrice")}</TableHead>
               <TableHead>{t("Status")}</TableHead>
-              <TableHead className="text-right w-[100px]">{t("Action")}</TableHead>
+              <TableHead className="text-right w-[100px]">
+                {t("Action")}
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {loadingRentedRooms ? (
+            {isLoading || isFetching ? (
               <TableRow>
-                <TableCell colSpan={5} className="text-center py-8">
-                  <Loader2 className="h-6 w-6 animate-spin mx-auto" />
+                <TableCell colSpan={5} className="text-center py-20">
+                  <Spinner className="mx-auto size-10" />
                 </TableCell>
               </TableRow>
             ) : roomsToDisplay.length === 0 ? (
               <TableRow>
                 <TableCell
                   colSpan={5}
-                  className="text-center text-muted-foreground"
+                  className="text-center py-20 text-muted-foreground italic"
                 >
-                  {t("NoRentedRooms")}
+                  {t("NoRentedRoomsFound")}
                 </TableCell>
               </TableRow>
             ) : (
               roomsToDisplay.map((room, index) => (
-                <TableRow key={room.id}>
-                  <TableCell className="w-[50px]">{index + 1}</TableCell>
-                  <TableCell>
-                    <h4 className="font-semibold line-clamp-1">{room.code}</h4>
+                <TableRow
+                  key={room.id}
+                  className="hover:bg-sidebar/50 transition-colors"
+                >
+                  <TableCell className="font-medium text-muted-foreground">
+                    {page * 20 + index + 1}
                   </TableCell>
-                  <TableCell>{formatCurrency(room.rent)}</TableCell>
+                  <TableCell>
+                    <div className="font-bold text-primary">{room.code}</div>
+                    <div className="text-[10px] text-muted-foreground uppercase">
+                      {room.houseName || ""}
+                    </div>
+                  </TableCell>
+                  <TableCell className="font-semibold text-muted-foreground">
+                    {formatCurrency(room.rent)}
+                  </TableCell>
                   <TableCell>
                     <RoomStatusBadge status={room.status} />
                   </TableCell>
-                  <TableCell className="flex justify-end">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger>
-                        <EllipsisVertical />
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent>
-                        <DropdownMenuGroup>
-                          <DropdownMenuItem
-                            onClick={() => handleOpenDeclareDialog(room.id)}
-                          >
-                            {t("DeclareServiceRecord")}
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => handleOpenViewDialog(room)}
-                          >
-                            {t("ViewIndexes")}
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => handleOpenInvoiceListDialog(room.id)}
-                          >
-                            {t("ViewInvoice")}
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() =>
-                              handleOpenCreateInvoiceConfirm(room.id)
-                            }
-                          >
-                            {t("CreateInvoice")}
-                          </DropdownMenuItem>
-                        </DropdownMenuGroup>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                  <TableCell className="text-right">
+                    <div className="block lg:hidden">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon">
+                            <EllipsisVertical className="size-5" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-56">
+                          <DropdownMenuGroup>
+                            <DropdownMenuItem
+                              onClick={() => handleOpenDeclareDialog(room.id)}
+                            >
+                              {t("DeclareServiceRecord")}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => handleOpenViewDialog(room)}
+                            >
+                              {t("ViewIndexes")}
+                            </DropdownMenuItem>
+                            <hr className="my-1" />
+                            <DropdownMenuItem
+                              onClick={() =>
+                                handleOpenInvoiceListDialog(room.id)
+                              }
+                            >
+                              {t("ViewInvoice")}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              className="text-primary font-medium"
+                              onClick={() =>
+                                handleOpenCreateInvoiceConfirm(room.id)
+                              }
+                            >
+                              {t("CreateInvoice")}
+                            </DropdownMenuItem>
+                          </DropdownMenuGroup>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                    <div className="hidden lg:flex lg:items-center lg:gap-2">
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Button variant={"outline"} size={"icon"}>
+                            <PencilRuler />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          {t("DeclareServiceRecord")}
+                        </TooltipContent>
+                      </Tooltip>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Button variant={"secondary"} size={"icon"}>
+                            <Eye />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>{t("ViewIndexes")}</TooltipContent>
+                      </Tooltip>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Button variant={"outline"} size={"icon"}>
+                            <ReceiptText />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>{t("ViewInvoice")}</TooltipContent>
+                      </Tooltip>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Button variant={"secondary"} size={"icon"}>
+                            <FilePlus />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>{t("CreateInvoice")}</TooltipContent>
+                      </Tooltip>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))

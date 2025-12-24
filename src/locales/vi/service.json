@@ -145,5 +145,8 @@
   "PaymentMethodCash": "Tiền mặt",
   "PaymentMethodBankTransfer": "Chuyển khoản",
   "NumberShort": "Số",
-  "PersonShort": "Người"
+  "PersonShort": "Người",
+  "EnterRoomCode": "Nhập mã phòng",
+  "ResetFilter": "Làm mới bộ lọc",
+  "SearchRoomCode": "Tìm kiếm theo mã phòng"
 }

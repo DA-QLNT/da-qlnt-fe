@@ -141,11 +141,11 @@ function App() {
               {/* statistics */}
 
               {/* log meter */}
-              <Route path="recordmeters" element={<RecordMeterOwner />} />
-              <Route
+              <Route path="recordmeters" element={<ServiceListRoomRent />} />
+              {/* <Route
                 path="recordmeters/houses/:houseId/rooms"
                 element={<ServiceListRoomRent />}
-              />
+              /> */}
               {/* log meter */}
             </Route>
           </Route>

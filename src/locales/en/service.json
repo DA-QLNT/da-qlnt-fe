@@ -145,5 +145,8 @@
   "PaymentMethodCash": "Cash",
   "PaymentMethodBankTransfer": "Bank transfer",
   "NumberShort": "Number",
-  "PersonShort": "Person"
+  "PersonShort": "Person",
+  "EnterRoomCode": "Enter room code",
+  "ResetFilter": "ResetFilter",
+  "SearchRoomCode": "Search room code"
 }
