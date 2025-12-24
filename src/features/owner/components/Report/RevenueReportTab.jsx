@@ -111,9 +111,9 @@ const RevenueReportTab = () => {
     try {
       const result = await triggerReport(payload).unwrap();
       setReportData(result);
-      toast.success(t("ExportSuccess"));
+      // toast.success(t("ExportSuccess"));
     } catch (error) {
-      toast.error(t("ExportFailed"));
+      // toast.error(t("ExportFailed"));
       setReportData(null);
     }
   };

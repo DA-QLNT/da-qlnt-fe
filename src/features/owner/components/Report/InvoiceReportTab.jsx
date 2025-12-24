@@ -362,7 +362,7 @@ const InvoiceReportTab = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 overflow-auto">
       {/* --------------------- 1. FORM LỌC --------------------- */}
       <Card>
         <CardHeader>
@@ -370,7 +370,7 @@ const InvoiceReportTab = () => {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmitFilters)} className="space-y-4">
-            <FieldGroup className="grid grid-cols-2 md:grid-cols-5 gap-4">
+            <FieldGroup className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 xl:grid-cols-5">
               {/* House Select (Multi) */}
               <Field className="md:col-span-1">
                 <FieldLabel>{t("SelectHouse")}</FieldLabel>
@@ -549,7 +549,7 @@ const InvoiceReportTab = () => {
       ) : reportData ? (
         <div className="space-y-6">
           <h3 className="text-xl font-bold">{t("GeneralInvoice")}</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium">
@@ -612,7 +612,7 @@ const InvoiceReportTab = () => {
             </Card>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
             {/* Biểu đồ tròn */}
             <Card>
               <CardHeader>
