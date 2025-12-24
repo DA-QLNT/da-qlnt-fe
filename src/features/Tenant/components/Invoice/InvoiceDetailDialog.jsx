@@ -28,20 +28,12 @@ import { Button } from "@/components/ui/button";
 import { formatDateTime } from "@/lib/format/dateTimeFormat";
 import { Badge } from "@/components/ui/badge";
 import ServiceTypeBadge from "../../../owner/components/Service/ServiceTypeBadge";
+import { useTranslation } from "react-i18next";
 
-const INVOICE_STATUS_MAP = {
-  0: "Chưa thanh toán",
-  1: "Đã thanh toán",
-  2: "Quá hạn",
-  3: "Đã thanh toán quá hạn",
-};
-
-const PAYMENT_METHOD_MAP = {
-  0: "Tiền mặt",
-  1: "Chuyển khoản",
-};
+// Use i18n for status and payment method labels
 
 export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
+  const { t } = useTranslation("service");
   const {
     data: invoice,
     isLoading,
@@ -54,7 +46,7 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
   if (isError)
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent>Lỗi tải chi tiết hóa đơn.</DialogContent>
+        <DialogContent>{t("ErrorLoadData")}</DialogContent>
       </Dialog>
     );
 
@@ -64,14 +56,14 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <FileText className="h-6 w-6 text-primary" />
-            Chi tiết Hóa đơn {invoice?.code}
+            {t("InvoiceDetail", { code: invoice?.code })}
           </DialogTitle>
         </DialogHeader>
 
         {loading ? (
           <div className="text-center py-20">
             <Loader2 className="h-10 w-10 animate-spin mx-auto text-primary" />
-            <p className="mt-2 text-muted-foreground">Đang tải dữ liệu...</p>
+            <p className="mt-2 text-muted-foreground">{t("LoadingData")}</p>
           </div>
         ) : invoice ? (
           <div className="space-y-6">
@@ -80,22 +72,22 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
               <Card>
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base flex items-center gap-2">
-                    <Info className="h-4 w-4" /> Thông tin chung
+                    <Info className="h-4 w-4" /> {t("GeneralInfo")}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="text-sm space-y-2">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Phòng:</span>
+                    <span className="text-muted-foreground">{t("Room")}:</span>
                     <span className="font-medium">{invoice.roomCode}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Kỳ hóa đơn:</span>
+                    <span className="text-muted-foreground">{t("Term")}:</span>
                     <span className="font-medium">
-                      Tháng {invoice.month}/{invoice.year}
+                      {t("Month")} {invoice.month}/{invoice.year}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Trạng thái:</span>
+                    <span className="text-muted-foreground">{t("Status")}:</span>
                     <Badge
                       variant={
                         invoice.status === 1
@@ -105,7 +97,10 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
                           : "secondary"
                       }
                     >
-                      {INVOICE_STATUS_MAP[invoice.status]}
+                      {invoice.status === 0 && t("Unpaid")}
+                      {invoice.status === 1 && t("Paid")}
+                      {invoice.status === 2 && t("Overdue")}
+                      {invoice.status === 3 && t("OverduePaid")}
                     </Badge>
                   </div>
                 </CardContent>
@@ -114,14 +109,12 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
               <Card>
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base flex items-center gap-2">
-                    <CalendarIcon className="h-4 w-4" /> Thời gian & Thanh toán
+                    <CalendarIcon className="h-4 w-4" /> {t("TimeAndPayment")}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="text-sm space-y-2">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">
-                      Hạn thanh toán:
-                    </span>
+                    <span className="text-muted-foreground">{t("PaymentDeadline")}</span>
                     <span className="font-medium text-red-500">
                       {formatDateTime(invoice.dueDate).formattedDate}
                     </span>
@@ -129,19 +122,19 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
                   {invoice.status === 1 && (
                     <>
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">
-                          Ngày thanh toán:
-                        </span>
+                        <span className="text-muted-foreground">{t("Payment") + " " + t("Date")}</span>
                         <span className="font-medium text-green-600">
                           {formatDateTime(invoice.paymentDate).formattedDate}
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">
-                          Phương thức:
-                        </span>
+                        <span className="text-muted-foreground">{t("PaymentMethod")}</span>
                         <span className="font-medium">
-                          {PAYMENT_METHOD_MAP[invoice.paymentMethod] || "N/A"}
+                          {invoice.paymentMethod === 0
+                            ? t("PaymentMethodCash")
+                            : invoice.paymentMethod === 1
+                            ? t("PaymentMethodBankTransfer")
+                            : "N/A"}
                         </span>
                       </div>
                     </>
@@ -161,25 +154,21 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Dịch vụ</TableHead>
-                      <TableHead>Cách tính</TableHead>
-                      <TableHead className="text-right">Đơn giá</TableHead>
-                      <TableHead className="text-right">Số lượng</TableHead>
-                      <TableHead className="text-right">Thành tiền</TableHead>
+                      <TableHead>{t("ServiceName")}</TableHead>
+                      <TableHead>{t("Method")}</TableHead>
+                      <TableHead className="text-right">{t("UnitPrice")}</TableHead>
+                      <TableHead className="text-right">{t("Quantity")}</TableHead>
+                      <TableHead className="text-right">{t("Amount")}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {/* Tiền Phòng */}
                     <TableRow className="font-semibold">
-                      <TableCell>Tiền thuê phòng</TableCell>
-                      <TableCell>Cố định</TableCell>
-                      <TableCell className="text-right">
-                        {formatCurrency(invoice.rentAmount)}
-                      </TableCell>
+                      <TableCell>{t("RentFee")}</TableCell>
+                      <TableCell>{t("Fixed")}</TableCell>
+                      <TableCell className="text-right">{formatCurrency(invoice.rentAmount)}</TableCell>
                       <TableCell className="text-right">1</TableCell>
-                      <TableCell className="text-right">
-                        {formatCurrency(invoice.rentAmount)}
-                      </TableCell>
+                      <TableCell className="text-right">{formatCurrency(invoice.rentAmount)}</TableCell>
                     </TableRow>
 
                     {/* Chi tiết Dịch vụ */}
@@ -197,7 +186,7 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
                         <TableCell className="text-right">
                           {detail.quantity}{" "}
                           <span className="text-[10px] text-muted-foreground uppercase">
-                            {detail.method === "0" ? "Số" : "Người/Lần"}
+                            {detail.method === "0" ? t("NumberShort") : t("PersonShort")}
                           </span>
                         </TableCell>
                         <TableCell className="text-right">
@@ -209,11 +198,9 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
                     {/* Tổng cộng */}
                     <TableRow className="font-bold bg-muted/50">
                       <TableCell colSpan={4} className="text-right text-base">
-                        TỔNG CỘNG
+                        {t("TotalUpper")}
                       </TableCell>
-                      <TableCell className="text-right text-xl text-primary">
-                        {formatCurrency(invoice.totalAmount)}
-                      </TableCell>
+                      <TableCell className="text-right text-xl text-primary">{formatCurrency(invoice.totalAmount)}</TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>
@@ -223,9 +210,7 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
         ) : null}
 
         <DialogFooter className="gap-2">
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Đóng
-          </Button>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>{t("Close")}</Button>
           {/* {invoice?.status !== 1 && (
             <Button className="gap-2">
               <CreditCard className="h-4 w-4" /> Thanh toán
