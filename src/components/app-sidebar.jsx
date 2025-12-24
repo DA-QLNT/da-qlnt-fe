@@ -90,7 +90,7 @@ const data = {
       icon: IconSettings,
     },
     {
-      title: "RecordMeters & Invoices",
+      title: "RecordMeters & CreateInvoices",
       url: "/owner/recordmeters",
       icon: IconDashboard,
     },
