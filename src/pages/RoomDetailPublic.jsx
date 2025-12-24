@@ -16,8 +16,10 @@ import { formatCurrency } from "@/lib/format/currencyFormat";
 import { Card, CardContent } from "@/components/ui/card";
 import { ModeToggle } from "@/components/theme/mode-toggle";
 import LanguageSwitcher from "@/components/common/LanguageSwitcher";
+import { useTranslation } from "react-i18next";
 
 const RoomDetailPublic = () => {
+  const { t } = useTranslation("public");
   const { roomId } = useParams();
   const navigate = useNavigate();
   const { data: room, isLoading } = useGetPublicRoomDetailQuery(roomId);
@@ -28,20 +30,17 @@ const RoomDetailPublic = () => {
         <Spinner className="size-12 text-primary" />
       </div>
     );
-  if (!room)
-    return (
-      <div className="text-center py-20">Không tìm thấy thông tin phòng.</div>
-    );
+  if (!room) return <div className="text-center py-20">{t("notFound")}</div>;
 
   return (
     <div className="container mx-auto py-8 px-4 max-w-5xl">
       <div className="flex justify-between items-center">
         <Button
-          variant="ghost"
+          variant="outline"
           onClick={() => navigate(-1)}
           className="mb-6 gap-2"
         >
-          <ArrowLeft className="h-4 w-4" /> Quay lại
+          <ArrowLeft className="h-4 w-4" /> {t("back")}
         </Button>
         <div className="ml-auto flex items-center gap-2">
           <Button variant="ghost" asChild size="sm" className="hidden sm:flex">
@@ -58,7 +57,7 @@ const RoomDetailPublic = () => {
             asChild
           >
             <NavLink to={`/auth/login`} className={"flex items-center gap-1"}>
-              Đăng nhập
+              {t("login")}
             </NavLink>
           </Button>
         </div>
@@ -87,7 +86,9 @@ const RoomDetailPublic = () => {
               </span>
             </div>
             <div className="p-6 bg-muted rounded-xl border">
-              <h3 className="font-semibold text-lg mb-2">Mô tả phòng</h3>
+              <h3 className="font-semibold text-lg mb-2">
+                {t("descriptionTitle")}
+              </h3>
               <p className=" leading-relaxed whitespace-pre-line">
                 {room.description}
               </p>
@@ -103,25 +104,27 @@ const RoomDetailPublic = () => {
                 <span className="text-3xl font-bold text-primary">
                   {formatCurrency(room.rent)}
                 </span>
-                <span className="text-slate-400 text-sm ml-1">/tháng</span>
+                <span className="text-slate-400 text-sm ml-1">
+                  {t("perMonth")}
+                </span>
               </div>
 
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 text-muted-foreground">
-                    <Maximize className="h-4 w-4" /> Diện tích
+                    <Maximize className="h-4 w-4" /> {t("area")}
                   </div>
                   <span className="font-semibold">{room.area} m²</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 text-muted-foreground">
-                    <Users className="h-4 w-4" /> Sức chứa
+                    <Users className="h-4 w-4" /> {t("capacity")}
                   </div>
                   <span className="font-semibold">{room.maxPeople} người</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 text-muted-foreground">
-                    <Home className="h-4 w-4" /> Tầng
+                    <Home className="h-4 w-4" /> {t("floor")}
                   </div>
                   <span className="font-semibold">{room.floor}</span>
                 </div>
@@ -134,7 +137,7 @@ const RoomDetailPublic = () => {
                   </a>
                 </Button>
                 <p className="text-center text-xs text-muted-foreground italic">
-                  Liên hệ chủ nhà: {room.ownerName}
+                  {t("contactOwner", { name: room.ownerName })}
                 </p>
               </div>
             </CardContent>

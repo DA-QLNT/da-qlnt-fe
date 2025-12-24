@@ -1,0 +1,19 @@
+{
+  "hero": {
+    "area": "Area",
+    "provincePlaceholder": "Province/City...",
+    "priceRange": "Price range (VND)",
+    "from": "From",
+    "to": "To",
+    "maxPeople": "Number of people",
+    "maxPeoplePlaceholder": "Max people...",
+    "reset": "Reset"
+  },
+  "noResults": "No matching rooms found. Try changing filters!",
+  "ownerLabel": "Owner:",
+  "maxLabel": "Max {{count}}",
+  "login": "Login",
+  "rooms": {
+    "areaUnit": "m²"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "hero": {
+    "area": "Khu vực",
+    "provincePlaceholder": "Tỉnh/Thành phố...",
+    "priceRange": "Khoảng giá (VNĐ)",
+    "from": "Từ",
+    "to": "Đến",
+    "maxPeople": "Số người",
+    "maxPeoplePlaceholder": "Số người tối đa...",
+    "reset": "Đặt lại"
+  },
+  "noResults": "Không tìm thấy phòng phù hợp. Bạn hãy thử đổi bộ lọc nhé!",
+  "ownerLabel": "Chủ:",
+  "maxLabel": "Tối đa {{count}}",
+  "login": "Đăng nhập",
+  "rooms": {
+    "areaUnit": "m²"
+  },
+  "back": "Quay lại",
+  "notFound": "Không tìm thấy thông tin phòng.",
+  "descriptionTitle": "Mô tả phòng",
+  "contactOwner": "Liên hệ chủ nhà: {{name}}",
+  "area": "Diện tích",
+  "capacity": "Sức chứa",
+  "floor": "Tầng",
+  "perMonth": "/tháng"
+}

@@ -1,4 +1,10 @@
-import React, { useState, useMemo, useEffect, useCallback } from "react";
+import React, {
+  useState,
+  useMemo,
+  useEffect,
+  useCallback,
+  useRef,
+} from "react";
 import { useForm, Controller } from "react-hook-form";
 import { format, startOfYear, endOfYear } from "date-fns";
 import { Pie, PieChart, Cell } from "recharts";
@@ -63,6 +69,10 @@ const STATUS_MAP = { 0: "Unpaid", 1: "Paid", 2: "Overdue", 3: "OverduePaid" };
 
 const DashboardTenant = () => {
   const { t } = useTranslation("repairreportrule");
+  const tRef = useRef(t);
+  useEffect(() => {
+    tRef.current = t;
+  }, [t]);
   const [reportData, setReportData] = useState(null);
   const [page, setPage] = useState(0);
   const [pageSize] = useState(10);
@@ -112,10 +122,10 @@ const DashboardTenant = () => {
         }).unwrap();
         setReportData(result);
       } catch (error) {
-        toast.error(t("ErrorLoadData"));
+        toast.error(tRef.current("ErrorLoadData"));
       }
     },
-    [billableContracts, triggerReport, pageSize, t]
+    [billableContracts, triggerReport, pageSize]
   );
 
   const onSubmit = (data) => {
