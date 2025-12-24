@@ -155,5 +155,6 @@
   "OccupancyRate": "Occupancy Rate",
   "NoContract": "No contract",
   "NoRepairRequests": "No Repair Requests",
-  "Repair": "Repair"
+  "Repair": "Repair",
+  "ExportAllInvoice": "Export All"
 }

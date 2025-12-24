@@ -66,6 +66,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { formatDateTime } from "@/lib/format/dateTimeFormat";
 import { useTranslation } from "react-i18next";
+import { useExportAllInvoicesMutation } from "../../store/serviceApi";
 
 // Định nghĩa Chart Config và Colors
 const PIE_COLORS = ["#10b981", "#f59e0b", "#ef4444", "#3b82f6"]; // Paid, Unpaid, Overdue, Paid Overdue
@@ -121,7 +122,7 @@ const InvoiceReportTab = () => {
   // 🚨 HÀM XỬ LÝ TẢI FILE
   const handleExportInvoice = async (invoice) => {
     setExportingId(invoice.id);
-    const toastId = toast.loading(`${t("ExportInvice")} ...`);
+    const toastId = toast.loading(`${t("ExportInvoice")} ...`);
     try {
       const blobResult = await triggerExport(invoice.id).unwrap();
 
@@ -146,6 +147,47 @@ const InvoiceReportTab = () => {
       toast.error(t("ExportFailed"), { id: toastId });
     } finally {
       setExportingId(null);
+    }
+  };
+
+  // xuất tất cả invoice
+  const [triggerExportAll, { isLoading: isExportingAll }] =
+    useExportAllInvoicesMutation();
+  const handleExportAllInvoices = async () => {
+    const toastId = toast.loading(`${t("ExportInvoice")}...`);
+    try {
+      // Chuẩn bị payload đúng format yêu cầu
+      const payload = {
+        houseIds: currentFilters.houseIds,
+        roomIds: currentFilters.roomIds || [],
+        year: currentFilters.year || null,
+        month: currentFilters.month || null,
+        fromDate: format(currentFilters.fromDate, "yyyy-MM-dd"),
+        toDate: format(currentFilters.toDate, "yyyy-MM-dd"),
+        status: currentFilters.status,
+        paymentMethod: currentFilters.paymentMethod,
+      };
+
+      const blobResult = await triggerExportAll(payload).unwrap();
+
+      const excelBlob = new Blob([blobResult], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+
+      const downloadUrl = window.URL.createObjectURL(excelBlob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = `DanhSach_HoaDon_${format(new Date(), "ddMMyyyy")}.xlsx`;
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      window.URL.revokeObjectURL(downloadUrl);
+      toast.success(t("ExportSuccess"), { id: toastId });
+    } catch (error) {
+      console.error("Export All Error:", error);
+      toast.error(t("ExportFailed"), { id: toastId });
     }
   };
   // excel
@@ -280,8 +322,15 @@ const InvoiceReportTab = () => {
   useEffect(() => {
     if (ownerId && allHouses.length > 0 && !reportData) {
       const defaultHouseIds = allHouses.map((h) => h.id);
+
+      // 1. Cập nhật giá trị vào Form của react-hook-form để hiển thị dấu check
+      setValue("houseIds", defaultHouseIds);
+
+      // 2. Tạo filter để gọi API
       const initialFilters = { ...defaultFilter, houseIds: defaultHouseIds };
       setCurrentFilters(initialFilters);
+
+      // 3. Gọi API lấy dữ liệu lần đầu
       fetchReport(initialFilters, 0, pageSize);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -704,7 +753,23 @@ const InvoiceReportTab = () => {
           </div>
 
           {/* --------------------- 3. DANH SÁCH HÓA ĐƠN (BẢNG) --------------------- */}
-          <h3 className="text-xl font-bold pt-4">{t("ListInvoice")}</h3>
+          <div className="flex justify-between items-center">
+            <h3 className="text-xl font-bold pt-4">{t("ListInvoice")}</h3>
+            {reportData?.invoices?.content?.length > 0 && (
+              <Button
+                variant="outline"
+                onClick={handleExportAllInvoices}
+                disabled={isExportingAll}
+              >
+                {isExportingAll ? (
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                ) : (
+                  <FileText className="h-4 w-4 mr-2" />
+                )}
+                {t("ExportAllInvoice")}
+              </Button>
+            )}
+          </div>
           <Table>
             <TableHeader>
               <TableRow>

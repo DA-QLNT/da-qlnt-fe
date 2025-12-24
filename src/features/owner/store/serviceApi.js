@@ -261,6 +261,31 @@ export const serviceApi = baseApi.injectEndpoints({
       transformResponse: (response) => response.result,
       providesTags: ["Invoice"],
     }),
+    // Thêm vào trong endpoints của serviceApi
+    exportAllInvoices: builder.mutation({
+      query: (filters) => ({
+        url: `/excel/invoices`,
+        method: "POST",
+        data: filters, // Body gửi đi
+        headers: {
+          Accept:
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        },
+        responseHandler: async (response) => {
+          if (response.ok) return response.blob();
+          try {
+            const error = await response.json();
+            return Promise.reject(error);
+          } catch (e) {
+            const errorText = await response.text();
+            return Promise.reject({
+              message: errorText || "Lỗi khi xuất file.",
+            });
+          }
+        },
+        cache: "no-cache",
+      }),
+    }),
   }),
 });
 export const {
@@ -282,4 +307,5 @@ export const {
   useExportInvoiceExcelMutation,
   useExportInvoiceByInvoiceIdMutation,
   useSearchInvoicesQuery,
+  useExportAllInvoicesMutation,
 } = serviceApi;

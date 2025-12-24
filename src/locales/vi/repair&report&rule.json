@@ -160,5 +160,6 @@
   "OccupancyRate": "Tỉ lệ lấp đầy",
   "NoContract": "Không có hợp đồng",
   "NoRepairRequests": "Không có yêu cầu sửa chữa",
-  "Repair": "Sửa chữa"
+  "Repair": "Sửa chữa",
+  "ExportAllInvoice": "Xuất tất cả hóa đơn"
 }
