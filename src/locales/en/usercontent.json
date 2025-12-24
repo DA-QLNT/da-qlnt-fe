@@ -48,11 +48,11 @@
   "Update": "Update",
   "Verified": "Verified",
   "ViewProfile": "View Profile",
-  "IdPerson": "ID Card",
   "CreateFail": "Create failed",
   "UpdateFail": "Update failed",
   "CreateTenant": "Create tenant",
   "CreateNewTenant": "Create New Tenant",
   "Email": "Email",
-  "SelectDate": "Select date"
+  "SelectDate": "Select date",
+  "SearchTenantPlaceholder": "Tìm kiếm khách thuê"
 }
