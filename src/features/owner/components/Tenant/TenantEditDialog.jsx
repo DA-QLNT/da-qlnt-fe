@@ -33,7 +33,7 @@ const TenantEditDialog = ({ tenantId, open, onOpenChange }) => {
   }
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent>
+      <DialogContent className={"h-[80%] overflow-auto"}>
         <DialogHeader>
           <DialogTitle>{t("EditUser")}</DialogTitle>
         </DialogHeader>

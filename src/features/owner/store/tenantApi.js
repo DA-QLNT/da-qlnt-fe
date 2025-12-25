@@ -21,14 +21,23 @@ export const tenantApi = baseApi.injectEndpoints({
       ],
     }),
     getTenantByOwnerIdAndSearch: builder.query({
-      query: ({ ownerId, page = 0, size = 20, tenantName = "" }) => ({
-        url: `/tenants/getAllByOwnerId`,
+      query: ({
+        ownerId,
+        page = 0,
+        size = 100,
+        houseId,
+        roomId,
+        keyword = "",
+      }) => ({
+        url: `/tenants/getAllByOwnerId-v2`,
         method: "GET",
         params: {
           page,
           size,
           ownerId,
-          tenantName, // Gửi keyword tìm kiếm lên server
+          houseId: houseId === "all" ? undefined : houseId,
+          roomId: roomId === "all" ? undefined : roomId,
+          keyword, // Search theo tên hoặc thông tin khác
         },
       }),
       transformResponse: (response) => response.result,

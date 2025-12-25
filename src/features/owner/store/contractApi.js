@@ -190,7 +190,7 @@ export const contractApi = baseApi.injectEndpoints({
     extendContract: builder.mutation({
       query: ({ contractId, data }) => ({
         url: `/contracts/${contractId}/extend`,
-        method: "PUT",
+        method: "POST",
         data: data,
       }),
       // Invalidates Contract chi tiết để cập nhật ngày và giá mới

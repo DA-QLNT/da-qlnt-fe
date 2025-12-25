@@ -160,14 +160,14 @@ const InvoiceOwner = () => {
       />
 
       <header className="flex justify-between items-center border-b pb-4">
-        <h1 className="text-2xl font-bold flex items-center gap-3 text-slate-800">
+        <h1 className="text-2xl font-bold flex items-center gap-3 text-muted-foregroundd">
           <ReceiptText className="text-primary h-7 w-7" />{" "}
           {t("InvoiceManagement")}
         </h1>
       </header>
 
       {/* 🚨 BỘ LỌC HÀNG NGANG */}
-      <Card className="shadow-sm border-purple-100 bg-white">
+      <Card className="shadow-sm border-purple-100 bg-sidebar">
         <CardContent className="p-4 space-y-4 relative">
           <div className="grid grid-cols-2 md:grid-cols-4  lg:grid-cols-6 gap-2">
             {/* House - BẮT BUỘC */}
@@ -365,15 +365,15 @@ const InvoiceOwner = () => {
       </Card>
 
       {/* 🚨 PHẦN HIỂN THỊ DỮ LIỆU */}
-      <div className="w-full p-1 rounded-lg border border-purple-300 shadow-md bg-white min-h-[300px] flex flex-col">
+      <div className="w-full p-1 rounded-lg border border-purple-300 shadow-md bg-sidebar min-h-[300px] flex flex-col">
         {!filters.houseId ? (
           // 🚨 3. THÔNG BÁO KHI CHƯA CHỌN NHÀ
           <div className="flex-1 flex flex-col items-center justify-center text-slate-400 space-y-4 py-20">
-            <div className="p-4 bg-amber-50 rounded-full text-amber-500">
+            <div className="p-4 bg-amber-100 rounded-full text-amber-500">
               <AlertCircle size={48} />
             </div>
             <div className="text-center">
-              <h3 className="text-lg font-bold text-slate-700">
+              <h3 className="text-lg font-bold text-muted-foreground">
                 {t("HouseSelectionRequired")}
               </h3>
               <p className="text-sm">{t("PleaseSelectAHouseToViewInvoices")}</p>

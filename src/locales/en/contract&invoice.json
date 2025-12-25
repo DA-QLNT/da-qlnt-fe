@@ -11,6 +11,8 @@
   "ContractManagement": "Contract management",
   "Duration": "Duration",
   "PickDate": "PickDate",
+  "Terminate": "Terminate",
+
   "ActivatedSuccess": "Activated successfully",
   "Activate": "Activate",
   "ActivateFailed": "Activation failed",

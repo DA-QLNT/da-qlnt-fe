@@ -34,7 +34,7 @@ export function NavUser({ user }) {
   const handleLogout = () => {
     dispatch(logout());
 
-    navigate("/auth", replace);
+    navigate("/", replace);
   };
   return (
     <SidebarMenu>

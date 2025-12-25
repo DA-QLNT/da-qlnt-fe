@@ -123,11 +123,11 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
                       {formatDateTime(invoice.dueDate).formattedDate}
                     </span>
                   </div>
-                  {invoice.status === 1 && (
+                  {(invoice.status === 1 || invoice.status === 3) && (
                     <>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">
-                          {t("Payment") + " " + t("Date")}
+                          {t("PaymentDate")}
                         </span>
                         <span className="font-medium text-green-600">
                           {formatDateTime(invoice.paymentDate).formattedDate}
@@ -155,7 +155,7 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
-                  Chi tiết dịch vụ sử dụng
+                  {t("UsageServiceDetail")}
                 </CardTitle>
               </CardHeader>
               <CardContent>
