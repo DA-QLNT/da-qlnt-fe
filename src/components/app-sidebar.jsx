@@ -18,6 +18,7 @@ import {
   IconHammer,
   IconReceiptDollar,
   IconLayoutDashboard,
+  IconLoadBalancer,
 } from "@tabler/icons-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -171,14 +172,15 @@ export function AppSidebar({ ...props }) {
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
-              className="data-[slot=sidebar-menu-button]:p-1.5! h-12"
+              className="data-[slot=sidebar-menu-button]:p-1.5! h-fit"
             >
-              <a href="#">
-                <img
+              <a href="#" ks>
+                {/* <img
                   className="h-12 w-12 object-contain rounded-full shadow-sm"
                   src="https://lh3.google.com/u/0/d/1eZej4XXjDg5r68w5kpQZCZ__CBVV-9Tf=w1864-h889-iv1?auditContext=prefetch"
                   alt="logo"
-                />
+                /> */}
+                <IconLoadBalancer className="text-2xl text-purple-400" />
                 <GradientText className="text-xl ml-4">HĐN</GradientText>
               </a>
             </SidebarMenuButton>

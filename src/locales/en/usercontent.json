@@ -54,5 +54,12 @@
   "CreateNewTenant": "Create New Tenant",
   "Email": "Email",
   "SelectDate": "Select date",
-  "SearchTenantPlaceholder": "Tìm kiếm khách thuê"
+  "SearchTenantPlaceholder": "Tìm kiếm khách thuê",
+  "House": "House",
+  "SelectHouse": "Select House",
+  "AllHouse": "All Houses",
+  "Room": "Room",
+  "SelectRoom": "Select Room",
+  "AllRoom": "All Rooms",
+  "NoTenantFound": "No tenants found"
 }
