@@ -131,7 +131,7 @@
   "Later": "Để sau",
   "GoToVNPay": "Đến trang VNPay",
 
-  "InvoiceDetail": "Chi tiết Hóa đơn {{code}}",
+  "InvoiceDetail": "Chi tiết Hóa đơn",
   "GeneralInfo": "Thông tin chung",
   "TimeAndPayment": "Thời gian & Thanh toán",
   "ServiceDetails": "Chi tiết dịch vụ sử dụng",
@@ -151,5 +151,12 @@
   "SearchRoomCode": "Tìm kiếm theo mã phòng",
   "ProcessingPaymentResult": "Đang xử lý kết quả thanh toán",
   "PaymentSuccess": "Thanh toán thành công",
-  "PaymentFailed": "Thanh toán thất bại"
+  "PaymentFailed": "Thanh toán thất bại",
+  "UsageServiceDetail": "Chi tiết dịch vụ sử dụng",
+  "Date": "Ngày",
+  "PaymentDate": "Ngày thanh toán",
+  "ExportExcel": "Xuất Excel",
+  "CreateNewInvoice": "Tạo Hóa Đơn Mới",
+  "InvoicePaymentDetails": "Chi tiết thanh toán",
+  "ErrorLoadingInvoiceDetail": "Lỗi tải chi tiết hóa đơn"
 }

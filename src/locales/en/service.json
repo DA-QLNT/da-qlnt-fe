@@ -131,7 +131,7 @@
   "Later": "Later",
   "GoToVNPay": "Go to VNPay",
 
-  "InvoiceDetail": "Invoice detail {{code}}",
+  "InvoiceDetail": "Invoice detail",
   "GeneralInfo": "General information",
   "TimeAndPayment": "Time & Payment",
   "ServiceDetails": "Service usage details",
@@ -151,5 +151,12 @@
   "SearchRoomCode": "Search room code",
   "ProcessingPaymentResult": "Processing payment",
   "PaymentSuccess": "Payment Successfully",
-  "PaymentFailed": "Payment Failed"
+  "PaymentFailed": "Payment Failed",
+  "UsageServiceDetail": "Usage Service Detail",
+  "Date": "Date",
+  "PaymentDate": "Payment Date",
+  "ExportExcel": "Export Excel",
+  "CreateNewInvoice": "Create New Invoice",
+  "InvoicePaymentDetails": "Invoice Payment Details",
+  "ErrorLoadingInvoiceDetail": "Error loading invoice details"
 }
