@@ -265,13 +265,13 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
         ) : null}
 
         <DialogFooter>
-          <Button
+          {/* <Button
             onClick={handleOpenCreateConfirm}
             variant="default"
             disabled={invoice?.status !== 0}
           >
             {t("CreateNewInvoice")}
-          </Button>
+          </Button> */}
           <Button variant="secondary" onClick={() => onOpenChange(false)}>
             {t("Close")}
           </Button>

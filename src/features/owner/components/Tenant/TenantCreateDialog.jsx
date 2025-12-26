@@ -12,7 +12,7 @@ import { useTranslation } from "react-i18next";
 
 export default function TenantCreateDialog({ onTenantCreated }) {
   const [open, setOpen] = React.useState(false);
-  const { t } = useTranslation("contract&invoice");
+  const { t } = useTranslation("contractinvoice");
 
   const handleFormSubmitSuccess = (newTenant) => {
     onTenantCreated(newTenant);

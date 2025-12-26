@@ -163,5 +163,8 @@
   "NoRepairRequests": "Không có yêu cầu sửa chữa",
   "Repair": "Sửa chữa",
   "ExportAllInvoice": "Xuất tất cả hóa đơn",
-  "ViewDetail": "Chi tiết hóa đơn"
+  "ViewDetail": "Chi tiết hóa đơn",
+  "EditRule": "Sửa quy định",
+  "DeleteRuleConfirm": "Xác nhận xóa quy định",
+  "ConfirmDelete": "Xác nhận xóa"
 }

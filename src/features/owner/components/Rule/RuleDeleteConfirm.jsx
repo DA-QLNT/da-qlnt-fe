@@ -28,7 +28,7 @@ const RuleDeleteConfirm = ({ ruleId, open, onOpenChange, onDeleted }) => {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[420px]">
+      <DialogContent className="">
         <DialogHeader>
           <DialogTitle>{t("ConfirmDelete")}</DialogTitle>
         </DialogHeader>

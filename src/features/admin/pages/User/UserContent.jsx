@@ -38,11 +38,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   ArrowDownZA,
+  ArrowLeft,
   ArrowUpAz,
+  ChevronLeft,
+  ChevronRight,
   Ellipsis,
   EllipsisVertical,
   Eye,
   FunnelPlus,
+  MoveLeft,
   Plus,
   Search,
   SquarePen,
@@ -67,6 +71,8 @@ import {
 } from "@/components/ui/select";
 import UserEditDialog from "../../components/users/UserEditDialog";
 import { sortUserOptions } from "@/assets/sort/sortUser";
+import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip";
+import { TooltipContent } from "@/components/ui/tooltip";
 
 const UserContent = () => {
   const { t } = useTranslation("usercontent");
@@ -360,7 +366,8 @@ const UserContent = () => {
                     <RoleBadgeGroup roles={user.roles} />
                   </TableCell>
                   <TableCell className="text-right">
-                    <div className="flex justify-end">
+                    {/* mobile */}
+                    <div className="flex justify-self-end lg:hidden ">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <div>
@@ -403,12 +410,39 @@ const UserContent = () => {
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </div>
+                    {/* mobile */}
+                    {/* dessktop */}
+                    <div className="gap-2 hidden lg:flex lg:items-center lg:justify-self-end">
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <SquarePen onClick={() => openEditDialog(user.id)} />
+                        </TooltipTrigger>
+                        <TooltipContent>{t("Edit")}</TooltipContent>
+                      </Tooltip>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Eye onClick={() => openViewDialog(user.id)} />
+                        </TooltipTrigger>
+                        <TooltipContent>{t("ViewProfile")}</TooltipContent>
+                      </Tooltip>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Trash
+                            onClick={() => openDeleteDialog(user)}
+                            className="text-red-500"
+                          />
+                        </TooltipTrigger>
+                        <TooltipContent>{t("Delete")}</TooltipContent>
+                      </Tooltip>
+                    </div>
+
+                    {/* dessktop */}
                   </TableCell>
                 </TableRow>
               ))}
               {usersToDisplay.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={4}>No user</TableCell>
+                  <TableCell colSpan={4}>{t("NoUser")}</TableCell>
                 </TableRow>
               )}
             </TableBody>
@@ -417,10 +451,13 @@ const UserContent = () => {
         <Pagination className={"mt-4"}>
           <PaginationContent>
             <PaginationItem>
-              <PaginationPrevious
+              <Button
+                variant={"outline"}
                 disabled={page === 0}
                 onClick={() => setPage((p) => Math.max(0, p - 1))}
-              />
+              >
+                <ChevronLeft className="size-6" />
+              </Button>
             </PaginationItem>
             {[...Array(totalPages)].map((_, i) => (
               <PaginationItem key={i}>
@@ -433,10 +470,13 @@ const UserContent = () => {
               </PaginationItem>
             ))}
             <PaginationItem>
-              <PaginationNext
+              <Button
+                variant={"outline"}
                 disabled={page === totalPages - 1}
                 onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
-              />
+              >
+                <ChevronRight className="size-6" />
+              </Button>
             </PaginationItem>
           </PaginationContent>
         </Pagination>

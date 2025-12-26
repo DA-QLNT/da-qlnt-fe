@@ -158,5 +158,8 @@
   "NoRepairRequests": "No Repair Requests",
   "Repair": "Repair",
   "ExportAllInvoice": "Export All",
-  "ViewDetail": "View detail"
+  "ViewDetail": "View detail",
+  "EditRule": "Edit rule",
+  "DeleteRuleConfirm": "Confirm delete rule",
+  "ConfirmDelete": "Confirm delete"
 }
