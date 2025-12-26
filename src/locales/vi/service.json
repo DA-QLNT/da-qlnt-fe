@@ -162,5 +162,6 @@
   "ConfirmSuccess": "Xác nhận thành công",
   "ConfirmFailed": "Xác nhận thất bại",
   "FirstIndex": "Chỉ số đầu",
-  "LastIndex": "Chỉ số cuối"
+  "LastIndex": "Chỉ số cuối",
+  "ExportAllInvoices": "Xuất tất cả hóa đơn"
 }

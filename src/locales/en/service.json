@@ -162,5 +162,6 @@
   "ConfirmSuccess": "Confirm Success",
   "ConfirmFailed": "Confirm Failed",
   "FirstIndex": "First Index",
-  "LastIndex": "Last Index"
+  "LastIndex": "Last Index",
+  "ExportAllInvoices": "Export All Invoices"
 }
