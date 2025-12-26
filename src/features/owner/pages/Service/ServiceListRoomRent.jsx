@@ -336,7 +336,7 @@ const ServiceListRoomRent = () => {
                               {t("ViewInvoice")}
                             </DropdownMenuItem>
                             <DropdownMenuItem
-                              className="text-primary font-medium"
+                              className="font-medium"
                               onClick={() =>
                                 handleOpenCreateInvoiceConfirm(room.id)
                               }
