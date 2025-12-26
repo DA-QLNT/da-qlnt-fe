@@ -279,21 +279,12 @@ const RoleContent = () => {
                         {formatDateTime(role.createdAt).formattedDate}
                       </TableCell>
                       <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm">
-                              <EllipsisVertical size={20} />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="w-48">
-                            <DropdownMenuItem
-                              onClick={() => openDeleteRoleDialog(role)}
-                            >
-                              <Trash className="mr-2 h-4 w-4" />
-                              {t("DeleteRole")}
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                        <Button
+                          onClick={() => openDeleteRoleDialog(role)}
+                          variant={"destructive"}
+                        >
+                          {t("Delete")}
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -351,7 +342,7 @@ const RoleContent = () => {
             <div className="flex gap-4">
               <Input
                 type={"text"}
-                placeholder="search name"
+                placeholder={t("Search")}
                 className={"w-2/3 md:max-w-[300px]"}
                 value={searchTerm}
                 onChange={handleSearchChange}
@@ -417,28 +408,19 @@ const RoleContent = () => {
                         <RoleBadgeGroup roles={user.roles} />
                       </TableCell>
                       <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm">
-                              <EllipsisVertical size={20} />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="w-48">
-                            <DropdownMenuItem
-                              onClick={() => openAssignDialog(user)}
-                            >
-                              <UserPen className="mr-2 h-4 w-4" />
-                              {t("AssignRole")}
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                        <Button
+                          onClick={() => openAssignDialog(user)}
+                          variant={"outline"}
+                        >
+                          {t("AssignRole")}
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))}
                   {usersToDisplay.length === 0 && !isLoadingUsers && (
                     <TableRow>
                       <TableCell colSpan={4} className="text-center">
-                        No user created
+                        {t("NoUser")}
                       </TableCell>
                     </TableRow>
                   )}
@@ -446,8 +428,8 @@ const RoleContent = () => {
               </Table>
             </div>
             {isLoadingUsers && (
-              <div className="text-center p-4 size-10 ">
-                <Spinner />
+              <div className="mx-auto ">
+                <Spinner className={"text-primary size-16"} />
               </div>
             )}
             {/* Pagination cho User List */}

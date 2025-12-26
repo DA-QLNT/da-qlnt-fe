@@ -18,6 +18,8 @@
   "Filter": "Lọc",
   "No": "STT",
   "NoSort": "Không lọc",
+  "NoUser": "Không có người dùng",
+
   "Name (A-Z)": "Tên (A-Z)",
   "Name (Z-A)": "Tên (Z-A)",
   "Role (A-Z)": "Vai trò (A-Z)",
@@ -28,6 +30,7 @@
   "RoleList": "Danh sách Vai trò",
   "RoleFormat": "Tên vai trò cần phải là duy nhất",
   "SearchName": "Tìm kiếm tên",
+  "Search": "Tìm kiếm",
   "SortBy": "Lọc theo",
 
   "TotalUser": "Tất cả người dùng",

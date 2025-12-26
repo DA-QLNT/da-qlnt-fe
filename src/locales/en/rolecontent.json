@@ -1,7 +1,7 @@
 {
   "Actions": "Actions",
   "AddNewRole": "Add new role",
-  "AssignRole": "Assign role to",
+  "AssignRole": "Assign role",
   "AssignRoleSuccess": "Assign role successfully",
   "AssignRoleToUser": "Assign Role",
   "Cancel": "Cancel",
@@ -23,11 +23,14 @@
 
   "No": "No",
   "NoSort": "No Sort",
+  "NoUser": "No user",
   "Role": "Role",
   "RoleName": "RoleName",
   "RoleList": "Roles List",
   "RoleFormat": "Role name need to be unique",
   "SearchName": "Search name",
+  "Search": "Search",
+
   "SortBy": "Sort by",
   "TotalUser": "Total user",
   "User": "User"

@@ -290,7 +290,7 @@ const UserContent = () => {
             <Input
               className="pl-9"
               type="text"
-              placeholder="Search"
+              placeholder={t("Search")}
               value={searchTerm}
               onChange={handleSearchChange}
             />

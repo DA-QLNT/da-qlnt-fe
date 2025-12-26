@@ -32,6 +32,7 @@ import PermissionDeleteConfirm from "../../components/permissions/PermissionDele
 import MatrixHooksWrapper from "../../components/permissions/MatrixHooksWrapper"; //  Đã sửa
 import PermissionAddOrCreateDialog from "../../components/permissions/PermissionAddOrCreateDialog";
 import { useTranslation } from "react-i18next";
+import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip";
 
 const PermissionContent = () => {
   const { t } = useTranslation("permissioncontent");
@@ -151,9 +152,7 @@ const PermissionContent = () => {
                     <TableHead>{t("No")}</TableHead>
                     <TableHead>{t("Permission")}</TableHead>
                     <TableHead>{t("CreatedAt")}</TableHead>
-                    <TableHead className="text-right w-[100px]">
-                      {t("Action")}
-                    </TableHead>
+                    <TableHead className="text-right">{t("Action")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -166,31 +165,19 @@ const PermissionContent = () => {
                       <TableCell>
                         {formatDateTime(permission.createdAt).formattedDate}
                       </TableCell>
-                      <TableCell className="text-right w-[100px]">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm">
-                              <EllipsisVertical size={20} />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="w-48">
-                            <DropdownMenuItem
-                              onClick={() =>
-                                openDeletePermissionDialog(permission)
-                              }
-                              className={"text-red-500"}
-                            >
-                              <Trash className="mr-2 h-4 w-4 text-red-500" />
-                              {t("Delete")}
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() => openEditDialog(permission)}
-                            >
-                              <SquarePen className="mr-2 h-4 w-4" />
-                              {t("Edit")}
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                      <TableCell className="text-right space-x-2">
+                        <Button
+                          variant={"outline"}
+                          onClick={() => openEditDialog(permission)}
+                        >
+                          {t("Edit")}
+                        </Button>
+                        <Button
+                          variant={"destructive"}
+                          onClick={() => openDeletePermissionDialog(permission)}
+                        >
+                          {t("Delete")}
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))}
