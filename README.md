@@ -94,8 +94,8 @@ Dự án được xây dựng với tư duy **Clean Architecture** và **Modular
 
 ## 📩 Liên hệ
 
-- **Tác giả:** [Lương Mạnh Hòa]
-- **Email:** [itlmh23@gmail.com]
+- **Tác giả:** Lương Mạnh Hòa
+- **Email:** itlmh23@gmail.com
 
 ---
 
