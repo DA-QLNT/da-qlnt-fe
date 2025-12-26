@@ -286,6 +286,20 @@ export const serviceApi = baseApi.injectEndpoints({
         cache: "no-cache",
       }),
     }),
+    // Thêm vào trong endpoints của serviceApi
+    confirmServiceUsageByRoom: builder.mutation({
+      query: ({ month, year, roomId }) => ({
+        url: `/service-usage/confirm`, // Endpoint mới theo yêu cầu của anh
+        method: "POST",
+        params: { month, year, roomId },
+      }),
+      invalidatesTags: (result, error, { roomId }) => [
+        { type: "ServiceUsage", id: roomId },
+        "ServiceUsage",
+        "Contract",
+        "Invoice",
+      ],
+    }),
   }),
 });
 export const {
@@ -308,4 +322,5 @@ export const {
   useExportInvoiceByInvoiceIdMutation,
   useSearchInvoicesQuery,
   useExportAllInvoicesMutation,
+  useConfirmServiceUsageByRoomMutation,
 } = serviceApi;

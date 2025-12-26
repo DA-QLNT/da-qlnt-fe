@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/features/auth";
 import { useTranslation } from "react-i18next";
-import { useSearchInvoicesQuery } from "../../store/serviceApi";
+import {
+  useSearchInvoicesQuery,
+  useExportAllInvoicesMutation,
+} from "../../store/serviceApi";
 import { cn } from "@/lib/utils";
+import toast from "react-hot-toast";
 import {
   Tooltip,
   TooltipContent,
@@ -149,6 +153,49 @@ const InvoiceOwner = () => {
   const handleViewDetail = (id) => {
     setSelectedInvoiceId(id);
     setIsDetailOpen(true);
+  };
+
+  const [triggerExportAll, { isLoading: isExportingAll }] =
+    useExportAllInvoicesMutation();
+
+  const handleExportAllInvoices = async () => {
+    if (!filters.houseId) {
+      toast.error(t("PleaseSelectHouse"));
+      return;
+    }
+    const toastId = toast.loading(`${t("Export")}...`);
+    try {
+      const defaultFromDate = new Date(0); // 1970-01-01
+      const defaultToDate = new Date();
+
+      const payload = {
+        houseIds: [Number(filters.houseId)],
+        roomIds: filters.roomId === "all" ? [] : [Number(filters.roomId)],
+        fromDate: format(filters.fromDate || defaultFromDate, "yyyy-MM-dd"),
+        toDate: format(filters.toDate || defaultToDate, "yyyy-MM-dd"),
+      };
+
+      const blobResult = await triggerExportAll(payload).unwrap();
+
+      const excelBlob = new Blob([blobResult], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+
+      const downloadUrl = window.URL.createObjectURL(excelBlob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = `DanhSach_HoaDon_${format(new Date(), "ddMMyyyy")}.xlsx`;
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      window.URL.revokeObjectURL(downloadUrl);
+      toast.success(t("ExportSuccess"), { id: toastId });
+    } catch (error) {
+      console.error("Export All Error:", error);
+      toast.error(t("ExportFailed"), { id: toastId });
+    }
   };
 
   return (
@@ -364,6 +411,16 @@ const InvoiceOwner = () => {
         </CardContent>
       </Card>
 
+      {invoices && (
+        <Button
+          className={"flex justify-self-end"}
+          onClick={handleExportAllInvoices}
+          disabled={isExportingAll}
+        >
+          {isExportingAll && <Spinner className="mr-2 h-4 w-4" />}
+          {t("ExportAllInvoices")}
+        </Button>
+      )}
       {/* 🚨 PHẦN HIỂN THỊ DỮ LIỆU */}
       <div className="w-full p-1 rounded-lg border border-purple-300 shadow-md bg-sidebar min-h-[300px] flex flex-col">
         {!filters.houseId ? (

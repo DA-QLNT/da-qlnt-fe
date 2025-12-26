@@ -15,5 +15,14 @@
   "login": "Login",
   "rooms": {
     "areaUnit": "m²"
-  }
+  },
+  "back": "Back",
+  "notFound": "Room information not found.",
+  "descriptionTitle": "Room Description",
+  "contactOwner": "Contact owner: {{name}}",
+  "area": "Area",
+  "capacity": "Capacity",
+  "floor": "Floor",
+  "perMonth": "/month",
+  "Intro": "We are an organization dedicated to finding solutions for your problems. Please contact us for further information via"
 }

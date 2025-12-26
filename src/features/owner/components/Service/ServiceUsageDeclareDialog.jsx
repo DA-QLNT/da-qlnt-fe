@@ -210,7 +210,8 @@ const ServiceUsageDeclareDialog = ({ open, onOpenChange, roomId }) => {
 
             {loadingContract ? (
               <div className="flex items-center justify-center h-24">
-                <Loader2 className="h-6 w-6 animate-spin mr-2" /> {t("Loading")}
+                <Loader2 className="h-6 w-6 animate-spin mr-2 text-primary" />{" "}
+                {t("Loading")}
               </div>
             ) : contractError ? (
               <div className="text-red-500">{t("ErrorLoadingData")}</div>

@@ -46,7 +46,7 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen bg-sidebar/10 pb-12 py-8 px-4 space-y-4">
-      <div className="ml-auto pb-2 mb-4 flex items-center justify-end gap-2">
+      <header className="bg-sidebar ml-auto p-2 mb-4 flex items-center justify-end gap-2 shadow-[0_0_15px_rgba(0,0,0,0.1)] dark:shadow-[0_0_15px_rgba(255,255,255,0.1)] rounded-md">
         <Button variant="ghost" asChild size="sm" className="hidden sm:flex">
           <ModeToggle />
         </Button>
@@ -64,14 +64,14 @@ const HomePage = () => {
             {t("login")}
           </NavLink>
         </Button>
-      </div>
+      </header>
       {/* 🚨 HERO SECTION & HORIZONTAL FILTER */}
       <Card className="sticky top-0 z-10 p-1 md:p-6 bg-sidebar rounded-md shadow-sm">
         <CardContent className="space-y-4 p-0">
           <div className="flex flex-col md:flex-row md:items-end gap-3 relative">
             {/* Nút reset */}
             <FilterX
-              className="absolute top-0 right-0 text-red-500"
+              className="absolute -top-4 right-0 text-red-500"
               onClick={() =>
                 setFilters({
                   page: 0,
@@ -220,12 +220,10 @@ const HomePage = () => {
       <footer className="rounded-xl w-full bg-linear-to-b from-[#F1EAFF] to-[#FFFFFF] text-gray-800">
         <div className="max-w-7xl mx-auto px-6 py-8 flex flex-col items-center">
           <p className="text-center max-w-xl text-sm font-normal leading-relaxed">
-            We are an organization dedicated to finding solutions for your
-            problems. Please contact us via{" "}
+            {t("Intro")}{" "}
             <a href="hdn@gmail.com" className="text-primary underline">
               hdn@gmail.com
-            </a>{" "}
-            for further information.
+            </a>
           </p>
         </div>
         <div className="border-t flex flex-col items-center pt-4 gap-4">

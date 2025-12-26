@@ -158,5 +158,10 @@
   "ExportExcel": "Export Excel",
   "CreateNewInvoice": "Create New Invoice",
   "InvoicePaymentDetails": "Invoice Payment Details",
-  "ErrorLoadingInvoiceDetail": "Error loading invoice details"
+  "ErrorLoadingInvoiceDetail": "Error loading invoice details",
+  "ConfirmSuccess": "Confirm Success",
+  "ConfirmFailed": "Confirm Failed",
+  "FirstIndex": "First Index",
+  "LastIndex": "Last Index",
+  "ExportAllInvoices": "Export All Invoices"
 }

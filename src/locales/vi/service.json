@@ -158,5 +158,10 @@
   "ExportExcel": "Xuất Excel",
   "CreateNewInvoice": "Tạo Hóa Đơn Mới",
   "InvoicePaymentDetails": "Chi tiết thanh toán",
-  "ErrorLoadingInvoiceDetail": "Lỗi tải chi tiết hóa đơn"
+  "ErrorLoadingInvoiceDetail": "Lỗi tải chi tiết hóa đơn",
+  "ConfirmSuccess": "Xác nhận thành công",
+  "ConfirmFailed": "Xác nhận thất bại",
+  "FirstIndex": "Chỉ số đầu",
+  "LastIndex": "Chỉ số cuối",
+  "ExportAllInvoices": "Xuất tất cả hóa đơn"
 }

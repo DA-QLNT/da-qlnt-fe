@@ -58,6 +58,7 @@ import ServiceUsageViewDialog from "../../components/Service/ServiceUsageViewDia
 import InvoiceCreateConfirmDialog from "../../components/Service/InvoiceCreateConfirmDialog";
 import InvoiceListDialog from "../../components/Service/InvoiceListDialog";
 import { Spinner } from "@/components/ui/spinner";
+import { Card, CardContent } from "@/components/ui/card";
 
 const ServiceListRoomRent = () => {
   const { t } = useTranslation("service");
@@ -180,52 +181,62 @@ const ServiceListRoomRent = () => {
       />
 
       {/* 🚨 BỘ LỌC HÀNG NGANG */}
-      <div className="flex flex-col md:flex-row gap-4 items-end bg-sidebar p-4 rounded-lg border shadow-sm">
-        <div className="flex-1 space-y-1.5">
-          <label className="text-xs font-bold text-muted-foreground uppercase flex items-center gap-1">
-            <Home size={14} /> {t("House")}
-          </label>
-          <Select value={selectedHouseId} onValueChange={setSelectedHouseId}>
-            <SelectTrigger>
-              <SelectValue placeholder={t("SelectHouse")} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t("AllHouse")}</SelectItem>
-              {allHouses.map((h) => (
-                <SelectItem key={h.id} value={h.id.toString()}>
-                  {h.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+      <Card>
+        <CardContent className={"py-0"}>
+          <div className="grid grid-cols-2 relative">
+            <Tooltip>
+              <TooltipTrigger className="gap-2 absolute -top-4 right-0">
+                <FilterX
+                  size={16}
+                  onClick={() => {
+                    setSelectedHouseId("all");
+                    setSearchKeyword("");
+                  }}
+                  className="hover:text-red-500"
+                />
+              </TooltipTrigger>
+              <TooltipContent>{t("ResetFilter")}</TooltipContent>
+            </Tooltip>
 
-        <div className="flex-1 space-y-1.5">
-          <label className="text-xs font-bold text-muted-foreground uppercase flex items-center gap-1">
-            <Search size={14} /> {t("SearchRoomCode")}
-          </label>
-          <div className="relative">
-            <Input
-              placeholder={t("EnterRoomCode")}
-              value={searchKeyword}
-              onChange={(e) => setSearchKeyword(e.target.value)}
-              className="pl-9"
-            />
-            <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+            <div className="grid-cols-1 space-y-1">
+              <label className="text-xs font-bold text-muted-foreground uppercase flex items-center gap-1">
+                <Home size={14} /> {t("House")}
+              </label>
+              <Select
+                value={selectedHouseId}
+                onValueChange={setSelectedHouseId}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder={t("SelectHouse")} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{t("AllHouse")}</SelectItem>
+                  {allHouses.map((h) => (
+                    <SelectItem key={h.id} value={h.id.toString()}>
+                      {h.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="grid-cols-1 space-y-1">
+              <label className="text-xs font-bold text-muted-foreground uppercase flex items-center gap-1">
+                <Search size={14} /> {t("SearchRoomCode")}
+              </label>
+              <div className="relative">
+                <Input
+                  placeholder={t("EnterRoomCode")}
+                  value={searchKeyword}
+                  onChange={(e) => setSearchKeyword(e.target.value)}
+                  className="pl-9"
+                />
+                <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+              </div>
+            </div>
           </div>
-        </div>
-
-        <Button
-          variant="outline"
-          onClick={() => {
-            setSelectedHouseId("all");
-            setSearchKeyword("");
-          }}
-          className="gap-2"
-        >
-          <FilterX size={16} /> {t("ResetFilter")}
-        </Button>
-      </div>
+        </CardContent>
+      </Card>
 
       {/* Header Action */}
       <div className="flex justify-between items-center">
@@ -325,7 +336,7 @@ const ServiceListRoomRent = () => {
                               {t("ViewInvoice")}
                             </DropdownMenuItem>
                             <DropdownMenuItem
-                              className="text-primary font-medium"
+                              className="font-medium"
                               onClick={() =>
                                 handleOpenCreateInvoiceConfirm(room.id)
                               }
