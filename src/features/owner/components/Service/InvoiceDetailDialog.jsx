@@ -139,7 +139,7 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
 
         {loading ? (
           <div className="text-center py-10">
-            <Loader2 className="h-8 w-8 animate-spin mx-auto" />
+            <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
           </div>
         ) : invoice ? (
           <div className="space-y-6">

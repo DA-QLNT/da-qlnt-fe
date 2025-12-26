@@ -87,7 +87,7 @@ const ServiceUsageViewDialog = ({ open, onOpenChange, roomId, roomName }) => {
         <div className="py-4">
           {isLoading ? (
             <div className="flex items-center justify-center h-32">
-              <Loader2 className="h-6 w-6 animate-spin mr-2" />
+              <Loader2 className="h-6 w-6 animate-spin mr-2 text-primary" />
               {t("Loading")}
             </div>
           ) : isError ? (

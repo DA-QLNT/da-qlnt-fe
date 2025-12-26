@@ -90,11 +90,7 @@ export default function InvoiceListDialog({ roomId, open, onOpenChange }) {
             </TableHeader>
             <TableBody>
               {isLoading || isFetching ? (
-                <TableRow>
-                  <TableCell colSpan={5} className="text-center py-8">
-                    <Spinner />
-                  </TableCell>
-                </TableRow>
+                <Spinner className={"text-primary size-10 "} />
               ) : sortedInvoices.length === 0 ? (
                 <TableRow>
                   <TableCell
