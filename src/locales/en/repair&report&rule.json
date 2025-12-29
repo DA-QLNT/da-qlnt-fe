@@ -161,5 +161,7 @@
   "ViewDetail": "View detail",
   "EditRule": "Edit rule",
   "DeleteRuleConfirm": "Confirm delete rule",
-  "ConfirmDelete": "Confirm delete"
+  "ConfirmDelete": "Confirm delete",
+  "TotalBillAmount": "Total bill amount",
+  "TotalPaid": "Total paid"
 }
