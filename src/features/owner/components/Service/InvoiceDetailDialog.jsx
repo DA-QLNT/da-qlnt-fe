@@ -31,6 +31,7 @@ import InvoiceCreateConfirmDialog from "./InvoiceCreateConfirmDialog";
 import toast from "react-hot-toast";
 import ServiceTypeBadge from "./ServiceTypeBadge";
 import { useTranslation } from "react-i18next";
+import InvoiceStatusBadge from "@/features/Tenant/components/Invoice/InvoiceStatusBadge";
 
 const INVOICE_STATUS_MAP = {
   0: "Unpaid",
@@ -170,13 +171,9 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
                         {t("Status")}
                       </TableCell>
                       <TableCell>
-                        <Badge
-                          variant={
-                            invoice.status === 1 ? "success" : "secondary"
-                          }
-                        >
+                        <InvoiceStatusBadge status={invoice.status}>
                           {t(INVOICE_STATUS_MAP[invoice.status])}
-                        </Badge>
+                        </InvoiceStatusBadge>
                       </TableCell>
                     </TableRow>
                     <TableRow>

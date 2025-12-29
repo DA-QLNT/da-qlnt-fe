@@ -66,6 +66,7 @@ import {
 import { formatCurrency } from "@/lib/format/currencyFormat";
 import { formatDateTime } from "@/lib/format/dateTimeFormat";
 import InvoiceDetailDialog from "../../components/Service/InvoiceDetailDialog";
+import InvoiceStatusBadge from "@/features/Tenant/components/Invoice/InvoiceStatusBadge";
 
 const INVOICE_STATUS_LABELS = {
   0: "Unpaid",
@@ -505,17 +506,9 @@ const InvoiceOwner = () => {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge
-                        variant={
-                          item.status === 1
-                            ? "success"
-                            : item.overdueStatus === 1
-                            ? "destructive"
-                            : "secondary"
-                        }
-                      >
+                      <InvoiceStatusBadge status={item.status}>
                         {t(INVOICE_STATUS_LABELS[item.status])}
-                      </Badge>
+                      </InvoiceStatusBadge>
                     </TableCell>
                     <TableCell className="text-right">
                       <Button

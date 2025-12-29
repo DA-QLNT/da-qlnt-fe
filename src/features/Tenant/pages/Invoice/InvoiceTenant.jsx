@@ -22,6 +22,7 @@ import { formatDateTime } from "@/lib/format/dateTimeFormat";
 import InvoiceDetailDialog from "../../components/Invoice/InvoiceDetailDialog"; // Sẽ tạo ở bước dưới
 import VNPayLinkDialog from "../../components/Invoice/VNPayLinkDialog";
 import { useTranslation } from "react-i18next";
+import InvoiceStatusBadge from "../../components/Invoice/InvoiceStatusBadge";
 
 const InvoiceTenant = () => {
   const { t } = useTranslation("service");
@@ -159,7 +160,10 @@ const InvoiceTenant = () => {
                     <TableCell className="font-semibold text-primary">
                       {formatCurrency(item.totalAmount)}
                     </TableCell>
-                    <TableCell>{getStatusBadge(item.status)}</TableCell>
+                    {/* <TableCell>{getStatusBadge(item.status)}</TableCell> */}
+                    <TableCell>
+                      <InvoiceStatusBadge status={item.status} />
+                    </TableCell>
                     <TableCell className="text-right space-x-2">
                       {item.status !== 1 && item.status !== 3 && (
                         <Button

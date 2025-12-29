@@ -24,6 +24,7 @@ import { Button } from "@/components/ui/button";
 import React, { useMemo, useState } from "react";
 import InvoiceDetailDialog from "./InvoiceDetailDialog"; //  Import Detail Dialog
 import { useTranslation } from "react-i18next";
+import InvoiceStatusBadge from "@/features/Tenant/components/Invoice/InvoiceStatusBadge";
 
 const INVOICE_STATUS_MAP = {
   0: "Unpaid",
@@ -123,17 +124,9 @@ export default function InvoiceListDialog({ roomId, open, onOpenChange }) {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge
-                        variant={
-                          invoice.status === 1
-                            ? "success"
-                            : invoice.overdueStatus === 1
-                            ? "destructive"
-                            : "secondary"
-                        }
-                      >
-                        {t(`${INVOICE_STATUS_MAP[invoice.status]}`)}
-                      </Badge>
+                      <InvoiceStatusBadge status={invoice.status}>
+                        {t(`${INVOICE_STATUS_MAP[invoice.overdueStatus]}`)}
+                      </InvoiceStatusBadge>
                     </TableCell>
                     <TableCell className="text-right">
                       <Button
