@@ -62,5 +62,10 @@
   "Room": "Room",
   "SelectRoom": "Select Room",
   "AllRoom": "All Rooms",
-  "NoTenantFound": "No tenants found"
+  "NoTenantFound": "No tenants found",
+  "AccountInformation": "Account Information",
+  "DateOfBirthLabel": "Date of Birth",
+  "IDCard": "ID Card",
+  "NotUpdated": "Not updated yet",
+  "Logout": "Logout"
 }

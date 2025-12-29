@@ -436,7 +436,7 @@ export default function ContractAddForm({
               {showSearchResults &&
                 (searchedTenant ? (
                   // Tenant ĐƯỢC TÌM THẤY
-                  <Card className="flex items-center justify-between w-80 lg:w-90 p-3 border-green-500 bg-green-50 dark:bg-green-900/10">
+                  <Card className="flex items-center justify-between w-80 lg:w-90 p-3 border-green-500 bg-sidebar">
                     <div className="flex items-center space-x-3">
                       <Avatar>
                         <AvatarImage
@@ -507,7 +507,7 @@ export default function ContractAddForm({
             {fields.map((fieldItem, index) => (
               <div
                 key={fieldItem.id}
-                className="grid grid-cols-10 gap-2 items-center bg-white dark:bg-gray-800 p-3 rounded-md border"
+                className="grid grid-cols-10 gap-2 items-center bg-sidebar p-3 rounded-md border"
               >
                 <span className="text-sm font-medium col-span-1">
                   #{index + 1}
@@ -518,7 +518,7 @@ export default function ContractAddForm({
                     value={fieldItem.fullName}
                     readOnly
                     placeholder={t("FullName")}
-                    className="bg-gray-100 dark:bg-gray-700"
+                    className="bg-input"
                   />
                   {/* Hidden fields để gửi payload */}
 
@@ -535,7 +535,7 @@ export default function ContractAddForm({
                     value={fieldItem.phoneNumber}
                     readOnly
                     placeholder={t("PhoneNumberInput")}
-                    className="bg-gray-100 dark:bg-gray-700"
+                    className=""
                   />
 
                   <input
@@ -549,7 +549,7 @@ export default function ContractAddForm({
                     value={fieldItem.email}
                     readOnly
                     placeholder={t("EmailPlaceholder")}
-                    className="bg-gray-100 dark:bg-gray-700"
+                    className=""
                   />
 
                   <input

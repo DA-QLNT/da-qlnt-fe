@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useGetCurrentTenantContractQuery } from "../../store/contractApi";
 import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,7 @@ import ContractTenantConfirmDialog from "../../components/ContractTenantConfirmD
 import ContractTenantRejectDialog from "../../components/ContractTenantRejectDialog";
 
 const ContractCurrent = () => {
+  const { t } = useTranslation("contractinvoice");
   const {
     data: contract,
     isLoading,
@@ -25,7 +27,7 @@ const ContractCurrent = () => {
   if (isError || !contract)
     return (
       <div className="text-center py-10 text-muted-foreground">
-        Anh không có hợp đồng nào đang hiệu lực.
+        {t("NoActiveContract")}
       </div>
     );
 
@@ -35,7 +37,7 @@ const ContractCurrent = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-lg font-semibold flex items-center gap-2">
-          <FileText className="h-5 w-5" /> Chi tiết hợp đồng đang thuê
+          <FileText className="h-5 w-5" /> {t("CurrentContractTitle")}
         </h2>
         {isActionRequired && (
           <div className="flex gap-2">
@@ -44,10 +46,10 @@ const ContractCurrent = () => {
               size="sm"
               onClick={() => setIsRejectOpen(true)}
             >
-              <XCircle className="w-4 h-4 mr-2" /> Từ chối
+              <XCircle className="w-4 h-4 mr-2" /> {t("Reject")}
             </Button>
             <Button size="sm" onClick={() => setIsConfirmOpen(true)}>
-              <CheckCheck className="w-4 h-4 mr-2" /> Xác nhận
+              <CheckCheck className="w-4 h-4 mr-2" /> {t("Confirm")}
             </Button>
           </div>
         )}

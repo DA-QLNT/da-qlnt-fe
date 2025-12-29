@@ -322,9 +322,7 @@ export default function ContractInforEditForm({
       <div className="space-y-4 pt-4 border-t">
         <div className="flex justify-between items-end gap-2">
           <div className="flex-1 space-y-2">
-            <FieldLabel className="font-bold">
-              Danh sách khách thuê (*)
-            </FieldLabel>
+            <FieldLabel className="font-bold">{t("TenantList")} (*)</FieldLabel>
             <div className="flex gap-2">
               <Input
                 placeholder={t("SearchByPhoneNumber")}
@@ -359,55 +357,54 @@ export default function ContractInforEditForm({
               size="sm"
               onClick={() => handleAddTenant(searchedTenant)}
             >
-              Thêm
+              {t("Add")}
             </Button>
           </Card>
         )}
 
         <div className="space-y-2">
           {tenantFields.map((field, index) => (
-            <Card
-              key={field.id}
-              className="p-3 flex items-center justify-between"
-            >
-              <div className="flex items-center gap-4">
-                <span className="text-xs text-muted-foreground">
-                  #{index + 1}
-                </span>
-                <div>
-                  <p className="text-sm font-medium">{field.fullName}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {field.phoneNumber}
-                  </p>
+            <Card key={field.id} className="px-4 py-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <span className="text-xs text-muted-foreground">
+                    #{index + 1}
+                  </span>
+                  <div>
+                    <p className="text-sm font-medium">{field.fullName}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {field.phoneNumber}
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <Button
-                  type="button"
-                  variant={
-                    watch(`tenants.${index}.representative`)
-                      ? "default"
-                      : "outline"
-                  }
-                  size="sm"
-                  onClick={() => setRepresentative(index)}
-                >
-                  <Star
-                    className={cn(
-                      "h-3 w-3 mr-1",
-                      watch(`tenants.${index}.representative`) && "fill-white"
-                    )}
-                  />
-                  {t("Representative")}
-                </Button>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => removeTenant(index)}
-                >
-                  <Trash className="h-4 w-4 text-red-500" />
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button
+                    type="button"
+                    variant={
+                      watch(`tenants.${index}.representative`)
+                        ? "default"
+                        : "outline"
+                    }
+                    size="sm"
+                    onClick={() => setRepresentative(index)}
+                  >
+                    <Star
+                      className={cn(
+                        "h-3 w-3 mr-1",
+                        watch(`tenants.${index}.representative`) && "fill-white"
+                      )}
+                    />
+                    {t("Representative")}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => removeTenant(index)}
+                  >
+                    <Trash className="h-4 w-4 text-red-500" />
+                  </Button>
+                </div>
               </div>
             </Card>
           ))}

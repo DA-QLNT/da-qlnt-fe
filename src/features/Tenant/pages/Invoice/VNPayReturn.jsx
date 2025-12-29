@@ -9,6 +9,18 @@ const VNPayReturn = () => {
   const navigate = useNavigate();
   const { t } = useTranslation("service");
 
+  const navigateToInvoices = () => {
+    const productionUrl = import.meta.env.VITE_PRODUCTION_URL;
+    const isDevelopment =
+      !productionUrl || window.location.hostname === "localhost";
+
+    if (isDevelopment) {
+      navigate("/tenant/invoices", { replace: true });
+    } else {
+      window.location.href = `${productionUrl}/tenant/invoices`;
+    }
+  };
+
   useEffect(() => {
     const responseCode = searchParams.get("vnp_ResponseCode");
 
@@ -23,11 +35,11 @@ const VNPayReturn = () => {
 
     // Luôn điều hướng về trang hóa đơn sau khi xử lý xong
     const timer = setTimeout(() => {
-      navigate("/tenant/invoices", { replace: true });
+      navigateToInvoices();
     }, 1500); // Đợi 1.5s để người dùng kịp nhìn Spinner (tùy chọn)
 
     return () => clearTimeout(timer);
-  }, [searchParams, navigate, t]);
+  }, [searchParams, t]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">

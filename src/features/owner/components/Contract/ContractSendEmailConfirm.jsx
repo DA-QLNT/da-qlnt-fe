@@ -58,12 +58,12 @@ export default function ContractSendEmailConfirm({
             {t("ConfirmSendEmailContract")}
           </AlertDialogTitle>
           <AlertDialogDescription>
-            {t("SendEmailMessage")} **{contractId}** {t("SendToPDF")}
+            {t("SendEmailMessage")} {t("SendToPDF")}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isLoading}>
-            {t("DisabledButton")}
+            {t("Cancel")}
           </AlertDialogCancel>
           <AlertDialogAction
             onClick={handleSend}

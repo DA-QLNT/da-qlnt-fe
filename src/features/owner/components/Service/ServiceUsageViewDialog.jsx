@@ -129,7 +129,7 @@ const ServiceUsageViewDialog = ({ open, onOpenChange, roomId, roomName }) => {
                           {t("Month")} {dateKey}
                         </span>
                         <div className="flex gap-2">
-                          {(isAllApproved || !isAllApproved) && (
+                          {!isAllApproved && (
                             <Button
                               size="sm"
                               className="bg-green-600 hover:bg-green-700 h-8"

@@ -23,20 +23,22 @@ export default function ContractTenantConfirmDialog({
   open,
   onOpenChange,
 }) {
-  const { t } = useTranslation("repairreportrule");
+  const { t } = useTranslation("contractinvoice");
 
   const [confirmContract, { isLoading }] = useConfirmTenantContractMutation();
   const contractId = contract?.id;
 
   const handleAction = async () => {
-    const toastId = toast.loading(`Đang xử lý xác nhận hợp đồng...`);
+    const toastId = toast.loading(t("ProcessingConfirmation"));
 
     try {
       await confirmContract(contractId).unwrap(); // Gửi contractId
-      toast.success("Xác nhận thành công!", { id: toastId });
+      toast.success(t("ConfirmationSuccess"), { id: toastId });
       onOpenChange(false);
     } catch (error) {
-      toast.error(error.data?.message || "Xác nhận thất bại.", { id: toastId });
+      toast.error(error.data?.message || t("ConfirmationFailed"), {
+        id: toastId,
+      });
     }
   };
 
@@ -48,15 +50,16 @@ export default function ContractTenantConfirmDialog({
             className={`flex items-center gap-2 text-green-600`}
           >
             <CheckCheck className="w-6 h-6" />
-            Xác nhận Hợp đồng {contractId}
+            {t("ConfirmContractTitle")} {contractId}
           </AlertDialogTitle>
           <AlertDialogDescription>
-            Anh có chắc chắn muốn xác nhận và đồng ý với các điều khoản của hợp
-            đồng này không?
+            {t("ConfirmContractQuestion")}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isLoading}>Hủy bỏ</AlertDialogCancel>
+          <AlertDialogCancel disabled={isLoading}>
+            {t("Disagree")}
+          </AlertDialogCancel>
           <AlertDialogAction
             onClick={handleAction}
             disabled={isLoading}
@@ -65,7 +68,7 @@ export default function ContractTenantConfirmDialog({
             {isLoading ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : (
-              `Đồng ý Xác nhận`
+              t("AgreeConfirm")
             )}
           </AlertDialogAction>
         </AlertDialogFooter>

@@ -62,8 +62,8 @@ const ContractOwner = () => {
   };
   if (isLoadingContract) {
     return (
-      <div className="absolute">
-        <Spinner variant="primary" className="size-20" />
+      <div className="absolute inset-0 flex text-center! items-center justify-between!">
+        <Spinner className="text-primary size-20" />
       </div>
     );
   }
@@ -82,7 +82,7 @@ const ContractOwner = () => {
             <ArrowLeft />
             {t("Back")}
           </Button>
-          <Button
+          {/* <Button
             onClick={openAddContractDialog}
             variant={"outline"}
             className={
@@ -90,7 +90,7 @@ const ContractOwner = () => {
             }
           >
             {t("Create")}
-          </Button>
+          </Button> */}
         </div>
       </div>
       <Table>
