@@ -307,7 +307,6 @@ const DashboardTenant = () => {
                       data={pieChartData}
                       dataKey="value"
                       nameKey="name"
-                      innerRadius={60}
                       strokeWidth={5}
                     >
                       {pieChartData.map((_, index) => (
