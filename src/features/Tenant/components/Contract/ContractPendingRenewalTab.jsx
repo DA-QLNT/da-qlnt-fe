@@ -23,27 +23,29 @@ const ContractPendingRenewalTab = () => {
 
   return (
     <div className="space-y-6">
-      <Alert variant="warning" className="bg-amber-50 border-amber-200">
-        <Info className="h-4 w-4 text-amber-600" />
-        <AlertTitle className="text-amber-800">
-          Hợp đồng mới/gia hạn đang chờ anh xử lý
-        </AlertTitle>
-        <AlertDescription className="text-amber-700">
-          Vui lòng kiểm tra các điều khoản bên dưới trước khi xác nhận.
-        </AlertDescription>
-        <div className="mt-4 flex gap-3">
-          <Button size="sm" onClick={() => setIsConfirmOpen(true)}>
-            Xác nhận ngay
-          </Button>
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => setIsRejectOpen(true)}
-          >
-            Từ chối
-          </Button>
-        </div>
-      </Alert>
+      {contract.status === 0 && (
+        <Alert variant="warning" className="bg-sidebar border-amber-200">
+          <Info className="h-4 w-4 text-amber-600" />
+          <AlertTitle className="text-amber-800">
+            Hợp đồng mới/gia hạn đang chờ anh xử lý
+          </AlertTitle>
+          <AlertDescription className="text-amber-700">
+            Vui lòng kiểm tra các điều khoản bên dưới trước khi xác nhận.
+          </AlertDescription>
+          <div className="mt-4 flex gap-3">
+            <Button size="sm" onClick={() => setIsConfirmOpen(true)}>
+              Xác nhận ngay
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => setIsRejectOpen(true)}
+            >
+              Từ chối
+            </Button>
+          </div>
+        </Alert>
+      )}
 
       <ContractDetailView contract={contract} />
 

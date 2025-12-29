@@ -64,5 +64,10 @@
   "Room": "Phòng",
   "SelectRoom": "Chọn phòng",
   "AllRoom": "Tất cả phòng",
-  "NoTenantFound": "Không tìm thấy khách thuê"
+  "NoTenantFound": "Không tìm thấy khách thuê",
+  "AccountInformation": "Thông tin tài khoản",
+  "DateOfBirthLabel": "Ngày sinh",
+  "IDCard": "CCCD",
+  "NotUpdated": "Chưa cập nhật",
+  "Logout": "Đăng xuất"
 }

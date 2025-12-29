@@ -73,8 +73,7 @@ export default function TenantLeaveDialog({
   };
 
   const handleSetRepresentative = async () => {
-    if (!selectedRepId)
-      return toast.error(t("PleaseSelectNewRepresentative"));
+    if (!selectedRepId) return toast.error(t("PleaseSelectNewRepresentative"));
     setIsMutating(true);
     const toastId = toast.loading(t("AssigningNewRepresentative"));
 
@@ -121,7 +120,7 @@ export default function TenantLeaveDialog({
       </AlertDialogHeader>
       <AlertDialogFooter>
         <AlertDialogCancel disabled={isMutating}>
-          {t("DisabledButton")}
+          {t("Cancel")}
         </AlertDialogCancel>
         <Button
           onClick={handleLeave}

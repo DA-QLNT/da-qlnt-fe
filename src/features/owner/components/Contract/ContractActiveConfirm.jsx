@@ -82,7 +82,7 @@ export default function ContractActivateConfirm({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isLoading}>
-            {t("DisabledButton")}
+            {t("Cancel")}
           </AlertDialogCancel>
           <AlertDialogAction
             onClick={handleActivate}

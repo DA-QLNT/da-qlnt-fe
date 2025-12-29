@@ -159,7 +159,7 @@ const ContractHistoryTab = () => {
           <DialogHeader className="p-6 pb-2 border-b bg-muted/20">
             <DialogTitle className="text-2xl flex items-center gap-2">
               <FileClock className="h-6 w-6 text-primary" />
-              Chi tiết hợp đồng #{selectedContract?.id}
+              Chi tiết hợp đồng
             </DialogTitle>
           </DialogHeader>
           <ScrollArea className="max-h-[80vh]">

@@ -30,7 +30,7 @@ export const contractApi = baseApi.injectEndpoints({
     // 3. MUTATION TỪ CHỐI HỢP ĐỒNG (Tenant Reject)
     rejectTenantContract: builder.mutation({
       query: ({ contractId, note }) => ({
-        url: `/contracts/${contractId}/reject-tenant`,
+        url: `/contracts/${contractId}/tenant/reject`,
         method: "POST",
         data: { note },
       }),

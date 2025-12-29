@@ -536,7 +536,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
             {t("TenantListInContract")} (*):
           </FieldLabel>
           <div className="flex gap-2 items-start">
-            <div className="flex-grow space-y-2">
+            <div className="grow space-y-2">
               <div className="flex gap-2 justify-end">
                 <Input
                   placeholder={t("SearchByPhoneNumber")}
@@ -560,7 +560,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
               )}
 
               {showSearchResults && foundTenant && (
-                <Card className="flex items-center justify-between w-full p-3 border-green-500 bg-green-50">
+                <Card className="flex items-center justify-between w-full p-3 border-green-500 bg-sidebar">
                   <div className="flex items-center space-x-3">
                     <Avatar>
                       <AvatarImage
@@ -601,7 +601,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
             {fields.map((fieldItem, index) => (
               <div
                 key={fieldItem.id}
-                className="grid grid-cols-10 gap-2 items-center bg-white p-2 rounded-md border shadow-sm"
+                className="grid grid-cols-10 gap-2 items-center bg-sidebar p-2 rounded-md border shadow-sm"
               >
                 <span className="text-xs font-bold col-span-1 text-center">
                   #{index + 1}

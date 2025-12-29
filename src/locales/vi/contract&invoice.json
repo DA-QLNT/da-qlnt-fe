@@ -250,5 +250,6 @@
   "TerminateSuccess": "Thanh lý thành công",
   "TerminateFailed": "Thanh lý thất bại",
   "ConfirmTerminateContract": "Xác nhận Thanh lý Hợp đồng",
-  "ConfirmTerminate": "Xác nhận Thanh lý"
+  "ConfirmTerminate": "Xác nhận Thanh lý",
+  "Searching": "Đang tìm kiếm"
 }

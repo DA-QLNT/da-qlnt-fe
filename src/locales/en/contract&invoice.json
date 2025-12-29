@@ -244,5 +244,6 @@
   "TerminateSuccess": "Terminate successfully",
   "TerminateFailed": "Terminate failed",
   "ConfirmTerminateContract": "Confirm Terminate Contract",
-  "ConfirmTerminate": "Confirm Terminate"
+  "ConfirmTerminate": "Confirm Terminate",
+  "Searching": "Searching"
 }

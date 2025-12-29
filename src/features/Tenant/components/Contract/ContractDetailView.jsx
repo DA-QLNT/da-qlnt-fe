@@ -55,7 +55,7 @@ const ContractDetailView = ({ contract }) => {
               <TableRow>
                 <TableCell className="font-medium">Giá thuê</TableCell>
                 <TableCell>
-                  {formatCurrency(contract.rent)} ({contract.paymentCycle}{" "}
+                  {formatCurrency(contract.rent)} {contract.paymentCycle}{" "}
                   Tháng/Lần
                 </TableCell>
               </TableRow>
