@@ -13,7 +13,8 @@ const ContractPendingRenewalTab = () => {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isRejectOpen, setIsRejectOpen] = useState(false);
 
-  if (isLoading) return <Spinner className="size-10 mx-auto mt-10" />;
+  if (isLoading)
+    return <Spinner className="size-10 mx-auto mt-10 text-primary" />;
   if (!contract)
     return (
       <div className="text-center py-10 text-muted-foreground">

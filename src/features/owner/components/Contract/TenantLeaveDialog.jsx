@@ -45,7 +45,7 @@ export default function TenantLeaveDialog({
     try {
       const result = await leaveTenant({
         contractId,
-        tenantId: tenant.id,
+        tenantId: tenant.tenantId,
       }).unwrap();
       const serverStatus = result.result.status;
 
