@@ -1,5 +1,6 @@
 {
   "Action": "Action",
+  "Add": "Add",
   "AllHouse": "All house",
   "AllRoom": "All room",
   "AllStatus": "AllStatus",
@@ -12,7 +13,6 @@
   "Duration": "Duration",
   "PickDate": "PickDate",
   "Terminate": "Terminate",
-
   "ActivatedSuccess": "Activated successfully",
   "Activate": "Activate",
   "ActivateFailed": "Activation failed",
@@ -203,6 +203,8 @@
   "StartDate": "Start date",
   "Status": "Status",
   "SuggestedDate": "Suggested date",
+  "SelectAll": "Select All",
+
   "TenantAlreadyAdded": "This tenant has already been added to the contract",
   "TenantConfirm": "Tenant confirmed",
   "TenantEmail": "Tenant email",

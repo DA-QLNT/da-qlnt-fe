@@ -67,7 +67,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
   const [phoneSearchTerm, setSearchPhoneNumber] = useState("");
   const debouncedSearch = useDebounce(phoneSearchTerm, 500);
 
-  //  RHF SETUP
+  // RHF SETUP
   const {
     register,
     handleSubmit,
@@ -94,6 +94,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
 
   const selectedHouseId = watch("houseId");
   const selectedRoomId = watch("roomId");
+  const selectedHouseServiceIds = watch("houseServiceIds") || [];
 
   // Data Hooks
   const { data: housesData, isLoading: loadingHouses } =
@@ -138,11 +139,37 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
     name: "tenants",
   });
 
-  useEffect(() => {
-    if (Object.keys(errors).length > 0) {
-      console.log("Form validation errors:", errors);
+  // LOGIC DỊCH VỤ (Metadata)
+  const allHouseServiceMeta = useMemo(() => {
+    return houseServices.map((hs) => ({
+      serviceId: hs.serviceId,
+      houseServiceId: hs.id,
+      name: hs.serviceName,
+      method: Number(hs.method),
+      price: hs.price,
+      unit: hs.unit,
+    }));
+  }, [houseServices]);
+
+  // 🚨 LOGIC CHỌN TẤT CẢ / BỎ CHỌN TẤT CẢ
+  const isAllServicesSelected = useMemo(() => {
+    return (
+      allHouseServiceMeta.length > 0 &&
+      selectedHouseServiceIds.length === allHouseServiceMeta.length
+    );
+  }, [allHouseServiceMeta, selectedHouseServiceIds]);
+
+  const handleToggleAllServices = (checked) => {
+    if (checked) {
+      const allSelected = allHouseServiceMeta.map((s) => ({
+        houseServiceId: s.houseServiceId,
+        serviceId: s.serviceId,
+      }));
+      setValue("houseServiceIds", allSelected);
+    } else {
+      setValue("houseServiceIds", []);
     }
-  }, [errors]);
+  };
 
   useEffect(() => {
     if (selectedRoom) {
@@ -181,22 +208,8 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
     refetchSearch();
   };
 
-  // LOGIC DỊCH VỤ (Metadata)
-  const allHouseServiceMeta = useMemo(() => {
-    return houseServices.map((hs) => ({
-      serviceId: hs.serviceId,
-      houseServiceId: hs.id,
-      name: hs.serviceName,
-      method: Number(hs.method),
-      price: hs.price,
-      unit: hs.unit,
-    }));
-  }, [houseServices]);
-
   // --- SUBMIT ---
   const onSubmit = async (data) => {
-    console.log(data, "abcd");
-
     if (data.tenants.length === 0) {
       toast.error(t("PleaseAddAtLeastOneTenant"));
       return;
@@ -217,7 +230,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
         );
 
         return {
-          serviceId: serviceMeta.serviceId,
+          serviceId: serviceMeta?.serviceId,
           houseServiceId: selectedService.houseServiceId,
         };
       })
@@ -228,10 +241,9 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
       ...formDataWithoutHouseId,
       houseServiceIds: finalHouseServiceIds,
       tenants: finalTenants,
-      startDate: format(data.startDate, "yyyy-MM-dd"),
-      endDate: format(data.endDate, "yyyy-MM-dd"),
+      startDate: format(new Date(data.startDate), "yyyy-MM-dd"),
+      endDate: format(new Date(data.endDate), "yyyy-MM-dd"),
     };
-    console.log(payload);
 
     try {
       await createContract(payload).unwrap();
@@ -240,7 +252,6 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
       onFormSubmitSuccess();
     } catch (error) {
       toast.error(error.data?.message || t("ContractCreateFailed"));
-      console.error("Contract create error:", error);
     }
   };
 
@@ -249,13 +260,11 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <input type="hidden" {...register("roomId", { valueAsNumber: true })} />
       <input type="hidden" {...register("ownerId", { valueAsNumber: true })} />
 
       <FieldGroup>
         {/* ------------------- CHỌN NHÀ & PHÒNG ------------------- */}
         <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
-          {/* HOUSE SELECT */}
           <Field>
             <FieldLabel>{t("House")} (*)</FieldLabel>
             <Controller
@@ -265,7 +274,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
                 <Select
                   onValueChange={(val) => field.onChange(Number(val))}
                   value={field.value?.toString()}
-                  disabled={isDisabled || loadingHouses}
+                  disabled={isDisabled}
                 >
                   <SelectTrigger>
                     <SelectValue
@@ -278,7 +287,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
                     <ScrollArea className="h-60">
                       {allHouses.map((house) => (
                         <SelectItem key={house.id} value={house.id.toString()}>
-                          {house.name || house.code}
+                          {house.name}
                         </SelectItem>
                       ))}
                     </ScrollArea>
@@ -289,7 +298,6 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
             <FieldError>{errors.houseId?.message}</FieldError>
           </Field>
 
-          {/* ROOM SELECT */}
           <Field>
             <FieldLabel>{t("Room")} (*)</FieldLabel>
             <Controller
@@ -299,30 +307,17 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
                 <Select
                   onValueChange={(val) => field.onChange(Number(val))}
                   value={field.value?.toString()}
-                  disabled={
-                    isDisabled ||
-                    !selectedHouseId ||
-                    loadingRooms ||
-                    roomsByHouse.length === 0
-                  }
+                  disabled={isDisabled || !selectedHouseId}
                 >
                   <SelectTrigger>
-                    <SelectValue
-                      placeholder={
-                        selectedHouseId
-                          ? loadingRooms
-                            ? t("LoadingRooms")
-                            : t("SelectRoom")
-                          : t("SelectHouseFirst")
-                      }
-                    />
+                    <SelectValue placeholder={t("SelectRoom")} />
                   </SelectTrigger>
                   <SelectContent>
                     {roomsByHouse
                       .filter((r) => r.status === 0)
                       .map((room) => (
                         <SelectItem key={room.id} value={room.id.toString()}>
-                          {room.code} ({room.area}m²)
+                          {room.code}
                         </SelectItem>
                       ))}
                   </SelectContent>
@@ -332,27 +327,26 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
             <FieldError>{errors.roomId?.message}</FieldError>
           </Field>
 
-          {/* Rent & Deposit */}
           <Field>
             <FieldLabel>{t("Rent")} (*)</FieldLabel>
             <Input
               type="number"
               {...register("rent", { valueAsNumber: true })}
-              disabled={isDisabled || !selectedRoomId}
+              disabled={isDisabled}
             />
             <FieldError>{errors.rent?.message}</FieldError>
           </Field>
+
           <Field>
             <FieldLabel>{t("Deposit")} (*)</FieldLabel>
             <Input
               type="number"
               {...register("deposit", { valueAsNumber: true })}
-              disabled={isDisabled || !selectedRoomId}
+              disabled={isDisabled}
             />
             <FieldError>{errors.deposit?.message}</FieldError>
           </Field>
 
-          {/* Start/End Date */}
           <Field>
             <FieldLabel>{t("StartDate")} (*)</FieldLabel>
             <Controller
@@ -361,14 +355,18 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
               render={({ field }) => (
                 <Popover>
                   <PopoverTrigger asChild>
-                    <Button variant={"outline"} disabled={isDisabled}>
+                    <Button
+                      variant="outline"
+                      disabled={isDisabled}
+                      className="w-full justify-start font-normal"
+                    >
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {field.value
                         ? format(new Date(field.value), "dd/MM/yyyy")
                         : t("SelectDate")}
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
+                  <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
                       mode="single"
                       selected={field.value}
@@ -381,6 +379,7 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
             />
             <FieldError>{errors.startDate?.message}</FieldError>
           </Field>
+
           <Field>
             <FieldLabel>{t("EndDate")} (*)</FieldLabel>
             <Controller
@@ -389,14 +388,18 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
               render={({ field }) => (
                 <Popover>
                   <PopoverTrigger asChild>
-                    <Button variant={"outline"} disabled={isDisabled}>
+                    <Button
+                      variant="outline"
+                      disabled={isDisabled}
+                      className="w-full justify-start font-normal"
+                    >
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {field.value
                         ? format(new Date(field.value), "dd/MM/yyyy")
                         : t("SelectDate")}
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
+                  <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
                       mode="single"
                       selected={field.value}
@@ -410,7 +413,6 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
             <FieldError>{errors.endDate?.message}</FieldError>
           </Field>
 
-          {/* Payment Cycle & Penalty */}
           <Field>
             <FieldLabel>{t("PaymentCycle")}(*)</FieldLabel>
             <Controller
@@ -420,7 +422,6 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
                 <Select
                   onValueChange={(val) => field.onChange(Number(val))}
                   value={field.value?.toString()}
-                  disabled={isDisabled}
                 >
                   <SelectTrigger>
                     <SelectValue />
@@ -435,8 +436,8 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
                 </Select>
               )}
             />
-            <FieldError>{errors.paymentCycle?.message}</FieldError>
           </Field>
+
           <Field>
             <FieldLabel>{t("PenaltyAmount")} (*)</FieldLabel>
             <Input
@@ -448,58 +449,77 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
           </Field>
         </div>
 
-        {/* ------------------- DỊCH VỤ (MULTI-SELECT CHECKBOX) ------------------- */}
+        {/* ------------------- DỊCH VỤ ------------------- */}
         <Field className="pt-4 border-t">
-          <FieldLabel>
-            {t("AppliedServices")} ({allHouseServiceMeta.length}{" "}
-            {t("AvailableServicesCount")}):
-          </FieldLabel>
+          <div className="flex items-center justify-between mb-2">
+            <FieldLabel className="mb-0">
+              {t("AppliedServices")} ({allHouseServiceMeta.length}):
+            </FieldLabel>
+
+            {allHouseServiceMeta.length > 0 && (
+              <div className="flex items-center space-x-2 bg-background px-2 py-1 rounded-md">
+                <Checkbox
+                  id="select-all-services"
+                  checked={isAllServicesSelected}
+                  onCheckedChange={handleToggleAllServices}
+                  disabled={isDisabled}
+                />
+                <label
+                  htmlFor="select-all-services"
+                  className="text-xs font-bold cursor-pointer select-none"
+                >
+                  {t("SelectAll") || "Chọn tất cả"}
+                </label>
+              </div>
+            )}
+          </div>
+
           <Controller
             name="houseServiceIds"
             control={control}
             render={({ field }) => (
               <ScrollArea className="h-60 border rounded-md p-3">
                 {loadingServices ? (
-                  <Spinner />
+                  <div className="flex justify-center py-10">
+                    <Spinner />
+                  </div>
                 ) : (
                   allHouseServiceMeta.map((service) => {
-                    const fieldIndex = field.value.findIndex(
+                    const isSelected = field.value.some(
                       (s) => s.houseServiceId === service.houseServiceId
                     );
-                    const isSelected = fieldIndex !== -1;
 
                     return (
                       <div
                         key={service.houseServiceId}
-                        className="grid grid-cols-12 items-center space-x-2 py-1"
+                        className="grid grid-cols-12 items-center space-x-2 py-1 hover:bg-sidebar rounded px-2"
                       >
                         <Checkbox
                           checked={isSelected}
                           onCheckedChange={(checked) => {
-                            let newArray;
-                            if (checked) {
-                              newArray = [
-                                ...field.value,
-                                {
-                                  houseServiceId: service.houseServiceId,
-                                  serviceId: service.serviceId,
-                                },
-                              ];
-                            } else {
-                              newArray = field.value.filter(
-                                (s) =>
-                                  s.houseServiceId !== service.houseServiceId
-                              );
-                            }
+                            const newArray = checked
+                              ? [
+                                  ...field.value,
+                                  {
+                                    houseServiceId: service.houseServiceId,
+                                    serviceId: service.serviceId,
+                                  },
+                                ]
+                              : field.value.filter(
+                                  (s) =>
+                                    s.houseServiceId !== service.houseServiceId
+                                );
                             field.onChange(newArray);
                           }}
                           className="col-span-1"
                         />
-                        <label className="col-span-4 text-sm font-medium">
+                        <label className="col-span-8 text-sm font-medium">
                           {service.name} ({formatCurrency(service.price)}/
                           {service.unit})
                         </label>
-                        <ServiceTypeBadge type={service.method} />
+                        <div className="col-span-3 flex justify-end">
+                          <ServiceTypeBadge type={service.method} />
+                        </div>
                       </div>
                     );
                   })
@@ -510,13 +530,11 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
           <FieldError>{errors.houseServiceIds?.message}</FieldError>
         </Field>
 
-        {/* ------------------- KHÁCH THUÊ (DYNAMIC ARRAY) ------------------- */}
+        {/* ------------------- KHÁCH THUÊ ------------------- */}
         <Field className="pt-4 border-t space-y-3">
           <FieldLabel className="font-bold">
             {t("TenantListInContract")} (*):
           </FieldLabel>
-
-          {/* ============= PHẦN TÌM KIẾM/NÚT TẠO MỚI ============= */}
           <div className="flex gap-2 items-start">
             <div className="flex-grow space-y-2">
               <div className="flex gap-2 justify-end">
@@ -525,167 +543,92 @@ export default function ContractAddForm({ onFormSubmitSuccess }) {
                   value={phoneSearchTerm}
                   onChange={(e) => setSearchPhoneNumber(e.target.value)}
                   disabled={isDisabled}
-                  className="w-50 lg:w-80"
+                  className="w-full max-w-sm"
                 />
                 <Button
                   type="button"
                   size="icon"
                   onClick={refetchSearch}
-                  disabled={isDisabled || phoneSearchTerm.length < 5}
+                  disabled={phoneSearchTerm.length < 5}
                 >
                   <Search className="h-4 w-4" />
                 </Button>
               </div>
 
-              {/* HIỂN THỊ KẾT QUẢ TÌM KIẾM */}
-              {isSearching && debouncedSearch.length >= 5 && (
-                <div className="flex items-center text-sm">
-                  <Loader2 className="h-4 w-4 animate-spin mr-2" />{" "}
-                  {t("SearchingTenantLoading")}...
-                </div>
+              {isSearching && (
+                <div className="text-xs italic">{t("Searching")}...</div>
               )}
 
-              {showSearchResults &&
-                (foundTenant ? (
-                  <Card className="flex items-center justify-between w-80 lg:w-90 p-3 border-green-500 bg-green-50 dark:bg-green-900/10">
-                    <div className="flex items-center space-x-3">
-                      <Avatar>
-                        <AvatarImage
-                          src={foundTenant.avatarUrl || "/userDefault.png"}
-                        />
-                        <AvatarFallback>
-                          <User className="h-4 w-4" />
-                        </AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <p className="font-semibold">{foundTenant.fullName}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {foundTenant.phoneNumber} | {foundTenant.email}
-                        </p>
-                      </div>
+              {showSearchResults && foundTenant && (
+                <Card className="flex items-center justify-between w-full p-3 border-green-500 bg-green-50">
+                  <div className="flex items-center space-x-3">
+                    <Avatar>
+                      <AvatarImage
+                        src={foundTenant.avatarUrl || "/userDefault.png"}
+                      />
+                    </Avatar>
+                    <div>
+                      <p className="text-sm font-bold">
+                        {foundTenant.fullName}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {foundTenant.phoneNumber}
+                      </p>
                     </div>
-                    <Button
-                      type="button"
-                      size="sm"
-                      onClick={() => handleAddTenantToContract(foundTenant)}
-                      disabled={isDisabled || isAlreadyAdded(foundTenant.id)}
-                    >
-                      {isAlreadyAdded(foundTenant.id) ? (
-                        <CheckCircle className="h-4 w-4 mr-2" />
-                      ) : (
-                        <UserPlus className="h-4 w-4 mr-2" />
-                      )}
-                      {isAlreadyAdded(foundTenant.id)
-                        ? t("Already Added")
-                        : t("AddToContract")}
-                    </Button>
-                  </Card>
-                ) : (
-                  <Card className="p-3 border-red-500 bg-red-50 dark:bg-red-900/10">
-                    <p className="font-medium text-sm">
-                      {t("TenantNotFoundWithPhone")} *{debouncedSearch}*.{" "}
-                      {t("PleaseCreateNewTenant")}
-                    </p>
-                  </Card>
-                ))}
-
-              {/* THÔNG BÁO KHI SĐT CHƯA ĐỦ DÀI */}
-              {phoneSearchTerm.length > 0 && phoneSearchTerm.length < 5 && (
-                <p className="text-sm text-yellow-600">
-                  {t("Enter5DigitsToSearch")}
-                </p>
+                  </div>
+                  <Button
+                    type="button"
+                    size="sm"
+                    onClick={() => handleAddTenantToContract(foundTenant)}
+                    disabled={isAlreadyAdded(foundTenant.id)}
+                  >
+                    {isAlreadyAdded(foundTenant.id) ? (
+                      <CheckCircle className="h-4 w-4 mr-2" />
+                    ) : (
+                      <UserPlus className="h-4 w-4 mr-2" />
+                    )}
+                    {isAlreadyAdded(foundTenant.id)
+                      ? t("Added")
+                      : t("AddToContract")}
+                  </Button>
+                </Card>
               )}
             </div>
-
-            {/* NÚT TẠO TENANT MỚI (Mở Dialog) */}
             <TenantCreateDialog onTenantCreated={handleAddTenantToContract} />
           </div>
 
-          {/* ============= DANH SÁCH TENANT ĐÃ THÊM ============= */}
           <div className="space-y-2 pt-2">
-            <h4 className="font-semibold text-sm">
-              {t("TenantsInContract")} ({fields.length}):
-            </h4>
-
             {fields.map((fieldItem, index) => (
               <div
                 key={fieldItem.id}
-                className="grid grid-cols-10 gap-2 items-center bg-white dark:bg-gray-800 p-3 rounded-md border"
+                className="grid grid-cols-10 gap-2 items-center bg-white p-2 rounded-md border shadow-sm"
               >
-                <span className="text-sm font-medium col-span-1">
+                <span className="text-xs font-bold col-span-1 text-center">
                   #{index + 1}
                 </span>
-
-                {/* Full Name (Readonly) */}
-                <Field className="col-span-3">
-                  <Input
-                    value={fieldItem.fullName}
-                    readOnly
-                    placeholder={t("FullName")}
-                    className="bg-gray-100 dark:bg-gray-700"
-                  />
-                  <input type="hidden" {...register(`tenants.${index}.id`)} />
-                  <input
-                    type="hidden"
-                    {...register(`tenants.${index}.fullName`)}
-                  />
-                </Field>
-
-                {/* Phone Number (Readonly) */}
-                <Field className="col-span-3">
-                  <Input
-                    value={fieldItem.phoneNumber}
-                    readOnly
-                    placeholder={t("PhoneNumberInput")}
-                    className="bg-gray-100 dark:bg-gray-700"
-                  />
-                  <input
-                    type="hidden"
-                    {...register(`tenants.${index}.phoneNumber`)}
-                  />
-                </Field>
-
-                {/* Email (Readonly) */}
-                <Field className="col-span-2">
-                  <Input
-                    value={fieldItem.email}
-                    readOnly
-                    placeholder={t("EmailPlaceholder")}
-                    className="bg-gray-100 dark:bg-gray-700"
-                  />
-                  <input
-                    type="hidden"
-                    {...register(`tenants.${index}.email`)}
-                  />
-                </Field>
-
-                {/* Remove Button */}
+                <div className="col-span-4 text-sm font-medium">
+                  {fieldItem.fullName}
+                </div>
+                <div className="col-span-4 text-sm text-muted-foreground">
+                  {fieldItem.phoneNumber}
+                </div>
                 <div className="col-span-1 flex justify-end">
                   <Button
                     type="button"
                     size="icon"
                     variant="ghost"
                     onClick={() => remove(index)}
-                    disabled={isDisabled}
                   >
-                    <Trash className="h-8 w-8 text-red-500" />
+                    <Trash className="h-4 w-4 text-red-500" />
                   </Button>
                 </div>
               </div>
             ))}
           </div>
-
-          {fields.length === 0 && (
-            <p className="text-sm text-muted-foreground italic">
-              {t("PleaseAddTenant")}
-            </p>
-          )}
-
           <FieldError>{errors.tenants?.message}</FieldError>
         </Field>
       </FieldGroup>
 
-      {/* ------------------- SUBMIT ------------------- */}
       <div className="mt-6 flex justify-end">
         <Button
           type="submit"
