@@ -27,14 +27,14 @@ export default function VNPayLinkDialog({ paymentUrl, open, onOpenChange }) {
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <CreditCard className="text-blue-600" /> {t("ReadyToPay")}
+            <CreditCard className="text-primary" /> {t("ReadyToPay")}
           </DialogTitle>
           <DialogDescription>{t("PaymentLinkCreated")}</DialogDescription>
         </DialogHeader>
 
         <div className="flex flex-col items-center justify-center py-6 space-y-4">
-          <div className="p-4 bg-blue-50 rounded-full">
-            <CreditCard className="h-12 w-12 text-blue-500 animate-pulse" />
+          <div className="p-4 bg-background rounded-full">
+            <CreditCard className="h-12 w-12 text-primary animate-pulse" />
           </div>
           <p className="text-center text-sm text-muted-foreground">
             {t("PleaseProceedToVNPay")}

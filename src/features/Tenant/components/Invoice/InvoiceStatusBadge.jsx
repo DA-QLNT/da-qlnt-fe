@@ -25,7 +25,7 @@ const InvoiceStatusBadge = ({ status }) => {
       );
     case 3:
       return (
-        <Badge variant="secondary" className="border-none">
+        <Badge variant="outline" className="text-green-800">
           {t("OverduePaid")}
         </Badge>
       );
