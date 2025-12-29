@@ -43,7 +43,7 @@ import RepairTenant from "./features/Tenant/pages/Repair/RepairTenant";
 import RepairOwner from "./features/owner/pages/Repair/RepairOwner";
 import RepairByHouse from "./features/owner/pages/Repair/RepairByHouse";
 import ContractHistoryTenant from "./features/Tenant/pages/Contract/ContractHistoryTenant";
-import ContractPendingRenewal from "./features/Tenant/pages/Contract/ContractPendingRenewal";
+// import ContractPendingRenewal from "./features/Tenant/pages/Contract/ContractPendingRenewal";
 import RoomDetailPublic from "./pages/RoomDetailPublic";
 import ContractSearchOwner from "./features/owner/pages/Contract/ContractSearchOwner";
 import InvoiceOwner from "./features/owner/pages/Invoice/InvoiceOwner";
@@ -168,10 +168,10 @@ function App() {
                 path="contracts/history"
                 element={<ContractHistoryTenant />}
               /> */}
-              <Route
+              {/* <Route
                 path="contracts/pending-renewal"
                 element={<ContractPendingRenewal />}
-              />
+              /> */}
 
               {/* Contract */}
               <Route path="repairs" element={<RepairTenant />} />

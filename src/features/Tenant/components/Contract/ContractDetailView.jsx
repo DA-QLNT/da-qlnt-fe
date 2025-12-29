@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -15,6 +16,7 @@ import ContractStatusBadge from "../../../owner/components/Contract/ContractStat
 import ServiceTypeBadge from "../../../owner/components/Service/ServiceTypeBadge";
 
 const ContractDetailView = ({ contract }) => {
+  const { t } = useTranslation("contractinvoice");
   if (!contract) return null;
 
   return (
@@ -23,48 +25,52 @@ const ContractDetailView = ({ contract }) => {
       <Card>
         <CardHeader>
           <CardTitle className="text-xl flex items-center gap-2">
-            <Info className="h-5 w-5" /> Điều khoản
+            <Info className="h-5 w-5" /> {t("ContractTerms")}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
             <TableBody>
               <TableRow>
-                <TableCell className="w-1/3 font-medium">Trạng thái</TableCell>
+                <TableCell className="w-1/3 font-medium">
+                  {t("Status")}
+                </TableCell>
                 <TableCell>
                   <ContractStatusBadge contractStatus={contract.status} />
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell className="font-medium">Nhà / Phòng</TableCell>
+                <TableCell className="font-medium">{t("HouseRoom")}</TableCell>
                 <TableCell>
                   {contract.roomName} ({contract.houseName})
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell className="font-medium">Chủ trọ</TableCell>
+                <TableCell className="font-medium">{t("Owner")}</TableCell>
                 <TableCell>{contract.ownerName}</TableCell>
               </TableRow>
               <TableRow>
-                <TableCell className="font-medium">Thời hạn</TableCell>
+                <TableCell className="font-medium">{t("Duration")}</TableCell>
                 <TableCell>
                   {formatDateTime(contract.startDate).formattedDate} -{" "}
                   {formatDateTime(contract.endDate).formattedDate}
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell className="font-medium">Giá thuê</TableCell>
+                <TableCell className="font-medium">{t("RentPrice")}</TableCell>
                 <TableCell>
                   {formatCurrency(contract.rent)} {contract.paymentCycle}{" "}
                   Tháng/Lần
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell className="font-medium">Tiền cọc</TableCell>
+                <TableCell className="font-medium">{t("Deposit")}</TableCell>
                 <TableCell>{formatCurrency(contract.deposit)}</TableCell>
               </TableRow>
               <TableRow>
-                <TableCell className="font-medium">Phạt vi phạm</TableCell>
+                <TableCell className="font-medium">
+                  {t("PenaltyViolation")}
+                </TableCell>
                 <TableCell>{formatCurrency(contract.penaltyAmount)}</TableCell>
               </TableRow>
             </TableBody>
@@ -76,16 +82,16 @@ const ContractDetailView = ({ contract }) => {
       <Card>
         <CardHeader>
           <CardTitle className="text-xl flex items-center gap-2">
-            Dịch vụ áp dụng
+            {t("AppliedServicesList")}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Dịch vụ</TableHead>
-                <TableHead>Giá/ĐV</TableHead>
-                <TableHead>Cách tính</TableHead>
+                <TableHead>{t("Service")}</TableHead>
+                <TableHead>{t("PricePerUnit")}</TableHead>
+                <TableHead>{t("CalculationMethod")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -107,16 +113,16 @@ const ContractDetailView = ({ contract }) => {
       <Card>
         <CardHeader>
           <CardTitle className="text-xl flex items-center gap-2">
-            <User className="h-5 w-5" /> Khách thuê phòng
+            <User className="h-5 w-5" /> {t("TenantsInContract")}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Họ Tên</TableHead>
-                <TableHead>SĐT</TableHead>
-                <TableHead>Vai trò</TableHead>
+                <TableHead>{t("FullName")}</TableHead>
+                <TableHead>{t("PhoneNumber")}</TableHead>
+                <TableHead>{t("Role")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -125,7 +131,7 @@ const ContractDetailView = ({ contract }) => {
                   <TableCell>{tenant.fullName}</TableCell>
                   <TableCell>{tenant.phoneNumber}</TableCell>
                   <TableCell>
-                    {tenant.representative ? "✅ Đại diện" : "-"}
+                    {tenant.representative ? `✅ ${t("Representative")}` : "-"}
                   </TableCell>
                 </TableRow>
               ))}

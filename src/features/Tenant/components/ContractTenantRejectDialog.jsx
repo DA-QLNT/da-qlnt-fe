@@ -21,6 +21,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { XCircle, Loader2, Save } from "lucide-react";
 import toast from "react-hot-toast";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { useRejectTenantContractMutation } from "../store/contractApi";
 
 // Schema chỉ cần trường note
@@ -33,31 +34,35 @@ export default function ContractTenantRejectDialog({
   open,
   onOpenChange,
 }) {
+  const { t } = useTranslation("contractinvoice");
   const [rejectContract, { isLoading }] = useRejectTenantContractMutation();
+
+  // Update schema with translated error message
+  const RejectSchemaWithTranslation = z.object({
+    note: z.string().min(10, t("ReasonMinLength")),
+  });
 
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
   } = useForm({
-    resolver: zodResolver(RejectSchema),
+    resolver: zodResolver(RejectSchemaWithTranslation),
     defaultValues: { note: "" },
   });
 
   const handleReject = async (data) => {
-    const toastId = toast.loading(
-      `Đang xử lý từ chối hợp đồng ${contractId}...`
-    );
+    const toastId = toast.loading(t("ProcessingRejection"));
 
     try {
       //  GỌI MUTATION VỚI BODY CHỨA NOTE
       await rejectContract({ contractId, note: data.note }).unwrap();
-      toast.success("Đã từ chối hợp đồng. Chủ trọ đã nhận được thông báo.", {
+      toast.success(t("RejectionSuccess"), {
         id: toastId,
       });
       onOpenChange(false);
     } catch (error) {
-      toast.error(error.data?.message || "Từ chối thất bại.", { id: toastId });
+      toast.error(error.data?.message || t("RejectionFailed"), { id: toastId });
     }
   };
 
@@ -67,17 +72,15 @@ export default function ContractTenantRejectDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-red-600">
             <XCircle className="w-6 h-6" />
-            Từ Chối Hợp Đồng {contractId}
+            {t("RejectContractTitle")} {contractId}
           </DialogTitle>
-          <DialogDescription>
-            Vui lòng ghi rõ lý do từ chối để Chủ trọ có thể xem xét.
-          </DialogDescription>
+          <DialogDescription>{t("PleaseSpecifyReason")}</DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(handleReject)} className="space-y-4">
           <FieldGroup>
             <Field>
-              <FieldLabel htmlFor="note">Lý do Từ chối (*)</FieldLabel>
+              <FieldLabel htmlFor="note">{t("ReasonForRejection")}</FieldLabel>
               <Textarea {...register("note")} disabled={isLoading} rows={3} />
               <FieldError>{errors.note?.message}</FieldError>
             </Field>
@@ -89,7 +92,7 @@ export default function ContractTenantRejectDialog({
               onClick={() => onOpenChange(false)}
               disabled={isLoading}
             >
-              Hủy
+              {t("Cancel")}
             </Button>
             <Button
               type="submit"
@@ -99,7 +102,7 @@ export default function ContractTenantRejectDialog({
               {isLoading ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               ) : (
-                "Gửi Từ Chối"
+                t("SendRejection")
               )}
             </Button>
           </DialogFooter>

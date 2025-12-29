@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useGetTenantContractHistoryQuery } from "../../store/contractApi";
 import { Spinner } from "@/components/ui/spinner";
 import {
@@ -25,6 +26,7 @@ import ContractDetailView from "./ContractDetailView";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 const ContractHistoryTab = () => {
+  const { t } = useTranslation("contractinvoice");
   const [page, setPage] = useState(0);
   const [selectedContract, setSelectedContract] = useState(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
@@ -57,18 +59,18 @@ const ContractHistoryTab = () => {
         <CardHeader>
           <CardTitle className="text-xl flex items-center gap-2">
             <FileClock className="h-5 w-5 text-muted-foreground" />
-            Lịch sử các hợp đồng trước đây
+            {t("ContractHistoryTitle")}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Nhà / Phòng</TableHead>
-                <TableHead>Thời hạn</TableHead>
-                <TableHead>Giá thuê</TableHead>
-                <TableHead>Trạng thái</TableHead>
-                <TableHead className="text-right">Thao tác</TableHead>
+                <TableHead>{t("HouseRoom")}</TableHead>
+                <TableHead>{t("Duration")}</TableHead>
+                <TableHead>{t("RentPrice")}</TableHead>
+                <TableHead>{t("Status")}</TableHead>
+                <TableHead className="text-right">{t("Action")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -78,7 +80,7 @@ const ContractHistoryTab = () => {
                     colSpan={5}
                     className="text-center py-10 text-muted-foreground"
                   >
-                    Anh chưa có lịch sử hợp đồng nào trước đây.
+                    {t("NoContractHistory")}
                   </TableCell>
                 </TableRow>
               ) : (
@@ -113,7 +115,7 @@ const ContractHistoryTab = () => {
                         onClick={() => handleOpenDetail(item)}
                         className="hover:text-primary"
                       >
-                        <Eye className="size-4 mr-2" /> Chi tiết
+                        <Eye className="size-4 mr-2" /> {t("ViewDetails")}
                       </Button>
                     </TableCell>
                   </TableRow>
@@ -126,7 +128,7 @@ const ContractHistoryTab = () => {
           {totalPages > 1 && (
             <div className="flex items-center justify-end space-x-4 py-4 border-t mt-4">
               <span className="text-sm text-muted-foreground">
-                Trang {page + 1} / {totalPages}
+                {t("PageInfo")} {page + 1} / {totalPages}
               </span>
               <div className="flex items-center gap-1">
                 <Button
@@ -135,6 +137,7 @@ const ContractHistoryTab = () => {
                   className="h-8 w-8"
                   onClick={() => setPage((p) => Math.max(0, p - 1))}
                   disabled={page === 0}
+                  title={t("PreviousPage")}
                 >
                   <ChevronLeft className="size-4" />
                 </Button>
@@ -144,6 +147,7 @@ const ContractHistoryTab = () => {
                   className="h-8 w-8"
                   onClick={() => setPage((p) => p + 1)}
                   disabled={page >= totalPages - 1}
+                  title={t("NextPage")}
                 >
                   <ChevronRight className="size-4" />
                 </Button>
@@ -159,7 +163,7 @@ const ContractHistoryTab = () => {
           <DialogHeader className="p-6 pb-2 border-b bg-muted/20">
             <DialogTitle className="text-2xl flex items-center gap-2">
               <FileClock className="h-6 w-6 text-primary" />
-              Chi tiết hợp đồng
+              {t("ContractDetailHistory")}
             </DialogTitle>
           </DialogHeader>
           <ScrollArea className="max-h-[80vh]">
@@ -169,7 +173,7 @@ const ContractHistoryTab = () => {
           </ScrollArea>
           <div className="p-4 border-t bg-muted/10 flex justify-end">
             <Button variant="secondary" onClick={() => setIsDetailOpen(false)}>
-              Đóng
+              {t("Close")}
             </Button>
           </div>
         </DialogContent>

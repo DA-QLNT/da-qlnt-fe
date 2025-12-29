@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useGetPendingRenewalContractQuery } from "../../store/contractApi";
 import { Spinner } from "@/components/ui/spinner";
 import ContractDetailView from "./ContractDetailView";
@@ -9,6 +10,7 @@ import ContractTenantConfirmDialog from "../../components/ContractTenantConfirmD
 import ContractTenantRejectDialog from "../../components/ContractTenantRejectDialog";
 
 const ContractPendingRenewalTab = () => {
+  const { t } = useTranslation("contractinvoice");
   const { data: contract, isLoading } = useGetPendingRenewalContractQuery();
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isRejectOpen, setIsRejectOpen] = useState(false);
@@ -18,7 +20,7 @@ const ContractPendingRenewalTab = () => {
   if (!contract)
     return (
       <div className="text-center py-10 text-muted-foreground">
-        Không có hợp đồng nào đang chờ gia hạn hoặc xác nhận mới.
+        {t("NoContractPendingRenewal")}
       </div>
     );
 
@@ -28,21 +30,21 @@ const ContractPendingRenewalTab = () => {
         <Alert variant="warning" className="bg-sidebar border-amber-200">
           <Info className="h-4 w-4 text-amber-600" />
           <AlertTitle className="text-amber-800">
-            Hợp đồng mới/gia hạn đang chờ anh xử lý
+            {t("NewContractAwaitingConfirmation")}
           </AlertTitle>
           <AlertDescription className="text-amber-700">
-            Vui lòng kiểm tra các điều khoản bên dưới trước khi xác nhận.
+            {t("PleaseCheckTermsBeforeConfirm")}
           </AlertDescription>
           <div className="mt-4 flex gap-3">
             <Button size="sm" onClick={() => setIsConfirmOpen(true)}>
-              Xác nhận ngay
+              {t("ConfirmImmediately")}
             </Button>
             <Button
               size="sm"
               variant="outline"
               onClick={() => setIsRejectOpen(true)}
             >
-              Từ chối
+              {t("Reject")}
             </Button>
           </div>
         </Alert>
