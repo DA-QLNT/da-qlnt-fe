@@ -169,5 +169,6 @@
   "ConfirmDelete": "Xác nhận xóa",
   "TotalBillAmount": "Tổng số tiền hóa đơn",
   "TotalPaid": "Tổng số tiền đã thanh toán",
-  "TenantDashboard": "Thống kê"
+  "TenantDashboard": "Thống kê",
+  "ViewRule": "Xem quy định"
 }

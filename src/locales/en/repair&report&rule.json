@@ -164,5 +164,6 @@
   "ConfirmDelete": "Confirm delete",
   "TotalBillAmount": "Total bill amount",
   "TotalPaid": "Total paid",
-  "TenantDashboard": "Tenant Dashboard"
+  "TenantDashboard": "Tenant Dashboard",
+  "ViewRule": "View rule"
 }
