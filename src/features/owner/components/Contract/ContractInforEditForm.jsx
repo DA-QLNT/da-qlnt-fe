@@ -116,6 +116,14 @@ export default function ContractInforEditForm({
     remove: removeTenant,
   } = useFieldArray({ control, name: "tenants" });
 
+  // Watch tenants to validate representative and existence
+  const watchedTenants = watch("tenants") || [];
+  const hasTenants =
+    (watchedTenants && watchedTenants.length > 0) || tenantFields.length > 0;
+  const hasRepresentative = (watchedTenants || []).some(
+    (t) => t && t.representative
+  );
+
   // 3. Logic tìm kiếm Tenant (Giống Form Add)
   const [searchPhone, setSearchPhone] = useState("");
   const debouncedSearch = useDebounce(searchPhone, 500);
@@ -408,13 +416,24 @@ export default function ContractInforEditForm({
               </div>
             </Card>
           ))}
+          {/* Validation messages */}
+          {!hasTenants && (
+            <span className="text-sm text-red-500">
+              {t("AtLeastOneTenant")}
+            </span>
+          )}
+          {hasTenants && !hasRepresentative && (
+            <div className="text-sm text-red-500">
+              {t("NeedToChooseOneRepresentative")}
+            </div>
+          )}
         </div>
       </div>
 
       <div className="flex justify-end gap-3 pt-4 border-t">
         <Button
           type="submit"
-          disabled={isSubmitting}
+          disabled={isSubmitting || !hasTenants || !hasRepresentative}
           className="w-full sm:w-auto"
         >
           {isSubmitting ? (

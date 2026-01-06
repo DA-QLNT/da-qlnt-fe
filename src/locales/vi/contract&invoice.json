@@ -277,7 +277,6 @@
   "PleaseSpecifyReason": "Vui lòng ghi rõ lý do từ chối để Chủ trọ có thể xem xét.",
   "ReasonForRejection": "Lý do Từ chối (*)",
   "ReasonMinLength": "Vui lòng ghi rõ lý do từ chối (ít nhất 10 ký tự).",
-  "Cancel": "Hủy",
   "SendRejection": "Gửi Từ Chối",
   "ProcessingRejection": "Đang xử lý từ chối hợp đồng...",
   "RejectionSuccess": "Đã từ chối hợp đồng. Chủ trọ đã nhận được thông báo.",
@@ -293,5 +292,7 @@
   "ContractManagementDescription": "Xem hợp đồng hiện tại, lịch sử và các yêu cầu gia hạn từ chủ trọ.",
   "ActiveTab": "Hiệu lực",
   "PendingConfirmationTab": "Chờ xác nhận",
-  "HistoryTab": "Lịch sử"
+  "HistoryTab": "Lịch sử",
+  "AtLeastOneTenant": "Cần ít nhất một khách thuê",
+  "NeedToChooseOneRepresentative": "Cần chọn một đại diện"
 }

@@ -287,5 +287,7 @@
   "ContractManagementDescription": "View current contract, history and renewal requests from the owner.",
   "ActiveTab": "Active",
   "PendingConfirmationTab": "Pending Confirmation",
-  "HistoryTab": "History"
+  "HistoryTab": "History",
+  "AtLeastOneTenant": "At least one tenant is required",
+  "NeedToChooseOneRepresentative": "Need to choose one representative"
 }
