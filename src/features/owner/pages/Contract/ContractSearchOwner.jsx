@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/features/auth";
 import { useTranslation } from "react-i18next";
-import { NavLink, useNavigate } from "react-router-dom";
+import {
+  NavLink,
+  useNavigate,
+  useLocation,
+  useSearchParams,
+} from "react-router-dom";
 import { useSearchContractsQuery } from "../../store/contractApi";
 import { useGetHousesByOwnerIdQuery } from "../../store/houseApi";
 import { useGetRoomsByHouseIdQuery } from "../../store/roomApi";
@@ -68,17 +73,25 @@ const ContractSearchOwner = () => {
   const { t } = useTranslation("contractinvoice");
   const { userId: ownerId } = useAuth();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
 
-  // 🚨 STATE BỘ LỌC
-  const [filters, setFilters] = useState({
-    houseId: "all",
-    roomId: "all",
-    status: "all",
-    keyword: "",
-    fromDate: undefined,
-    toDate: undefined,
-    page: 0,
-    size: 10,
+  // 🚨 STATE BỘ LỌC (initialize from URL search params so filters persist)
+  const [filters, setFilters] = useState(() => {
+    return {
+      houseId: searchParams.get("houseId") || "all",
+      roomId: searchParams.get("roomId") || "all",
+      status: searchParams.get("status") || "all",
+      keyword: searchParams.get("keyword") || "",
+      fromDate: searchParams.get("fromDate")
+        ? new Date(searchParams.get("fromDate"))
+        : undefined,
+      toDate: searchParams.get("toDate")
+        ? new Date(searchParams.get("toDate"))
+        : undefined,
+      page: Number(searchParams.get("page")) || 0,
+      size: Number(searchParams.get("size")) || 10,
+    };
   });
 
   const debouncedKeyword = useDebounce(filters.keyword, 500);
@@ -130,6 +143,35 @@ const ContractSearchOwner = () => {
     debouncedKeyword,
     filters.fromDate,
     filters.toDate,
+  ]);
+
+  // Sync filters to URL search params so state persists across navigation
+  useEffect(() => {
+    const params = {};
+    if (filters.houseId && filters.houseId !== "all")
+      params.houseId = filters.houseId;
+    if (filters.roomId && filters.roomId !== "all")
+      params.roomId = filters.roomId;
+    if (filters.status && filters.status !== "all")
+      params.status = filters.status;
+    if (filters.keyword) params.keyword = filters.keyword;
+    if (filters.fromDate)
+      params.fromDate = format(filters.fromDate, "yyyy-MM-dd");
+    if (filters.toDate) params.toDate = format(filters.toDate, "yyyy-MM-dd");
+    if (filters.page) params.page = String(filters.page);
+    if (filters.size && filters.size !== 10) params.size = String(filters.size);
+
+    setSearchParams(params, { replace: true });
+  }, [
+    filters.houseId,
+    filters.roomId,
+    filters.status,
+    filters.keyword,
+    filters.fromDate,
+    filters.toDate,
+    filters.page,
+    filters.size,
+    setSearchParams,
   ]);
 
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
@@ -427,7 +469,7 @@ const ContractSearchOwner = () => {
                       asChild
                     >
                       <NavLink
-                        to={`/owner/contracts/houses/${item.houseId}/contracts/${item.id}`}
+                        to={`/owner/contracts/houses/${item.houseId}/contracts/${item.id}${location.search}`}
                       >
                         <Eye className="h-4 w-4 mr-1" /> {t("View")}
                       </NavLink>

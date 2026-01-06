@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import {
   useExportContractWordMutation,
   useGetContractByIdQuery,
@@ -48,8 +48,9 @@ const ContractDetailByHouse = () => {
   const { houseId, contractId } = useParams();
   const id = Number(contractId);
   const navigate = useNavigate();
+  const location = useLocation();
   const backToContractList = () => {
-    navigate(`/owner/contracts`);
+    navigate(`/owner/contracts${location.search}`);
   };
   const {
     data: contract,
