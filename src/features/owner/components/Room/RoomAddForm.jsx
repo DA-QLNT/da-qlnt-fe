@@ -31,7 +31,7 @@ export default function RoomAddForm({ houseId, onFormSubmitSuccess }) {
     area: 0,
     description: "",
     avatar: undefined,
-    images: undefined,
+    gallery: undefined,
   };
 
   const {
@@ -59,7 +59,7 @@ export default function RoomAddForm({ houseId, onFormSubmitSuccess }) {
 
     // 1. Append Fields CƠ BẢN
     Object.keys(data).forEach((key) => {
-      if (key !== "avatar" && key !== "images") {
+      if (key !== "avatar" && key !== "gallery") {
         const value = data[key];
         if (value !== null && value !== undefined) {
           formData.append(key, value);
@@ -80,10 +80,10 @@ export default function RoomAddForm({ houseId, onFormSubmitSuccess }) {
       return;
     }
 
-    const imageFiles = data.images;
+    const imageFiles = data.gallery;
     if (imageFiles && imageFiles.length > 0) {
       Array.from(imageFiles).forEach((file) => {
-        formData.append("images", file);
+        formData.append("gallery", file);
       });
     }
 
@@ -184,10 +184,10 @@ export default function RoomAddForm({ houseId, onFormSubmitSuccess }) {
             <Input
               type={"file"}
               multiple
-              {...register("images")}
+              {...register("gallery")}
               disabled={isDisabled}
             />
-            <FieldError>{errors.images?.message}</FieldError>
+            <FieldError>{errors.gallery?.message}</FieldError>
           </Field>
         </div>
       </FieldGroup>

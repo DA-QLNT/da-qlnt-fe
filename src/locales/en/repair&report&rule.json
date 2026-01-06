@@ -163,5 +163,6 @@
   "DeleteRuleConfirm": "Confirm delete rule",
   "ConfirmDelete": "Confirm delete",
   "TotalBillAmount": "Total bill amount",
-  "TotalPaid": "Total paid"
+  "TotalPaid": "Total paid",
+  "TenantDashboard": "Tenant Dashboard"
 }

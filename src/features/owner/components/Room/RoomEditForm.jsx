@@ -36,7 +36,7 @@ const RoomEditForm = ({ initialData, onFormSubmitSuccess }) => {
       area: initialData.area || 0,
       description: initialData.description || "",
       avatar: undefined,
-      images: undefined,
+      gallery: undefined,
     }),
     [initialData]
   );
@@ -52,7 +52,7 @@ const RoomEditForm = ({ initialData, onFormSubmitSuccess }) => {
     defaultValues: defaultValues,
   });
   const selectedAvatar = watch("avatar");
-  const selectedImages = watch("images");
+  const selectedImages = watch("gallery");
 
   const avatarPreview = selectedAvatar?.[0]
     ? URL.createObjectURL(selectedAvatar[0])
@@ -62,14 +62,14 @@ const RoomEditForm = ({ initialData, onFormSubmitSuccess }) => {
     const newFiles = selectedImages
       ? Array.from(selectedImages).map((file) => URL.createObjectURL(file))
       : [];
-    const existingImages = initialData.images || [];
+    const existingImages = initialData.gallery || [];
     return newFiles.length > 0 ? newFiles : existingImages;
-  }, [selectedImages, initialData.images]);
+  }, [selectedImages, initialData.gallery]);
 
   const onSubmit = async (data) => {
     const formData = new FormData();
     Object.keys(data).forEach((key) => {
-      if (key !== "avatar" && key !== "images" && key !== "status") {
+      if (key !== "avatar" && key !== "gallery" && key !== "status") {
         let value = data[key];
 
         if (["area", "rent"].includes(key)) {
@@ -85,10 +85,10 @@ const RoomEditForm = ({ initialData, onFormSubmitSuccess }) => {
     if (avatarFile) {
       formData.append("avatar", avatarFile);
     }
-    const imageFiles = data.images;
+    const imageFiles = data.gallery;
     if (imageFiles && imageFiles.length > 0) {
       Array.from(imageFiles).forEach((file) => {
-        formData.append("images", file);
+        formData.append("gallery", file);
       });
     }
     try {
@@ -172,10 +172,10 @@ const RoomEditForm = ({ initialData, onFormSubmitSuccess }) => {
             <Input
               type="file"
               multiple
-              {...register("images")}
+              {...register("gallery")}
               disabled={isMutating}
             />
-            <FieldError>{errors.images?.message}</FieldError>
+            <FieldError>{errors.gallery?.message}</FieldError>
           </Field>
         </div>
       </FieldGroup>

@@ -24,5 +24,8 @@
   "capacity": "Capacity",
   "floor": "Floor",
   "perMonth": "/month",
-  "Intro": "We are an organization dedicated to finding solutions for your problems. Please contact us for further information via"
+  "Intro": "We are an organization dedicated to finding solutions for your problems. Please contact us for further information via",
+  "Light": "Light",
+  "Dark": "Dark",
+  "System": "System"
 }

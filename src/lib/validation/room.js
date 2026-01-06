@@ -21,7 +21,6 @@ const optionalSingleFileSchema = z
 const optionalMultipleFilesSchema = z.instanceof(FileList).optional();
 // --------------------
 
-
 //  ADD==============
 export const RoomAddSchema = z.object({
   code: requiredString,
@@ -53,5 +52,5 @@ export const RoomEditSchema = z.object({
 
   // File upload
   avatar: optionalSingleFileSchema,
-  images: optionalMultipleFilesSchema,
+  gallery: optionalMultipleFilesSchema,
 });
