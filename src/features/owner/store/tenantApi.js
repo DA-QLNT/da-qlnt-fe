@@ -34,7 +34,7 @@ export const tenantApi = baseApi.injectEndpoints({
         params: {
           page,
           size,
-          ownerId,
+          // ownerId,
           houseId: houseId === "all" ? undefined : houseId,
           roomId: roomId === "all" ? undefined : roomId,
           keyword, // Search theo tên hoặc thông tin khác

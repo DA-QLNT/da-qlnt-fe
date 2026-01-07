@@ -70,7 +70,7 @@ const TenantOwner = () => {
     isError,
   } = useGetTenantByOwnerIdAndSearchQuery(
     {
-      ownerId,
+      // ownerId,
       page,
       size: pageSize,
       houseId: selectedHouseId,
@@ -186,9 +186,7 @@ const TenantOwner = () => {
               </label>
               <div className="relative">
                 <Input
-                  placeholder={
-                    t("SearchTenantPlaceholder") || "Tìm tên, số điện thoại..."
-                  }
+                  placeholder={t("SearchTenant") || "Tìm tên, số điện thoại..."}
                   className="pl-9"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}

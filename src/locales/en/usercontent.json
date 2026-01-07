@@ -67,5 +67,6 @@
   "DateOfBirthLabel": "Date of Birth",
   "IDCard": "ID Card",
   "NotUpdated": "Not updated yet",
-  "Logout": "Logout"
+  "Logout": "Logout",
+  "SearchTenant": "Search Tenant"
 }

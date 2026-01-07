@@ -69,5 +69,6 @@
   "DateOfBirthLabel": "Ngày sinh",
   "IDCard": "CCCD",
   "NotUpdated": "Chưa cập nhật",
-  "Logout": "Đăng xuất"
+  "Logout": "Đăng xuất",
+  "SearchTenant": "Tìm kiếm khách thuê"
 }
