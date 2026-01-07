@@ -286,7 +286,7 @@ export default function ContractInforEditForm({
 
       {/* Dịch vụ */}
       <Field>
-        <FieldLabel className="font-bold">Dịch vụ áp dụng:</FieldLabel>
+        <FieldLabel className="font-bold">{t("AppliedServices")}</FieldLabel>
         <ScrollArea className="h-40 border rounded-md p-3">
           {loadingServices ? (
             <Spinner />

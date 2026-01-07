@@ -294,5 +294,6 @@
   "PendingConfirmationTab": "Chờ xác nhận",
   "HistoryTab": "Lịch sử",
   "AtLeastOneTenant": "Cần ít nhất một khách thuê",
-  "NeedToChooseOneRepresentative": "Cần chọn một đại diện"
+  "NeedToChooseOneRepresentative": "Cần chọn một đại diện",
+  "CurrentContractInfo": "Thông tin Hợp đồng Hiện tại"
 }

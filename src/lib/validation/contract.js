@@ -87,7 +87,28 @@ export const ContractExtendSchema = z.object({
   // Tùy chọn
   newRent: requiredNumber.min(1000, "Giá thuê phải lớn hơn 1,000 VNĐ."),
 
-  note: z.string().optional(),
+  // Services
+  houseServiceIds: z
+    .array(
+      z.object({
+        serviceId: z.number(),
+        houseServiceId: z.number(),
+      })
+    )
+    .min(0, "Ít nhất một dịch vụ cần được chọn nếu có."),
+
+  // Tenants
+  tenants: z
+    .array(
+      z.object({
+        id: z.number(),
+        tenantId: z.number(),
+        representative: z.boolean(),
+        fullName: z.string().optional(),
+        phoneNumber: z.string().optional(),
+      })
+    )
+    .min(1, "Cần ít nhất một khách thuê."),
 });
 
 // Schema cho việc cập nhật đầy đủ hợp đồng
