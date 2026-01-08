@@ -22,7 +22,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { formatCurrency } from "@/lib/format/currencyFormat";
-import { FileText, Info, DollarSign, Loader2, Download } from "lucide-react";
+import {
+  FileText,
+  Info,
+  DollarSign,
+  Loader2,
+  Download,
+  Wrench,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatDateTime } from "@/lib/format/dateTimeFormat";
 import { Badge } from "@/components/ui/badge";
@@ -32,6 +39,7 @@ import toast from "react-hot-toast";
 import ServiceTypeBadge from "./ServiceTypeBadge";
 import { useTranslation } from "react-i18next";
 import InvoiceStatusBadge from "@/features/Tenant/components/Invoice/InvoiceStatusBadge";
+import { REPAIR_STATUS_MAP } from "@/assets/repair/repairStatus";
 
 const INVOICE_STATUS_MAP = {
   0: "Unpaid",
@@ -205,7 +213,7 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
               <CardContent>
                 <Table>
                   <TableHeader>
-                    <TableRow>
+                    <TableRow className={"font-bold"}>
                       <TableHead>{t("ServiceName")}</TableHead>
                       <TableHead>{t("Method")}</TableHead>
                       <TableHead>{t("UnitPrice")}</TableHead>
@@ -217,7 +225,7 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
                   </TableHeader>
                   <TableBody>
                     {/* Tiền Phòng */}
-                    <TableRow className="font-semibold">
+                    <TableRow className="">
                       <TableCell>{t("RentFee")}</TableCell>
                       <TableCell>-</TableCell>
                       <TableCell>-</TableCell>
@@ -247,17 +255,73 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
                         </TableCell>
                       </TableRow>
                     ))}
-                    {/* Tổng cộng */}
-                    <TableRow className="font-bold bg-secondary">
-                      <TableCell colSpan={4}>{t("TotalUpper")}</TableCell>
-                      <TableCell className="text-right text-lg text-primary">
-                        {formatCurrency(invoice.totalAmount)}
-                      </TableCell>
-                    </TableRow>
                   </TableBody>
                 </Table>
               </CardContent>
             </Card>
+
+            {/* 3. DANH SÁCH SỬA CHỮA */}
+            {invoice.repairs && invoice.repairs.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    {t("Repairs") || "Repairs"}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Table>
+                    <TableHeader>
+                      <TableRow className={"font-bold"}>
+                        <TableHead>{t("Title")}</TableHead>
+                        <TableHead>{t("Room")}</TableHead>
+                        <TableHead>{t("TenantRequest")}</TableHead>
+
+                        <TableHead>
+                          {t("CreatedAt") || "Created Date"}
+                        </TableHead>
+                        <TableHead>
+                          {t("CompletedDate") || "Completed Date"}
+                        </TableHead>
+                        <TableHead className="text-right">
+                          {t("Cost") || "Cost"}
+                        </TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {invoice.repairs.map((repair) => (
+                        <TableRow key={repair.id} className="text-sm">
+                          <TableCell className="font-medium">
+                            {repair.title}
+                          </TableCell>
+                          <TableCell>{repair.roomName || "-"}</TableCell>
+                          <TableCell>{repair.tenantName}</TableCell>
+
+                          <TableCell>
+                            {formatDateTime(repair.createdAt).formattedDate}
+                          </TableCell>
+                          <TableCell>
+                            {repair.completedDate
+                              ? formatDateTime(repair.completedDate)
+                                  .formattedDate
+                              : "-"}
+                          </TableCell>
+                          <TableCell className="text-right  ">
+                            {formatCurrency(repair.cost)}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+            )}
+            {/* Tổng cộng */}
+            <div className="font-bold flex gap-2 items-center justify-self-end">
+              <span>{t("TotalUpper")}</span>
+              <span className="text-right text-lg text-primary">
+                {formatCurrency(invoice.totalAmount)}
+              </span>
+            </div>
           </div>
         ) : null}
 

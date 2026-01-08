@@ -164,5 +164,12 @@
   "FirstIndex": "First Index",
   "LastIndex": "Last Index",
   "ExportAllInvoices": "Export All Invoices",
-  "RentPrice": "Rent price"
+  "RentPrice": "Rent price",
+  "Title": "Title",
+  "CreatedAt": "Created Date",
+  "Cost": "Cost",
+  "Repairs": "Repairs",
+  "Note": "Note",
+  "CompletedDate": "Completed Date",
+  "TenantRequest": "Tenant Request"
 }

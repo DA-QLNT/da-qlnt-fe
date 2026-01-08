@@ -164,5 +164,12 @@
   "FirstIndex": "Chỉ số đầu",
   "LastIndex": "Chỉ số cuối",
   "ExportAllInvoices": "Xuất tất cả hóa đơn",
-  "RentPrice": "Giá thuê"
+  "RentPrice": "Giá thuê",
+  "Title": "Tiêu đề",
+  "CreatedAt": "Ngày tạo",
+  "Cost": "Chi phí",
+  "Repairs": "Danh sách sửa chữa",
+  "Note": "Ghi chú",
+  "CompletedDate": "Ngày hoàn thành",
+  "TenantRequest": "Người yêu cầu"
 }
