@@ -43,7 +43,7 @@ export const TenantEditSchema = z.object({
 // Schema cho việc Tạo Tenant mới
 export const NewTenantSchema = z.object({
   fullName: z.string().min(1, "Họ tên không được để trống"),
-  idNumber: z.string().min(12, "ID phải ít nhất 12 số"),
+  cccd: z.string().min(12, "ID phải ít nhất 12 số"),
   phoneNumber: z
     .string()
     .min(10, "SĐT phải có ít nhất 10 số")

@@ -40,7 +40,7 @@ export default function TenantCreateForm({ onFormSubmitSuccess }) {
     resolver: zodResolver(NewTenantSchema),
     defaultValues: {
       fullName: "",
-      idNumber: "",
+      cccd: "",
       phoneNumber: "",
       email: "",
       address: "",
@@ -98,8 +98,8 @@ export default function TenantCreateForm({ onFormSubmitSuccess }) {
         </Field>
         <Field>
           <FieldLabel>{t("IdPerson")}*</FieldLabel>
-          <Input {...register("idNumber")} disabled={isLoading} />
-          <FieldError>{errors.idNumber?.message}</FieldError>
+          <Input {...register("cccd")} disabled={isLoading} />
+          <FieldError>{errors.cccd?.message}</FieldError>
         </Field>
         <Field>
           <FieldLabel>{t("PhoneNumber")}*</FieldLabel>
