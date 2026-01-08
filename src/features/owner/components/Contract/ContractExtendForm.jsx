@@ -121,22 +121,20 @@ export default function ContractExtendForm({ contract, onFormSubmitSuccess }) {
       newRent: data.newRent,
       houseServiceIds: data.houseServiceIds || [],
       tenants: (data.tenants || []).map((t) => ({
-        tenantId: t.tenantId,
+        id: t.tenantId,
         representative: t.representative,
       })),
     };
 
-    const toastId = toast.loading(
-      `${t("ExtendingContractLoading")} ${contract.id}...`
-    );
+    const toastId = toast.loading(`${t("ExtendingContractLoading")} ...`);
 
     try {
       await extendContract({ contractId: contract.id, data: payload }).unwrap();
 
-      toast.success(t("ContractExtendedSuccessMessage"), { id: toastId });
+      toast.success(t("ContractExtendedSuccessMessage"));
       onFormSubmitSuccess();
     } catch (error) {
-      toast.error(error.data?.message || t("ExtendFailed"), { id: toastId });
+      toast.error(error.data?.message || t("ExtendFailed"));
       console.error("Contract extend error:", error);
     }
   };
