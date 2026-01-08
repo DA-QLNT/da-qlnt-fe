@@ -69,6 +69,7 @@ import { formatDateTime } from "@/lib/format/dateTimeFormat";
 import { useTranslation } from "react-i18next";
 import { useExportAllInvoicesMutation } from "../../store/serviceApi";
 import InvoiceDetailDialog from "../Service/InvoiceDetailDialog";
+import * as XLSX from "xlsx";
 import {
   Tooltip,
   TooltipContent,
@@ -128,26 +129,41 @@ const InvoiceReportTab = () => {
 
   // 🚨 HÀM XỬ LÝ TẢI FILE
   const handleExportInvoice = async (invoice) => {
+    // Build a simple workbook from the invoice object using SheetJS
     setExportingId(invoice.id);
     const toastId = toast.loading(`${t("ExportInvoice")} ...`);
     try {
-      const blobResult = await triggerExport(invoice.id).unwrap();
+      // Map invoice to a row-friendly object
+      const row = {
+        Term: `${invoice.month}/${invoice.year}`,
+        Code: invoice.code,
+        Room: invoice.roomCode,
+        Tenant: invoice.tenantName,
+        RentAmount: invoice.rentAmount,
+        ServiceAmount: invoice.serviceAmount,
+        TotalAmount: invoice.totalAmount,
+        Status: t(`${STATUS_MAP[invoice.status]}`),
+        DueDate: formatDateTime(invoice.dueDate).formattedDate,
+      };
 
-      // Đảm bảo kiểu dữ liệu Excel chính xác
-      const excelBlob = new Blob([blobResult], {
+      const ws = XLSX.utils.json_to_sheet([row]);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Invoice");
+
+      const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+      const blob = new Blob([wbout], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
 
-      const downloadUrl = window.URL.createObjectURL(excelBlob);
+      const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
-      link.href = downloadUrl;
+      link.href = url;
       link.download = `ChiTiet_HoaDon_${invoice.code}.xlsx`;
-
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
 
-      window.URL.revokeObjectURL(downloadUrl);
       toast.success(t("ExportSuccess"), { id: toastId });
     } catch (error) {
       console.error("Export Error:", error);
@@ -161,36 +177,44 @@ const InvoiceReportTab = () => {
   const [triggerExportAll, { isLoading: isExportingAll }] =
     useExportAllInvoicesMutation();
   const handleExportAllInvoices = async () => {
+    // Use SheetJS to build an Excel file from currently loaded reportData invoices
     const toastId = toast.loading(`${t("ExportInvoice")}...`);
     try {
-      // Chuẩn bị payload đúng format yêu cầu
-      const payload = {
-        houseIds: currentFilters.houseIds,
-        roomIds: currentFilters.roomIds || [],
-        year: currentFilters.year || null,
-        month: currentFilters.month || null,
-        fromDate: format(currentFilters.fromDate, "yyyy-MM-dd"),
-        toDate: format(currentFilters.toDate, "yyyy-MM-dd"),
-        status: currentFilters.status,
-        paymentMethod: currentFilters.paymentMethod,
-      };
+      const rows = (reportData?.invoices?.content || []).map((inv) => ({
+        Term: `${inv.month}/${inv.year}`,
+        Code: inv.code,
+        Room: inv.roomCode,
+        Tenant: inv.tenantName,
+        RentAmount: inv.rentAmount,
+        ServiceAmount: inv.serviceAmount,
+        TotalAmount: inv.totalAmount,
+        Status: t(`${STATUS_MAP[inv.status]}`),
+        DueDate: formatDateTime(inv.dueDate).formattedDate,
+      }));
 
-      const blobResult = await triggerExportAll(payload).unwrap();
+      if (rows.length === 0) {
+        toast.error(t("NoInvoice"), { id: toastId });
+        return;
+      }
 
-      const excelBlob = new Blob([blobResult], {
+      const ws = XLSX.utils.json_to_sheet(rows);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Invoices");
+
+      const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+      const blob = new Blob([wbout], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
 
-      const downloadUrl = window.URL.createObjectURL(excelBlob);
+      const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
-      link.href = downloadUrl;
+      link.href = url;
       link.download = `DanhSach_HoaDon_${format(new Date(), "ddMMyyyy")}.xlsx`;
-
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
 
-      window.URL.revokeObjectURL(downloadUrl);
       toast.success(t("ExportSuccess"), { id: toastId });
     } catch (error) {
       console.error("Export All Error:", error);

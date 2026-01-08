@@ -71,6 +71,11 @@ const data = {
   ],
   navMainOwner: [
     {
+      title: "Dashboard",
+      url: "/owner",
+      icon: IconLayoutDashboard,
+    },
+    {
       title: "Houses",
       url: "/owner/houses",
       icon: IconHome,
@@ -120,11 +125,6 @@ const data = {
       title: "Rules",
       url: "/owner/rules",
       icon: IconBrandAsana,
-    },
-    {
-      title: "Dashboard",
-      url: "/owner",
-      icon: IconLayoutDashboard,
     },
   ],
   navMainTenant: [
