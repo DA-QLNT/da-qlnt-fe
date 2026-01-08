@@ -39,6 +39,7 @@ import toast from "react-hot-toast";
 import ServiceTypeBadge from "./ServiceTypeBadge";
 import { useTranslation } from "react-i18next";
 import InvoiceStatusBadge from "@/features/Tenant/components/Invoice/InvoiceStatusBadge";
+import * as XLSX from "xlsx";
 import { REPAIR_STATUS_MAP } from "@/assets/repair/repairStatus";
 
 const INVOICE_STATUS_MAP = {
@@ -60,9 +61,7 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
 
   const [isCreateConfirmOpen, setIsCreateConfirmOpen] = useState(false);
 
-  // ✅ Sử dụng RTK Query để export Excel
-  const [triggerExport, { isLoading: isExporting }] =
-    useExportInvoiceByInvoiceIdMutation();
+  const [isExporting, setIsExporting] = useState(false);
 
   const handleOpenCreateConfirm = () => {
     setIsCreateConfirmOpen(true);
@@ -74,34 +73,114 @@ export default function InvoiceDetailDialog({ invoiceId, open, onOpenChange }) {
       toast.error(t("NoInvoice"));
       return;
     }
-
+    setIsExporting(true);
+    const toastId = toast.loading(t("ExportInvoice") + "...");
     try {
-      // 🚨 Truyền trực tiếp invoiceId vào trigger
-      const blobResult = await triggerExport(invoiceId).unwrap();
+      // Build Invoice sheet (key/value pairs)
+      const invoiceInfo = [
+        [t("Code"), invoice.code || invoiceId],
+        [t("Room"), invoice.roomCode || ""],
+        [t("Tenant"), invoice.tenantName || ""],
+        [t("Term"), `${invoice.month}/${invoice.year}`],
+        [t("Status"), t(INVOICE_STATUS_MAP[invoice.status] || "")],
+        [t("PaymentDeadline"), formatDateTime(invoice.dueDate).formattedDate],
+        [
+          t("PaymentDate"),
+          formatDateTime(invoice.paymentDate).formattedDate || "",
+        ],
+        [t("TotalUpper"), invoice.totalAmount || 0],
+      ];
 
-      const excelBlob = new Blob([blobResult], {
+      const wsInvoice = XLSX.utils.aoa_to_sheet(invoiceInfo);
+
+      // Build Services sheet
+      const serviceRows = [];
+      serviceRows.push([
+        t("ServiceName"),
+        t("Method"),
+        t("UnitPrice"),
+        t("Quantity"),
+        t("Amount"),
+      ]);
+      // Rent row
+      serviceRows.push([
+        t("RentFee"),
+        "-",
+        invoice.rentAmount || 0,
+        1,
+        invoice.rentAmount || 0,
+      ]);
+      // Service details
+      (invoice.serviceDetails || []).forEach((d) => {
+        serviceRows.push([
+          d.houseService?.serviceName || "",
+          d.method,
+          d.unitPrice || 0,
+          d.quantity || 0,
+          d.amount || 0,
+        ]);
+      });
+
+      const wsServices = XLSX.utils.aoa_to_sheet(serviceRows);
+
+      // Optionally add Repairs sheet if present
+      let wsRepairs = null;
+      if (invoice.repairs && invoice.repairs.length > 0) {
+        const repairsRows = [];
+        repairsRows.push([
+          "ID",
+          t("Title"),
+          t("Status"),
+          t("Cost"),
+          t("CompletedDate"),
+          t("Room"),
+          t("House"),
+        ]);
+        invoice.repairs.forEach((r) => {
+          const statusLabel = REPAIR_STATUS_MAP[r.status]
+            ? t(REPAIR_STATUS_MAP[r.status].label)
+            : String(r.status);
+          repairsRows.push([
+            r.id,
+            r.title,
+            statusLabel,
+            r.cost || 0,
+            r.completedDate || "",
+            r.roomName || "",
+            r.houseName || "",
+          ]);
+        });
+        wsRepairs = XLSX.utils.aoa_to_sheet(repairsRows);
+      }
+
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, wsInvoice, "Invoice");
+      XLSX.utils.book_append_sheet(wb, wsServices, "Services");
+      if (wsRepairs) XLSX.utils.book_append_sheet(wb, wsRepairs, "Repairs");
+
+      const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+      const blob = new Blob([wbout], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
 
-      const downloadUrl = window.URL.createObjectURL(excelBlob);
+      const downloadUrl = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = downloadUrl;
-      // Đặt tên file linh hoạt dựa trên dữ liệu invoice nếu có, hoặc dùng ID
       const fileName = invoice
         ? `HoaDon_${invoice.roomCode}_${invoice.month}_${invoice.year}.xlsx`
         : `HoaDon_ChiTiet_${invoiceId}.xlsx`;
-
       link.download = fileName;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-
       window.URL.revokeObjectURL(downloadUrl);
-      toast.success(t("ExportSuccess"));
+
+      toast.success(t("ExportSuccess"), { id: toastId });
     } catch (error) {
       console.error("Export Excel error:", error);
-      const errorMessage = error?.data?.message || t("ExportFailed");
-      toast.error(errorMessage);
+      toast.error(t("ExportFailed"));
+    } finally {
+      setIsExporting(false);
     }
   };
 

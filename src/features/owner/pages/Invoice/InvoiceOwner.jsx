@@ -67,6 +67,7 @@ import { formatCurrency } from "@/lib/format/currencyFormat";
 import { formatDateTime } from "@/lib/format/dateTimeFormat";
 import InvoiceDetailDialog from "../../components/Service/InvoiceDetailDialog";
 import InvoiceStatusBadge from "@/features/Tenant/components/Invoice/InvoiceStatusBadge";
+import * as XLSX from "xlsx";
 
 const INVOICE_STATUS_LABELS = {
   0: "Unpaid",
@@ -164,25 +165,49 @@ const InvoiceOwner = () => {
       toast.error(t("PleaseSelectHouse"));
       return;
     }
+
+    // Use SheetJS to build workbook from currently loaded invoices
     const toastId = toast.loading(`${t("Export")}...`);
     try {
-      const defaultFromDate = new Date(0); // 1970-01-01
-      const defaultToDate = new Date();
+      const rows = (invoices || []).map((inv) => ({
+        Code: inv.code,
+        Room: inv.roomCode,
+        Tenant: inv.tenantName,
+        Term: `${inv.year}/${inv.month}`,
+        RentAmount: inv.rentAmount || 0,
+        ServiceAmount: inv.serviceAmount || 0,
+        TotalAmount: inv.totalAmount || 0,
+        Status: t(INVOICE_STATUS_LABELS[inv.status]),
+        DueDate: formatDateTime(inv.dueDate).formattedDate,
+      }));
 
-      const payload = {
-        houseIds: [Number(filters.houseId)],
-        roomIds: filters.roomId === "all" ? [] : [Number(filters.roomId)],
-        fromDate: format(filters.fromDate || defaultFromDate, "yyyy-MM-dd"),
-        toDate: format(filters.toDate || defaultToDate, "yyyy-MM-dd"),
-      };
+      if (rows.length === 0) {
+        toast.error(t("NoInvoice"), { id: toastId });
+        return;
+      }
 
-      const blobResult = await triggerExportAll(payload).unwrap();
+      const ws = XLSX.utils.json_to_sheet(rows, {
+        header: [
+          "Code",
+          "Room",
+          "Tenant",
+          "Term",
+          "RentAmount",
+          "ServiceAmount",
+          "TotalAmount",
+          "Status",
+          "DueDate",
+        ],
+      });
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Invoices");
 
-      const excelBlob = new Blob([blobResult], {
+      const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+      const blob = new Blob([wbout], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
 
-      const downloadUrl = window.URL.createObjectURL(excelBlob);
+      const downloadUrl = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = downloadUrl;
       link.download = `DanhSach_HoaDon_${format(new Date(), "ddMMyyyy")}.xlsx`;
