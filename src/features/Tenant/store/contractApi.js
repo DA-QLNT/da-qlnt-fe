@@ -39,6 +39,19 @@ export const contractApi = baseApi.injectEndpoints({
         "TenantContract",
       ],
     }),
+    // MUTATION TỪ CHỐI GIA HẠN (Tenant Reject Renewal)
+    // Endpoint: /contracts/{contractId}/tenant/renewal/reject
+    rejectTenantRenewal: builder.mutation({
+      query: ({ contractId, note }) => ({
+        url: `/contracts/${contractId}/tenant/renewal/reject`,
+        method: "POST",
+        data: { note },
+      }),
+      invalidatesTags: (result, error, { contractId }) => [
+        { type: "Contract", id: contractId },
+        "TenantContract",
+      ],
+    }),
 
     // 4. QUERY LẤY HÓA ĐƠN THEO ROOM ID (Dùng cho InvoiceTenant.jsx)
     getInvoicesByRoomId: builder.query({
@@ -122,6 +135,7 @@ export const {
   useGetCurrentTenantContractQuery,
   useConfirmTenantContractMutation,
   useRejectTenantContractMutation,
+  useRejectTenantRenewalMutation,
   useGetInvoicesByRoomIdQuery,
   useGetInvoiceByIdQuery,
   useDeclareServiceUsageMutation, // Tùy chọn nếu Tenant được phép khai báo

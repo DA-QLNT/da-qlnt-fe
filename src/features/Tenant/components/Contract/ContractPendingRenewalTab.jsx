@@ -8,6 +8,7 @@ import { Info, CheckCheck, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ContractTenantConfirmDialog from "../../components/ContractTenantConfirmDialog";
 import ContractTenantRejectDialog from "../../components/ContractTenantRejectDialog";
+import ContractTenantRejectExtendDialog from "../../components/ContractTenantRejectExtendDialog";
 
 const ContractPendingRenewalTab = () => {
   const { t } = useTranslation("contractinvoice");
@@ -23,6 +24,8 @@ const ContractPendingRenewalTab = () => {
         {t("NoContractPendingRenewal")}
       </div>
     );
+
+  const isRenewal = contract?.renewal === true;
 
   return (
     <div className="space-y-6">
@@ -44,7 +47,7 @@ const ContractPendingRenewalTab = () => {
               variant="outline"
               onClick={() => setIsRejectOpen(true)}
             >
-              {t("Reject")}
+              {isRenewal ? "Reject Extend" : t("Reject")}
             </Button>
           </div>
         </Alert>
@@ -57,11 +60,19 @@ const ContractPendingRenewalTab = () => {
         open={isConfirmOpen}
         onOpenChange={setIsConfirmOpen}
       />
-      <ContractTenantRejectDialog
-        contractId={contract.id}
-        open={isRejectOpen}
-        onOpenChange={setIsRejectOpen}
-      />
+      {isRenewal ? (
+        <ContractTenantRejectExtendDialog
+          contractId={contract.id}
+          open={isRejectOpen}
+          onOpenChange={setIsRejectOpen}
+        />
+      ) : (
+        <ContractTenantRejectDialog
+          contractId={contract.id}
+          open={isRejectOpen}
+          onOpenChange={setIsRejectOpen}
+        />
+      )}
     </div>
   );
 };
