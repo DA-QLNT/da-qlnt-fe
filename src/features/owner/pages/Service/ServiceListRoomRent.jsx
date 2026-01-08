@@ -273,7 +273,10 @@ const ServiceListRoomRent = () => {
           <TableBody>
             {isLoading || isFetching ? (
               <TableRow>
-                <TableCell colSpan={5} className="text-center py-20">
+                <TableCell
+                  colSpan={5}
+                  className="text-center py-20"
+                >
                   <Spinner className="mx-auto size-10" />
                 </TableCell>
               </TableRow>
@@ -287,123 +290,129 @@ const ServiceListRoomRent = () => {
                 </TableCell>
               </TableRow>
             ) : (
-              roomsToDisplay.map((room, index) => (
-                <TableRow
-                  key={room.id}
-                  className="hover:bg-sidebar/50 transition-colors"
-                >
-                  <TableCell className="font-medium text-muted-foreground">
-                    {page * 20 + index + 1}
-                  </TableCell>
-                  <TableCell>
-                    <div className="font-bold text-primary">{room.code}</div>
-                    <div className="text-[10px] text-muted-foreground uppercase">
-                      {room.houseName || ""}
-                    </div>
-                  </TableCell>
-                  <TableCell className="font-semibold text-muted-foreground">
-                    {formatCurrency(room.rent)}
-                  </TableCell>
-                  <TableCell>
-                    <RoomStatusBadge status={room.status} />
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="block lg:hidden">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon">
-                            <EllipsisVertical className="size-5" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-56">
-                          <DropdownMenuGroup>
-                            <DropdownMenuItem
+              roomsToDisplay.map((room, index) => {
+                const houseName =
+                  allHouses.find((h) => h.id === room.houseId)?.name || "";
+                return (
+                  <TableRow
+                    key={room.id}
+                    className="hover:bg-sidebar/50 transition-colors"
+                  >
+                    <TableCell className="font-medium text-muted-foreground">
+                      {page * 20 + index + 1}
+                    </TableCell>
+                    <TableCell>
+                      <div className="font-bold text-primary">{room.code}</div>
+                      <div className="text-[10px] text-muted-foreground uppercase">
+                        {houseName}
+                      </div>
+                    </TableCell>
+                    <TableCell className="font-semibold text-muted-foreground">
+                      {formatCurrency(room.rent)}
+                    </TableCell>
+                    <TableCell>
+                      <RoomStatusBadge status={room.status} />
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="block lg:hidden">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon">
+                              <EllipsisVertical className="size-5" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-56">
+                            <DropdownMenuGroup>
+                              <DropdownMenuItem
+                                onClick={() => handleOpenDeclareDialog(room.id)}
+                              >
+                                {t("DeclareServiceRecord")}
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() => handleOpenViewDialog(room)}
+                              >
+                                {t("ViewIndexes")}
+                              </DropdownMenuItem>
+                              <hr className="my-1" />
+                              <DropdownMenuItem
+                                onClick={() =>
+                                  handleOpenInvoiceListDialog(room.id)
+                                }
+                              >
+                                {t("ViewInvoice")}
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                className="font-medium"
+                                onClick={() =>
+                                  handleOpenCreateInvoiceConfirm(room.id)
+                                }
+                              >
+                                {t("CreateInvoice")}
+                              </DropdownMenuItem>
+                            </DropdownMenuGroup>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
+                      <div className="hidden lg:flex lg:items-center lg:gap-2">
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <Button
+                              variant={"outline"}
+                              size={"icon"}
                               onClick={() => handleOpenDeclareDialog(room.id)}
                             >
-                              {t("DeclareServiceRecord")}
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
+                              <PencilRuler className="text-yellow-500" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            {t("DeclareServiceRecord")}
+                          </TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <Button
+                              variant={"outline"}
+                              size={"icon"}
                               onClick={() => handleOpenViewDialog(room)}
                             >
-                              {t("ViewIndexes")}
-                            </DropdownMenuItem>
-                            <hr className="my-1" />
-                            <DropdownMenuItem
+                              <Eye className="text-blue-500" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>{t("ViewIndexes")}</TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <Button
+                              variant={"outline"}
+                              size={"icon"}
                               onClick={() =>
                                 handleOpenInvoiceListDialog(room.id)
                               }
                             >
-                              {t("ViewInvoice")}
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              className="font-medium"
+                              <ReceiptText className="text-green-500" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>{t("ViewInvoice")}</TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <Button
+                              variant={"outline"}
+                              size={"icon"}
                               onClick={() =>
                                 handleOpenCreateInvoiceConfirm(room.id)
                               }
                             >
-                              {t("CreateInvoice")}
-                            </DropdownMenuItem>
-                          </DropdownMenuGroup>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </div>
-                    <div className="hidden lg:flex lg:items-center lg:gap-2">
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <Button
-                            variant={"outline"}
-                            size={"icon"}
-                            onClick={() => handleOpenDeclareDialog(room.id)}
-                          >
-                            <PencilRuler className="text-yellow-500" />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          {t("DeclareServiceRecord")}
-                        </TooltipContent>
-                      </Tooltip>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <Button
-                            variant={"outline"}
-                            size={"icon"}
-                            onClick={() => handleOpenViewDialog(room)}
-                          >
-                            <Eye className="text-blue-500" />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>{t("ViewIndexes")}</TooltipContent>
-                      </Tooltip>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <Button
-                            variant={"outline"}
-                            size={"icon"}
-                            onClick={() => handleOpenInvoiceListDialog(room.id)}
-                          >
-                            <ReceiptText className="text-green-500" />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>{t("ViewInvoice")}</TooltipContent>
-                      </Tooltip>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <Button
-                            variant={"outline"}
-                            size={"icon"}
-                            onClick={() =>
-                              handleOpenCreateInvoiceConfirm(room.id)
-                            }
-                          >
-                            <FilePlus className="text-violet-500" />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>{t("CreateInvoice")}</TooltipContent>
-                      </Tooltip>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))
+                              <FilePlus className="text-violet-500" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>{t("CreateInvoice")}</TooltipContent>
+                        </Tooltip>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                );
+              })
             )}
           </TableBody>
         </Table>
