@@ -295,5 +295,7 @@
   "HistoryTab": "Lịch sử",
   "AtLeastOneTenant": "Cần ít nhất một khách thuê",
   "NeedToChooseOneRepresentative": "Cần chọn một đại diện",
-  "CurrentContractInfo": "Thông tin Hợp đồng Hiện tại"
+  "CurrentContractInfo": "Thông tin Hợp đồng Hiện tại",
+  "CurrentPrice": "Giá hiện tại",
+  "RejectExtend": "Từ chối gia hạn"
 }

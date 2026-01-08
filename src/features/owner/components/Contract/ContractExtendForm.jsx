@@ -126,8 +126,6 @@ export default function ContractExtendForm({ contract, onFormSubmitSuccess }) {
       })),
     };
 
-    const toastId = toast.loading(`${t("ExtendingContractLoading")} ...`);
-
     try {
       await extendContract({ contractId: contract.id, data: payload }).unwrap();
 
@@ -176,55 +174,59 @@ export default function ContractExtendForm({ contract, onFormSubmitSuccess }) {
 
       {/* Update Section */}
       <FieldGroup>
-        {/* New End Date */}
-        <Field>
-          <FieldLabel>{t("NewEndDateLabel")} (*)</FieldLabel>
-          <Controller
-            name="newEndDate"
-            control={control}
-            render={({ field }) => (
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant={"outline"}
-                    className={cn("w-full justify-start text-left font-normal")}
-                    disabled={isLoading}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {field.value
-                      ? format(field.value, "dd/MM/yyyy")
-                      : t("SelectDate")}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                  {/* Cho phép chọn ngày sau ngày hết hạn cũ */}
-                  <Calendar
-                    mode="single"
-                    selected={field.value}
-                    onSelect={field.onChange}
-                    initialFocus
-                    disabled={(date) => date < currentEndDate}
-                  />
-                </PopoverContent>
-              </Popover>
-            )}
-          />
-          <FieldError>{errors.newEndDate?.message}</FieldError>
-        </Field>
+        <div className={"grid grid-cols-2 gap-2"}>
+          {/* New End Date */}
+          <Field>
+            <FieldLabel>{t("NewEndDateLabel")} (*)</FieldLabel>
+            <Controller
+              name="newEndDate"
+              control={control}
+              render={({ field }) => (
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-full justify-start text-left font-normal"
+                      )}
+                      disabled={isLoading}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {field.value
+                        ? format(field.value, "dd/MM/yyyy")
+                        : t("SelectDate")}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0">
+                    {/* Cho phép chọn ngày sau ngày hết hạn cũ */}
+                    <Calendar
+                      mode="single"
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      initialFocus
+                      disabled={(date) => date < currentEndDate}
+                    />
+                  </PopoverContent>
+                </Popover>
+              )}
+            />
+            <FieldError>{errors.newEndDate?.message}</FieldError>
+          </Field>
 
-        {/* New Rent */}
-        <Field>
-          <FieldLabel>{t("NewRentLabel")}</FieldLabel>
-          <Input
-            type="number"
-            {...register("newRent", { valueAsNumber: true })}
-            placeholder={`${t("DefaultRent")}: ${formatCurrency(
-              contract.rent
-            )}`}
-            disabled={isLoading}
-          />
-          <FieldError>{errors.newRent?.message}</FieldError>
-        </Field>
+          {/* New Rent */}
+          <Field>
+            <FieldLabel>{t("NewRentLabel")}</FieldLabel>
+            <Input
+              type="number"
+              {...register("newRent", { valueAsNumber: true })}
+              placeholder={`${t("DefaultRent")}: ${formatCurrency(
+                contract.rent
+              )}`}
+              disabled={isLoading}
+            />
+            <FieldError>{errors.newRent?.message}</FieldError>
+          </Field>
+        </div>
       </FieldGroup>
 
       {/* Services Section */}
@@ -276,19 +278,17 @@ export default function ContractExtendForm({ contract, onFormSubmitSuccess }) {
                                 }
                               }}
                             />
-                            <div className="flex-1">
-                              <div className="flex items-center justify-between">
+                            <div className="flex flex-1 items-center justify-between">
+                              <div className="flex items-center gap-2">
                                 <span className="font-medium">
                                   {houseService.serviceName}
                                 </span>
-                                <span className="text-sm text-muted-foreground ">
-                                  {formatCurrency(houseService.price)}
-                                </span>
-                              </div>
-                              <div className="text-sm text-muted-foreground  mt-1">
                                 <ServiceTypeBadge
                                   type={Number(houseService.method)}
                                 />
+                              </div>
+                              <div className="text-sm text-muted-foreground ">
+                                {formatCurrency(houseService.price)}
                               </div>
                             </div>
                           </div>

@@ -163,5 +163,6 @@
   "ConfirmFailed": "Xác nhận thất bại",
   "FirstIndex": "Chỉ số đầu",
   "LastIndex": "Chỉ số cuối",
-  "ExportAllInvoices": "Xuất tất cả hóa đơn"
+  "ExportAllInvoices": "Xuất tất cả hóa đơn",
+  "RentPrice": "Giá thuê"
 }

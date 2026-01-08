@@ -163,5 +163,6 @@
   "ConfirmFailed": "Confirm Failed",
   "FirstIndex": "First Index",
   "LastIndex": "Last Index",
-  "ExportAllInvoices": "Export All Invoices"
+  "ExportAllInvoices": "Export All Invoices",
+  "RentPrice": "Rent price"
 }

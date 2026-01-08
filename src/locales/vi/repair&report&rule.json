@@ -170,5 +170,6 @@
   "TotalBillAmount": "Tổng số tiền hóa đơn",
   "TotalPaid": "Tổng số tiền đã thanh toán",
   "TenantDashboard": "Thống kê",
-  "ViewRule": "Xem quy định"
+  "ViewRule": "Xem quy định",
+  "ViewInvoice": "Xem hóa đơn"
 }

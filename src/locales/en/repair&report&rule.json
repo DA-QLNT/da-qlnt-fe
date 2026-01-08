@@ -165,5 +165,6 @@
   "TotalBillAmount": "Total bill amount",
   "TotalPaid": "Total paid",
   "TenantDashboard": "Tenant Dashboard",
-  "ViewRule": "View rule"
+  "ViewRule": "View rule",
+  "ViewInvoice": "View invoice"
 }

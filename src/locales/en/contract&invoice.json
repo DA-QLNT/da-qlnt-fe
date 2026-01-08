@@ -290,5 +290,7 @@
   "HistoryTab": "History",
   "AtLeastOneTenant": "At least one tenant is required",
   "NeedToChooseOneRepresentative": "Need to choose one representative",
-  "CurrentContractInfo": "Current Contract Information"
+  "CurrentContractInfo": "Current Contract Information",
+  "CurrentPrice": "Current price",
+  "RejectExtend": "Reject Extend"
 }
